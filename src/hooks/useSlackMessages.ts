@@ -2,31 +2,18 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@clerk/nextjs';
+import { createClient } from '@supabase/supabase-js';
+import { SlackMessage } from '@/types';
 
-interface SlackMessage {
-  id: string;
-  channelId: string;
-  channelName: string;
-  sender: {
-    id: string;
-    name: string;
-    avatar?: string;
-  };
-  content: string;
-  timestamp: Date;
-  reactions: Array<{
-    emoji: string;
-    count: number;
-  }>;
-  threadCount?: number;
-  priority: 'low' | 'medium' | 'high';
-  status: 'unread' | 'read' | 'archived';
-}
+// Initialize Supabase client
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 interface UseSlackMessagesOptions {
+  workspaceId?: string;
   channelId?: string;
-  status?: 'unread' | 'read' | 'archived';
-  priority?: 'low' | 'medium' | 'high';
   limit?: number;
   refreshInterval?: number;
 }
@@ -36,12 +23,20 @@ interface UseSlackMessagesReturn {
   loading: boolean;
   error: string | null;
   refresh: () => Promise<void>;
+  sendMessage: (text: string, channelId?: string) => Promise<void>;
   markAsRead: (messageId: string) => Promise<void>;
-  markAsUnread: (messageId: string) => Promise<void>;
-  archiveMessage: (messageId: string) => Promise<void>;
-  updatePriority: (messageId: string, priority: 'low' | 'medium' | 'high') => Promise<void>;
   hasMore: boolean;
   loadMore: () => Promise<void>;
+  workspaces: Array<{
+    id: string;
+    name: string;
+    isActive: boolean;
+  }>;
+  channels: Array<{
+    id: string;
+    name: string;
+    isMember: boolean;
+  }>;
 }
 
 export function useSlackMessages(options: UseSlackMessagesOptions = {}): UseSlackMessagesReturn {
@@ -51,7 +46,15 @@ export function useSlackMessages(options: UseSlackMessagesOptions = {}): UseSlac
   const [error, setError] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
-  const { channelId, status, priority, limit = 20, refreshInterval = 30000 } = options;
+  const [workspaces, setWorkspaces] = useState<Array<{id: string; name: string; isActive: boolean}>>([]);
+  const [channels, setChannels] = useState<Array<{id: string; name: string; isMember: boolean}>>([]);
+  
+  const { 
+    workspaceId, 
+    channelId, 
+    limit = 50, 
+    refreshInterval = 30000 
+  } = options;
 
   const fetchMessages = useCallback(async (pageNum = 1, append = false) => {
     if (!userId) return;
@@ -60,26 +63,33 @@ export function useSlackMessages(options: UseSlackMessagesOptions = {}): UseSlac
       setLoading(true);
       setError(null);
 
-      const response = await fetch('/api/slack/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          channelId,
-          status,
-          priority,
-          limit,
-          offset: (pageNum - 1) * limit,
-        }),
-      });
+      // Get messages from database
+      let query = supabase
+        .from('slack_messages')
+        .select('*')
+        .eq('user_id', userId)
+        .order('timestamp', { ascending: false });
 
-      if (!response.ok) {
-        throw new Error('Failed to fetch Slack messages');
+      if (workspaceId) {
+        query = query.eq('workspace_id', workspaceId);
       }
 
-      const data = await response.json();
-      const fetchedMessages = data.messages || [];
+      if (channelId) {
+        query = query.eq('channel_id', channelId);
+      }
+
+      const { data: allMessages, error: fetchError } = await query;
+
+      if (fetchError) {
+        throw new Error(fetchError.message);
+      }
+
+      let fetchedMessages = allMessages || [];
+      
+      // Apply pagination
+      const startIndex = (pageNum - 1) * limit;
+      const endIndex = startIndex + limit;
+      fetchedMessages = fetchedMessages.slice(startIndex, endIndex);
 
       if (append) {
         setMessages(prev => [...prev, ...fetchedMessages]);
@@ -90,11 +100,59 @@ export function useSlackMessages(options: UseSlackMessagesOptions = {}): UseSlac
       setHasMore(fetchedMessages.length === limit);
       setPage(pageNum);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch Slack messages');
+      setError(err instanceof Error ? err.message : 'Failed to fetch messages');
     } finally {
       setLoading(false);
     }
-  }, [userId, channelId, status, priority, limit]);
+  }, [userId, workspaceId, channelId, limit]);
+
+  const fetchWorkspaces = useCallback(async () => {
+    if (!userId) return;
+
+    try {
+      const { data: integrations, error } = await supabase
+        .from('integrations')
+        .select('provider_data')
+        .eq('user_id', userId)
+        .eq('provider', 'slack')
+        .eq('is_active', true);
+
+      if (error) {
+        console.error('Failed to fetch Slack workspaces:', error);
+        return;
+      }
+
+      const workspaceList = integrations?.map(integration => ({
+        id: integration.provider_data?.workspace_id || '',
+        name: integration.provider_data?.workspace_name || 'Unknown Workspace',
+        isActive: integration.provider_data?.workspace_id === workspaceId
+      })).filter(w => w.id) || [];
+
+      setWorkspaces(workspaceList);
+    } catch (err) {
+      console.error('Failed to fetch workspaces:', err);
+    }
+  }, [userId, workspaceId]);
+
+  const fetchChannels = useCallback(async () => {
+    if (!userId || !workspaceId) return;
+
+    try {
+      // Call Slack API to get channels
+      const response = await fetch(`/api/slack/channels?workspaceId=${workspaceId}`);
+      const data = await response.json();
+
+      if (data.channels) {
+        setChannels(data.channels.map((channel: any) => ({
+          id: channel.id,
+          name: channel.name,
+          isMember: channel.isMember
+        })));
+      }
+    } catch (err) {
+      console.error('Failed to fetch channels:', err);
+    }
+  }, [userId, workspaceId]);
 
   const refresh = useCallback(async () => {
     await fetchMessages(1, false);
@@ -105,29 +163,58 @@ export function useSlackMessages(options: UseSlackMessagesOptions = {}): UseSlac
     await fetchMessages(page + 1, true);
   }, [fetchMessages, hasMore, loading, page]);
 
-  const markAsRead = useCallback(async (messageId: string) => {
-    if (!userId) return;
+  const sendMessage = useCallback(async (text: string, targetChannelId?: string) => {
+    if (!userId || !workspaceId) return;
 
     try {
+      const targetChannel = targetChannelId || channelId;
+      if (!targetChannel) {
+        throw new Error('No channel specified');
+      }
+
       const response = await fetch('/api/slack/messages', {
-        method: 'PATCH',
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          messageId,
-          status: 'read',
+          workspaceId,
+          channelId: targetChannel,
+          text,
         }),
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to mark message as read');
+      const data = await response.json();
+
+      if (!data.success) {
+        throw new Error(data.error || 'Failed to send message');
+      }
+
+      // Refresh messages after sending
+      await refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to send message');
+    }
+  }, [userId, workspaceId, channelId, refresh]);
+
+  const markAsRead = useCallback(async (messageId: string) => {
+    if (!userId) return;
+
+    try {
+      const { error } = await supabase
+        .from('slack_messages')
+        .update({ read: true })
+        .eq('id', messageId)
+        .eq('user_id', userId);
+
+      if (error) {
+        throw new Error(error.message);
       }
 
       setMessages(prev => 
         prev.map(message => 
           message.id === messageId 
-            ? { ...message, status: 'read' }
+            ? { ...message, read: true }
             : message
         )
       );
@@ -136,97 +223,20 @@ export function useSlackMessages(options: UseSlackMessagesOptions = {}): UseSlac
     }
   }, [userId]);
 
-  const markAsUnread = useCallback(async (messageId: string) => {
-    if (!userId) return;
-
-    try {
-      const response = await fetch('/api/slack/messages', {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          messageId,
-          status: 'unread',
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to mark message as unread');
-      }
-
-      setMessages(prev => 
-        prev.map(message => 
-          message.id === messageId 
-            ? { ...message, status: 'unread' }
-            : message
-        )
-      );
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to mark message as unread');
-    }
-  }, [userId]);
-
-  const archiveMessage = useCallback(async (messageId: string) => {
-    if (!userId) return;
-
-    try {
-      const response = await fetch('/api/slack/messages', {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          messageId,
-          status: 'archived',
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to archive message');
-      }
-
-      setMessages(prev => prev.filter(message => message.id !== messageId));
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to archive message');
-    }
-  }, [userId]);
-
-  const updatePriority = useCallback(async (messageId: string, priority: 'low' | 'medium' | 'high') => {
-    if (!userId) return;
-
-    try {
-      const response = await fetch('/api/slack/messages', {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          messageId,
-          priority,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to update message priority');
-      }
-
-      setMessages(prev => 
-        prev.map(message => 
-          message.id === messageId 
-            ? { ...message, priority }
-            : message
-        )
-      );
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update message priority');
-    }
-  }, [userId]);
-
   // Initial fetch
   useEffect(() => {
     fetchMessages();
   }, [fetchMessages]);
+
+  // Fetch workspaces
+  useEffect(() => {
+    fetchWorkspaces();
+  }, [fetchWorkspaces]);
+
+  // Fetch channels when workspace changes
+  useEffect(() => {
+    fetchChannels();
+  }, [fetchChannels]);
 
   // Auto-refresh
   useEffect(() => {
@@ -241,11 +251,11 @@ export function useSlackMessages(options: UseSlackMessagesOptions = {}): UseSlac
     loading,
     error,
     refresh,
+    sendMessage,
     markAsRead,
-    markAsUnread,
-    archiveMessage,
-    updatePriority,
     hasMore,
     loadMore,
+    workspaces,
+    channels,
   };
 } 

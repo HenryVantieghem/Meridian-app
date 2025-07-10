@@ -247,3 +247,29 @@ export interface Notification {
     onClick: () => void;
   };
 } 
+
+// Slack Types
+export interface SlackMessage {
+  id: string;
+  userId: string;
+  workspaceId: string;
+  channelId: string;
+  channelName: string;
+  sender: {
+    id: string;
+    name: string;
+    avatar?: string;
+  };
+  content: string;
+  timestamp: Date | string;
+  reactions: Array<{
+    emoji: string;
+    count: number;
+    users?: string[];
+  }>;
+  threadCount?: number;
+  priority: 'low' | 'medium' | 'high';
+  read: boolean;
+  archived: boolean;
+  type?: 'message' | 'file' | 'event';
+} 

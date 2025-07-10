@@ -1,5 +1,6 @@
 import { clerkClient } from '@clerk/nextjs/server';
 import { createUser, getUserByClerkId, userExists } from '@/lib/db/users';
+import { verifyToken as clerkVerifyToken } from '@clerk/clerk-sdk-node';
 
 /**
  * Clerk configuration for JWT templates and OAuth providers
@@ -255,4 +256,22 @@ export function logSecurityEvent(event: string, userId?: string, details?: any) 
     timestamp: new Date().toISOString(),
     details,
   });
+} 
+
+/**
+ * Verify JWT token from Clerk
+ */
+export async function verifyToken(token: string): Promise<boolean> {
+  try {
+    const payload = await clerkVerifyToken(token, {
+      secretKey: process.env.CLERK_SECRET_KEY || '',
+      audience: process.env.NEXT_PUBLIC_APP_URL || '',
+      authorizedParties: [process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || ''],
+      issuer: process.env.CLERK_ISSUER || '',
+    });
+    return !!payload;
+  } catch (error) {
+    console.error('Token verification failed:', error);
+    return false;
+  }
 } 

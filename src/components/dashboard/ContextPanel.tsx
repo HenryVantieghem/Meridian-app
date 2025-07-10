@@ -1,406 +1,442 @@
 'use client';
 
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Typography } from '@/components/ui/typography';
-import { Card } from '@/components/ui/card';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { 
-  User, 
-  Mail, 
-  Phone, 
-  Calendar,
-  MapPin,
-  Building,
-  Star,
-  MessageSquare,
-  Clock,
-  TrendingUp,
-  Users,
-  FileText,
-  Link,
-  MoreHorizontal
-} from 'lucide-react';
+import { Typography } from '@/components/ui/typography';
+import { Badge } from '@/components/ui/badge';
+import { Card } from '@/components/ui/card';
+import { Email, SlackMessage } from '@/types';
+import { X, Mail, MessageSquare, Clock, User, Tag, Paperclip, Brain, Sparkles, Loader2 } from 'lucide-react';
 
-interface Contact {
+interface AIAnalysis {
   id: string;
-  name: string;
-  email: string;
-  company: string;
-  role: string;
-  avatar: string;
-  relationship: 'colleague' | 'client' | 'partner' | 'vendor';
-  priority: 'high' | 'medium' | 'low';
-  lastContact: string;
-  contactFrequency: string;
-  location: string;
-  phone?: string;
-}
-
-interface Conversation {
-  id: string;
-  subject: string;
-  date: string;
-  type: 'email' | 'meeting' | 'call';
+  contentId: string;
+  contentType: 'email' | 'slack';
+  sentiment: 'positive' | 'negative' | 'neutral';
+  priority: 'low' | 'medium' | 'high' | 'urgent';
+  confidence: number;
   summary: string;
+  keyPoints: string[];
+  suggestedActions: string[];
+  replySuggestion?: string;
+  tone: 'formal' | 'casual' | 'friendly' | 'professional';
+  urgency: 'low' | 'medium' | 'high';
+  estimatedResponseTime: number;
+  tags: string[];
+  createdAt: Date;
 }
 
-const mockContact: Contact = {
-  id: '1',
-  name: 'Sarah Chen',
-  email: 'sarah.chen@techflow.com',
-  company: 'TechFlow Inc.',
-  role: 'CEO',
-  avatar: '/avatars/sarah-chen.jpg',
-  relationship: 'client',
-  priority: 'high',
-  lastContact: '2 hours ago',
-  contactFrequency: 'Weekly',
-  location: 'San Francisco, CA',
-  phone: '+1 (555) 123-4567'
-};
+interface ContextPanelProps {
+  item: Email | SlackMessage | null;
+  type: 'emails' | 'messages';
+  onClose: () => void;
+}
 
-const mockConversations: Conversation[] = [
-  {
-    id: '1',
-    subject: 'Q4 Strategy Meeting - Your Input Needed',
-    date: '2 hours ago',
-    type: 'email',
-    summary: 'Strategic discussion request for Q4 planning and new initiatives.'
-  },
-  {
-    id: '2',
-    subject: 'Monthly Check-in Call',
-    date: '1 week ago',
-    type: 'call',
-    summary: 'Regular monthly check-in to discuss ongoing projects and upcoming milestones.'
-  },
-  {
-    id: '3',
-    subject: 'Project Timeline Review',
-    date: '2 weeks ago',
-    type: 'meeting',
-    summary: 'Reviewed project timelines and discussed potential delays and solutions.'
-  },
-  {
-    id: '4',
-    subject: 'Contract Renewal Discussion',
-    date: '1 month ago',
-    type: 'email',
-    summary: 'Discussed contract renewal terms and pricing for the upcoming year.'
-  }
-];
+export function ContextPanel({ item, type, onClose }: ContextPanelProps) {
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [analysis, setAnalysis] = useState<AIAnalysis | null>(null);
+  const [analysisError, setAnalysisError] = useState<string | null>(null);
 
-const relationshipColors = {
-  colleague: 'text-blue-600 bg-blue-50',
-  client: 'text-green-600 bg-green-50',
-  partner: 'text-purple-600 bg-purple-50',
-  vendor: 'text-orange-600 bg-orange-50'
-};
+  const formatDate = (date: Date | string) => {
+    const d = typeof date === 'string' ? new Date(date) : date;
+    return d.toLocaleString();
+  };
 
-const priorityColors = {
-  high: 'text-red-600',
-  medium: 'text-yellow-600',
-  low: 'text-green-600'
-};
+  const isEmail = (item: Email | SlackMessage): item is Email => {
+    return 'from' in item;
+  };
 
-export function ContextPanel() {
-  const [activeTab, setActiveTab] = useState<'overview' | 'conversations' | 'actions'>('overview');
+  const isSlackMessage = (item: Email | SlackMessage): item is SlackMessage => {
+    return 'sender' in item;
+  };
 
-  const getRelationshipLabel = (relationship: string) => {
-    switch (relationship) {
-      case 'colleague': return 'Colleague';
-      case 'client': return 'Client';
-      case 'partner': return 'Partner';
-      case 'vendor': return 'Vendor';
-      default: return 'Unknown';
+  const handleAnalyze = async () => {
+    if (!item) return;
+
+    setIsAnalyzing(true);
+    setAnalysisError(null);
+
+    try {
+      const content = isEmail(item) 
+        ? `${item.subject}\n\n${item.body}`
+        : item.content;
+
+      const response = await fetch('/api/ai/analyze', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          content,
+          contentType: isEmail(item) ? 'email' : 'slack',
+          context: {
+            senderInfo: isEmail(item) 
+              ? { name: item.from.name || 'Unknown', email: item.from.email }
+              : { name: item.sender.name }
+          }
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to analyze content');
+      }
+
+      const data = await response.json();
+      setAnalysis(data.analysis);
+    } catch (error) {
+      setAnalysisError(error instanceof Error ? error.message : 'Analysis failed');
+    } finally {
+      setIsAnalyzing(false);
     }
   };
 
-  const getPriorityLabel = (priority: string) => {
+  const getSentimentColor = (sentiment: string) => {
+    switch (sentiment) {
+      case 'positive': return 'text-green-600 bg-green-50';
+      case 'negative': return 'text-red-600 bg-red-50';
+      case 'neutral': return 'text-gray-600 bg-gray-50';
+      default: return 'text-gray-600 bg-gray-50';
+    }
+  };
+
+  const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'high': return 'High Priority';
-      case 'medium': return 'Medium Priority';
-      case 'low': return 'Low Priority';
-      default: return 'Unknown';
+      case 'urgent': return 'text-red-600 bg-red-50';
+      case 'high': return 'text-orange-600 bg-orange-50';
+      case 'medium': return 'text-yellow-600 bg-yellow-50';
+      case 'low': return 'text-green-600 bg-green-50';
+      default: return 'text-gray-600 bg-gray-50';
     }
   };
+
+  if (!item) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full p-8">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+            {type === 'emails' ? (
+              <Mail className="h-8 w-8 text-gray-400" />
+            ) : (
+              <MessageSquare className="h-8 w-8 text-gray-400" />
+            )}
+          </div>
+          <Typography variant="h3" className="text-gray-900 mb-2">
+            Select an item
+          </Typography>
+          <Typography variant="body" className="text-gray-600">
+            Choose an email or message to view details and AI analysis.
+          </Typography>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-full flex flex-col">
       {/* Header */}
-      <div className="p-6 border-b border-gray-200">
-        <Typography variant="h3" className="text-lg font-semibold text-gray-900 mb-2">
-          Contact Intelligence
-        </Typography>
-        <Typography variant="body" className="text-sm text-gray-600">
-          Context and insights for selected contact
-        </Typography>
+      <div className="p-4 border-b border-gray-200">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            {isEmail(item) ? (
+              <Mail className="h-5 w-5 text-blue-600" />
+            ) : (
+              <MessageSquare className="h-5 w-5 text-green-600" />
+            )}
+            <Typography variant="h3" className="text-lg font-semibold">
+              {isEmail(item) ? 'Email Details' : 'Message Details'}
+            </Typography>
+          </div>
+          <Button variant="ghost" size="sm" onClick={onClose}>
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
 
-      {/* Contact Info */}
-      <div className="p-6 border-b border-gray-200">
-        <div className="flex items-center space-x-4 mb-4">
-          <div className="w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center">
-            <Typography variant="body" className="text-white font-semibold text-xl">
-              {mockContact.name.charAt(0)}
+      {/* Content */}
+      <div className="flex-1 overflow-y-auto p-4">
+        <div className="space-y-6">
+          {/* Basic Info */}
+          <Card className="p-4">
+            <Typography variant="h4" className="font-semibold mb-3">
+              {isEmail(item) ? item.subject : 'Message'}
             </Typography>
-          </div>
-          <div className="flex-1">
-            <Typography variant="h4" className="text-lg font-semibold text-gray-900">
-              {mockContact.name}
-            </Typography>
-            <Typography variant="body" className="text-sm text-gray-600">
-              {mockContact.role} at {mockContact.company}
-            </Typography>
-          </div>
-        </div>
+            
+            <div className="space-y-3">
+              {/* Sender/From */}
+              <div className="flex items-center space-x-2">
+                <User className="h-4 w-4 text-gray-500" />
+                <div>
+                  <Typography variant="body" className="font-medium">
+                    {isEmail(item) 
+                      ? `${item.from.name || ''} ${item.from.email}`
+                      : `${item.sender.name} (@${item.sender.id})`
+                    }
+                  </Typography>
+                  <Typography variant="body" className="text-sm text-gray-600">
+                    {isEmail(item) ? 'From' : 'Sent by'}
+                  </Typography>
+                </div>
+              </div>
 
-        <div className="space-y-3">
-          <div className="flex items-center space-x-3">
-            <Mail className="w-4 h-4 text-gray-500" />
-            <Typography variant="body" className="text-sm text-gray-700">
-              {mockContact.email}
+              {/* Date */}
+              <div className="flex items-center space-x-2">
+                <Clock className="h-4 w-4 text-gray-500" />
+                <div>
+                  <Typography variant="body" className="font-medium">
+                    {formatDate(isEmail(item) ? item.receivedAt : item.timestamp)}
+                  </Typography>
+                  <Typography variant="body" className="text-sm text-gray-600">
+                    {isEmail(item) ? 'Received' : 'Sent'}
+                  </Typography>
+                </div>
+              </div>
+
+              {/* Channel/To */}
+              {isEmail(item) ? (
+                <div className="flex items-center space-x-2">
+                  <Tag className="h-4 w-4 text-gray-500" />
+                  <div>
+                    <Typography variant="body" className="font-medium">
+                      To: {item.to.map(addr => addr.email).join(', ')}
+                    </Typography>
+                    <Typography variant="body" className="text-sm text-gray-600">
+                      Recipients
+                    </Typography>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-center space-x-2">
+                  <Tag className="h-4 w-4 text-gray-500" />
+                  <div>
+                    <Typography variant="body" className="font-medium">
+                      #{item.channelName}
+                    </Typography>
+                    <Typography variant="body" className="text-sm text-gray-600">
+                      Channel
+                    </Typography>
+                  </div>
+                </div>
+              )}
+
+              {/* Priority */}
+              <div className="flex items-center space-x-2">
+                <div className="w-4 h-4 rounded-full bg-gray-500" />
+                <div>
+                  <Typography variant="body" className="font-medium capitalize">
+                    {item.priority} priority
+                  </Typography>
+                  <Typography variant="body" className="text-sm text-gray-600">
+                    Priority Level
+                  </Typography>
+                </div>
+              </div>
+
+              {/* Attachments */}
+              {isEmail(item) && item.attachments.length > 0 && (
+                <div className="flex items-center space-x-2">
+                  <Paperclip className="h-4 w-4 text-gray-500" />
+                  <div>
+                    <Typography variant="body" className="font-medium">
+                      {item.attachments.length} attachment{item.attachments.length !== 1 ? 's' : ''}
+                    </Typography>
+                    <Typography variant="body" className="text-sm text-gray-600">
+                      Files
+                    </Typography>
+                  </div>
+                </div>
+              )}
+            </div>
+          </Card>
+
+          {/* Content */}
+          <Card className="p-4">
+            <Typography variant="h4" className="font-semibold mb-3">
+              Content
             </Typography>
-          </div>
-          
-          {mockContact.phone && (
-            <div className="flex items-center space-x-3">
-              <Phone className="w-4 h-4 text-gray-500" />
-              <Typography variant="body" className="text-sm text-gray-700">
-                {mockContact.phone}
+            <div className="prose prose-sm max-w-none">
+              <Typography variant="body" className="text-gray-700 whitespace-pre-wrap">
+                {isEmail(item) ? item.body : item.content}
               </Typography>
             </div>
-          )}
-          
-          <div className="flex items-center space-x-3">
-            <MapPin className="w-4 h-4 text-gray-500" />
-            <Typography variant="body" className="text-sm text-gray-700">
-              {mockContact.location}
+          </Card>
+
+          {/* Status */}
+          <Card className="p-4">
+            <Typography variant="h4" className="font-semibold mb-3">
+              Status
             </Typography>
-          </div>
-        </div>
-
-        <div className="flex items-center space-x-2 mt-4">
-          <span className={`px-2 py-1 rounded-full text-xs font-medium ${relationshipColors[mockContact.relationship]}`}>
-            {getRelationshipLabel(mockContact.relationship)}
-          </span>
-          <span className={`px-2 py-1 rounded-full text-xs font-medium ${priorityColors[mockContact.priority]}`}>
-            {getPriorityLabel(mockContact.priority)}
-          </span>
-        </div>
-      </div>
-
-      {/* Tabs */}
-      <div className="flex border-b border-gray-200">
-        {[
-          { id: 'overview', label: 'Overview', icon: User },
-          { id: 'conversations', label: 'History', icon: MessageSquare },
-          { id: 'actions', label: 'Actions', icon: TrendingUp }
-        ].map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id as any)}
-            className={`flex-1 flex items-center justify-center space-x-2 px-4 py-3 text-sm font-medium transition-colors ${
-              activeTab === tab.id
-                ? 'text-primary-600 border-b-2 border-primary-600'
-                : 'text-gray-600 hover:text-gray-900'
-            }`}
-          >
-            <tab.icon className="w-4 h-4" />
-            <span>{tab.label}</span>
-          </button>
-        ))}
-      </div>
-
-      {/* Tab Content */}
-      <div className="flex-1 overflow-y-auto">
-        <AnimatePresence mode="wait">
-          {activeTab === 'overview' && (
-            <motion.div
-              key="overview"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.2 }}
-              className="p-6 space-y-6"
-            >
-              {/* Relationship Insights */}
-              <Card className="p-4">
-                <Typography variant="h4" className="text-sm font-semibold text-gray-900 mb-3">
-                  Relationship Insights
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Typography variant="body" className="text-gray-600">
+                  Read
                 </Typography>
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Last Contact</span>
-                    <span className="text-sm font-medium text-gray-900">{mockContact.lastContact}</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Contact Frequency</span>
-                    <span className="text-sm font-medium text-gray-900">{mockContact.contactFrequency}</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Response Rate</span>
-                    <span className="text-sm font-medium text-green-600">95%</span>
-                  </div>
-                </div>
-              </Card>
-
-              {/* Quick Stats */}
-              <Card className="p-4">
-                <Typography variant="h4" className="text-sm font-semibold text-gray-900 mb-3">
-                  Communication Stats
-                </Typography>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="text-center">
-                    <Typography variant="body" className="text-2xl font-bold text-gray-900">
-                      12
-                    </Typography>
-                    <Typography variant="body" className="text-xs text-gray-600">
-                      Emails This Month
-                    </Typography>
-                  </div>
-                  <div className="text-center">
-                    <Typography variant="body" className="text-2xl font-bold text-gray-900">
-                      3
-                    </Typography>
-                    <Typography variant="body" className="text-xs text-gray-600">
-                      Meetings This Month
-                    </Typography>
-                  </div>
-                </div>
-              </Card>
-
-              {/* Recent Activity */}
-              <Card className="p-4">
-                <Typography variant="h4" className="text-sm font-semibold text-gray-900 mb-3">
-                  Recent Activity
-                </Typography>
-                <div className="space-y-3">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                    <Typography variant="body" className="text-sm text-gray-700">
-                      Email sent 2 hours ago
-                    </Typography>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                    <Typography variant="body" className="text-sm text-gray-700">
-                      Meeting scheduled for tomorrow
-                    </Typography>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                    <Typography variant="body" className="text-sm text-gray-700">
-                      Contract updated 1 week ago
-                    </Typography>
-                  </div>
-                </div>
-              </Card>
-            </motion.div>
-          )}
-
-          {activeTab === 'conversations' && (
-            <motion.div
-              key="conversations"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.2 }}
-              className="p-6 space-y-4"
-            >
-              {mockConversations.map((conversation, index) => (
-                <motion.div
-                  key={conversation.id}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.3, delay: index * 0.1 }}
-                >
-                  <Card className="p-4">
-                    <div className="flex items-start justify-between mb-2">
-                      <Typography variant="body" className="font-semibold text-gray-900">
-                        {conversation.subject}
-                      </Typography>
-                      <div className="flex items-center space-x-2">
-                        {conversation.type === 'email' && <Mail className="w-4 h-4 text-gray-500" />}
-                        {conversation.type === 'call' && <Phone className="w-4 h-4 text-gray-500" />}
-                        {conversation.type === 'meeting' && <Calendar className="w-4 h-4 text-gray-500" />}
-                      </div>
-                    </div>
-                    <Typography variant="body" className="text-sm text-gray-600 mb-2">
-                      {conversation.summary}
-                    </Typography>
-                    <Typography variant="body" className="text-xs text-gray-500">
-                      {conversation.date}
-                    </Typography>
-                  </Card>
-                </motion.div>
-              ))}
-            </motion.div>
-          )}
-
-          {activeTab === 'actions' && (
-            <motion.div
-              key="actions"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.2 }}
-              className="p-6 space-y-4"
-            >
-              <Typography variant="h4" className="text-sm font-semibold text-gray-900 mb-4">
-                Quick Actions
-              </Typography>
+                <Badge>
+                  {item.read ? 'Yes' : 'No'}
+                </Badge>
+              </div>
               
-              <div className="space-y-3">
-                <Button className="w-full justify-start space-x-3" size="sm">
-                  <Mail className="w-4 h-4" />
-                  <span>Send Email</span>
-                </Button>
-                
-                <Button variant="outline" className="w-full justify-start space-x-3" size="sm">
-                  <Calendar className="w-4 h-4" />
-                  <span>Schedule Meeting</span>
-                </Button>
-                
-                <Button variant="outline" className="w-full justify-start space-x-3" size="sm">
-                  <Phone className="w-4 h-4" />
-                  <span>Call Contact</span>
-                </Button>
-                
-                <Button variant="outline" className="w-full justify-start space-x-3" size="sm">
-                  <FileText className="w-4 h-4" />
-                  <span>View Documents</span>
-                </Button>
-                
-                <Button variant="outline" className="w-full justify-start space-x-3" size="sm">
-                  <Users className="w-4 h-4" />
-                  <span>Add to Team</span>
-                </Button>
-              </div>
+              {isEmail(item) && (
+                <div className="flex items-center justify-between">
+                  <Typography variant="body" className="text-gray-600">
+                    Archived
+                  </Typography>
+                  <Badge>
+                    {item.archived ? 'Yes' : 'No'}
+                  </Badge>
+                </div>
+              )}
 
-              <div className="pt-4 border-t border-gray-200">
-                <Typography variant="h4" className="text-sm font-semibold text-gray-900 mb-3">
-                  Suggested Actions
+              {isEmail(item) && (
+                <div className="flex items-center justify-between">
+                  <Typography variant="body" className="text-gray-600">
+                    Starred
+                  </Typography>
+                  <Badge>
+                    {item.starred ? 'Yes' : 'No'}
+                  </Badge>
+                </div>
+              )}
+            </div>
+          </Card>
+
+          {/* AI Analysis */}
+          {analysis && (
+            <Card className="p-4">
+              <div className="flex items-center space-x-2 mb-3">
+                <Brain className="h-5 w-5 text-purple-600" />
+                <Typography variant="h4" className="font-semibold">
+                  AI Analysis
                 </Typography>
-                <div className="space-y-2">
-                  <div className="flex items-center space-x-2 text-sm text-gray-600">
-                    <Star className="w-4 h-4 text-yellow-500" />
-                    <span>Follow up on Q4 strategy meeting</span>
+              </div>
+              
+              <div className="space-y-4">
+                {/* Summary */}
+                <div>
+                  <Typography variant="body" className="font-medium mb-2">
+                    Summary
+                  </Typography>
+                  <Typography variant="body" className="text-gray-700">
+                    {analysis.summary}
+                  </Typography>
+                </div>
+
+                {/* Key Points */}
+                {analysis.keyPoints.length > 0 && (
+                  <div>
+                    <Typography variant="body" className="font-medium mb-2">
+                      Key Points
+                    </Typography>
+                    <ul className="space-y-1">
+                      {analysis.keyPoints.map((point, index) => (
+                        <li key={index} className="text-sm text-gray-700">
+                          • {point}
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                  <div className="flex items-center space-x-2 text-sm text-gray-600">
-                    <Clock className="w-4 h-4 text-blue-500" />
-                    <span>Schedule monthly check-in</span>
+                )}
+
+                {/* Suggested Actions */}
+                {analysis.suggestedActions.length > 0 && (
+                  <div>
+                    <Typography variant="body" className="font-medium mb-2">
+                      Suggested Actions
+                    </Typography>
+                    <ul className="space-y-1">
+                      {analysis.suggestedActions.map((action, index) => (
+                        <li key={index} className="text-sm text-gray-700">
+                          • {action}
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                  <div className="flex items-center space-x-2 text-sm text-gray-600">
-                    <TrendingUp className="w-4 h-4 text-green-500" />
-                    <span>Review partnership opportunities</span>
+                )}
+
+                {/* Analysis Metrics */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Typography variant="body" className="text-sm text-gray-600">
+                      Sentiment
+                    </Typography>
+                    <Badge className={`mt-1 ${getSentimentColor(analysis.sentiment)}`}>
+                      {analysis.sentiment}
+                    </Badge>
+                  </div>
+                  <div>
+                    <Typography variant="body" className="text-sm text-gray-600">
+                      Priority
+                    </Typography>
+                    <Badge className={`mt-1 ${getPriorityColor(analysis.priority)}`}>
+                      {analysis.priority}
+                    </Badge>
+                  </div>
+                  <div>
+                    <Typography variant="body" className="text-sm text-gray-600">
+                      Confidence
+                    </Typography>
+                    <Typography variant="body" className="font-medium">
+                      {analysis.confidence}%
+                    </Typography>
+                  </div>
+                  <div>
+                    <Typography variant="body" className="text-sm text-gray-600">
+                      Response Time
+                    </Typography>
+                    <Typography variant="body" className="font-medium">
+                      {analysis.estimatedResponseTime}m
+                    </Typography>
                   </div>
                 </div>
+
+                {/* Tags */}
+                {analysis.tags.length > 0 && (
+                  <div>
+                    <Typography variant="body" className="font-medium mb-2">
+                      Tags
+                    </Typography>
+                    <div className="flex flex-wrap gap-1">
+                      {analysis.tags.map((tag, index) => (
+                        <Badge key={index} className="text-xs">
+                          {tag}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
-                         </motion.div>
-           )}
-        </AnimatePresence>
+            </Card>
+          )}
+
+          {/* AI Analysis Button */}
+          <Button
+            onClick={handleAnalyze}
+            disabled={isAnalyzing}
+            className="w-full"
+            size="lg"
+          >
+            {isAnalyzing ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                Analyzing...
+              </>
+            ) : (
+              <>
+                <Sparkles className="h-4 w-4 mr-2" />
+                Analyze with AI
+              </>
+            )}
+          </Button>
+
+          {/* Analysis Error */}
+          {analysisError && (
+            <Card className="p-4 border-red-200 bg-red-50">
+              <Typography variant="body" className="text-red-700">
+                {analysisError}
+              </Typography>
+            </Card>
+          )}
+        </div>
       </div>
     </div>
   );

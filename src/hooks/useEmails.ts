@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@clerk/nextjs';
 import { getEmails, getEmailById, updateEmail, deleteEmail } from '@/lib/db/emails';
+import { emailSyncService } from '@/lib/email/sync-service';
 import { Email, EmailPriority } from '@/types';
 
 interface UseEmailsOptions {
@@ -10,6 +11,7 @@ interface UseEmailsOptions {
   priority?: EmailPriority;
   limit?: number;
   refreshInterval?: number;
+  autoSync?: boolean;
 }
 
 interface UseEmailsReturn {
@@ -17,12 +19,18 @@ interface UseEmailsReturn {
   loading: boolean;
   error: string | null;
   refresh: () => Promise<void>;
+  syncEmails: () => Promise<void>;
   markAsRead: (emailId: string) => Promise<void>;
   markAsUnread: (emailId: string) => Promise<void>;
   deleteEmail: (emailId: string) => Promise<void>;
   updatePriority: (emailId: string, priority: EmailPriority) => Promise<void>;
   hasMore: boolean;
   loadMore: () => Promise<void>;
+  syncStatus: {
+    lastSync: Date | null;
+    emailsCount: number;
+    isActive: boolean;
+  };
 }
 
 export function useEmails(options: UseEmailsOptions = {}): UseEmailsReturn {
@@ -32,7 +40,19 @@ export function useEmails(options: UseEmailsOptions = {}): UseEmailsReturn {
   const [error, setError] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
-  const { status, priority, limit = 20, refreshInterval = 30000 } = options;
+  const [syncStatus, setSyncStatus] = useState({
+    lastSync: null as Date | null,
+    emailsCount: 0,
+    isActive: false
+  });
+  
+  const { 
+    status, 
+    priority, 
+    limit = 20, 
+    refreshInterval = 30000,
+    autoSync = true
+  } = options;
 
   const fetchEmails = useCallback(async (pageNum = 1, append = false) => {
     if (!userId) return;
@@ -41,8 +61,11 @@ export function useEmails(options: UseEmailsOptions = {}): UseEmailsReturn {
       setLoading(true);
       setError(null);
 
+      // Get emails from database
       const allEmails = await getEmails(userId);
       let fetchedEmails = allEmails;
+      
+      // Apply filters
       if (status) {
         if (status === 'unread') {
           fetchedEmails = fetchedEmails.filter(e => !e.read && !e.archived);
@@ -52,12 +75,15 @@ export function useEmails(options: UseEmailsOptions = {}): UseEmailsReturn {
           fetchedEmails = fetchedEmails.filter(e => e.archived);
         }
       }
+      
       if (priority) {
         fetchedEmails = fetchedEmails.filter(e => e.priority === priority);
       }
-      if (limit) {
-        fetchedEmails = fetchedEmails.slice(0, limit);
-      }
+      
+      // Apply pagination
+      const startIndex = (pageNum - 1) * limit;
+      const endIndex = startIndex + limit;
+      fetchedEmails = fetchedEmails.slice(startIndex, endIndex);
 
       if (append) {
         setEmails(prev => [...prev, ...fetchedEmails]);
@@ -73,6 +99,38 @@ export function useEmails(options: UseEmailsOptions = {}): UseEmailsReturn {
       setLoading(false);
     }
   }, [userId, status, priority, limit]);
+
+  const syncEmails = useCallback(async () => {
+    if (!userId) return;
+
+    try {
+      setLoading(true);
+      setError(null);
+
+      // Sync emails from Gmail
+      const syncResult = await emailSyncService.syncEmails({
+        userId,
+        maxResults: 100,
+        forceFullSync: false
+      });
+
+      if (!syncResult.success) {
+        setError(`Sync failed: ${syncResult.errors.join(', ')}`);
+      }
+
+      // Refresh emails after sync
+      await fetchEmails(1, false);
+      
+      // Update sync status
+      const status = await emailSyncService.getSyncStatus(userId);
+      setSyncStatus(status);
+
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to sync emails');
+    } finally {
+      setLoading(false);
+    }
+  }, [userId, fetchEmails]);
 
   const refresh = useCallback(async () => {
     await fetchEmails(1, false);
@@ -150,6 +208,20 @@ export function useEmails(options: UseEmailsOptions = {}): UseEmailsReturn {
     fetchEmails();
   }, [fetchEmails]);
 
+  // Get initial sync status
+  useEffect(() => {
+    if (userId) {
+      emailSyncService.getSyncStatus(userId).then(setSyncStatus);
+    }
+  }, [userId]);
+
+  // Auto-sync if enabled
+  useEffect(() => {
+    if (autoSync && userId) {
+      syncEmails();
+    }
+  }, [autoSync, userId, syncEmails]);
+
   // Auto-refresh
   useEffect(() => {
     if (refreshInterval <= 0) return;
@@ -163,11 +235,13 @@ export function useEmails(options: UseEmailsOptions = {}): UseEmailsReturn {
     loading,
     error,
     refresh,
+    syncEmails,
     markAsRead,
     markAsUnread,
     deleteEmail: deleteEmailHandler,
     updatePriority,
     hasMore,
     loadMore,
+    syncStatus,
   };
 } 

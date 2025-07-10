@@ -15,6 +15,7 @@ interface UseRealtimeDataOptions {
   enabled?: boolean;
   reconnectInterval?: number;
   maxReconnectAttempts?: number;
+  subscriptions?: string[];
 }
 
 interface UseRealtimeDataReturn {
@@ -23,11 +24,13 @@ interface UseRealtimeDataReturn {
   sendMessage: (message: any) => void;
   reconnect: () => void;
   clearUpdates: () => void;
+  subscribe: (channels: string[]) => void;
+  unsubscribe: (channels: string[]) => void;
   error: string | null;
 }
 
 export function useRealtimeData(options: UseRealtimeDataOptions = {}): UseRealtimeDataReturn {
-  const { userId } = useAuth();
+  const { userId, getToken } = useAuth();
   const [connected, setConnected] = useState(false);
   const [updates, setUpdates] = useState<RealtimeUpdate[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -39,16 +42,24 @@ export function useRealtimeData(options: UseRealtimeDataOptions = {}): UseRealti
   const { 
     enabled = true, 
     reconnectInterval = 5000, 
-    maxReconnectAttempts = 5 
+    maxReconnectAttempts = 5,
+    subscriptions = ['email', 'slack']
   } = options;
 
-  const connect = useCallback(() => {
+  const connect = useCallback(async () => {
     if (!userId || !enabled) return;
 
     try {
+      // Get authentication token
+      const token = await getToken();
+      if (!token) {
+        setError('No authentication token available');
+        return;
+      }
+
       // Create WebSocket connection to our real-time endpoint
       const wsUrl = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:3001';
-      const ws = new WebSocket(`${wsUrl}/realtime?userId=${userId}`);
+      const ws = new WebSocket(`${wsUrl}?token=${token}&userId=${userId}`);
       
       wsRef.current = ws;
 
@@ -57,12 +68,37 @@ export function useRealtimeData(options: UseRealtimeDataOptions = {}): UseRealti
         setError(null);
         setReconnectAttempts(0);
         console.log('WebSocket connected');
+        
+        // Subscribe to channels
+        if (subscriptions.length > 0) {
+          ws.send(JSON.stringify({
+            type: 'subscribe',
+            channels: subscriptions
+          }));
+        }
       };
 
       ws.onmessage = (event) => {
         try {
-          const update: RealtimeUpdate = JSON.parse(event.data);
-          setUpdates(prev => [update, ...prev.slice(0, 99)]); // Keep last 100 updates
+          const message = JSON.parse(event.data);
+          
+          switch (message.type) {
+            case 'connection_established':
+              console.log('Connection established');
+              break;
+            case 'subscription_confirmed':
+              console.log('Subscribed to channels:', message.channels);
+              break;
+            case 'update':
+              const update: RealtimeUpdate = message.data;
+              setUpdates(prev => [update, ...prev.slice(0, 99)]); // Keep last 100 updates
+              break;
+            case 'pong':
+              // Handle ping/pong for connection health
+              break;
+            default:
+              console.log('Received message:', message);
+          }
         } catch (err) {
           console.error('Failed to parse WebSocket message:', err);
         }
@@ -91,7 +127,7 @@ export function useRealtimeData(options: UseRealtimeDataOptions = {}): UseRealti
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to connect to WebSocket');
     }
-  }, [userId, enabled, reconnectInterval, maxReconnectAttempts, reconnectAttempts]);
+  }, [userId, enabled, reconnectInterval, maxReconnectAttempts, reconnectAttempts, getToken, subscriptions]);
 
   const disconnect = useCallback(() => {
     if (wsRef.current) {
@@ -114,6 +150,20 @@ export function useRealtimeData(options: UseRealtimeDataOptions = {}): UseRealti
       setError('WebSocket not connected');
     }
   }, []);
+
+  const subscribe = useCallback((channels: string[]) => {
+    sendMessage({
+      type: 'subscribe',
+      channels
+    });
+  }, [sendMessage]);
+
+  const unsubscribe = useCallback((channels: string[]) => {
+    sendMessage({
+      type: 'unsubscribe',
+      channels
+    });
+  }, [sendMessage]);
 
   const reconnect = useCallback(() => {
     disconnect();
@@ -149,6 +199,8 @@ export function useRealtimeData(options: UseRealtimeDataOptions = {}): UseRealti
     sendMessage,
     reconnect,
     clearUpdates,
+    subscribe,
+    unsubscribe,
     error,
   };
 } 

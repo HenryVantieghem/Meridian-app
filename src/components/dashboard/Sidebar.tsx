@@ -1,192 +1,204 @@
 'use client';
 
 import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Typography } from '@/components/ui/typography';
 import { Button } from '@/components/ui/button';
-import { 
-  Mail, 
-  Users, 
-  FolderOpen, 
-  Inbox,
-  Settings,
-  LogOut,
-  Bell,
-  Search,
-  X
-} from 'lucide-react';
+import { Typography } from '@/components/ui/typography';
+import { Badge } from '@/components/ui/badge';
+import { Card } from '@/components/ui/card';
+import { Mail, MessageSquare, Settings, RefreshCw, AlertCircle } from 'lucide-react';
 
 interface SidebarProps {
-  onClose?: () => void;
+  activeTab: 'emails' | 'messages';
+  onTabChange: (tab: 'emails' | 'messages') => void;
+  selectedWorkspace: string;
+  workspaces: Array<{
+    id: string;
+    name: string;
+    isActive: boolean;
+  }>;
+  onWorkspaceChange: (workspaceId: string) => void;
+  syncStatus: {
+    lastSync: Date | null;
+    emailsCount: number;
+    isActive: boolean;
+  };
+  onSyncEmails: () => void;
 }
 
-interface NavigationItem {
-  id: string;
-  label: string;
-  icon: React.ComponentType<{ className?: string }>;
-  count?: number;
-  active?: boolean;
-}
+export function Sidebar({
+  activeTab,
+  onTabChange,
+  selectedWorkspace,
+  workspaces,
+  onWorkspaceChange,
+  syncStatus,
+  onSyncEmails,
+}: SidebarProps) {
+  const [collapsed, setCollapsed] = useState(false);
 
-const navigationItems: NavigationItem[] = [
-  { id: 'digest', label: 'Daily Digest', icon: Mail, count: 12, active: true },
-  { id: 'people', label: 'People', icon: Users, count: 8 },
-  { id: 'projects', label: 'Projects', icon: FolderOpen, count: 5 },
-  { id: 'all', label: 'All Emails', icon: Inbox, count: 156 }
-];
-
-export function Sidebar({ onClose }: SidebarProps) {
-  const [activeItem, setActiveItem] = useState('digest');
-
-  const handleNavigationClick = (itemId: string) => {
-    setActiveItem(itemId);
+  const formatLastSync = (date: Date | null) => {
+    if (!date) return 'Never';
+    const now = new Date();
+    const diff = now.getTime() - date.getTime();
+    const minutes = Math.floor(diff / 60000);
+    if (minutes < 1) return 'Just now';
+    if (minutes < 60) return `${minutes}m ago`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours}h ago`;
+    const days = Math.floor(hours / 24);
+    return `${days}d ago`;
   };
 
   return (
-    <div className="h-full flex flex-col bg-white">
+    <div className={`bg-white border-r border-gray-200 flex flex-col ${collapsed ? 'w-16' : 'w-64'}`}>
       {/* Header */}
-      <div className="p-6 border-b border-gray-200">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-primary-600 rounded-lg flex items-center justify-center">
-              <Typography variant="body" className="text-white font-bold">
-                M
-              </Typography>
-            </div>
-            <Typography variant="h3" className="text-xl font-bold text-gray-900">
+      <div className="p-4 border-b border-gray-200">
+        <div className="flex items-center justify-between">
+          {!collapsed && (
+            <Typography variant="h2" className="text-lg font-bold text-black">
               Meridian
             </Typography>
-          </div>
-          
-          {onClose && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onClose}
-              className="lg:hidden"
-            >
-              <X className="w-5 h-5" />
-            </Button>
           )}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setCollapsed(!collapsed)}
+            className="ml-auto"
+          >
+            {collapsed ? '→' : '←'}
+          </Button>
         </div>
-
-        {/* User Greeting */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-          className="flex items-center space-x-3"
-        >
-          <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center">
-            <Typography variant="body" className="text-white font-semibold text-lg">
-              S
-            </Typography>
-          </div>
-          <div>
-            <Typography variant="body" className="font-semibold text-gray-900">
-              Good morning, Sarah
-            </Typography>
-            <Typography variant="body" className="text-sm text-gray-600">
-              CEO at TechFlow Inc.
-            </Typography>
-          </div>
-        </motion.div>
       </div>
 
       {/* Navigation */}
-      <div className="flex-1 p-4">
-        <nav className="space-y-2">
-          {navigationItems.map((item, index) => (
-            <motion.div
-              key={item.id}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.3, delay: index * 0.1 }}
-            >
-              <Button
-                variant={activeItem === item.id ? 'default' : 'ghost'}
-                className={`w-full justify-start space-x-3 h-12 ${
-                  activeItem === item.id 
-                    ? 'bg-primary-600 text-white hover:bg-primary-700' 
-                    : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
-                }`}
-                onClick={() => handleNavigationClick(item.id)}
-              >
-                <item.icon className="w-5 h-5" />
-                <span className="flex-1 text-left">{item.label}</span>
-                {item.count && (
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    activeItem === item.id 
-                      ? 'bg-white/20 text-white' 
-                      : 'bg-gray-100 text-gray-600'
-                  }`}>
-                    {item.count}
-                  </span>
+      <nav className="flex-1 p-4">
+        <div className="space-y-2">
+          <Button
+            variant={activeTab === 'emails' ? 'default' : 'ghost'}
+            className="w-full justify-start"
+            onClick={() => onTabChange('emails')}
+          >
+            <Mail className="h-4 w-4 mr-3" />
+            {!collapsed && (
+              <>
+                <span>Emails</span>
+                {syncStatus.emailsCount > 0 && (
+                  <Badge className="ml-auto">
+                    {syncStatus.emailsCount}
+                  </Badge>
                 )}
+              </>
+            )}
+          </Button>
+
+          <Button
+            variant={activeTab === 'messages' ? 'default' : 'ghost'}
+            className="w-full justify-start"
+            onClick={() => onTabChange('messages')}
+          >
+            <MessageSquare className="h-4 w-4 mr-3" />
+            {!collapsed && (
+              <>
+                <span>Messages</span>
+                {workspaces.length > 0 && (
+                  <Badge className="ml-auto">
+                    {workspaces.length}
+                  </Badge>
+                )}
+              </>
+            )}
+          </Button>
+        </div>
+
+        {/* Sync Status */}
+        {!collapsed && activeTab === 'emails' && (
+          <Card className="mt-6 p-4">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <Typography variant="body" className="font-medium">
+                  Email Sync
+                </Typography>
+                <div className={`w-2 h-2 rounded-full ${syncStatus.isActive ? 'bg-green-500' : 'bg-red-500'}`} />
+              </div>
+              
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-600">Last sync:</span>
+                  <span className="text-gray-900">{formatLastSync(syncStatus.lastSync)}</span>
+                </div>
+                
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-600">Emails:</span>
+                  <span className="text-gray-900">{syncStatus.emailsCount}</span>
+                </div>
+              </div>
+
+              <Button
+                onClick={onSyncEmails}
+                variant="outline"
+                size="sm"
+                className="w-full"
+              >
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Sync Now
               </Button>
-            </motion.div>
-          ))}
-        </nav>
-      </div>
+            </div>
+          </Card>
+        )}
 
-      {/* Bottom Actions */}
-      <div className="p-4 border-t border-gray-200 space-y-2">
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.4 }}
-        >
-          <Button
-            variant="ghost"
-            className="w-full justify-start space-x-3 h-12 text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-          >
-            <Search className="w-5 h-5" />
-            <span>Search</span>
-          </Button>
-        </motion.div>
+        {/* Workspace Selection */}
+        {!collapsed && activeTab === 'messages' && workspaces.length > 0 && (
+          <Card className="mt-6 p-4">
+            <Typography variant="body" className="font-medium mb-3">
+              Workspaces
+            </Typography>
+            <div className="space-y-2">
+              {workspaces.map((workspace) => (
+                <Button
+                  key={workspace.id}
+                  variant={selectedWorkspace === workspace.id ? 'default' : 'ghost'}
+                  size="sm"
+                  className="w-full justify-start"
+                  onClick={() => onWorkspaceChange(workspace.id)}
+                >
+                  <div className={`w-2 h-2 rounded-full mr-2 ${workspace.isActive ? 'bg-green-500' : 'bg-gray-300'}`} />
+                  <span className="truncate">{workspace.name}</span>
+                </Button>
+              ))}
+            </div>
+          </Card>
+        )}
 
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.5 }}
-        >
-          <Button
-            variant="ghost"
-            className="w-full justify-start space-x-3 h-12 text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-          >
-            <Bell className="w-5 h-5" />
-            <span>Notifications</span>
-          </Button>
-        </motion.div>
+        {/* Connection Status */}
+        {!collapsed && (
+          <Card className="mt-6 p-4">
+            <Typography variant="body" className="font-medium mb-3">
+              Connections
+            </Typography>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600">Gmail</span>
+                <div className={`w-2 h-2 rounded-full ${syncStatus.isActive ? 'bg-green-500' : 'bg-red-500'}`} />
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600">Slack</span>
+                <div className={`w-2 h-2 rounded-full ${workspaces.length > 0 ? 'bg-green-500' : 'bg-red-500'}`} />
+              </div>
+            </div>
+          </Card>
+        )}
+      </nav>
 
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.6 }}
+      {/* Footer */}
+      <div className="p-4 border-t border-gray-200">
+        <Button
+          variant="ghost"
+          className="w-full justify-start"
+          onClick={() => {/* TODO: Navigate to settings */}}
         >
-          <Button
-            variant="ghost"
-            className="w-full justify-start space-x-3 h-12 text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-          >
-            <Settings className="w-5 h-5" />
-            <span>Settings</span>
-          </Button>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.7 }}
-          className="pt-2 border-t border-gray-200"
-        >
-          <Button
-            variant="ghost"
-            className="w-full justify-start space-x-3 h-12 text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-          >
-            <LogOut className="w-5 h-5" />
-            <span>Sign Out</span>
-          </Button>
-        </motion.div>
+          <Settings className="h-4 w-4 mr-3" />
+          {!collapsed && <span>Settings</span>}
+        </Button>
       </div>
     </div>
   );
