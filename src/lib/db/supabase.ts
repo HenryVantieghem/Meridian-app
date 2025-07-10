@@ -1,0 +1,85 @@
+import { createClient } from '@supabase/supabase-js';
+import { Database } from '@/types';
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error('Missing Supabase environment variables');
+}
+
+// Client for browser usage (with RLS)
+export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    autoRefreshToken: true,
+    persistSession: true,
+    detectSessionInUrl: true,
+  },
+  global: {
+    headers: {
+      'x-application-name': 'meridian-app',
+    },
+  },
+});
+
+// Admin client for server-side operations (bypasses RLS)
+export const supabaseAdmin = createClient<Database>(supabaseUrl, supabaseServiceKey, {
+  auth: {
+    autoRefreshToken: false,
+    persistSession: false,
+  },
+  global: {
+    headers: {
+      'x-application-name': 'meridian-app-admin',
+    },
+  },
+});
+
+// Utility function to handle database errors
+export function handleDatabaseError(error: any): never {
+  console.error('Database error:', error);
+  
+  if (error.code === '23505') {
+    throw new Error('Duplicate entry found');
+  }
+  
+  if (error.code === '23503') {
+    throw new Error('Referenced record not found');
+  }
+  
+  if (error.code === '42P01') {
+    throw new Error('Table not found');
+  }
+  
+  throw new Error(error.message || 'Database operation failed');
+}
+
+// Utility function to retry database operations
+export async function retryDatabaseOperation<T>(
+  operation: () => Promise<{ data: T | null; error: any }>,
+  maxRetries = 3,
+  delay = 1000
+): Promise<{ data: T | null; error: any }> {
+  let lastError: any;
+  
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      return await operation();
+    } catch (error: any) {
+      lastError = error;
+      
+      // Don't retry on certain errors
+      if (error.code === '23505' || error.code === '23503' || error.code === '42P01') {
+        throw error;
+      }
+      
+      // Wait before retrying
+      if (i < maxRetries - 1) {
+        await new Promise(resolve => setTimeout(resolve, delay * Math.pow(2, i)));
+      }
+    }
+  }
+  
+  throw lastError;
+} 

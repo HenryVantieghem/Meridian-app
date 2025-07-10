@@ -1,0 +1,382 @@
+# MERIDIAN AI APPLICATION - PRODUCTION-READY DEVELOPMENT RULES
+# An AI-powered productivity platform that serves as an AI Chief of Staff
+
+## GOLD STANDARD FILES (Reference These Patterns)
+- UI Components: @/components/ui/button.tsx
+- Page Components: @/app/(dashboard)/dashboard/page.tsx  
+- API Routes: @/app/api/emails/analyze/route.ts
+- Database Operations: @/lib/db/users.ts
+- AI Integration: @/lib/ai/email-analyzer.ts
+- Authentication: @/lib/auth/clerk-config.ts
+- Slack Integration: @/lib/integrations/slack.ts
+- Gmail Integration: @/lib/integrations/gmail.ts
+- Outlook Integration: @/lib/integrations/outlook.ts
+
+## PROJECT OVERVIEW
+You are building "Meridian" - a revolutionary AI-powered productivity platform that transforms communication chaos into clarity through intelligent email management, AI-powered prioritization, and elegant UX design following Dieter Rams principles.
+
+## CORE TECHNICAL STACK
+- **Frontend**: Next.js 15 (App Router), React 18, TypeScript 5.0+
+- **Styling**: Tailwind CSS with custom design system
+- **Authentication**: Clerk with JWT templates for Supabase
+- **Database**: Supabase (PostgreSQL) with Row Level Security
+- **AI**: OpenAI GPT-4o for email analysis and generation
+- **Payments**: Stripe for subscription management
+- **Email Service**: Resend for transactional emails
+- **Animations**: Framer Motion for micro-interactions
+- **Forms**: React Hook Form with Zod validation
+- **UI Components**: Radix UI primitives with custom styling
+- **Deployment**: Vercel with edge functions
+- **Communication APIs**: Gmail API, Outlook Graph API, Slack API
+- **Real-time**: Slack webhooks, Gmail push notifications, Outlook webhooks
+
+## DESIGN PHILOSOPHY & PRINCIPLES
+- **Dieter Rams Principles**: "Less, but better" - every element must serve a purpose
+- **Calm Technology**: Inform without demanding attention, stay in periphery until needed
+- **Swiss Design Minimalism**: Clean, precise, functional with luxury touches
+- **Color System**: White (#FFFFFF) backgrounds, Black (#000000) text, Gold (#D4AF37) accents
+- **Typography**: Helvetica Neue font family throughout
+- **Grid System**: 8px base unit for consistent spacing (8, 16, 24, 32, 48, 64)
+- **Micro-interactions**: Purposeful, delightful, 300-500ms duration
+- **Mobile-first**: Progressive enhancement for all screen sizes
+
+## PROJECT STRUCTURE
+meridian-app/ ├── app/ │ ├── (auth)/ │ │ ├── sign-in/page.tsx │ │ └── sign-up/page.tsx │ ├── (dashboard)/ │ │ ├── dashboard/page.tsx │ │ ├── settings/page.tsx │ │ └── profile/page.tsx │ ├── (marketing)/ │ │ ├── page.tsx (landing) │ │ └── pricing/page.tsx │ ├── onboarding/ │ │ ├── page.tsx │ │ ├── persona/page.tsx │ │ ├── preferences/page.tsx │ │ └── preview/page.tsx │ ├── api/ │ │ ├── auth/ │ │ ├── emails/ │ │ ├── ai/ │ │ ├── stripe/ │ │ ├── slack/ │ │ └── webhooks/ │ ├── globals.css │ ├── layout.tsx │ └── middleware.ts ├── components/ │ ├── ui/ (reusable design system) │ ├── auth/ │ ├── dashboard/ │ ├── onboarding/ │ ├── marketing/ │ ├── email/ │ ├── slack/ │ └── ai/ ├── lib/ │ ├── auth/ │ ├── db/ │ ├── ai/ │ ├── stripe/ │ ├── email/ │ ├── integrations/ │ │ ├── slack.ts │ │ ├── gmail.ts │ │ └── outlook.ts │ ├── validations/ │ └── utils/ ├── hooks/ ├── types/ ├── utils/ └── .cursorrules
+
+## COMMUNICATION PLATFORM INTEGRATIONS
+
+### Email Platforms
+- **Gmail API**: Full email access, real-time notifications, OAuth2 authentication
+- **Outlook Graph API**: Email access, calendar integration, Microsoft 365 support
+
+### Messaging Platforms
+- **Slack API**: Channel messages, direct messages, bot integration, real-time updates
+- **Real-time Updates**: Webhook subscriptions for live message sync across all platforms
+
+### Integration Patterns
+- **Unified message interface** across all platforms (email, Slack, etc.)
+- **Priority scoring** across email and Slack messages
+- **Cross-platform thread tracking** and context preservation
+- **Unified search** across all communication channels
+- **AI analysis** working seamlessly across all platforms
+- **Cross-platform relationship detection** and mapping
+
+## CODING STANDARDS & BEST PRACTICES
+
+### TypeScript Requirements
+- Use strict mode with proper type definitions
+- Create interfaces for all data structures
+- Use proper generic types and utility types
+- Implement proper error handling with Result<T, E> pattern
+- Use discriminated unions for state management
+
+### React Best Practices
+- Use Server Components by default, Client Components only when needed
+- Implement proper error boundaries for all major sections
+- Use React.memo() and useMemo() for expensive operations
+- Implement proper loading states with React Suspense
+- Use React Hook Form with Zod for all form handling
+
+### Next.js App Router Patterns
+- Use proper metadata API for SEO optimization
+- Implement proper page hierarchy with layouts
+- Use Server Actions for mutations
+- Implement proper caching strategies
+- Use middleware for authentication and redirects
+
+### Database & API Design
+- Use Supabase RLS policies for all data access
+- Implement proper error handling in API routes
+- Use connection pooling and query optimization
+- Implement proper validation with Zod schemas
+- Use proper HTTP status codes and error messages
+
+### AI Integration Patterns
+- Implement proper OpenAI API rate limiting
+- Use streaming responses where appropriate
+- Implement confidence scoring for all AI outputs
+- Add proper fallback mechanisms for AI failures
+- Log all AI interactions for improvement
+
+### Integration Patterns
+- **Unified API design** across all communication platforms
+- **Consistent error handling** for all external APIs
+- **Rate limiting** and quota management for all integrations
+- **Real-time sync** capabilities across platforms
+- **Fallback mechanisms** for API failures
+
+## COMPONENT DEVELOPMENT RULES
+
+### UI Components (@/components/ui/)
+- Use Radix UI primitives as foundation
+- Implement class-variance-authority for variants
+- Include proper TypeScript interfaces
+- Add comprehensive accessibility attributes
+- Use consistent naming: Button, Input, Card, Modal, etc.
+- Include proper hover/focus states with smooth transitions
+
+### Business Components
+- Follow single responsibility principle
+- Implement proper prop interfaces
+- Use proper state management patterns
+- Include loading and error states
+- Add proper testing structure
+
+### Integration Components
+- **Slack Components**: @/components/slack/MessageCard.tsx, ChannelSelector.tsx
+- **Email Components**: @/components/email/EmailCard.tsx, EmailList.tsx
+- **Unified Components**: @/components/unified/MessageFeed.tsx, PlatformFilter.tsx
+
+### Animation Guidelines
+- Use Framer Motion for complex animations
+- Keep animations under 500ms for responsiveness
+- Implement proper reduced motion support
+- Use spring physics for natural movement
+- Add proper gesture support for mobile
+
+## FEATURE IMPLEMENTATION PRIORITIES
+
+### Phase 1: Core Foundation
+1. Authentication system with Clerk
+2. Database setup with Supabase RLS
+3. Basic dashboard layout (3-panel design)
+4. Design system implementation
+5. Email fetching infrastructure
+
+### Phase 2: AI Integration
+1. OpenAI integration for email analysis
+2. Email summarization with confidence scoring
+3. Priority algorithm implementation
+4. Reply generation system
+5. User feedback loop
+
+### Phase 3: Communication Integrations
+1. Gmail API integration with OAuth2
+2. Outlook Graph API integration
+3. Slack API integration with real-time updates
+4. Unified message interface
+5. Cross-platform AI analysis
+
+### Phase 4: User Experience
+1. Onboarding flow (3-step process)
+2. Micro-interactions and animations
+3. Mobile responsive design
+4. Performance optimization
+5. Error handling and edge cases
+
+### Phase 5: Business Features
+1. Stripe payment integration
+2. Email automation features
+3. Advanced AI features
+4. Analytics and reporting
+5. Enterprise features
+
+## SPECIFIC IMPLEMENTATION RULES
+
+### Authentication (@/lib/auth/)
+- Use Clerk middleware for route protection
+- Implement proper JWT templates for Supabase
+- Add proper error handling for auth failures
+- Use proper session management
+- Implement user profile management
+
+### Database (@/lib/db/)
+- Use proper RLS policies for data security
+- Implement proper connection pooling
+- Add proper error handling and retries
+- Use proper TypeScript types for all queries
+- Implement proper caching strategies
+
+### AI Integration (@/lib/ai/)
+- Use OpenAI GPT-4o for email analysis
+- Implement proper rate limiting and quotas
+- Add confidence scoring for all outputs
+- Use proper error handling and fallbacks
+- Implement user feedback integration
+
+### Email Processing (@/lib/email/)
+- Support Gmail and Outlook APIs
+- Implement proper OAuth2 flows
+- Add proper error handling for API failures
+- Use proper rate limiting
+- Implement real-time sync capabilities
+
+### Slack Integration (@/lib/integrations/slack.ts)
+- **Slack Web API client** setup with proper error handling
+- **OAuth2 authentication flow** for workspace connections
+- **Real-time messaging** with Socket Mode for live updates
+- **Channel and DM message fetching** with pagination
+- **Message posting and reactions** with proper permissions
+- **User and workspace information** retrieval
+- **Webhook event handling** for real-time updates
+
+### Gmail Integration (@/lib/integrations/gmail.ts)
+- **Gmail API client** setup with OAuth2
+- **Email fetching** with proper pagination and filtering
+- **Real-time notifications** using Gmail push notifications
+- **Email composition** and sending capabilities
+- **Label and folder management**
+- **Attachment handling** and processing
+
+### Outlook Integration (@/lib/integrations/outlook.ts)
+- **Microsoft Graph API client** setup
+- **Email access** with proper authentication
+- **Calendar integration** for meeting context
+- **Microsoft 365** support for enterprise features
+- **Real-time sync** using webhooks
+- **Contact and group management**
+
+### Payments (@/lib/stripe/)
+- Use Stripe Checkout for subscriptions
+- Implement proper webhook handling
+- Add proper error handling for payments
+- Use proper subscription management
+- Implement usage-based billing
+
+## PERFORMANCE REQUIREMENTS
+- **Page Load Time**: < 2 seconds (LCP)
+- **First Contentful Paint**: < 1.2 seconds
+- **Time to Interactive**: < 3 seconds
+- **Bundle Size**: < 500KB compressed
+- **API Response Time**: < 500ms average
+- **Database Query Time**: < 100ms average
+- **Real-time Updates**: < 100ms latency
+
+## SECURITY REQUIREMENTS
+- Implement proper input validation with Zod
+- Use parameterized queries for all database operations
+- Add proper CSRF protection
+- Implement proper rate limiting
+- Use secure headers and CSP policies
+- Add proper error logging without exposing sensitive data
+- **OAuth2 security** for all platform integrations
+- **Webhook signature verification** for all incoming webhooks
+- **API key rotation** and secure storage
+
+## ACCESSIBILITY REQUIREMENTS
+- Implement proper ARIA labels and roles
+- Ensure keyboard navigation for all interactive elements
+- Maintain proper color contrast (4.5:1 minimum)
+- Add proper screen reader support
+- Implement proper focus management
+- Use semantic HTML elements
+
+## TESTING REQUIREMENTS
+- Unit tests for all utility functions
+- Integration tests for API endpoints
+- Component tests with React Testing Library
+- E2E tests for critical user flows
+- Performance testing with Lighthouse
+- Accessibility testing with axe-core
+- **AI model testing** for accuracy and performance
+- **Integration testing** for all platform APIs
+- **Load testing** for real-time features
+
+## DEPLOYMENT REQUIREMENTS
+- Use Vercel for hosting with edge functions
+- Implement proper environment variable management
+- Use proper CI/CD pipelines
+- Add proper monitoring and logging
+- Implement proper backup strategies
+- Use proper CDN configuration
+- **99.9% uptime** for core features
+- **Automatic scaling** for real-time features
+- **Geographic distribution** for global users
+
+## COMMON PATTERNS TO AVOID
+- Don't use @codebase without specific file references
+- Don't rewrite existing methods without checking @/lib/utils.ts first
+- Don't create new components without checking @/components/ui/ first
+- Don't implement features without proper error handling
+- Don't skip accessibility considerations
+- Don't ignore performance implications
+- **Don't hardcode API keys** or sensitive credentials
+- **Don't skip webhook verification** for security
+- **Don't ignore rate limits** for external APIs
+
+## CONTEXT MANAGEMENT RULES
+- Always specify relevant files with @ references
+- Use specific file paths instead of broad directory references
+- Reference gold standard files for consistency
+- Include relevant documentation with @docs
+- Use proper context for AI model selection
+- **Reference integration patterns** for platform-specific code
+
+## SUCCESS METRICS
+- User onboarding completion rate > 72%
+- Email processing accuracy > 95%
+- User satisfaction score > 4.5/5
+- Page load performance > 90 Lighthouse score
+- Zero critical security vulnerabilities
+- 99.9% uptime for core features
+- **Cross-platform sync accuracy** > 98%
+- **Real-time update latency** < 100ms
+- **API integration success rate** > 99%
+
+## ENVIRONMENT VARIABLES REQUIREMENTS
+```env
+# Authentication (Clerk)
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_your_key_here
+CLERK_SECRET_KEY=sk_test_your_secret_here
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/onboarding
+NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/onboarding
+
+# Database (Supabase)
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key_here
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key_here
+DATABASE_URL=postgresql://postgres:password@localhost:5432/meridian
+
+# AI (OpenAI)
+OPENAI_API_KEY=sk-your_openai_key_here
+OPENAI_ORG_ID=org-your_org_id_here
+
+# Payments (Stripe)
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_your_stripe_key
+STRIPE_SECRET_KEY=sk_test_your_stripe_secret
+STRIPE_WEBHOOK_SECRET=whsec_your_webhook_secret
+
+# Email Service (Resend)
+RESEND_API_KEY=re_your_resend_key
+
+# Google APIs (Gmail, Calendar, Drive)
+GOOGLE_CLIENT_ID=your_google_client_id.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+GOOGLE_REDIRECT_URI=http://localhost:3000/auth/google/callback
+GOOGLE_REFRESH_TOKEN=your_google_refresh_token
+GOOGLE_ACCESS_TOKEN=your_google_access_token
+
+# Microsoft APIs (Outlook, Office 365)
+MICROSOFT_CLIENT_ID=your_microsoft_client_id
+MICROSOFT_CLIENT_SECRET=your_microsoft_client_secret
+MICROSOFT_REDIRECT_URI=http://localhost:3000/auth/microsoft/callback
+MICROSOFT_TENANT_ID=your_microsoft_tenant_id
+
+# Slack API
+SLACK_CLIENT_ID=your_slack_client_id
+SLACK_CLIENT_SECRET=your_slack_client_secret
+SLACK_SIGNING_SECRET=your_slack_signing_secret
+SLACK_BOT_TOKEN=xoxb-your-slack-bot-token
+SLACK_USER_TOKEN=xoxp-your-slack-user-token
+SLACK_REDIRECT_URI=http://localhost:3000/auth/slack/callback
+SLACK_WEBHOOK_URL=https://hooks.slack.com/services/your/webhook/url
+
+# App Configuration
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+NEXT_PUBLIC_APP_NAME=Meridian
+NEXTAUTH_SECRET=your_nextauth_secret_for_oauth
+NEXTAUTH_URL=http://localhost:3000
+
+# Webhook URLs for development
+WEBHOOK_BASE_URL=http://localhost:3000/api/webhooks
+
+# Monitoring and Logging
+LOGGING_WEBHOOK_URL=your_logging_webhook_url
+ERROR_TRACKING_WEBHOOK_URL=your_error_tracking_webhook_url
+ANALYTICS_WEBHOOK_URL=your_analytics_webhook_url
+SECURITY_WEBHOOK_URL=your_security_webhook_url
+```
+
+Remember: Every decision should prioritize user experience, performance, and maintainability. When in doubt, reference the gold standard files and follow the established patterns. All integrations must follow the same design principles and maintain consistency across platforms.
