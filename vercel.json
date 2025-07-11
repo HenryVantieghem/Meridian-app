@@ -108,7 +108,7 @@
     "STRIPE_SECRET_KEY": "sk_test_your_stripe_secret_key_here",
     "STRIPE_WEBHOOK_SECRET": "whsec_your_stripe_webhook_secret_here",
     "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY": "pk_test_your_stripe_publishable_key_here",
-    "RESEND_API_KEY": "re_your_resend_api_key_here",
+    "RESEND_API_KEY": "re_test_validkey1234567890",
     "SLACK_CLIENT_ID": "9139741575408.9168961368182",
     "SLACK_CLIENT_SECRET": "fc09de15c806b45740b7e6087723a39f",
     "SLACK_SIGNING_SECRET": "your_slack_signing_secret_here",
