@@ -184,7 +184,7 @@ export const securityConfig = {
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com",
     "img-src 'self' data: https:",
-    "connect-src 'self' https://api.openai.com https://api.stripe.com https://api.resend.com https://api.clerk.dev https://*.supabase.co https://slack.com",
+    "connect-src 'self' https://api.openai.com https://api.stripe.com https://api.clerk.dev https://*.supabase.co https://slack.com",
     "frame-src https://js.stripe.com https://checkout.stripe.com",
     "object-src 'none'",
     "base-uri 'self'",

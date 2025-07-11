@@ -222,7 +222,7 @@ export const withSecurityHeaders = (
     // Content Security Policy
     response.headers.set(
       'Content-Security-Policy',
-      "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.stripe.com https://checkout.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.openai.com https://api.stripe.com https://api.resend.com https://api.slack.com https://www.googleapis.com https://graph.microsoft.com; frame-src https://js.stripe.com https://checkout.stripe.com;"
+      "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.stripe.com https://checkout.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.openai.com https://api.stripe.com https://api.slack.com https://www.googleapis.com https://graph.microsoft.com; frame-src https://js.stripe.com https://checkout.stripe.com;"
     );
 
     return response;

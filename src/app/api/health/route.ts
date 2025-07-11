@@ -120,26 +120,14 @@ async function checkEmail(): Promise<HealthCheck> {
   const startTime = Date.now();
   
   try {
-    const response = await fetch('https://api.resend.com/domains', {
-      headers: {
-        'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
-      },
-    });
-
+    // Email service disabled - Resend removed
     const responseTime = Date.now() - startTime;
 
-    if (!response.ok) {
-      return {
-        status: 'degraded',
-        responseTime,
-        error: `Resend API returned ${response.status}`,
-      };
-    }
-
     return {
-      status: 'healthy',
+      status: 'degraded',
       responseTime,
-      details: { available: true },
+      error: 'Email service disabled - Resend removed',
+      details: { available: false },
     };
   } catch (error) {
     return {

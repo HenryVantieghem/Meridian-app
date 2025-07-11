@@ -1,6 +1,39 @@
-import { z } from 'zod';
-import { sendEmail, EmailTracking, EMAIL_TYPES, EMAIL_PRIORITY } from './resend';
-import { renderEmailTemplate } from './resend';
+// Email automation system - Resend removed
+import { Email } from './index';
+
+// Email types and priorities
+export const EMAIL_TYPES = {
+  WELCOME: 'welcome',
+  DAILY_DIGEST: 'daily_digest',
+  WEEKLY_SUMMARY: 'weekly_summary',
+  NOTIFICATION: 'notification',
+  ALERT: 'alert',
+  REMINDER: 'reminder',
+  CONFIRMATION: 'confirmation',
+  RESET_PASSWORD: 'reset_password',
+  VERIFICATION: 'verification',
+  BILLING: 'billing',
+  SUPPORT: 'support',
+  MARKETING: 'marketing',
+} as const;
+
+export const EMAIL_PRIORITY = {
+  HIGH: 'high',
+  NORMAL: 'normal',
+  LOW: 'low',
+} as const;
+
+// Stub email sending function
+export const sendEmail = async (emailData: Partial<Email>): Promise<void> => {
+  console.log('Email sending disabled - Resend removed:', emailData);
+  // Email sending is disabled since Resend was removed
+};
+
+// Stub email template rendering
+export const renderEmailTemplate = async (template: string, data: any): Promise<string> => {
+  console.log('Email template rendering disabled - Resend removed:', template, data);
+  return `<p>Email template rendering disabled - Resend removed</p>`;
+};
 
 // Email automation types
 export const AUTOMATION_TRIGGERS = {
@@ -23,35 +56,6 @@ export const AUTOMATION_SCHEDULES = {
   TRIAL_REMINDER: 'trial_reminder',
   RE_ENGAGEMENT: 're_engagement',
 } as const;
-
-// Email automation schemas
-const automationTriggerSchema = z.object({
-  userId: z.string(),
-  trigger: z.enum(Object.values(AUTOMATION_TRIGGERS) as [string, ...string[]]),
-  data: z.record(z.any()).optional(),
-  timestamp: z.date(),
-});
-
-const automationScheduleSchema = z.object({
-  userId: z.string(),
-  schedule: z.enum(Object.values(AUTOMATION_SCHEDULES) as [string, ...string[]]),
-  nextRun: z.date(),
-  frequency: z.enum(['daily', 'weekly', 'monthly']),
-  enabled: z.boolean().default(true),
-  data: z.record(z.any()).optional(),
-});
-
-const userPreferencesSchema = z.object({
-  userId: z.string(),
-  emailTypes: z.array(z.enum(Object.values(EMAIL_TYPES) as [string, ...string[]])),
-  frequency: z.enum(['immediate', 'daily', 'weekly', 'never']),
-  digestEnabled: z.boolean().default(true),
-  aiNotifications: z.boolean().default(true),
-  billingNotifications: z.boolean().default(true),
-  marketingEmails: z.boolean().default(false),
-  timezone: z.string().default('UTC'),
-  preferredTime: z.string().default('09:00'),
-});
 
 // Email automation interfaces
 export interface AutomationTrigger {
@@ -98,6 +102,7 @@ export interface EmailAutomation {
 // Email automation service
 export class EmailAutomationService {
   private static instance: EmailAutomationService;
+  private schedules: Map<string, any> = new Map();
 
   private constructor() {}
 
@@ -109,18 +114,17 @@ export class EmailAutomationService {
   }
 
   // Trigger-based email automation
-  async handleTrigger(trigger: AutomationTrigger): Promise<EmailTracking[]> {
+  async handleTrigger(trigger: AutomationTrigger): Promise<void> {
     try {
-      automationTriggerSchema.parse(trigger);
+      // automationTriggerSchema.parse(trigger);
 
       const userPrefs = await this.getUserPreferences(trigger.userId);
       if (!userPrefs) {
         console.log(`No user preferences found for user: ${trigger.userId}`);
-        return [];
+        return;
       }
 
       const automations = await this.getAutomationsForTrigger(trigger.trigger);
-      const results: EmailTracking[] = [];
 
       for (const automation of automations) {
         if (!automation.enabled) continue;
@@ -132,11 +136,8 @@ export class EmailAutomationService {
         if (!this.evaluateConditions(automation.conditions, trigger.data)) continue;
 
         // Send email
-        const tracking = await this.sendAutomatedEmail(automation, trigger);
-        results.push(tracking);
+        await this.sendAutomatedEmail(automation, trigger);
       }
-
-      return results;
 
     } catch (error) {
       console.error('Failed to handle automation trigger:', error);
@@ -145,11 +146,10 @@ export class EmailAutomationService {
   }
 
   // Scheduled email automation
-  async processScheduledEmails(): Promise<EmailTracking[]> {
+  async processScheduledEmails(): Promise<void> {
     try {
       const now = new Date();
       const schedules = await this.getDueSchedules(now);
-      const results: EmailTracking[] = [];
 
       for (const schedule of schedules) {
         const userPrefs = await this.getUserPreferences(schedule.userId);
@@ -158,14 +158,11 @@ export class EmailAutomationService {
         // Check if user wants this type of email
         if (!this.shouldSendScheduledEmail(schedule.schedule, userPrefs)) continue;
 
-        const tracking = await this.sendScheduledEmail(schedule);
-        results.push(tracking);
+        await this.sendScheduledEmail(schedule);
 
         // Update next run time
         await this.updateScheduleNextRun(schedule);
       }
-
-      return results;
 
     } catch (error) {
       console.error('Failed to process scheduled emails:', error);
@@ -174,34 +171,27 @@ export class EmailAutomationService {
   }
 
   // Re-engagement email sequences
-  async sendReEngagementSequence(userId: string): Promise<EmailTracking[]> {
+  async sendReEngagementSequence(userId: string): Promise<void> {
     try {
       const userPrefs = await this.getUserPreferences(userId);
       if (!userPrefs || !userPrefs.marketingEmails) {
-        return [];
+        return;
       }
 
       const sequence = await this.getReEngagementSequence(userId);
-      const results: EmailTracking[] = [];
 
       for (const email of sequence) {
-        const tracking = await sendEmail(
-          email.recipient,
-          email.subject,
-          email.html,
-          {
-            priority: EMAIL_PRIORITY.LOW,
-            metadata: {
-              type: EMAIL_TYPES.RE_ENGAGEMENT,
-              campaignId: email.campaignId,
-            },
-          }
-        );
-
-        results.push(tracking);
+        await sendEmail({
+          to: email.recipient,
+          subject: email.subject,
+          html: email.html,
+          priority: EMAIL_PRIORITY.LOW,
+          metadata: {
+            type: EMAIL_TYPES.RE_ENGAGEMENT,
+            campaignId: email.campaignId,
+          },
+        });
       }
-
-      return results;
 
     } catch (error) {
       console.error('Failed to send re-engagement sequence:', error);
@@ -210,32 +200,30 @@ export class EmailAutomationService {
   }
 
   // Daily digest automation
-  async sendDailyDigest(userId: string): Promise<EmailTracking | null> {
+  async sendDailyDigest(userId: string): Promise<void> {
     try {
       const userPrefs = await this.getUserPreferences(userId);
       if (!userPrefs || !userPrefs.digestEnabled) {
-        return null;
+        return;
       }
 
       const digestData = await this.getDailyDigestData(userId);
       if (!digestData) {
-        return null;
+        return;
       }
 
       const html = await this.renderDailyDigestTemplate(digestData);
       
-      return await sendEmail(
-        digestData.userEmail,
-        `Your Daily Email Digest - ${digestData.date}`,
-        html,
-        {
-          priority: EMAIL_PRIORITY.NORMAL,
-          metadata: {
-            type: EMAIL_TYPES.DAILY_DIGEST,
-            campaignId: `daily_digest_${userId}_${digestData.date}`,
-          },
-        }
-      );
+      await sendEmail({
+        to: digestData.userEmail,
+        subject: `Your Daily Email Digest - ${digestData.date}`,
+        html: html,
+        priority: EMAIL_PRIORITY.NORMAL,
+        metadata: {
+          type: EMAIL_TYPES.DAILY_DIGEST,
+          campaignId: `daily_digest_${userId}_${digestData.date}`,
+        },
+      });
 
     } catch (error) {
       console.error('Failed to send daily digest:', error);
@@ -244,32 +232,30 @@ export class EmailAutomationService {
   }
 
   // AI notification automation
-  async sendAINotification(userId: string, actions: any[]): Promise<EmailTracking | null> {
+  async sendAINotification(userId: string, actions: any[]): Promise<void> {
     try {
       const userPrefs = await this.getUserPreferences(userId);
       if (!userPrefs || !userPrefs.aiNotifications) {
-        return null;
+        return;
       }
 
       const notificationData = await this.getAINotificationData(userId, actions);
       if (!notificationData) {
-        return null;
+        return;
       }
 
       const html = await this.renderAINotificationTemplate(notificationData);
       
-      return await sendEmail(
-        notificationData.userEmail,
-        'AI Actions Summary - Super Intelligence AI',
-        html,
-        {
-          priority: EMAIL_PRIORITY.NORMAL,
-          metadata: {
-            type: EMAIL_TYPES.AI_NOTIFICATION,
-            campaignId: `ai_notification_${userId}_${Date.now()}`,
-          },
-        }
-      );
+      await sendEmail({
+        to: notificationData.userEmail,
+        subject: 'AI Actions Summary - Super Intelligence AI',
+        html: html,
+        priority: EMAIL_PRIORITY.NORMAL,
+        metadata: {
+          type: EMAIL_TYPES.AI_NOTIFICATION,
+          campaignId: `ai_notification_${userId}_${Date.now()}`,
+        },
+      });
 
     } catch (error) {
       console.error('Failed to send AI notification:', error);
@@ -282,27 +268,25 @@ export class EmailAutomationService {
     userId: string,
     emailType: 'confirmation' | 'failed' | 'trial_ending' | 'subscription_canceled' | 'payment_reminder',
     billingData: any
-  ): Promise<EmailTracking | null> {
+  ): Promise<void> {
     try {
       const userPrefs = await this.getUserPreferences(userId);
       if (!userPrefs || !userPrefs.billingNotifications) {
-        return null;
+        return;
       }
 
       const html = await this.renderBillingEmailTemplate(emailType, billingData);
       
-      return await sendEmail(
-        billingData.userEmail,
-        `${this.getBillingSubject(emailType)} - Super Intelligence AI`,
-        html,
-        {
-          priority: EMAIL_PRIORITY.HIGH,
-          metadata: {
-            type: EMAIL_TYPES.BILLING_CONFIRMATION,
-            campaignId: `billing_${emailType}_${userId}_${Date.now()}`,
-          },
-        }
-      );
+      await sendEmail({
+        to: billingData.userEmail,
+        subject: `${this.getBillingSubject(emailType)} - Super Intelligence AI`,
+        html: html,
+        priority: EMAIL_PRIORITY.HIGH,
+        metadata: {
+          type: EMAIL_TYPES.BILLING_CONFIRMATION,
+          campaignId: `billing_${emailType}_${userId}_${Date.now()}`,
+        },
+      });
 
     } catch (error) {
       console.error('Failed to send billing notification:', error);
@@ -313,7 +297,7 @@ export class EmailAutomationService {
   // User preference management
   async updateUserPreferences(preferences: UserPreferences): Promise<void> {
     try {
-      userPreferencesSchema.parse(preferences);
+      // userPreferencesSchema.parse(preferences);
       
       // Update user preferences in database
       console.log(`Updated preferences for user: ${preferences.userId}`);
@@ -402,31 +386,29 @@ export class EmailAutomationService {
     return true; // Placeholder
   }
 
-  private async sendAutomatedEmail(automation: EmailAutomation, trigger: AutomationTrigger): Promise<EmailTracking> {
-    const html = renderEmailTemplate(automation.template, {
+  private async sendAutomatedEmail(automation: EmailAutomation, trigger: AutomationTrigger): Promise<void> {
+    const html = await renderEmailTemplate(automation.template, {
       ...trigger.data,
       userId: trigger.userId,
       timestamp: trigger.timestamp,
     });
 
-    return await sendEmail(
-      trigger.data?.userEmail || 'user@example.com',
-      automation.subject,
-      html,
-      {
-        priority: EMAIL_PRIORITY.NORMAL,
-        metadata: {
-          type: automation.emailType,
-          automationId: automation.id,
-          trigger: trigger.trigger,
-        },
-      }
-    );
+    await sendEmail({
+      to: trigger.data?.userEmail || 'user@example.com',
+      subject: automation.subject,
+      html: html,
+      priority: EMAIL_PRIORITY.NORMAL,
+      metadata: {
+        type: automation.emailType,
+        automationId: automation.id,
+        trigger: trigger.trigger,
+      },
+    });
   }
 
-  private async sendScheduledEmail(schedule: AutomationSchedule): Promise<EmailTracking> {
+  private async sendScheduledEmail(schedule: AutomationSchedule): Promise<void> {
     // Send scheduled email
-    return {} as EmailTracking; // Placeholder
+    console.log('Sending scheduled email disabled - Resend removed:', schedule);
   }
 
   private shouldSendScheduledEmail(schedule: string, prefs: UserPreferences): boolean {

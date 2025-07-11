@@ -307,40 +307,40 @@ function getProductTier(productId: string): string {
   return 'free';
 }
 
-// Email notification functions (implement with your email service)
+// Email notification functions (disabled - Resend removed)
 async function sendWelcomeEmail(userId: string, subscription: any) {
-  // Implement with Resend or your email service
-  console.log(`Sending welcome email to user ${userId}`);
+  // Email sending disabled - Resend removed
+  console.log(`Welcome email disabled - Resend removed for user ${userId}`);
 }
 
 async function sendPaymentReminder(userId: string, subscription: any) {
-  // Implement with Resend or your email service
-  console.log(`Sending payment reminder to user ${userId}`);
+  // Email sending disabled - Resend removed
+  console.log(`Payment reminder disabled - Resend removed for user ${userId}`);
 }
 
 async function sendCancellationEmail(userId: string, subscription: any) {
-  // Implement with Resend or your email service
-  console.log(`Sending cancellation email to user ${userId}`);
+  // Email sending disabled - Resend removed
+  console.log(`Cancellation email disabled - Resend removed for user ${userId}`);
 }
 
 async function sendPaymentConfirmationEmail(userId: string, invoice: any) {
-  // Implement with Resend or your email service
-  console.log(`Sending payment confirmation to user ${userId}`);
+  // Email sending disabled - Resend removed
+  console.log(`Payment confirmation disabled - Resend removed for user ${userId}`);
 }
 
 async function sendPaymentFailureEmail(userId: string, invoice: any) {
-  // Implement with Resend or your email service
-  console.log(`Sending payment failure notification to user ${userId}`);
+  // Email sending disabled - Resend removed
+  console.log(`Payment failure notification disabled - Resend removed for user ${userId}`);
 }
 
 async function sendTrialEndingEmail(userId: string, subscription: any) {
-  // Implement with Resend or your email service
-  console.log(`Sending trial ending reminder to user ${userId}`);
+  // Email sending disabled - Resend removed
+  console.log(`Trial ending reminder disabled - Resend removed for user ${userId}`);
 }
 
 async function sendTrialEndedEmail(userId: string, subscription: any) {
-  // Implement with Resend or your email service
-  console.log(`Sending trial ended notification to user ${userId}`);
+  // Email sending disabled - Resend removed
+  console.log(`Trial ended notification disabled - Resend removed for user ${userId}`);
 }
 
 // GET endpoint for webhook verification (Stripe CLI)

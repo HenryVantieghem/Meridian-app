@@ -93,7 +93,7 @@ export const productionConfig = {
         "'self'",
         'https://api.openai.com',
         'https://api.stripe.com',
-        'https://api.resend.com',
+        // 'https://api.resend.com', // Resend removed
         'https://api.slack.com',
         'https://www.googleapis.com',
         'https://graph.microsoft.com',

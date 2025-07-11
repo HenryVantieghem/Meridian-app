@@ -117,11 +117,15 @@ jest.mock('stripe', () => ({
   })),
 }));
 
-// Mock Resend
+// Mock Resend (disabled - Resend removed)
 jest.mock('resend', () => ({
   Resend: jest.fn().mockImplementation(() => ({
     emails: {
-      send: jest.fn(() => Promise.resolve({ id: 'test-email-id' })),
+      send: jest.fn(() => Promise.resolve({ 
+        id: 'test-email-id',
+        disabled: true,
+        message: 'Resend removed from project'
+      })),
     },
   })),
 }));
