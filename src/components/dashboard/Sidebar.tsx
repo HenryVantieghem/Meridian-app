@@ -56,7 +56,7 @@ export function Sidebar({
         <div className="flex items-center justify-between">
           {!collapsed && (
             <Typography variant="h2" className="text-lg font-bold text-black">
-              Meridian
+              Super Intelligence
             </Typography>
           )}
           <Button

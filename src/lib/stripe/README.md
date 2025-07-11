@@ -1,6 +1,6 @@
-# Stripe Subscription System
+# Stripe Integration - Super Intelligence AI
 
-Complete subscription management system for Meridian with secure payment processing, webhook handling, and user experience optimization.
+Complete subscription management system for Super Intelligence with secure payment processing, webhook handling, and user experience optimization.
 
 ## Features
 

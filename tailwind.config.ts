@@ -9,7 +9,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Meridian Design System
+        // Super Intelligence Design System
         white: "#FFFFFF",
         black: "#000000",
         gold: "#D4AF37",

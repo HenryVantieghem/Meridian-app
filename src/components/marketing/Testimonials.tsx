@@ -7,42 +7,42 @@ import { Star, Quote } from 'lucide-react';
 
 const testimonials = [
   {
-    quote: "Meridian has transformed how I manage my inbox. The AI prioritization saves me hours every day, and the intelligent replies are spot-on.",
+    quote: "Super Intelligence has transformed how I manage my inbox. The AI prioritization saves me hours every day, and the intelligent replies are spot-on.",
     author: "Sarah Chen",
     title: "CEO, TechFlow Inc.",
     avatar: "/avatars/sarah-chen.jpg",
     rating: 5
   },
   {
-    quote: "As a busy executive, I need tools that work seamlessly. Meridian's elegant design and powerful AI features have become indispensable to my workflow.",
+    quote: "As a busy executive, I need tools that work seamlessly. Super Intelligence's elegant design and powerful AI features have become indispensable to my workflow.",
     author: "Michael Rodriguez",
     title: "VP of Operations, GlobalCorp",
     avatar: "/avatars/michael-rodriguez.jpg",
     rating: 5
   },
   {
-    quote: "The time I've saved using Meridian is incredible. What used to take 2 hours now takes 15 minutes. The ROI is immediate and substantial.",
+    quote: "The time I've saved using Super Intelligence is incredible. What used to take 2 hours now takes 15 minutes. The ROI is immediate and substantial.",
     author: "Emily Watson",
     title: "Marketing Director, InnovateCo",
     avatar: "/avatars/emily-watson.jpg",
     rating: 5
   },
   {
-    quote: "Meridian's security features give me peace of mind while the AI capabilities make me more productive than ever. It's the perfect balance.",
+    quote: "Super Intelligence's security features give me peace of mind while the AI capabilities make me more productive than ever. It's the perfect balance.",
     author: "David Kim",
     title: "CTO, SecureTech",
     avatar: "/avatars/david-kim.jpg",
     rating: 5
   },
   {
-    quote: "The intelligent email analysis is game-changing. I can now focus on what matters most while Meridian handles the routine communication tasks.",
+    quote: "The intelligent email analysis is game-changing. I can now focus on what matters most while Super Intelligence handles the routine communication tasks.",
     author: "Lisa Thompson",
     title: "Senior Manager, GrowthCo",
     avatar: "/avatars/lisa-thompson.jpg",
     rating: 5
   },
   {
-    quote: "Meridian has become my AI chief of staff. It understands my communication style and helps me maintain professional relationships effortlessly.",
+    quote: "Super Intelligence has become my AI chief of staff. It understands my communication style and helps me maintain professional relationships effortlessly.",
     author: "James Wilson",
     title: "Founder, StartupXYZ",
     avatar: "/avatars/james-wilson.jpg",
@@ -66,7 +66,7 @@ export function Testimonials() {
             Loved by Professionals Worldwide
           </Typography>
           <Typography variant="body" className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Join thousands of executives and professionals who have transformed their email workflow with Meridian.
+            Join thousands of executives and professionals who have transformed their email workflow with Super Intelligence.
           </Typography>
         </motion.div>
 

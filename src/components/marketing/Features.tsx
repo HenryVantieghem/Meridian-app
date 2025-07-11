@@ -126,7 +126,7 @@ export function Features() {
               Trusted by Professionals Worldwide
             </Typography>
             <Typography variant="body" className="text-gray-600">
-              Join thousands of executives, managers, and professionals who trust Meridian with their communication.
+              Join thousands of executives, managers, and professionals who trust Super Intelligence with their communication.
             </Typography>
           </div>
           

@@ -1,480 +1,301 @@
-# Email System Documentation
+# Email System - Super Intelligence AI
 
-A comprehensive transactional email system for Meridian AI, built with Resend, featuring automation, templates, analytics, and management capabilities.
+A comprehensive transactional email system for Super Intelligence AI, built with Resend, featuring automation, templates, analytics, and management capabilities.
 
-## Overview
+## Features
 
-The email system provides:
-- **Resend Integration**: Email delivery with authentication and retry logic
-- **Email Templates**: Responsive HTML templates with @.cursorrules branding
-- **Automation**: Triggered and scheduled email campaigns
-- **Management**: List management, unsubscribe handling, and analytics
-- **A/B Testing**: Email optimization with statistical analysis
+- **Transactional Emails**: Welcome, billing, notifications, and digest emails
+- **Template System**: Reusable, responsive email templates
+- **Automation**: Triggered emails based on user actions
+- **Analytics**: Track open rates, click rates, and engagement
+- **Management**: Email preferences, unsubscribe handling
+- **Testing**: Local email preview and testing tools
 
-## Architecture
+## Configuration
 
-```
-src/lib/email/
-├── resend.ts          # Resend client and core email functionality
-├── automation.ts      # Email automation and scheduling
-├── management.ts      # List management and analytics
-└── index.ts          # Central exports
+### Environment Variables
 
-src/components/email/
-├── WelcomeEmail.tsx   # New user onboarding
-├── DailyDigest.tsx    # Priority email summaries
-├── AINotification.tsx # AI action summaries
-├── BillingEmail.tsx   # Subscription notifications
-└── index.ts          # Template exports
-
-src/app/api/email/
-├── send/route.ts      # Email sending API
-├── automation/route.ts # Automation triggers and scheduling
-└── management/route.ts # List management and analytics
-```
-
-## Setup
-
-### 1. Environment Variables
-
-Add to your `.env.local`:
-
-```bash
+```env
 # Resend Configuration
-RESEND_API_KEY=your_resend_api_key
-RESEND_FROM_EMAIL=noreply@meridian.ai
-RESEND_REPLY_TO=support@meridian.ai
+RESEND_API_KEY=re_your_resend_api_key
+RESEND_FROM_EMAIL=noreply@super-intelligence.ai
+RESEND_REPLY_TO=support@super-intelligence.ai
 
-# Email Configuration
-EMAIL_DOMAIN=meridian.ai
-EMAIL_SUPPORT=support@meridian.ai
+# Email Domain Configuration
+EMAIL_DOMAIN=super-intelligence.ai
+EMAIL_SUPPORT=support@super-intelligence.ai
+
+# Email URLs
+EMAIL_DASHBOARD_URL=https://super-intelligence.ai/dashboard
+EMAIL_UNSUBSCRIBE_URL=https://super-intelligence.ai/unsubscribe
+EMAIL_ONBOARDING_URL=https://super-intelligence.ai/onboarding
 ```
 
-### 2. Resend Dashboard Setup
+### Email Templates
 
-1. Create a Resend account at [resend.com](https://resend.com)
-2. Add your domain and verify DNS records
-3. Generate an API key
-4. Configure webhooks for bounce handling
+#### Welcome Email
+```typescript
+const welcomeEmail = {
+  subject: 'Welcome to Super Intelligence!',
+  template: 'welcome',
+  data: {
+    userName: 'John Doe',
+    onboardingUrl: 'https://super-intelligence.ai/onboarding',
+    supportEmail: 'support@super-intelligence.ai',
+    features: [
+      'AI-powered email analysis',
+      'Intelligent prioritization',
+      'Smart reply suggestions',
+      'Real-time insights'
+    ]
+  }
+}
+```
 
-### 3. Database Schema
-
-The email system requires these database tables:
-
-```sql
--- Email tracking
-CREATE TABLE email_tracking (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID REFERENCES users(id),
-  email_type VARCHAR(50) NOT NULL,
-  recipient VARCHAR(255) NOT NULL,
-  subject VARCHAR(255) NOT NULL,
-  status VARCHAR(20) NOT NULL,
-  sent_at TIMESTAMP DEFAULT NOW(),
-  delivered_at TIMESTAMP,
-  opened_at TIMESTAMP,
-  clicked_at TIMESTAMP,
-  bounce_reason TEXT,
-  metadata JSONB
-);
-
--- User email preferences
-CREATE TABLE user_email_preferences (
-  user_id UUID PRIMARY KEY REFERENCES users(id),
-  email_types TEXT[] DEFAULT '{}',
-  frequency VARCHAR(20) DEFAULT 'daily',
-  digest_enabled BOOLEAN DEFAULT true,
-  ai_notifications BOOLEAN DEFAULT true,
-  billing_notifications BOOLEAN DEFAULT true,
-  marketing_emails BOOLEAN DEFAULT false,
-  timezone VARCHAR(50) DEFAULT 'UTC',
-  preferred_time VARCHAR(10) DEFAULT '09:00',
-  created_at TIMESTAMP DEFAULT NOW(),
-  updated_at TIMESTAMP DEFAULT NOW()
-);
-
--- Email lists
-CREATE TABLE email_lists (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name VARCHAR(255) NOT NULL,
-  description TEXT,
-  type VARCHAR(50) NOT NULL,
-  subscribers TEXT[] DEFAULT '{}',
-  created_at TIMESTAMP DEFAULT NOW(),
-  updated_at TIMESTAMP DEFAULT NOW()
-);
-
--- Unsubscribe records
-CREATE TABLE unsubscribe_records (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  email VARCHAR(255) NOT NULL,
-  list_id UUID REFERENCES email_lists(id),
-  reason VARCHAR(50),
-  feedback TEXT,
-  timestamp TIMESTAMP DEFAULT NOW()
-);
-
--- Bounce records
-CREATE TABLE bounce_records (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  email VARCHAR(255) NOT NULL,
-  type VARCHAR(20) NOT NULL,
-  reason TEXT NOT NULL,
-  message_id VARCHAR(255),
-  timestamp TIMESTAMP DEFAULT NOW()
-);
-
--- A/B tests
-CREATE TABLE ab_tests (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name VARCHAR(255) NOT NULL,
-  description TEXT,
-  variants JSONB NOT NULL,
-  audience TEXT[] NOT NULL,
-  start_date TIMESTAMP NOT NULL,
-  end_date TIMESTAMP,
-  enabled BOOLEAN DEFAULT true,
-  metrics JSONB,
-  created_at TIMESTAMP DEFAULT NOW(),
-  updated_at TIMESTAMP DEFAULT NOW()
-);
+#### Billing Email
+```typescript
+const billingEmail = {
+  subject: 'Your Super Intelligence subscription',
+  template: 'billing',
+  data: {
+    userName: 'John Doe',
+    subscriptionTier: 'Pro',
+    amount: '$29.00',
+    nextBillingDate: '2024-02-01',
+    billingPortalUrl: 'https://super-intelligence.ai/billing',
+    dashboardUrl: 'https://super-intelligence.ai/dashboard',
+    unsubscribeUrl: 'https://super-intelligence.ai/unsubscribe'
+  }
+}
 ```
 
 ## Usage
 
-### 1. Sending Emails
-
+### Send Email
 ```typescript
-import { sendEmail, EMAIL_TYPES, EMAIL_PRIORITY } from '@/lib/email';
+import { sendEmail } from '@/lib/email/resend';
 
-// Basic email
-const tracking = await sendEmail(
+await sendEmail(
   'user@example.com',
-  'Welcome to Meridian!',
-  '<h1>Welcome!</h1><p>Thanks for joining.</p>',
+  'Welcome to Super Intelligence!',
+  '<h1>Welcome!</h1>',
   {
-    priority: EMAIL_PRIORITY.HIGH,
-    metadata: {
-      type: EMAIL_TYPES.WELCOME,
-      campaignId: 'welcome_2024',
-    },
+    replyTo: 'support@super-intelligence.ai'
   }
 );
-
-// Multiple recipients
-const tracking = await sendEmail(
-  ['user1@example.com', 'user2@example.com'],
-  'Important Update',
-  '<h1>Update</h1><p>Important information.</p>'
-);
-```
-
-### 2. Email Templates
-
-```typescript
-import { WelcomeEmail, DailyDigest, AINotification, BillingEmail } from '@/components/email';
-
-// Welcome email
-const welcomeHtml = WelcomeEmail({
-  userName: 'John Doe',
-  userEmail: 'john@example.com',
-  onboardingUrl: 'https://meridian.ai/onboarding',
-  supportEmail: 'support@meridian.ai',
-});
-
-// Daily digest
-const digestHtml = DailyDigest({
-  userName: 'John Doe',
-  userEmail: 'john@example.com',
-  date: '2024-01-15',
-  totalEmails: 45,
-  priorityEmails: [
-    {
-      id: '1',
-      subject: 'Urgent: Project Update',
-      sender: 'manager@company.com',
-      priority: 'high',
-      summary: 'Important project update requiring immediate attention.',
-      actionRequired: true,
-      urgency: 'immediate',
-      aiInsight: 'This email requires your response within 24 hours.',
-    },
-  ],
-  productivityScore: 85,
-  timeSaved: '2.5 hours',
-  dashboardUrl: 'https://meridian.ai/dashboard',
-  unsubscribeUrl: 'https://meridian.ai/unsubscribe',
-});
-```
-
-### 3. Email Automation
-
-```typescript
-import { emailAutomationService, AUTOMATION_TRIGGERS } from '@/lib/email';
-
-// Trigger automation
-const results = await emailAutomationService.handleTrigger({
-  userId: 'user_123',
-  trigger: AUTOMATION_TRIGGERS.USER_SIGNUP,
-  data: {
-    userEmail: 'user@example.com',
-    userName: 'John Doe',
-  },
-  timestamp: new Date(),
-});
-
-// Send daily digest
-const digest = await emailAutomationService.sendDailyDigest('user_123');
-
-// Send AI notification
-const notification = await emailAutomationService.sendAINotification('user_123', [
-  {
-    id: '1',
-    type: 'reply_generated',
-    emailSubject: 'Project Update',
-    sender: 'manager@company.com',
-    confidence: 95,
-    timeSaved: '15 minutes',
-    actionTaken: 'Generated professional reply with key points addressed.',
-  },
-]);
-```
-
-### 4. Email Management
-
-```typescript
-import { emailManagementService, EMAIL_LISTS } from '@/lib/email';
-
-// Create email list
-const list = await emailManagementService.createEmailList({
-  name: 'Active Users',
-  description: 'Users who have logged in within 30 days',
-  type: EMAIL_LISTS.ACTIVE_USERS,
-  subscribers: ['user1@example.com', 'user2@example.com'],
-});
-
-// Add subscriber
-await emailManagementService.addSubscriberToList('user@example.com', list.id);
-
-// Handle unsubscribe
-await emailManagementService.unsubscribeEmail(
-  'user@example.com',
-  list.id,
-  'too_frequent',
-  'Emails are too frequent'
-);
-
-// Handle bounce
-await emailManagementService.handleBounce(
-  'user@example.com',
-  'hard',
-  'Mailbox does not exist'
-);
-```
-
-### 5. A/B Testing
-
-```typescript
-import { emailManagementService } from '@/lib/email';
-
-// Create A/B test
-const test = await emailManagementService.createABTest({
-  name: 'Welcome Email Subject Line',
-  description: 'Testing different subject lines for welcome emails',
-  variants: [
-    {
-      subject: 'Welcome to Meridian!',
-      html: '<h1>Welcome!</h1>',
-      weight: 0.5,
-    },
-    {
-      subject: 'Your AI Chief of Staff is Ready',
-      html: '<h1>Your AI Chief of Staff is Ready</h1>',
-      weight: 0.5,
-    },
-  ],
-  audience: ['user1@example.com', 'user2@example.com'],
-  startDate: new Date(),
-  enabled: true,
-});
-
-// Get variant for user
-const variant = await emailManagementService.getABTestVariant(test.id, 'user@example.com');
-
-// Record event
-await emailManagementService.recordABTestEvent(test.id, variant.variantId, 'user@example.com', 'open');
-```
-
-## API Endpoints
-
-### Send Email
-```bash
-POST /api/email/send
-{
-  "to": "user@example.com",
-  "subject": "Welcome to Meridian",
-  "html": "<h1>Welcome!</h1>",
-  "emailType": "welcome",
-  "priority": "high"
-}
 ```
 
 ### Email Automation
-```bash
-POST /api/email/automation
-{
-  "action": "trigger",
-  "trigger": "user_signup",
-  "data": {
-    "userEmail": "user@example.com",
-    "userName": "John Doe"
-  }
-}
+```typescript
+import { EmailAutomation } from '@/lib/email/automation';
+
+const automation = new EmailAutomation();
+
+// Send welcome email
+await automation.sendWelcomeEmail({
+  userEmail: 'user@example.com',
+  userName: 'John Doe'
+});
+
+// Send billing notification
+await automation.sendBillingEmail({
+  userEmail: 'user@example.com',
+  userName: 'John Doe',
+  subscriptionTier: 'Pro',
+  amount: '$29.00',
+  nextBillingDate: '2024-02-01'
+});
 ```
 
-### Email Management
-```bash
-POST /api/email/management
-{
-  "action": "create_list",
-  "name": "Active Users",
-  "type": "active_users",
-  "subscribers": ["user@example.com"]
-}
+## Email Templates
+
+### Welcome Email Template
+```html
+<div class="email-container">
+  <div class="header">
+    <div class="logo">Super Intelligence</div>
+    <div class="tagline">AI-Powered Productivity Platform</div>
+  </div>
+  
+  <div class="content">
+    <h1 class="greeting">Welcome to Super Intelligence, {userName}! 👋</h1>
+    
+    <p class="intro">
+      Thank you for joining Super Intelligence. We're excited to help you transform your communication
+      workflow with AI-powered insights and intelligent automation.
+    </p>
+    
+    <p class="features-intro">
+      With Super Intelligence, you'll experience:
+    </p>
+    
+    <ul class="features">
+      <li>AI-powered email analysis and prioritization</li>
+      <li>Intelligent reply suggestions</li>
+      <li>Real-time productivity insights</li>
+      <li>Seamless integration with your workflow</li>
+    </ul>
+    
+    <div class="cta">
+      <a href="{onboardingUrl}" class="button">Get Started</a>
+    </div>
+  </div>
+  
+  <div class="footer">
+    <p class="footer-text">
+      You received this email because you signed up for Super Intelligence. 
+      <a href="/unsubscribe"> Unsubscribe</a>
+    </p>
+  </div>
+</div>
 ```
+
+### Billing Email Template
+```html
+<div class="email-container">
+  <div class="header">
+    <div class="logo">Super Intelligence</div>
+    <div class="tagline">Billing & Subscription</div>
+  </div>
+  
+  <div class="content">
+    <h1>Subscription Update</h1>
+    
+    <div class="billing-details">
+      <p>Hello {userName},</p>
+      
+      <p>Your {subscriptionTier} subscription has been successfully processed.</p>
+      
+      <div class="billing-info">
+        <div class="amount">Amount: {amount}</div>
+        <div class="next-billing">Next billing: {nextBillingDate}</div>
+      </div>
+      
+      <div class="actions">
+        <a href="{dashboardUrl}" class="button">Go to Dashboard</a>
+        <a href="{billingPortalUrl}" class="button secondary">Manage Billing</a>
+      </div>
+    </div>
+  </div>
+  
+  <div class="footer">
+    <p class="footer-text">
+      Thank you for choosing Super Intelligence. We're committed to helping you 
+      transform your productivity with AI-powered email management.
+    </p>
+  </div>
+</div>
+```
+
+## Testing
+
+### Local Email Preview
+```bash
+# Start local email server
+npm run email:dev
+
+# Send test email
+curl -X POST http://localhost:3001/api/email/test \
+  -H "Content-Type: application/json" \
+  -d '{
+    "to": "test@example.com",
+    "subject": "Test Email",
+    "template": "welcome",
+    "data": {
+      "userName": "Test User"
+    }
+  }'
+```
+
+### Email Testing Utilities
+```typescript
+import { testEmailTemplate } from '@/lib/email/test';
+
+// Test email template rendering
+const html = await testEmailTemplate('welcome', {
+  userName: 'Test User',
+  onboardingUrl: 'https://super-intelligence.ai/onboarding'
+});
+
+console.log(html);
+```
+
+## Analytics
+
+### Email Metrics
+```typescript
+import { getEmailAnalytics } from '@/lib/email/analytics';
+
+const analytics = await getEmailAnalytics({
+  startDate: '2024-01-01',
+  endDate: '2024-01-31'
+});
+
+console.log('Open Rate:', analytics.openRate);
+console.log('Click Rate:', analytics.clickRate);
+console.log('Bounce Rate:', analytics.bounceRate);
+```
+
+## Management
+
+### Unsubscribe Handling
+```typescript
+import { handleUnsubscribe } from '@/lib/email/management';
+
+await handleUnsubscribe('user@example.com', 'newsletter');
+```
+
+### Email Preferences
+```typescript
+import { updateEmailPreferences } from '@/lib/email/management';
+
+await updateEmailPreferences('user@example.com', {
+  marketing: false,
+  billing: true,
+  notifications: true,
+  digest: false
+});
+```
+
+## Security
+
+- **DKIM**: Domain authentication for better deliverability
+- **SPF**: Sender Policy Framework protection
+- **DMARC**: Domain-based Message Authentication
+- **Encryption**: TLS encryption for all emails
+- **Compliance**: GDPR and CAN-SPAM compliant
 
 ## Best Practices
 
-### 1. Email Design
-- Use @.cursorrules branding (white, black, gold)
-- Ensure mobile responsiveness
-- Include clear unsubscribe links
-- Test across email clients
-
-### 2. Performance
-- Use proper rate limiting
-- Implement retry logic
-- Monitor delivery rates
-- Clean up old data regularly
-
-### 3. Compliance
-- Include unsubscribe links
-- Respect user preferences
-- Handle bounces properly
-- Follow CAN-SPAM guidelines
-
-### 4. Analytics
-- Track open and click rates
-- Monitor bounce rates
-- A/B test subject lines
-- Analyze user engagement
-
-## Error Handling
-
-The email system includes comprehensive error handling:
-
-```typescript
-import { EmailError, handleEmailError } from '@/lib/email';
-
-try {
-  await sendEmail(to, subject, html);
-} catch (error) {
-  const emailError = handleEmailError(error);
-  
-  if (emailError.retryable) {
-    // Retry with exponential backoff
-  } else {
-    // Log and alert
-  }
-}
-```
-
-## Monitoring
-
-Monitor these key metrics:
-- **Delivery Rate**: > 95%
-- **Open Rate**: > 25%
-- **Click Rate**: > 3%
-- **Bounce Rate**: < 2%
-- **Unsubscribe Rate**: < 0.5%
+1. **Personalization**: Use recipient names and relevant data
+2. **Clear CTAs**: Make action buttons prominent and clear
+3. **Mobile Optimization**: Ensure emails look great on mobile
+4. **A/B Testing**: Test subject lines and content variations
+5. **Analytics**: Track engagement and optimize based on data
+6. **Compliance**: Include unsubscribe links and physical address
+7. **Accessibility**: Use proper contrast and alt text for images
 
 ## Troubleshooting
 
 ### Common Issues
 
-1. **High Bounce Rate**
-   - Verify email addresses
-   - Clean email lists regularly
-   - Check sender reputation
-
-2. **Low Open Rate**
-   - Improve subject lines
-   - Send at optimal times
-   - Segment your audience
-
-3. **Delivery Issues**
-   - Check Resend API key
-   - Verify domain configuration
-   - Monitor rate limits
+1. **Emails not sending**: Check Resend API key and domain configuration
+2. **Poor deliverability**: Verify SPF, DKIM, and DMARC records
+3. **Template rendering**: Test templates locally before sending
+4. **Analytics not tracking**: Ensure tracking pixels are properly configured
 
 ### Debug Mode
-
-Enable debug logging:
-
 ```typescript
-// In development
-process.env.EMAIL_DEBUG = 'true';
+import { setEmailDebugMode } from '@/lib/email/resend';
+
+setEmailDebugMode(true);
+// All emails will be logged to console
 ```
-
-## Security
-
-- Validate all email addresses
-- Sanitize HTML content
-- Rate limit API endpoints
-- Log security events
-- Use HTTPS for all communications
-
-## Testing
-
-```typescript
-// Unit tests for email templates
-import { renderToString } from 'react-dom/server';
-import { WelcomeEmail } from '@/components/email';
-
-const html = renderToString(
-  WelcomeEmail({
-    userName: 'Test User',
-    userEmail: 'test@example.com',
-    onboardingUrl: 'https://test.com',
-    supportEmail: 'support@test.com',
-  })
-);
-
-// Integration tests for email sending
-import { sendEmail } from '@/lib/email';
-
-const tracking = await sendEmail(
-  'test@example.com',
-  'Test Email',
-  '<h1>Test</h1>'
-);
-
-expect(tracking.status).toBe('sent');
-```
-
-## Support
-
-For issues with the email system:
-1. Check the logs for error messages
-2. Verify environment variables
-3. Test with a simple email first
-4. Contact the development team
 
 ## Contributing
 
-When contributing to the email system:
-1. Follow @.cursorrules patterns
-2. Add proper TypeScript types
-3. Include error handling
-4. Write tests for new features
-5. Update documentation 
+1. Follow the existing template structure
+2. Test emails locally before committing
+3. Update documentation for new features
+4. Ensure accessibility compliance
+5. Add analytics tracking for new email types 

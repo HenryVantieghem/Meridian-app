@@ -58,7 +58,7 @@ export const AINotification: React.FC<AINotificationProps> = ({
   return (
     <div className="email-container">
       <div className="header">
-        <div className="logo">Meridian</div>
+        <div className="logo">Super Intelligence</div>
         <div className="tagline">AI-Powered Productivity</div>
       </div>
       

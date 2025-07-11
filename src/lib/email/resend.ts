@@ -7,11 +7,11 @@ export const resend = new Resend(process.env.RESEND_API_KEY);
 // Email configuration
 export const EMAIL_CONFIG = {
   from: {
-    name: 'Meridian AI',
-    email: 'noreply@meridian.ai',
+    name: 'Super Intelligence AI',
+    email: 'noreply@super-intelligence.ai',
   },
-  replyTo: 'support@meridian.ai',
-  defaultSubject: 'Message from Meridian',
+  replyTo: 'support@super-intelligence.ai',
+  defaultSubject: 'Message from Super Intelligence',
 } as const;
 
 // Email types for type safety

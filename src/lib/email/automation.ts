@@ -260,7 +260,7 @@ export class EmailAutomationService {
       
       return await sendEmail(
         notificationData.userEmail,
-        'AI Actions Summary - Meridian AI',
+        'AI Actions Summary - Super Intelligence AI',
         html,
         {
           priority: EMAIL_PRIORITY.NORMAL,
@@ -293,7 +293,7 @@ export class EmailAutomationService {
       
       return await sendEmail(
         billingData.userEmail,
-        `${this.getBillingSubject(emailType)} - Meridian AI`,
+        `${this.getBillingSubject(emailType)} - Super Intelligence AI`,
         html,
         {
           priority: EMAIL_PRIORITY.HIGH,

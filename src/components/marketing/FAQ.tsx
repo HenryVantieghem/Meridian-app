@@ -7,8 +7,8 @@ import { ChevronDown, ChevronUp } from 'lucide-react';
 
 const faqs = [
   {
-    question: "How does Meridian's AI analyze my emails?",
-    answer: "Meridian uses advanced GPT-4 technology to analyze your emails in real-time. It extracts key insights, identifies sentiment, detects urgency, and generates actionable summaries. The AI learns your communication patterns to provide increasingly personalized insights."
+    question: "How does Super Intelligence's AI analyze my emails?",
+    answer: "Super Intelligence uses advanced GPT-4 technology to analyze your emails in real-time. It extracts key insights, identifies sentiment, detects urgency, and generates actionable summaries. The AI learns your communication patterns and adapts to your preferences over time."
   },
   {
     question: "Is my email data secure?",
@@ -35,8 +35,8 @@ const faqs = [
     answer: "Free users get email support, Pro users get priority support with faster response times, and Enterprise users get dedicated support with SLA guarantees."
   },
   {
-    question: "Is Meridian available on mobile?",
-    answer: "Yes! Meridian is fully responsive and works great on all devices. We also offer native mobile apps for iOS and Android for the best experience."
+    question: "Is Super Intelligence available on mobile?",
+    answer: "Yes! Super Intelligence is fully responsive and works great on all devices. We also offer native mobile apps for iOS and Android for the best experience."
   }
 ];
 
@@ -58,7 +58,7 @@ export function FAQ() {
             Frequently Asked Questions
           </Typography>
           <Typography variant="body" className="text-xl text-gray-600">
-            Everything you need to know about Meridian
+            Everything you need to know about Super Intelligence
           </Typography>
         </motion.div>
 
@@ -116,7 +116,7 @@ export function FAQ() {
             Still have questions?
           </Typography>
           <Typography variant="body" className="text-gray-600 mb-6">
-            Our team is here to help you get the most out of Meridian.
+            Our team is here to help you get the most out of Super Intelligence.
           </Typography>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a

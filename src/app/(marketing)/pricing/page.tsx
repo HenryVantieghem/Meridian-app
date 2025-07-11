@@ -3,10 +3,10 @@ import { Pricing } from '@/components/marketing/Pricing';
 import { FAQ } from '@/components/marketing/FAQ';
 
 export const metadata: Metadata = {
-  title: 'Pricing - Meridian',
+  title: 'Pricing - Super Intelligence',
   description: 'Simple, transparent pricing for AI-powered email management. Choose the plan that fits your needs.',
   openGraph: {
-    title: 'Pricing - Meridian',
+    title: 'Pricing - Super Intelligence',
     description: 'Simple, transparent pricing for AI-powered email management.',
   },
 };

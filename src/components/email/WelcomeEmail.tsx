@@ -16,20 +16,20 @@ export const WelcomeEmail: React.FC<WelcomeEmailProps> = ({
   return (
     <div className="email-container">
       <div className="header">
-        <div className="logo">Meridian</div>
+        <div className="logo">Super Intelligence</div>
         <div className="tagline">AI-Powered Productivity Platform</div>
       </div>
       
       <div className="content">
-        <h1 className="greeting">Welcome to Meridian, {userName}! 👋</h1>
+        <h1 className="greeting">Welcome to Super Intelligence, {userName}! 👋</h1>
         
-        <p className="message">
-          Thank you for joining Meridian. We're excited to help you transform your communication 
-          chaos into clarity through intelligent email management and AI-powered prioritization.
+        <p className="intro">
+          Thank you for joining Super Intelligence. We're excited to help you transform your communication
+          workflow with AI-powered insights and intelligent automation.
         </p>
         
-        <p className="message">
-          With Meridian, you'll experience:
+        <p className="features-intro">
+          With Super Intelligence, you'll experience:
         </p>
         
         <div className="features">
@@ -85,7 +85,7 @@ export const WelcomeEmail: React.FC<WelcomeEmailProps> = ({
         </div>
         
         <p className="unsubscribe">
-          You received this email because you signed up for Meridian. 
+          You received this email because you signed up for Super Intelligence. 
           <a href="/unsubscribe"> Unsubscribe</a>
         </p>
       </div>

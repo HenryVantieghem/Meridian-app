@@ -1,4 +1,4 @@
-# Meridian - AI-Powered Email Management Platform
+# Super Intelligence - AI-Powered Email Management Platform
 
 Transform communication chaos into clarity through intelligent email management, AI-powered prioritization, and elegant UX design following Dieter Rams principles.
 
@@ -14,7 +14,7 @@ Transform communication chaos into clarity through intelligent email management,
 ## 🛠 Tech Stack
 
 - **Frontend**: Next.js 15 (App Router), React 18, TypeScript 5.0+
-- **Styling**: Tailwind CSS with custom Meridian design system
+- **Styling**: Tailwind CSS with custom Super Intelligence design system
 - **Authentication**: Clerk with JWT templates for Supabase
 - **Database**: Supabase (PostgreSQL) with Row Level Security
 - **AI**: OpenAI GPT-4o for email analysis and generation
@@ -51,7 +51,7 @@ Transform communication chaos into clarity through intelligent email management,
 
 ```bash
 git clone <repository-url>
-cd meridian-app
+cd super-intelligence-app
 ```
 
 ### 2. Install dependencies
@@ -130,7 +130,7 @@ Open [http://localhost:3000](http://localhost:3000) to view the application.
 ## 🏗 Project Structure
 
 ```
-meridian-app/
+super-intelligence-app/
 ├── src/
 │   ├── app/
 │   │   ├── (auth)/           # Authentication pages
@@ -253,12 +253,17 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🆘 Support
 
-For support, email support@meridian.app or join our Slack channel.
+If you need help with Super Intelligence:
+
+- 📧 Email: support@super-intelligence.ai
+- 💬 Discord: [Join our community](https://discord.gg/super-intelligence)
+- 📖 Documentation: [docs.super-intelligence.ai](https://docs.super-intelligence.ai)
+- 🐛 Issues: [GitHub Issues](https://github.com/your-org/super-intelligence-app/issues)
 
 ## 🎉 Acknowledgments
 
-- Dieter Rams for design inspiration
-- Next.js team for the amazing framework
-- Supabase team for the database platform
-- Clerk team for authentication
-- OpenAI team for AI capabilities
+- Built with Next.js and React
+- Powered by OpenAI GPT-4o
+- Styled with Tailwind CSS
+- Icons by Lucide React
+- Animations by Framer Motion

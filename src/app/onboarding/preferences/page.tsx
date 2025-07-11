@@ -113,7 +113,7 @@ export default function PreferencesPage() {
           Set Your Preferences
         </Typography>
         <Typography variant="body" className="text-xl text-gray-600 max-w-2xl mx-auto">
-          Customize how Meridian works for your specific needs and workflow.
+          Customize how Super Intelligence works for your specific needs and workflow.
         </Typography>
       </motion.div>
 

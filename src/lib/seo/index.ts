@@ -1,429 +1,289 @@
-// SEO and Metadata System
-// Central export for all SEO utilities
+import { Metadata } from 'next'
 
-// SEO Utilities
-export const seoUtils = {
-  // Generate metadata for pages
-  generateMetadata: (page: {
-    title: string;
-    description: string;
-    keywords?: string[];
-    image?: string;
-    url?: string;
-    type?: 'website' | 'article' | 'product';
-    author?: string;
-    publishedTime?: string;
-    modifiedTime?: string;
-    section?: string;
-    tags?: string[];
-  }) => {
-    const {
-      title,
-      description,
-      keywords = [],
-      image,
-      url,
-      type = 'website',
-      author,
-      publishedTime,
-      modifiedTime,
-      section,
-      tags = []
-    } = page;
-
-    const metadata = {
-      title: `${title} | Meridian`,
-      description,
-      keywords: keywords.join(', '),
-      openGraph: {
-        title: `${title} | Meridian`,
-        description,
-        url,
-        siteName: 'Meridian',
-        images: image ? [{ url: image, width: 1200, height: 630 }] : [],
-        locale: 'en_US',
-        type
-      },
-      twitter: {
-        card: 'summary_large_image',
-        title: `${title} | Meridian`,
-        description,
-        images: image ? [image] : []
-      },
-      robots: {
-        index: true,
-        follow: true,
-        googleBot: {
-          index: true,
-          follow: true,
-          'max-video-preview': -1,
-          'max-image-preview': 'large',
-          'max-snippet': -1
-        }
-      },
-      verification: {
-        google: process.env.GOOGLE_SITE_VERIFICATION,
-        yandex: process.env.YANDEX_VERIFICATION,
-        yahoo: process.env.YAHOO_VERIFICATION
-      }
-    };
-
-    // Add article-specific metadata
-    if (type === 'article') {
-      (metadata.openGraph as any).article = {
-        publishedTime,
-        modifiedTime,
-        author,
-        section,
-        tags
-      };
-    }
-
-    return metadata;
+// Base SEO configuration
+export const SEO_CONFIG = {
+  // Default metadata
+  DEFAULT: {
+    title: 'Super Intelligence - AI-Powered Email Management',
+    description: 'Transform communication chaos into clarity with intelligent email management, AI-powered prioritization, and elegant UX design.',
+    keywords: 'email management, AI productivity, email prioritization, communication tools, AI assistant',
+    author: 'Super Intelligence AI',
+    robots: 'index, follow',
+    viewport: 'width=device-width, initial-scale=1',
   },
+  
+  // Social media
+  SOCIAL: {
+    twitter: '@super_intelligence_ai',
+    facebook: 'super-intelligence.ai',
+    linkedin: 'company/super-intelligence-ai',
+  },
+  
+  // Performance targets
+  PERFORMANCE: {
+    LCP: 2500, // 2.5 seconds
+    FID: 100, // 100ms
+    CLS: 0.1, // 0.1
+    TTFB: 800, // 800ms
+  },
+} as const
 
-  // Generate structured data
-  generateStructuredData: (type: 'organization' | 'website' | 'article' | 'product', data: any) => {
-    const baseData = {
+// Page-specific metadata
+export const PAGE_METADATA = {
+  // Landing page
+  landing: {
+    title: 'Super Intelligence - AI-Powered Email Management Platform',
+    description: 'Transform your email workflow with AI-powered prioritization, intelligent replies, and elegant design. Get more done with less effort.',
+    keywords: 'email management, AI productivity, email automation, communication tools',
+    ogImage: '/og-landing.jpg',
+    structuredData: {
       '@context': 'https://schema.org',
-      '@type': type.charAt(0).toUpperCase() + type.slice(1)
-    };
-
-    switch (type) {
-      case 'organization':
-        return {
-          ...baseData,
-          name: 'Meridian',
-          url: 'https://meridian.ai',
-          logo: 'https://meridian.ai/logo.png',
-          description: 'AI-powered productivity platform that transforms communication chaos into clarity',
-          sameAs: [
-            'https://twitter.com/meridian_ai',
-            'https://linkedin.com/company/meridian-ai'
-          ],
-          contactPoint: {
-            '@type': 'ContactPoint',
-            telephone: '+1-555-0123',
-            contactType: 'customer service',
-            email: 'support@meridian.ai'
-          }
-        };
-
-      case 'website':
-        return {
-          ...baseData,
-          name: 'Meridian',
-          url: 'https://meridian.ai',
-          description: 'AI-powered productivity platform',
-          publisher: {
-            '@type': 'Organization',
-            name: 'Meridian',
-            logo: {
-              '@type': 'ImageObject',
-              url: 'https://meridian.ai/logo.png'
-            }
-          }
-        };
-
-      case 'article':
-        return {
-          ...baseData,
-          headline: data.title,
-          description: data.description,
-          image: data.image,
-          author: {
-            '@type': 'Person',
-            name: data.author
-          },
-          publisher: {
-            '@type': 'Organization',
-            name: 'Meridian',
-            logo: {
-              '@type': 'ImageObject',
-              url: 'https://meridian.ai/logo.png'
-            }
-          },
-          datePublished: data.publishedTime,
-          dateModified: data.modifiedTime
-        };
-
-      case 'product':
-        return {
-          ...baseData,
-          name: data.name,
-          description: data.description,
-          image: data.image,
-          offers: {
-            '@type': 'Offer',
-            price: data.price,
-            priceCurrency: 'USD',
-            availability: 'https://schema.org/InStock'
-          }
-        };
-
-      default:
-        return baseData;
-    }
+      '@type': 'SoftwareApplication',
+      name: 'Super Intelligence',
+      description: 'AI-powered email management platform',
+      applicationCategory: 'ProductivityApplication',
+      operatingSystem: 'Web',
+      offers: {
+        '@type': 'Offer',
+        price: '0',
+        priceCurrency: 'USD',
+      },
+    },
   },
-
-  // Generate sitemap
-  generateSitemap: (pages: Array<{
-    url: string;
-    lastModified: string;
-    changeFrequency: 'always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'never';
-    priority: number;
-  }>) => {
-    const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${pages.map(page => `  <url>
-    <loc>${page.url}</loc>
-    <lastmod>${page.lastModified}</lastmod>
-    <changefreq>${page.changeFrequency}</changefreq>
-    <priority>${page.priority}</priority>
-  </url>`).join('\n')}
-</urlset>`;
-
-    return sitemap;
+  
+  // Dashboard
+  dashboard: {
+    title: 'Dashboard - Super Intelligence',
+    description: 'Manage your emails with AI-powered insights and intelligent prioritization.',
+    keywords: 'email dashboard, email management, AI insights',
+    robots: 'noindex, nofollow', // Private dashboard
   },
-
-  // Generate robots.txt
-  generateRobotsTxt: (options: {
-    allowAll?: boolean;
-    disallowPaths?: string[];
-    sitemapUrl?: string;
-    crawlDelay?: number;
-  } = {}) => {
-    const {
-      allowAll = true,
-      disallowPaths = ['/api/', '/admin/', '/private/'],
-      sitemapUrl = 'https://meridian.ai/sitemap.xml',
-      crawlDelay = 1
-    } = options;
-
-    let robotsTxt = 'User-agent: *\n';
-
-    if (allowAll) {
-      robotsTxt += 'Allow: /\n';
-    }
-
-    disallowPaths.forEach(path => {
-      robotsTxt += `Disallow: ${path}\n`;
-    });
-
-    robotsTxt += `Crawl-delay: ${crawlDelay}\n`;
-    robotsTxt += `Sitemap: ${sitemapUrl}\n`;
-
-    return robotsTxt;
-  },
-
-  // Optimize images for SEO
-  optimizeImage: (imageUrl: string, options: {
-    width?: number;
-    height?: number;
-    quality?: number;
-    format?: 'webp' | 'jpeg' | 'png';
-    alt?: string;
-  } = {}) => {
-    const {
-      width = 1200,
-      height = 630,
-      quality = 80,
-      format = 'webp',
-      alt = ''
-    } = options;
-
-    // Add image optimization parameters
-    const optimizedUrl = `${imageUrl}?w=${width}&h=${height}&q=${quality}&f=${format}`;
-
-    return {
-      src: optimizedUrl,
-      alt,
-      width,
-      height,
-      loading: 'lazy' as const
-    };
-  },
-
-  // Generate canonical URL
-  generateCanonicalUrl: (path: string, baseUrl: string = 'https://meridian.ai') => {
-    return `${baseUrl}${path}`;
-  },
-
-  // Generate breadcrumb structured data
-  generateBreadcrumbData: (breadcrumbs: Array<{
-    name: string;
-    url: string;
-  }>) => {
-    return {
-      '@context': 'https://schema.org',
-      '@type': 'BreadcrumbList',
-      itemListElement: breadcrumbs.map((breadcrumb, index) => ({
-        '@type': 'ListItem',
-        position: index + 1,
-        name: breadcrumb.name,
-        item: breadcrumb.url
-      }))
-    };
-  },
-
-  // Generate FAQ structured data
-  generateFAQData: (faqs: Array<{
-    question: string;
-    answer: string;
-  }>) => {
-    return {
-      '@context': 'https://schema.org',
-      '@type': 'FAQPage',
-      mainEntity: faqs.map(faq => ({
-        '@type': 'Question',
-        name: faq.question,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: faq.answer
-        }
-      }))
-    };
-  },
-
-  // Generate review structured data
-  generateReviewData: (review: {
-    rating: number;
-    reviewCount: number;
-    bestRating: number;
-    worstRating: number;
-  }) => {
-    return {
+  
+  // Pricing
+  pricing: {
+    title: 'Pricing - Super Intelligence',
+    description: 'Choose the perfect plan for your email management needs. Start free, scale as you grow.',
+    keywords: 'pricing, plans, subscription, email management pricing',
+    ogImage: '/og-pricing.jpg',
+    structuredData: {
       '@context': 'https://schema.org',
       '@type': 'Product',
-      name: 'Meridian',
-      aggregateRating: {
-        '@type': 'AggregateRating',
-        ratingValue: review.rating,
-        reviewCount: review.reviewCount,
-        bestRating: review.bestRating,
-        worstRating: review.worstRating
-      }
-    };
-  }
-};
-
-// SEO Configuration
-export const seoConfig = {
-  // Default metadata
-  default: {
-    title: 'Meridian - AI-Powered Productivity Platform',
-    description: 'Transform communication chaos into clarity with AI-powered email management, prioritization, and intelligent automation.',
-    keywords: ['AI', 'productivity', 'email management', 'automation', 'communication'],
-    image: 'https://meridian.ai/og-image.png',
-    url: 'https://meridian.ai'
-  },
-
-  // Page-specific metadata
-  pages: {
-    home: {
-      title: 'Meridian - AI-Powered Productivity Platform',
-      description: 'Transform communication chaos into clarity with AI-powered email management, prioritization, and intelligent automation.',
-      keywords: ['AI', 'productivity', 'email management', 'automation'],
-      type: 'website' as const
+      name: 'Super Intelligence',
+      description: 'AI-powered email management platform',
+      offers: [
+        {
+          '@type': 'Offer',
+          name: 'Free Plan',
+          price: '0',
+          priceCurrency: 'USD',
+        },
+        {
+          '@type': 'Offer',
+          name: 'Pro Plan',
+          price: '29',
+          priceCurrency: 'USD',
+        },
+        {
+          '@type': 'Offer',
+          name: 'Enterprise Plan',
+          price: '99',
+          priceCurrency: 'USD',
+        },
+      ],
     },
-    pricing: {
-      title: 'Pricing - Meridian',
-      description: 'Choose the perfect plan for your productivity needs. Start free or upgrade to unlock advanced AI features.',
-      keywords: ['pricing', 'plans', 'subscription', 'features'],
-      type: 'website' as const
-    },
-    dashboard: {
-      title: 'Dashboard - Meridian',
-      description: 'Your AI-powered productivity dashboard. Manage emails, track priorities, and stay organized.',
-      keywords: ['dashboard', 'email management', 'productivity'],
-      type: 'website' as const
-    },
-    onboarding: {
-      title: 'Get Started - Meridian',
-      description: 'Set up your AI productivity assistant in minutes. Connect your email and start organizing.',
-      keywords: ['onboarding', 'setup', 'getting started'],
-      type: 'website' as const
-    }
   },
-
-  // Social media
-  social: {
-    twitter: {
-      handle: '@meridian_ai',
-      site: '@meridian_ai'
-    },
-    facebook: {
-      appId: process.env.FACEBOOK_APP_ID
-    }
+  
+  // Onboarding
+  onboarding: {
+    title: 'Get Started - Super Intelligence',
+    description: 'Set up your AI-powered email management experience in just a few steps.',
+    keywords: 'onboarding, setup, email configuration',
+    robots: 'noindex, nofollow',
   },
+} as const
 
-  // Analytics
-  analytics: {
-    google: process.env.GOOGLE_ANALYTICS_ID,
-    facebook: process.env.FACEBOOK_PIXEL_ID,
-    hotjar: process.env.HOTJAR_ID
-  },
-
-  // Search console
-  searchConsole: {
-    google: process.env.GOOGLE_SEARCH_CONSOLE_VERIFICATION,
-    bing: process.env.BING_WEBMASTER_VERIFICATION
-  }
-};
-
-// SEO Monitoring
-export const seoMonitoring = {
-  // Track page views
-  trackPageView: (page: string, title: string) => {
-    if (typeof window !== 'undefined' && window.gtag) {
-      window.gtag('config', process.env.GOOGLE_ANALYTICS_ID!, {
-        page_title: title,
-        page_location: page
-      });
-    }
-  },
-
-  // Track custom events
-  trackEvent: (action: string, category: string, label?: string, value?: number) => {
-    if (typeof window !== 'undefined' && window.gtag) {
-      window.gtag('event', action, {
-        event_category: category,
-        event_label: label,
-        value: value
-      });
-    }
-  },
-
-  // Track conversions
-  trackConversion: (conversionType: 'signup' | 'purchase' | 'trial', value?: number) => {
-    seoMonitoring.trackEvent('conversion', conversionType, undefined, value);
-  },
-
-  // Track engagement
-  trackEngagement: (engagementType: 'scroll' | 'click' | 'time_on_page', value?: number) => {
-    seoMonitoring.trackEvent('engagement', engagementType, undefined, value);
-  }
-};
-
-// SEO Hooks
-export const useSEO = (page: keyof typeof seoConfig.pages) => {
-  const pageConfig = seoConfig.pages[page];
+// Generate metadata for pages
+export const generateMetadata = (
+  page: keyof typeof PAGE_METADATA,
+  customData?: Partial<Metadata>
+): Metadata => {
+  const baseMetadata = PAGE_METADATA[page]
   
   return {
-    metadata: seoUtils.generateMetadata(pageConfig),
-    structuredData: seoUtils.generateStructuredData('website', {
-      name: pageConfig.title,
-      description: pageConfig.description,
-      url: `${seoConfig.default.url}/${page}`
-    }),
-    trackPageView: () => seoMonitoring.trackPageView(`/${page}`, pageConfig.title)
-  };
-};
+    title: {
+      default: baseMetadata.title,
+      template: '%s | Super Intelligence',
+    },
+    description: baseMetadata.description,
+    keywords: baseMetadata.keywords,
+    authors: [{ name: SEO_CONFIG.DEFAULT.author }],
+    creator: SEO_CONFIG.DEFAULT.author,
+    publisher: SEO_CONFIG.DEFAULT.author,
+    robots: (baseMetadata as any).robots || SEO_CONFIG.DEFAULT.robots,
+    viewport: SEO_CONFIG.DEFAULT.viewport,
+    
+    // Open Graph
+    openGraph: {
+      title: baseMetadata.title,
+      description: baseMetadata.description,
+      type: 'website',
+      locale: 'en_US',
+      siteName: 'Super Intelligence',
+      images: (baseMetadata as any).ogImage ? [
+        {
+          url: (baseMetadata as any).ogImage,
+          width: 1200,
+          height: 630,
+          alt: baseMetadata.title,
+        },
+      ] : undefined,
+    },
+    
+    // Twitter
+    twitter: {
+      card: 'summary_large_image',
+      title: baseMetadata.title,
+      description: baseMetadata.description,
+      creator: SEO_CONFIG.SOCIAL.twitter,
+      images: (baseMetadata as any).ogImage ? [(baseMetadata as any).ogImage] : undefined,
+    },
+    
+    // Structured data
+    other: {
+      'application-name': 'Super Intelligence',
+      'apple-mobile-web-app-title': 'Super Intelligence',
+      'apple-mobile-web-app-capable': 'yes',
+      'apple-mobile-web-app-status-bar-style': 'default',
+      'format-detection': 'telephone=no',
+      'mobile-web-app-capable': 'yes',
+      'msapplication-config': '/browserconfig.xml',
+      'msapplication-TileColor': '#000000',
+      'theme-color': '#000000',
+    },
+    
+    // Custom data
+    ...customData,
+  }
+}
 
-// Export default SEO instance
-export default {
-  seoUtils,
-  seoConfig,
-  seoMonitoring,
-  useSEO
-}; 
+// Generate structured data
+export const generateStructuredData = (
+  type: string,
+  data: Record<string, any>
+): string => {
+  return JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': type,
+    ...data,
+  })
+}
+
+// Organization structured data
+export const ORGANIZATION_STRUCTURED_DATA = generateStructuredData('Organization', {
+  name: 'Super Intelligence AI',
+  url: 'https://super-intelligence.ai',
+  logo: 'https://super-intelligence.ai/logo.png',
+  description: 'AI-powered email management platform',
+  sameAs: [
+    `https://twitter.com/${SEO_CONFIG.SOCIAL.twitter}`,
+    `https://facebook.com/${SEO_CONFIG.SOCIAL.facebook}`,
+    `https://linkedin.com/${SEO_CONFIG.SOCIAL.linkedin}`,
+  ],
+  contactPoint: {
+    '@type': 'ContactPoint',
+    contactType: 'customer service',
+    email: 'support@super-intelligence.ai',
+  },
+})
+
+// WebSite structured data
+export const WEBSITE_STRUCTURED_DATA = generateStructuredData('WebSite', {
+  name: 'Super Intelligence',
+  url: 'https://super-intelligence.ai',
+  description: 'AI-powered email management platform',
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: 'https://super-intelligence.ai/search?q={search_term_string}',
+    'query-input': 'required name=search_term_string',
+  },
+})
+
+// Breadcrumb structured data
+export const generateBreadcrumbData = (items: Array<{ name: string; url: string }>) => {
+  return generateStructuredData('BreadcrumbList', {
+    itemListElement: items.map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: item.name,
+      item: item.url,
+    })),
+  })
+}
+
+// FAQ structured data
+export const generateFAQData = (questions: Array<{ question: string; answer: string }>) => {
+  return generateStructuredData('FAQPage', {
+    mainEntity: questions.map(q => ({
+      '@type': 'Question',
+      name: q.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: q.answer,
+      },
+    })),
+  })
+}
+
+// Accessibility utilities
+export const ACCESSIBILITY_CONFIG = {
+  // Color contrast ratios
+  CONTRAST: {
+    NORMAL: 4.5,
+    LARGE: 3.0,
+  },
+  
+  // Focus indicators
+  FOCUS: {
+    VISIBLE: true,
+    STYLE: '2px solid #D4AF37',
+  },
+  
+  // Screen reader support
+  SCREEN_READER: {
+    SKIP_LINKS: true,
+    ARIA_LABELS: true,
+    SEMANTIC_HTML: true,
+  },
+} as const
+
+// Core Web Vitals optimization
+export const CORE_WEB_VITALS_CONFIG = {
+  // LCP optimization
+  LCP: {
+    PRIORITY_IMAGES: true,
+    PRELOAD_CRITICAL_RESOURCES: true,
+    OPTIMIZE_FONTS: true,
+  },
+  
+  // FID optimization
+  FID: {
+    MINIMIZE_JAVASCRIPT: true,
+    DEFER_NON_CRITICAL_JS: true,
+    OPTIMIZE_EVENT_HANDLERS: true,
+  },
+  
+  // CLS optimization
+  CLS: {
+    RESERVE_SPACE: true,
+    AVOID_LAYOUT_SHIFTS: true,
+    OPTIMIZE_IMAGES: true,
+  },
+} as const
+
+// Export utilities
+export const seoUtils = {
+  generateMetadata,
+  generateStructuredData,
+  generateBreadcrumbData,
+  generateFAQData,
+} 

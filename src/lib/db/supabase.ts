@@ -18,7 +18,7 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
   },
   global: {
     headers: {
-      'x-application-name': 'meridian-app',
+      'x-application-name': 'super-intelligence-app',
     },
   },
 });
@@ -31,7 +31,7 @@ export const supabaseAdmin = createClient<Database>(supabaseUrl, supabaseService
   },
   global: {
     headers: {
-      'x-application-name': 'meridian-app-admin',
+      'x-application-name': 'super-intelligence-app-admin',
     },
   },
 });

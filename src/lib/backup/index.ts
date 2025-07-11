@@ -258,7 +258,7 @@ export const backupConfig = {
     cloud: {
       enabled: false,
       provider: 'aws', // or 'gcp', 'azure'
-      bucket: 'meridian-backups',
+      bucket: 'super-intelligence-backups',
       region: 'us-east-1'
     }
   },

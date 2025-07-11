@@ -5,7 +5,7 @@ test.describe('Cross-Browser Compatibility', () => {
     await page.goto('/');
     
     // Test basic functionality
-    await expect(page).toHaveTitle(/Meridian/);
+    await expect(page).toHaveTitle(/Super Intelligence/);
     
     // Test navigation
     const nav = page.locator('nav');
@@ -20,7 +20,7 @@ test.describe('Cross-Browser Compatibility', () => {
     await page.goto('/');
     
     // Test basic functionality
-    await expect(page).toHaveTitle(/Meridian/);
+    await expect(page).toHaveTitle(/Super Intelligence/);
     
     // Test form interactions
     const inputs = page.locator('input');
@@ -31,7 +31,7 @@ test.describe('Cross-Browser Compatibility', () => {
     await page.goto('/');
     
     // Test basic functionality
-    await expect(page).toHaveTitle(/Meridian/);
+    await expect(page).toHaveTitle(/Super Intelligence/);
     
     // Test button interactions
     const buttons = page.locator('button');
@@ -173,7 +173,7 @@ test.describe('Cross-Browser Compatibility', () => {
   test('should handle different locales', async ({ page }) => {
     // Test English locale
     await page.goto('/');
-    await expect(page).toHaveTitle(/Meridian/);
+    await expect(page).toHaveTitle(/Super Intelligence/);
     
     // Test different date formats
     await page.evaluate(() => {
@@ -217,7 +217,7 @@ test.describe('Cross-Browser Compatibility', () => {
     });
     
     await page.goto('/');
-    await expect(page).toHaveTitle(/Meridian/);
+    await expect(page).toHaveTitle(/Super Intelligence/);
     
     // Test desktop user agent
     await page.setExtraHTTPHeaders({
@@ -225,7 +225,7 @@ test.describe('Cross-Browser Compatibility', () => {
     });
     
     await page.goto('/');
-    await expect(page).toHaveTitle(/Meridian/);
+    await expect(page).toHaveTitle(/Super Intelligence/);
   });
 
   test('should handle different viewport orientations', async ({ page }) => {

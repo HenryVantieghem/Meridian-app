@@ -51,7 +51,7 @@ export default function OnboardingLayout({ children }: OnboardingLayoutProps) {
                 </Typography>
               </div>
               <Typography variant="h3" className="text-xl font-bold text-gray-900">
-                Meridian
+                Super Intelligence
               </Typography>
             </div>
 

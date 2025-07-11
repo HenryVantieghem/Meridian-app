@@ -14,7 +14,7 @@ export default function SignUpPage() {
           className="text-center mb-8"
         >
           <Typography variant="h1" className="text-4xl font-bold text-gray-900 mb-2">
-            Meridian
+            Super Intelligence
           </Typography>
           <Typography variant="body" className="text-gray-600">
             Join the future of email management

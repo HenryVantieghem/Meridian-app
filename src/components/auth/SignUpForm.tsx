@@ -143,7 +143,7 @@ export function SignUpForm({ redirectUrl = '/onboarding', className }: SignUpFor
       <Card className="p-8 space-y-6">
         <div className="text-center space-y-2">
           <Typography variant="h2" className="text-2xl font-bold text-gray-900">
-            Join Meridian
+            Join Super Intelligence
           </Typography>
           <Typography variant="body" className="text-gray-600">
             Create your account to get started

@@ -233,7 +233,7 @@ export class CacheManager {
 
   // Generate cache key
   private generateKey(key: string): string {
-    return `meridian:${key}`;
+    return `super-intelligence:${key}`;
   }
 
   // Database cache methods (placeholder implementations)

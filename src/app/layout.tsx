@@ -9,8 +9,8 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: {
-    default: "Meridian - AI-Powered Email Management",
-    template: "%s | Meridian",
+    default: "Super Intelligence - AI-Powered Email Management",
+    template: "%s | Super Intelligence",
   },
   description: "Transform communication chaos into clarity through intelligent email management, AI-powered prioritization, and elegant UX design.",
   keywords: [
@@ -21,9 +21,9 @@ export const metadata: Metadata = {
     "AI assistant",
     "productivity platform",
   ],
-  authors: [{ name: "Meridian Team" }],
-  creator: "Meridian",
-  publisher: "Meridian",
+  authors: [{ name: "Super Intelligence Team" }],
+  creator: "Super Intelligence",
+  publisher: "Super Intelligence",
   formatDetection: {
     email: false,
     address: false,
@@ -37,21 +37,21 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: "/",
-    title: "Meridian - AI-Powered Email Management",
+    title: "Super Intelligence - AI-Powered Email Management",
     description: "Transform communication chaos into clarity through intelligent email management, AI-powered prioritization, and elegant UX design.",
-    siteName: "Meridian",
+    siteName: "Super Intelligence",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Meridian - AI-Powered Email Management",
+        alt: "Super Intelligence - AI-Powered Email Management",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Meridian - AI-Powered Email Management",
+    title: "Super Intelligence - AI-Powered Email Management",
     description: "Transform communication chaos into clarity through intelligent email management, AI-powered prioritization, and elegant UX design.",
     images: ["/og-image.png"],
   },

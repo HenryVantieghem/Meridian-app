@@ -49,7 +49,7 @@ const envSchema = z.object({
 
   // App Configuration
   NEXT_PUBLIC_APP_URL: z.string().url(),
-  NEXT_PUBLIC_APP_NAME: z.string().default('Meridian'),
+  NEXT_PUBLIC_APP_NAME: z.string().default('Super Intelligence'),
   NEXTAUTH_SECRET: z.string().min(1),
   NEXTAUTH_URL: z.string().url(),
 
@@ -158,8 +158,8 @@ export const productionConfig = {
 
   // Email settings
   email: {
-    from: 'noreply@meridian.ai',
-    replyTo: 'support@meridian.ai',
+    from: 'noreply@super-intelligence.ai',
+    replyTo: 'support@super-intelligence.ai',
     maxRetries: 3,
     batchSize: 100,
   },
