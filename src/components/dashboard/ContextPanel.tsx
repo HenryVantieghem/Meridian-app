@@ -95,18 +95,18 @@ export function ContextPanel({ item, type, onClose }: ContextPanelProps) {
     switch (sentiment) {
       case 'positive': return 'text-green-600 bg-green-50';
       case 'negative': return 'text-red-600 bg-red-50';
-      case 'neutral': return 'text-[#36454F] bg-[#E5E4E2]';
-      default: return 'text-[#36454F] bg-[#E5E4E2]';
+      case 'neutral': return 'text-[#4A4A4A] bg-[#F8F6F0]';
+      default: return 'text-[#4A4A4A] bg-[#F8F6F0]';
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'urgent': return 'text-[#DC143C] bg-[rgba(220,20,60,0.1)]';
+      case 'urgent': return 'text-[#801B2B] bg-[rgba(128,27,43,0.1)]';
       case 'high': return 'text-orange-600 bg-orange-50';
       case 'medium': return 'text-yellow-600 bg-yellow-50';
       case 'low': return 'text-green-600 bg-green-50';
-      default: return 'text-[#36454F] bg-[#E5E4E2]';
+      default: return 'text-[#4A4A4A] bg-[#F8F6F0]';
     }
   };
 
@@ -114,17 +114,17 @@ export function ContextPanel({ item, type, onClose }: ContextPanelProps) {
     return (
       <div className="flex flex-col items-center justify-center h-full p-8">
         <div className="text-center">
-          <div className="w-16 h-16 bg-[#E5E4E2] rounded-full flex items-center justify-center mb-6">
+          <div className="w-16 h-16 bg-[#F8F6F0] rounded-full flex items-center justify-center mb-6">
             {type === 'emails' ? (
-              <Mail className="h-8 w-8 text-[#36454F]" />
+              <Mail className="h-8 w-8 text-[#4A4A4A]" />
             ) : (
-              <MessageSquare className="h-8 w-8 text-[#36454F]" />
+              <MessageSquare className="h-8 w-8 text-[#4A4A4A]" />
             )}
           </div>
-          <h3 className="text-h3 text-black font-serif mb-4">
+          <h3 className="text-subhead-cartier text-black font-serif mb-4">
             Select Strategic Communication
           </h3>
-          <p className="text-body text-[#36454F]">
+          <p className="text-body-cartier text-[#4A4A4A]">
             Choose an email or message to view executive details and AI analysis.
           </p>
         </div>
@@ -135,19 +135,19 @@ export function ContextPanel({ item, type, onClose }: ContextPanelProps) {
   return (
     <div className="h-full flex flex-col">
       {/* Header */}
-      <div className="p-6 border-b border-[#E5E4E2]">
+      <div className="p-6 border-b border-[#F5F5F5]">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             {isEmail(item) ? (
-              <Mail className="h-6 w-6 text-[#DC143C]" />
+              <Mail className="h-6 w-6 text-[#801B2B]" />
             ) : (
-              <MessageSquare className="h-6 w-6 text-[#DC143C]" />
+              <MessageSquare className="h-6 w-6 text-[#801B2B]" />
             )}
-            <h3 className="text-h3 text-black font-serif">
+            <h3 className="text-subhead-cartier text-black font-serif">
               {isEmail(item) ? 'Strategic Communication Details' : 'Executive Message Details'}
             </h3>
           </div>
-          <Button variant="ghost" size="sm" onClick={onClose} className="text-[#36454F] hover:text-[#DC143C]">
+          <Button variant="ghost" size="sm" onClick={onClose} className="text-[#4A4A4A] hover:text-[#801B2B]">
             <X className="h-5 w-5" />
           </Button>
         </div>
@@ -157,23 +157,23 @@ export function ContextPanel({ item, type, onClose }: ContextPanelProps) {
       <div className="flex-1 overflow-y-auto p-6">
         <div className="space-y-6">
           {/* Basic Info */}
-          <Card variant="executive">
-            <h4 className="text-h4 text-black font-serif mb-4">
+          <Card variant="cartier">
+            <h4 className="text-subhead-cartier text-black font-serif mb-4">
               {isEmail(item) ? item.subject : 'Message'}
             </h4>
             
             <div className="space-y-4">
               {/* Sender/From */}
               <div className="flex items-center space-x-3">
-                <User className="h-5 w-5 text-[#36454F]" />
+                <User className="h-5 w-5 text-[#4A4A4A]" />
                 <div>
-                  <p className="text-body font-medium text-black">
+                  <p className="text-body-cartier font-medium text-black">
                     {isEmail(item) 
                       ? `${item.from.name || ''} ${item.from.email}`
                       : `${item.sender.name} (@${item.sender.id})`
                     }
                   </p>
-                  <p className="text-small text-[#36454F]">
+                  <p className="text-small text-[#4A4A4A]">
                     {isEmail(item) ? 'From' : 'Sent by'}
                   </p>
                 </div>
@@ -181,12 +181,12 @@ export function ContextPanel({ item, type, onClose }: ContextPanelProps) {
 
               {/* Date */}
               <div className="flex items-center space-x-3">
-                <Clock className="h-5 w-5 text-[#36454F]" />
+                <Clock className="h-5 w-5 text-[#4A4A4A]" />
                 <div>
-                  <p className="text-body font-medium text-black">
+                  <p className="text-body-cartier font-medium text-black">
                     {formatDate(isEmail(item) ? item.receivedAt : item.timestamp)}
                   </p>
-                  <p className="text-small text-[#36454F]">
+                  <p className="text-small text-[#4A4A4A]">
                     {isEmail(item) ? 'Received' : 'Sent'}
                   </p>
                 </div>
@@ -195,24 +195,24 @@ export function ContextPanel({ item, type, onClose }: ContextPanelProps) {
               {/* Channel/To */}
               {isEmail(item) ? (
                 <div className="flex items-center space-x-3">
-                  <Tag className="h-5 w-5 text-[#36454F]" />
+                  <Tag className="h-5 w-5 text-[#4A4A4A]" />
                   <div>
-                    <p className="text-body font-medium text-black">
+                    <p className="text-body-cartier font-medium text-black">
                       To: {item.to.map(addr => addr.email).join(', ')}
                     </p>
-                    <p className="text-small text-[#36454F]">
+                    <p className="text-small text-[#4A4A4A]">
                       Recipients
                     </p>
                   </div>
                 </div>
               ) : (
                 <div className="flex items-center space-x-3">
-                  <Tag className="h-5 w-5 text-[#36454F]" />
+                  <Tag className="h-5 w-5 text-[#4A4A4A]" />
                   <div>
-                    <p className="text-body font-medium text-black">
+                    <p className="text-body-cartier font-medium text-black">
                       #{item.channelName}
                     </p>
-                    <p className="text-small text-[#36454F]">
+                    <p className="text-small text-[#4A4A4A]">
                       Channel
                     </p>
                   </div>
@@ -221,12 +221,12 @@ export function ContextPanel({ item, type, onClose }: ContextPanelProps) {
 
               {/* Priority */}
               <div className="flex items-center space-x-3">
-                <div className="w-4 h-4 rounded-full bg-[#DC143C]" />
+                <div className="w-4 h-4 rounded-full bg-[#801B2B]" />
                 <div>
-                  <p className="text-body font-medium capitalize text-black">
+                  <p className="text-body-cartier font-medium capitalize text-black">
                     {item.priority} priority
                   </p>
-                  <p className="text-small text-[#36454F]">
+                  <p className="text-small text-[#4A4A4A]">
                     Priority Level
                   </p>
                 </div>
@@ -235,12 +235,12 @@ export function ContextPanel({ item, type, onClose }: ContextPanelProps) {
               {/* Attachments */}
               {isEmail(item) && item.attachments.length > 0 && (
                 <div className="flex items-center space-x-3">
-                  <Paperclip className="h-5 w-5 text-[#36454F]" />
+                  <Paperclip className="h-5 w-5 text-[#4A4A4A]" />
                   <div>
-                    <p className="text-body font-medium text-black">
+                    <p className="text-body-cartier font-medium text-black">
                       {item.attachments.length} attachment{item.attachments.length !== 1 ? 's' : ''}
                     </p>
-                    <p className="text-small text-[#36454F]">
+                    <p className="text-small text-[#4A4A4A]">
                       Files
                     </p>
                   </div>

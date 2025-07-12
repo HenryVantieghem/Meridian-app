@@ -50,14 +50,14 @@ export function Sidebar({
   };
 
   return (
-    <div className={`bg-white border-r border-[#E5E4E2] flex flex-col ${collapsed ? 'w-16' : 'w-64'}`}>
+    <div className={`bg-white border-r border-[#F5F5F5] flex flex-col ${collapsed ? 'w-16' : 'w-64'}`}>
       {/* Header */}
-      <div className="p-6 border-b border-[#E5E4E2]">
+      <div className="p-6 border-b border-[#F5F5F5]">
         <div className="flex items-center justify-between">
           {!collapsed && (
             <div className="flex items-center space-x-2">
-              <Crown className="h-6 w-6 text-[#DC143C]" />
-              <h2 className="text-h3 text-black font-serif">
+              <Crown className="h-6 w-6 text-[#801B2B]" />
+              <h2 className="text-subhead-cartier text-black font-serif">
                 Napoleon
               </h2>
             </div>
@@ -66,7 +66,7 @@ export function Sidebar({
             variant="ghost"
             size="sm"
             onClick={() => setCollapsed(!collapsed)}
-            className="ml-auto text-[#36454F] hover:text-[#DC143C]"
+            className="ml-auto text-[#4A4A4A] hover:text-[#801B2B]"
           >
             {collapsed ? '→' : '←'}
           </Button>
@@ -77,7 +77,7 @@ export function Sidebar({
       <nav className="flex-1 p-6">
         <div className="nav-executive">
           <Button
-            variant={activeTab === 'emails' ? 'executive' : 'ghost'}
+            variant={activeTab === 'emails' ? 'cartier' : 'ghost'}
             className={`w-full justify-start ${activeTab === 'emails' ? 'nav-item active' : 'nav-item'}`}
             onClick={() => onTabChange('emails')}
           >
@@ -86,7 +86,7 @@ export function Sidebar({
               <>
                 <span className="font-medium">Strategic Communications</span>
                 {syncStatus.emailsCount > 0 && (
-                  <Badge className="ml-auto bg-[#DC143C] text-white">
+                  <Badge className="ml-auto bg-[#801B2B] text-white">
                     {syncStatus.emailsCount}
                   </Badge>
                 )}
@@ -95,7 +95,7 @@ export function Sidebar({
           </Button>
 
           <Button
-            variant={activeTab === 'messages' ? 'executive' : 'ghost'}
+            variant={activeTab === 'messages' ? 'cartier' : 'ghost'}
             className={`w-full justify-start ${activeTab === 'messages' ? 'nav-item active' : 'nav-item'}`}
             onClick={() => onTabChange('messages')}
           >
@@ -104,7 +104,7 @@ export function Sidebar({
               <>
                 <span className="font-medium">Executive Messaging</span>
                 {workspaces.length > 0 && (
-                  <Badge className="ml-auto bg-[#DC143C] text-white">
+                  <Badge className="ml-auto bg-[#801B2B] text-white">
                     {workspaces.length}
                   </Badge>
                 )}
@@ -115,29 +115,29 @@ export function Sidebar({
 
         {/* Sync Status */}
         {!collapsed && activeTab === 'emails' && (
-          <Card variant="executive" className="mt-8">
+          <Card variant="cartier" className="mt-8">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="text-h3 text-black font-serif">Communication Sync</h3>
+                <h3 className="text-subhead-cartier text-black font-serif">Communication Sync</h3>
                 <div className={`w-3 h-3 rounded-full ${syncStatus.isActive ? 'bg-green-500' : 'bg-red-500'}`} />
               </div>
               
               <div className="space-y-3">
-                <div className="flex items-center justify-between text-body">
-                  <span className="text-[#36454F]">Last synchronization:</span>
+                <div className="flex items-center justify-between text-body-cartier">
+                  <span className="text-[#4A4A4A]">Last synchronization:</span>
                   <span className="text-black font-medium">{formatLastSync(syncStatus.lastSync)}</span>
                 </div>
                 
-                <div className="flex items-center justify-between text-body">
-                  <span className="text-[#36454F]">Communications:</span>
+                <div className="flex items-center justify-between text-body-cartier">
+                  <span className="text-[#4A4A4A]">Communications:</span>
                   <span className="text-black font-medium">{syncStatus.emailsCount}</span>
                 </div>
               </div>
 
               <Button
                 onClick={onSyncEmails}
-                variant="executive-secondary"
-                size="executive"
+                variant="cartier-subtle"
+                size="cartier"
                 className="w-full"
               >
                 <RefreshCw className="h-4 w-4 mr-2" />
@@ -149,20 +149,20 @@ export function Sidebar({
 
         {/* Workspace Selection */}
         {!collapsed && activeTab === 'messages' && workspaces.length > 0 && (
-          <Card variant="executive" className="mt-8">
-            <h3 className="text-h3 text-black font-serif mb-4">
+          <Card variant="cartier" className="mt-8">
+            <h3 className="text-subhead-cartier text-black font-serif mb-4">
               Executive Workspaces
             </h3>
             <div className="space-y-2">
               {workspaces.map((workspace) => (
                 <Button
                   key={workspace.id}
-                  variant={selectedWorkspace === workspace.id ? 'executive' : 'ghost'}
+                  variant={selectedWorkspace === workspace.id ? 'cartier' : 'ghost'}
                   size="sm"
                   className={`w-full justify-start ${selectedWorkspace === workspace.id ? 'nav-item active' : 'nav-item'}`}
                   onClick={() => onWorkspaceChange(workspace.id)}
                 >
-                  <div className={`w-2 h-2 rounded-full mr-3 ${workspace.isActive ? 'bg-green-500' : 'bg-[#E5E4E2]'}`} />
+                  <div className={`w-2 h-2 rounded-full mr-3 ${workspace.isActive ? 'bg-green-500' : 'bg-[#F8F6F0]'}`} />
                   <span className="truncate font-medium">{workspace.name}</span>
                 </Button>
               ))}
@@ -172,17 +172,17 @@ export function Sidebar({
 
         {/* Connection Status */}
         {!collapsed && (
-          <Card variant="executive" className="mt-8">
-            <h3 className="text-h3 text-black font-serif mb-4">
+          <Card variant="cartier" className="mt-8">
+            <h3 className="text-subhead-cartier text-black font-serif mb-4">
               Strategic Connections
             </h3>
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-body text-[#36454F]">Gmail Integration</span>
+                <span className="text-body-cartier text-[#4A4A4A]">Gmail Integration</span>
                 <div className={`w-3 h-3 rounded-full ${syncStatus.isActive ? 'bg-green-500' : 'bg-red-500'}`} />
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-body text-[#36454F]">Slack Integration</span>
+                <span className="text-body-cartier text-[#4A4A4A]">Slack Integration</span>
                 <div className={`w-3 h-3 rounded-full ${workspaces.length > 0 ? 'bg-green-500' : 'bg-red-500'}`} />
               </div>
             </div>
@@ -191,7 +191,7 @@ export function Sidebar({
       </nav>
 
       {/* Footer */}
-      <div className="p-6 border-t border-[#E5E4E2]">
+      <div className="p-6 border-t border-[#F5F5F5]">
         <Button
           variant="ghost"
           className="w-full justify-start nav-item"

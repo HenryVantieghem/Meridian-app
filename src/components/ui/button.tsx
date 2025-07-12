@@ -8,14 +8,17 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-[#DC143C] text-white hover:bg-[#B91C3C] hover:transform hover:translate-y-[-1px] hover:shadow-[0_4px_16px_rgba(0,0,0,0.12)]",
+        default: "bg-[#801B2B] text-white hover:bg-[#6B1724] hover:transform hover:translate-y-[-1px] hover:shadow-[0_4px_16px_rgba(128,27,43,0.25)] active:transform active:translate-y-0 active:shadow-[0_2px_8px_rgba(128,27,43,0.2)]",
         destructive: "bg-red-500 text-white hover:bg-red-600",
-        outline: "border border-[#E5E4E2] bg-white hover:border-[#DC143C] hover:text-[#DC143C] hover:transform hover:translate-y-[-1px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.08)] text-black",
-        secondary: "bg-[#E5E4E2] text-black hover:bg-[#D4D3D1]",
-        ghost: "hover:bg-[#E5E4E2] text-black",
-        link: "text-[#DC143C] underline-offset-4 hover:underline",
-        executive: "bg-[#DC143C] text-white font-medium text-base px-8 py-3 hover:bg-[#B91C3C] hover:transform hover:translate-y-[-1px] hover:shadow-[0_4px_16px_rgba(0,0,0,0.12)] transition-all duration-200",
-        executive-secondary: "bg-white text-black border border-[#E5E4E2] font-medium text-base px-8 py-3 hover:border-[#DC143C] hover:text-[#DC143C] hover:transform hover:translate-y-[-1px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.08)] transition-all duration-200",
+        outline: "border border-[#F5F5F5] bg-white hover:border-[#801B2B] hover:text-[#801B2B] hover:transform hover:translate-y-[-1px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.06)] text-black",
+        secondary: "bg-[#F8F6F0] text-black hover:bg-[rgba(128,27,43,0.1)] hover:text-[#801B2B]",
+        ghost: "hover:bg-[#F8F6F0] text-black",
+        link: "text-[#801B2B] underline-offset-4 hover:underline",
+        executive: "bg-[#801B2B] text-white font-medium text-base px-8 py-3 hover:bg-[#6B1724] hover:transform hover:translate-y-[-1px] hover:shadow-[0_4px_16px_rgba(128,27,43,0.25)] active:transform active:translate-y-0 active:shadow-[0_2px_8px_rgba(128,27,43,0.2)] transition-all duration-200",
+        executive-secondary: "bg-white text-black border border-[#F5F5F5] font-medium text-base px-8 py-3 hover:border-[#801B2B] hover:text-[#801B2B] hover:transform hover:translate-y-[-1px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.06)] transition-all duration-200",
+        cartier: "bg-[#801B2B] text-white font-medium text-base px-8 py-3 hover:bg-[#6B1724] hover:transform hover:translate-y-[-1px] hover:shadow-[0_4px_16px_rgba(128,27,43,0.25)] active:transform active:translate-y-0 active:shadow-[0_2px_8px_rgba(128,27,43,0.2)] transition-all duration-200 letter-spacing-[0.01em]",
+        cartier-secondary: "bg-white text-black border border-[#F5F5F5] font-medium text-base px-8 py-3 hover:border-[#801B2B] hover:text-[#801B2B] hover:transform hover:translate-y-[-1px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.06)] transition-all duration-200",
+        cartier-subtle: "bg-[#F8F6F0] text-black font-medium text-base px-8 py-3 hover:bg-[rgba(128,27,43,0.1)] hover:text-[#801B2B] transition-all duration-200",
       },
       size: {
         default: "h-10 px-4 py-2",
@@ -24,6 +27,7 @@ const buttonVariants = cva(
         xl: "h-14 rounded-md px-10 text-lg",
         icon: "h-10 w-10",
         executive: "h-12 px-8 py-3 text-base",
+        cartier: "h-12 px-8 py-3 text-base",
       },
     },
     defaultVariants: {

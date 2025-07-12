@@ -104,7 +104,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="dashboard-container">
+    <div className="dashboard-cartier">
       {/* Left Sidebar */}
       <div className="sidebar-left">
         <Sidebar
@@ -121,13 +121,13 @@ export default function DashboardPage() {
       {/* Main Content Panel */}
       <div className="main-panel">
         {/* Header */}
-        <header className="border-b border-[#E5E4E2] px-8 py-6">
+        <header className="header-cartier">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-h2 text-black font-serif">
-                {activeTab === 'emails' ? 'Strategic Email Command' : 'Executive Communication Hub'}
+              <h1 className="text-headline-cartier text-black font-serif">
+                {activeTab === 'emails' ? 'Strategic Communication Command' : 'Executive Messaging Hub'}
               </h1>
-              <p className="text-body-large text-[#36454F] mt-2">
+              <p className="text-body-cartier text-[#4A4A4A] mt-2">
                 {activeTab === 'emails' 
                   ? `${unreadEmails} unread communications, ${urgentEmails} critical priorities`
                   : `${unreadMessages} unread messages, ${highPriorityMessages} high priority items`
@@ -140,14 +140,14 @@ export default function DashboardPage() {
                 <Button
                   onClick={handleSyncEmails}
                   disabled={emailsLoading}
-                  variant="executive-secondary"
-                  size="executive"
+                  variant="cartier-secondary"
+                  size="cartier"
                 >
                   {emailsLoading ? 'Synchronizing...' : 'Sync Communications'}
                 </Button>
               )}
               
-              <Badge className="bg-[#E5E4E2] text-black border-[#DC143C]">
+              <Badge className="bg-[#F8F6F0] text-black border-[#801B2B]">
                 {activeTab === 'emails' ? emails.length : messages.length} items
               </Badge>
             </div>
