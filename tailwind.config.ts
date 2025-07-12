@@ -9,23 +9,27 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Super Intelligence Design System
+        // Cartier Elegance Design System
         white: "#FFFFFF",
         black: "#000000",
-        gold: "#D4AF37",
+        cartier: {
+          red: "#DC143C",
+          platinum: "#E5E4E2",
+          charcoal: "#36454F",
+        },
         
         // Semantic colors
         primary: {
-          50: "#fefce8",
-          100: "#fef9c3",
-          200: "#fef08a",
-          300: "#fde047",
-          400: "#facc15",
-          500: "#D4AF37", // Gold
-          600: "#ca8a04",
-          700: "#a16207",
-          800: "#854d0e",
-          900: "#713f12",
+          50: "#fef2f2",
+          100: "#fee2e2",
+          200: "#fecaca",
+          300: "#fca5a5",
+          400: "#f87171",
+          500: "#DC143C", // Cartier Red
+          600: "#B91C3C",
+          700: "#991B1B",
+          800: "#7F1D1D",
+          900: "#450A0A",
         },
         gray: {
           50: "#fafafa",
@@ -41,7 +45,19 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: ["Helvetica Neue", "Helvetica", "Arial", "sans-serif"],
+        sans: ["-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif"],
+        serif: ["Georgia", "Times New Roman", "serif"],
+        mono: ["SF Mono", "Monaco", "Cascadia Code", "monospace"],
+      },
+      fontSize: {
+        'hero': ['clamp(48px, 8vw, 72px)', { lineHeight: '1.1', letterSpacing: '-0.02em' }],
+        'h1': ['clamp(36px, 6vw, 48px)', { lineHeight: '1.2' }],
+        'h2': ['clamp(28px, 4vw, 36px)', { lineHeight: '1.3' }],
+        'h3': ['clamp(20px, 3vw, 24px)', { lineHeight: '1.4' }],
+        'body-large': ['18px', { lineHeight: '1.6' }],
+        'body': ['16px', { lineHeight: '1.6' }],
+        'small': ['14px', { lineHeight: '1.5' }],
+        'caption': ['12px', { lineHeight: '1.4', letterSpacing: '0.05em' }],
       },
       spacing: {
         // 8px base unit system
@@ -67,10 +83,15 @@ const config: Config = {
       },
       borderRadius: {
         "sm": "4px",
-        "md": "8px",
-        "lg": "12px",
-        "xl": "16px",
-        "2xl": "24px",
+        "md": "6px",
+        "lg": "8px",
+        "xl": "12px",
+        "2xl": "16px",
+      },
+      boxShadow: {
+        'subtle': '0 2px 8px rgba(0, 0, 0, 0.08)',
+        'medium': '0 4px 16px rgba(0, 0, 0, 0.12)',
+        'strong': '0 8px 32px rgba(0, 0, 0, 0.16)',
       },
       animation: {
         "fade-in": "fadeIn 0.3s ease-in-out",

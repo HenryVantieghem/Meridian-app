@@ -92,8 +92,8 @@ export default function DashboardPage() {
 
   if (!userId) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Typography variant="h2">Please sign in to access your dashboard</Typography>
+      <div className="flex items-center justify-center min-h-screen bg-white">
+        <Typography variant="h2" className="text-black font-serif">Please sign in to access your Strategic Command Center</Typography>
       </div>
     );
   }
@@ -104,33 +104,35 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="flex h-screen bg-white">
-      {/* Sidebar */}
-      <Sidebar
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
-        selectedWorkspace={selectedWorkspace}
-        workspaces={workspaces}
-        onWorkspaceChange={handleWorkspaceChange}
-        syncStatus={emailSyncStatus}
-        onSyncEmails={handleSyncEmails}
-      />
+    <div className="dashboard-container">
+      {/* Left Sidebar */}
+      <div className="sidebar-left">
+        <Sidebar
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          selectedWorkspace={selectedWorkspace}
+          workspaces={workspaces}
+          onWorkspaceChange={handleWorkspaceChange}
+          syncStatus={emailSyncStatus}
+          onSyncEmails={handleSyncEmails}
+        />
+      </div>
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col">
+      {/* Main Content Panel */}
+      <div className="main-panel">
         {/* Header */}
-        <header className="border-b border-gray-200 px-6 py-4">
+        <header className="border-b border-[#E5E4E2] px-8 py-6">
           <div className="flex items-center justify-between">
             <div>
-              <Typography variant="h1" className="text-2xl font-bold text-black">
-                {activeTab === 'emails' ? 'Email Inbox' : 'Slack Messages'}
-              </Typography>
-              <Typography variant="body" className="text-gray-600 mt-1">
+              <h1 className="text-h2 text-black font-serif">
+                {activeTab === 'emails' ? 'Strategic Email Command' : 'Executive Communication Hub'}
+              </h1>
+              <p className="text-body-large text-[#36454F] mt-2">
                 {activeTab === 'emails' 
-                  ? `${unreadEmails} unread, ${urgentEmails} urgent`
-                  : `${unreadMessages} unread, ${highPriorityMessages} high priority`
+                  ? `${unreadEmails} unread communications, ${urgentEmails} critical priorities`
+                  : `${unreadMessages} unread messages, ${highPriorityMessages} high priority items`
                 }
-              </Typography>
+              </p>
             </div>
 
             <div className="flex items-center space-x-4">
@@ -138,14 +140,14 @@ export default function DashboardPage() {
                 <Button
                   onClick={handleSyncEmails}
                   disabled={emailsLoading}
-                  variant="outline"
-                  size="sm"
+                  variant="executive-secondary"
+                  size="executive"
                 >
-                  {emailsLoading ? 'Syncing...' : 'Sync Emails'}
+                  {emailsLoading ? 'Synchronizing...' : 'Sync Communications'}
                 </Button>
               )}
               
-              <Badge>
+              <Badge className="bg-[#E5E4E2] text-black border-[#DC143C]">
                 {activeTab === 'emails' ? emails.length : messages.length} items
               </Badge>
             </div>
@@ -153,39 +155,27 @@ export default function DashboardPage() {
         </header>
 
         {/* Content Area */}
-        <div className="flex-1 flex overflow-hidden">
-          {/* List Panel */}
-          <div className="flex-1 border-r border-gray-200">
-            <Suspense fallback={<LoadingSpinner size="lg" text="Loading messages..." />}>
-              {activeTab === 'emails' ? (
-                <EmailList
-                  status="unread"
-                  limit={50}
-                  showFilters={true}
-                  className="h-full"
-                />
-              ) : (
-                <MessageList
-                  messages={messages}
-                  loading={messagesLoading}
-                  error={messagesError}
-                  onMessageSelect={handleItemSelect}
-                  selectedMessage={selectedItem as SlackMessage}
-                  channels={channels}
-                  onRefresh={refreshMessages}
-                />
-              )}
-            </Suspense>
-          </div>
-
-          {/* Context Panel */}
-          <div className="w-1/3 bg-gray-50">
-            <ContextPanel
-              item={selectedItem}
-              type={activeTab}
-              onClose={() => setSelectedItem(null)}
-            />
-          </div>
+        <div className="flex-1 overflow-hidden">
+          <Suspense fallback={<LoadingSpinner size="lg" text="Loading strategic communications..." />}>
+            {activeTab === 'emails' ? (
+              <EmailList
+                status="unread"
+                limit={50}
+                showFilters={true}
+                className="h-full"
+              />
+            ) : (
+              <MessageList
+                messages={messages}
+                loading={messagesLoading}
+                error={messagesError}
+                onMessageSelect={handleItemSelect}
+                selectedMessage={selectedItem as SlackMessage}
+                channels={channels}
+                onRefresh={refreshMessages}
+              />
+            )}
+          </Suspense>
         </div>
 
         {/* Performance Monitor (Development Only) */}
@@ -194,6 +184,15 @@ export default function DashboardPage() {
             <PerformanceMonitor showDetails={false} />
           </div>
         )}
+      </div>
+
+      {/* Right Context Panel */}
+      <div className="sidebar-right">
+        <ContextPanel
+          item={selectedItem}
+          type={activeTab}
+          onClose={() => setSelectedItem(null)}
+        />
       </div>
     </div>
   );

@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Typography } from '@/components/ui/typography';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
-import { Mail, MessageSquare, Settings, RefreshCw, AlertCircle } from 'lucide-react';
+import { Mail, MessageSquare, Settings, RefreshCw, AlertCircle, Crown } from 'lucide-react';
 
 interface SidebarProps {
   activeTab: 'emails' | 'messages';
@@ -50,20 +50,23 @@ export function Sidebar({
   };
 
   return (
-    <div className={`bg-white border-r border-gray-200 flex flex-col ${collapsed ? 'w-16' : 'w-64'}`}>
+    <div className={`bg-white border-r border-[#E5E4E2] flex flex-col ${collapsed ? 'w-16' : 'w-64'}`}>
       {/* Header */}
-      <div className="p-4 border-b border-gray-200">
+      <div className="p-6 border-b border-[#E5E4E2]">
         <div className="flex items-center justify-between">
           {!collapsed && (
-            <Typography variant="h2" className="text-lg font-bold text-black">
-              Napoleon
-            </Typography>
+            <div className="flex items-center space-x-2">
+              <Crown className="h-6 w-6 text-[#DC143C]" />
+              <h2 className="text-h3 text-black font-serif">
+                Napoleon
+              </h2>
+            </div>
           )}
           <Button
             variant="ghost"
             size="sm"
             onClick={() => setCollapsed(!collapsed)}
-            className="ml-auto"
+            className="ml-auto text-[#36454F] hover:text-[#DC143C]"
           >
             {collapsed ? '→' : '←'}
           </Button>
@@ -71,19 +74,19 @@ export function Sidebar({
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-4">
-        <div className="space-y-2">
+      <nav className="flex-1 p-6">
+        <div className="nav-executive">
           <Button
-            variant={activeTab === 'emails' ? 'default' : 'ghost'}
-            className="w-full justify-start"
+            variant={activeTab === 'emails' ? 'executive' : 'ghost'}
+            className={`w-full justify-start ${activeTab === 'emails' ? 'nav-item active' : 'nav-item'}`}
             onClick={() => onTabChange('emails')}
           >
             <Mail className="h-4 w-4 mr-3" />
             {!collapsed && (
               <>
-                <span>Emails</span>
+                <span className="font-medium">Strategic Communications</span>
                 {syncStatus.emailsCount > 0 && (
-                  <Badge className="ml-auto">
+                  <Badge className="ml-auto bg-[#DC143C] text-white">
                     {syncStatus.emailsCount}
                   </Badge>
                 )}
@@ -92,16 +95,16 @@ export function Sidebar({
           </Button>
 
           <Button
-            variant={activeTab === 'messages' ? 'default' : 'ghost'}
-            className="w-full justify-start"
+            variant={activeTab === 'messages' ? 'executive' : 'ghost'}
+            className={`w-full justify-start ${activeTab === 'messages' ? 'nav-item active' : 'nav-item'}`}
             onClick={() => onTabChange('messages')}
           >
             <MessageSquare className="h-4 w-4 mr-3" />
             {!collapsed && (
               <>
-                <span>Messages</span>
+                <span className="font-medium">Executive Messaging</span>
                 {workspaces.length > 0 && (
-                  <Badge className="ml-auto">
+                  <Badge className="ml-auto bg-[#DC143C] text-white">
                     {workspaces.length}
                   </Badge>
                 )}
@@ -112,35 +115,33 @@ export function Sidebar({
 
         {/* Sync Status */}
         {!collapsed && activeTab === 'emails' && (
-          <Card className="mt-6 p-4">
-            <div className="space-y-3">
+          <Card variant="executive" className="mt-8">
+            <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <Typography variant="body" className="font-medium">
-                  Email Sync
-                </Typography>
-                <div className={`w-2 h-2 rounded-full ${syncStatus.isActive ? 'bg-green-500' : 'bg-red-500'}`} />
+                <h3 className="text-h3 text-black font-serif">Communication Sync</h3>
+                <div className={`w-3 h-3 rounded-full ${syncStatus.isActive ? 'bg-green-500' : 'bg-red-500'}`} />
               </div>
               
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-600">Last sync:</span>
-                  <span className="text-gray-900">{formatLastSync(syncStatus.lastSync)}</span>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between text-body">
+                  <span className="text-[#36454F]">Last synchronization:</span>
+                  <span className="text-black font-medium">{formatLastSync(syncStatus.lastSync)}</span>
                 </div>
                 
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-600">Emails:</span>
-                  <span className="text-gray-900">{syncStatus.emailsCount}</span>
+                <div className="flex items-center justify-between text-body">
+                  <span className="text-[#36454F]">Communications:</span>
+                  <span className="text-black font-medium">{syncStatus.emailsCount}</span>
                 </div>
               </div>
 
               <Button
                 onClick={onSyncEmails}
-                variant="outline"
-                size="sm"
+                variant="executive-secondary"
+                size="executive"
                 className="w-full"
               >
                 <RefreshCw className="h-4 w-4 mr-2" />
-                Sync Now
+                Synchronize Now
               </Button>
             </div>
           </Card>
@@ -148,21 +149,21 @@ export function Sidebar({
 
         {/* Workspace Selection */}
         {!collapsed && activeTab === 'messages' && workspaces.length > 0 && (
-          <Card className="mt-6 p-4">
-            <Typography variant="body" className="font-medium mb-3">
-              Workspaces
-            </Typography>
+          <Card variant="executive" className="mt-8">
+            <h3 className="text-h3 text-black font-serif mb-4">
+              Executive Workspaces
+            </h3>
             <div className="space-y-2">
               {workspaces.map((workspace) => (
                 <Button
                   key={workspace.id}
-                  variant={selectedWorkspace === workspace.id ? 'default' : 'ghost'}
+                  variant={selectedWorkspace === workspace.id ? 'executive' : 'ghost'}
                   size="sm"
-                  className="w-full justify-start"
+                  className={`w-full justify-start ${selectedWorkspace === workspace.id ? 'nav-item active' : 'nav-item'}`}
                   onClick={() => onWorkspaceChange(workspace.id)}
                 >
-                  <div className={`w-2 h-2 rounded-full mr-2 ${workspace.isActive ? 'bg-green-500' : 'bg-gray-300'}`} />
-                  <span className="truncate">{workspace.name}</span>
+                  <div className={`w-2 h-2 rounded-full mr-3 ${workspace.isActive ? 'bg-green-500' : 'bg-[#E5E4E2]'}`} />
+                  <span className="truncate font-medium">{workspace.name}</span>
                 </Button>
               ))}
             </div>
@@ -171,18 +172,18 @@ export function Sidebar({
 
         {/* Connection Status */}
         {!collapsed && (
-          <Card className="mt-6 p-4">
-            <Typography variant="body" className="font-medium mb-3">
-              Connections
-            </Typography>
-            <div className="space-y-2">
+          <Card variant="executive" className="mt-8">
+            <h3 className="text-h3 text-black font-serif mb-4">
+              Strategic Connections
+            </h3>
+            <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Gmail</span>
-                <div className={`w-2 h-2 rounded-full ${syncStatus.isActive ? 'bg-green-500' : 'bg-red-500'}`} />
+                <span className="text-body text-[#36454F]">Gmail Integration</span>
+                <div className={`w-3 h-3 rounded-full ${syncStatus.isActive ? 'bg-green-500' : 'bg-red-500'}`} />
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Slack</span>
-                <div className={`w-2 h-2 rounded-full ${workspaces.length > 0 ? 'bg-green-500' : 'bg-red-500'}`} />
+                <span className="text-body text-[#36454F]">Slack Integration</span>
+                <div className={`w-3 h-3 rounded-full ${workspaces.length > 0 ? 'bg-green-500' : 'bg-red-500'}`} />
               </div>
             </div>
           </Card>
@@ -190,14 +191,14 @@ export function Sidebar({
       </nav>
 
       {/* Footer */}
-      <div className="p-4 border-t border-gray-200">
+      <div className="p-6 border-t border-[#E5E4E2]">
         <Button
           variant="ghost"
-          className="w-full justify-start"
+          className="w-full justify-start nav-item"
           onClick={() => {/* TODO: Navigate to settings */}}
         >
           <Settings className="h-4 w-4 mr-3" />
-          {!collapsed && <span>Settings</span>}
+          {!collapsed && <span className="font-medium">Strategic Settings</span>}
         </Button>
       </div>
     </div>

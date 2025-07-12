@@ -6,19 +6,21 @@ import { CTA } from '@/components/marketing/CTA';
 import { Pricing } from '@/components/marketing/Pricing';
 
 export const metadata: Metadata = {
-  title: 'Napoleon - Your AI Strategic Commander for Perfect Focus',
-  description: 'Transform communication chaos into clarity through intelligent email management, AI-powered prioritization, and elegant UX design.',
+  title: 'Napoleon - The Ultimate AI Strategic Commander for Executive Excellence',
+  description: 'The luxury AI-powered productivity platform that transforms communication chaos into strategic clarity. Designed for C-level executives who demand excellence.',
   keywords: [
-    'email management',
-    'AI productivity',
-    'email prioritization',
-    'communication tools',
-    'AI assistant',
-    'productivity platform',
+    'executive productivity',
+    'AI strategic commander',
+    'luxury productivity platform',
+    'executive email management',
+    'AI-powered prioritization',
+    'C-level communication tools',
+    'strategic AI assistant',
+    'executive productivity platform',
   ],
   openGraph: {
-    title: 'Napoleon - Your AI Strategic Commander for Perfect Focus',
-    description: 'Transform communication chaos into clarity through intelligent email management, AI-powered prioritization, and elegant UX design.',
+    title: 'Napoleon - The Ultimate AI Strategic Commander for Executive Excellence',
+    description: 'The luxury AI-powered productivity platform that transforms communication chaos into strategic clarity. Designed for C-level executives who demand excellence.',
     type: 'website',
     url: '/',
     images: [
@@ -26,14 +28,14 @@ export const metadata: Metadata = {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Napoleon - AI-Powered Email Management',
+        alt: 'Napoleon - Luxury AI Strategic Commander',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Napoleon - Your AI Strategic Commander for Perfect Focus',
-    description: 'Transform communication chaos into clarity through intelligent email management, AI-powered prioritization, and elegant UX design.',
+    title: 'Napoleon - The Ultimate AI Strategic Commander for Executive Excellence',
+    description: 'The luxury AI-powered productivity platform that transforms communication chaos into strategic clarity. Designed for C-level executives who demand excellence.',
     images: ['/og-image.png'],
   },
   alternates: {

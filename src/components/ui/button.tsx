@@ -4,22 +4,26 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
-        default: "bg-primary-500 text-white hover:bg-primary-600",
+        default: "bg-[#DC143C] text-white hover:bg-[#B91C3C] hover:transform hover:translate-y-[-1px] hover:shadow-[0_4px_16px_rgba(0,0,0,0.12)]",
         destructive: "bg-red-500 text-white hover:bg-red-600",
-        outline: "border border-gray-300 bg-white hover:bg-gray-50 text-gray-900",
-        secondary: "bg-gray-100 text-gray-900 hover:bg-gray-200",
-        ghost: "hover:bg-gray-100 text-gray-900",
-        link: "text-primary-500 underline-offset-4 hover:underline",
+        outline: "border border-[#E5E4E2] bg-white hover:border-[#DC143C] hover:text-[#DC143C] hover:transform hover:translate-y-[-1px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.08)] text-black",
+        secondary: "bg-[#E5E4E2] text-black hover:bg-[#D4D3D1]",
+        ghost: "hover:bg-[#E5E4E2] text-black",
+        link: "text-[#DC143C] underline-offset-4 hover:underline",
+        executive: "bg-[#DC143C] text-white font-medium text-base px-8 py-3 hover:bg-[#B91C3C] hover:transform hover:translate-y-[-1px] hover:shadow-[0_4px_16px_rgba(0,0,0,0.12)] transition-all duration-200",
+        executive-secondary: "bg-white text-black border border-[#E5E4E2] font-medium text-base px-8 py-3 hover:border-[#DC143C] hover:text-[#DC143C] hover:transform hover:translate-y-[-1px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.08)] transition-all duration-200",
       },
       size: {
         default: "h-10 px-4 py-2",
         sm: "h-8 rounded-md px-3 text-xs",
         lg: "h-12 rounded-md px-8 text-base",
+        xl: "h-14 rounded-md px-10 text-lg",
         icon: "h-10 w-10",
+        executive: "h-12 px-8 py-3 text-base",
       },
     },
     defaultVariants: {

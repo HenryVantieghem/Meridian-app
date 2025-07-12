@@ -95,18 +95,18 @@ export function ContextPanel({ item, type, onClose }: ContextPanelProps) {
     switch (sentiment) {
       case 'positive': return 'text-green-600 bg-green-50';
       case 'negative': return 'text-red-600 bg-red-50';
-      case 'neutral': return 'text-gray-600 bg-gray-50';
-      default: return 'text-gray-600 bg-gray-50';
+      case 'neutral': return 'text-[#36454F] bg-[#E5E4E2]';
+      default: return 'text-[#36454F] bg-[#E5E4E2]';
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'urgent': return 'text-red-600 bg-red-50';
+      case 'urgent': return 'text-[#DC143C] bg-[rgba(220,20,60,0.1)]';
       case 'high': return 'text-orange-600 bg-orange-50';
       case 'medium': return 'text-yellow-600 bg-yellow-50';
       case 'low': return 'text-green-600 bg-green-50';
-      default: return 'text-gray-600 bg-gray-50';
+      default: return 'text-[#36454F] bg-[#E5E4E2]';
     }
   };
 
@@ -114,19 +114,19 @@ export function ContextPanel({ item, type, onClose }: ContextPanelProps) {
     return (
       <div className="flex flex-col items-center justify-center h-full p-8">
         <div className="text-center">
-          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+          <div className="w-16 h-16 bg-[#E5E4E2] rounded-full flex items-center justify-center mb-6">
             {type === 'emails' ? (
-              <Mail className="h-8 w-8 text-gray-400" />
+              <Mail className="h-8 w-8 text-[#36454F]" />
             ) : (
-              <MessageSquare className="h-8 w-8 text-gray-400" />
+              <MessageSquare className="h-8 w-8 text-[#36454F]" />
             )}
           </div>
-          <Typography variant="h3" className="text-gray-900 mb-2">
-            Select an item
-          </Typography>
-          <Typography variant="body" className="text-gray-600">
-            Choose an email or message to view details and AI analysis.
-          </Typography>
+          <h3 className="text-h3 text-black font-serif mb-4">
+            Select Strategic Communication
+          </h3>
+          <p className="text-body text-[#36454F]">
+            Choose an email or message to view executive details and AI analysis.
+          </p>
         </div>
       </div>
     );
@@ -135,114 +135,114 @@ export function ContextPanel({ item, type, onClose }: ContextPanelProps) {
   return (
     <div className="h-full flex flex-col">
       {/* Header */}
-      <div className="p-4 border-b border-gray-200">
+      <div className="p-6 border-b border-[#E5E4E2]">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-3">
             {isEmail(item) ? (
-              <Mail className="h-5 w-5 text-blue-600" />
+              <Mail className="h-6 w-6 text-[#DC143C]" />
             ) : (
-              <MessageSquare className="h-5 w-5 text-green-600" />
+              <MessageSquare className="h-6 w-6 text-[#DC143C]" />
             )}
-            <Typography variant="h3" className="text-lg font-semibold">
-              {isEmail(item) ? 'Email Details' : 'Message Details'}
-            </Typography>
+            <h3 className="text-h3 text-black font-serif">
+              {isEmail(item) ? 'Strategic Communication Details' : 'Executive Message Details'}
+            </h3>
           </div>
-          <Button variant="ghost" size="sm" onClick={onClose}>
-            <X className="h-4 w-4" />
+          <Button variant="ghost" size="sm" onClick={onClose} className="text-[#36454F] hover:text-[#DC143C]">
+            <X className="h-5 w-5" />
           </Button>
         </div>
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto p-4">
+      <div className="flex-1 overflow-y-auto p-6">
         <div className="space-y-6">
           {/* Basic Info */}
-          <Card className="p-4">
-            <Typography variant="h4" className="font-semibold mb-3">
+          <Card variant="executive">
+            <h4 className="text-h4 text-black font-serif mb-4">
               {isEmail(item) ? item.subject : 'Message'}
-            </Typography>
+            </h4>
             
-            <div className="space-y-3">
+            <div className="space-y-4">
               {/* Sender/From */}
-              <div className="flex items-center space-x-2">
-                <User className="h-4 w-4 text-gray-500" />
+              <div className="flex items-center space-x-3">
+                <User className="h-5 w-5 text-[#36454F]" />
                 <div>
-                  <Typography variant="body" className="font-medium">
+                  <p className="text-body font-medium text-black">
                     {isEmail(item) 
                       ? `${item.from.name || ''} ${item.from.email}`
                       : `${item.sender.name} (@${item.sender.id})`
                     }
-                  </Typography>
-                  <Typography variant="body" className="text-sm text-gray-600">
+                  </p>
+                  <p className="text-small text-[#36454F]">
                     {isEmail(item) ? 'From' : 'Sent by'}
-                  </Typography>
+                  </p>
                 </div>
               </div>
 
               {/* Date */}
-              <div className="flex items-center space-x-2">
-                <Clock className="h-4 w-4 text-gray-500" />
+              <div className="flex items-center space-x-3">
+                <Clock className="h-5 w-5 text-[#36454F]" />
                 <div>
-                  <Typography variant="body" className="font-medium">
+                  <p className="text-body font-medium text-black">
                     {formatDate(isEmail(item) ? item.receivedAt : item.timestamp)}
-                  </Typography>
-                  <Typography variant="body" className="text-sm text-gray-600">
+                  </p>
+                  <p className="text-small text-[#36454F]">
                     {isEmail(item) ? 'Received' : 'Sent'}
-                  </Typography>
+                  </p>
                 </div>
               </div>
 
               {/* Channel/To */}
               {isEmail(item) ? (
-                <div className="flex items-center space-x-2">
-                  <Tag className="h-4 w-4 text-gray-500" />
+                <div className="flex items-center space-x-3">
+                  <Tag className="h-5 w-5 text-[#36454F]" />
                   <div>
-                    <Typography variant="body" className="font-medium">
+                    <p className="text-body font-medium text-black">
                       To: {item.to.map(addr => addr.email).join(', ')}
-                    </Typography>
-                    <Typography variant="body" className="text-sm text-gray-600">
+                    </p>
+                    <p className="text-small text-[#36454F]">
                       Recipients
-                    </Typography>
+                    </p>
                   </div>
                 </div>
               ) : (
-                <div className="flex items-center space-x-2">
-                  <Tag className="h-4 w-4 text-gray-500" />
+                <div className="flex items-center space-x-3">
+                  <Tag className="h-5 w-5 text-[#36454F]" />
                   <div>
-                    <Typography variant="body" className="font-medium">
+                    <p className="text-body font-medium text-black">
                       #{item.channelName}
-                    </Typography>
-                    <Typography variant="body" className="text-sm text-gray-600">
+                    </p>
+                    <p className="text-small text-[#36454F]">
                       Channel
-                    </Typography>
+                    </p>
                   </div>
                 </div>
               )}
 
               {/* Priority */}
-              <div className="flex items-center space-x-2">
-                <div className="w-4 h-4 rounded-full bg-gray-500" />
+              <div className="flex items-center space-x-3">
+                <div className="w-4 h-4 rounded-full bg-[#DC143C]" />
                 <div>
-                  <Typography variant="body" className="font-medium capitalize">
+                  <p className="text-body font-medium capitalize text-black">
                     {item.priority} priority
-                  </Typography>
-                  <Typography variant="body" className="text-sm text-gray-600">
+                  </p>
+                  <p className="text-small text-[#36454F]">
                     Priority Level
-                  </Typography>
+                  </p>
                 </div>
               </div>
 
               {/* Attachments */}
               {isEmail(item) && item.attachments.length > 0 && (
-                <div className="flex items-center space-x-2">
-                  <Paperclip className="h-4 w-4 text-gray-500" />
+                <div className="flex items-center space-x-3">
+                  <Paperclip className="h-5 w-5 text-[#36454F]" />
                   <div>
-                    <Typography variant="body" className="font-medium">
+                    <p className="text-body font-medium text-black">
                       {item.attachments.length} attachment{item.attachments.length !== 1 ? 's' : ''}
-                    </Typography>
-                    <Typography variant="body" className="text-sm text-gray-600">
+                    </p>
+                    <p className="text-small text-[#36454F]">
                       Files
-                    </Typography>
+                    </p>
                   </div>
                 </div>
               )}
