@@ -22,10 +22,10 @@ export function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="inline-flex items-center px-6 py-3 rounded-full bg-[rgba(128,27,43,0.1)] border border-[rgba(128,27,43,0.2)] mb-8"
+            className="inline-flex items-center px-6 py-3 rounded-full bg-[rgba(93,0,30,0.1)] border border-[rgba(93,0,30,0.2)] mb-8"
           >
-            <Crown className="w-5 h-5 text-[#801B2B] mr-3" />
-            <span className="text-[#801B2B] font-medium text-body-cartier">
+            <Crown className="w-5 h-5 text-brand-burgundy mr-3" />
+            <span className="text-brand-burgundy font-medium text-body-cartier">
               Luxury AI Strategic Commander
             </span>
           </motion.div>
@@ -40,7 +40,7 @@ export function Hero() {
             <h1 className="text-hero-cartier text-black font-serif mb-6 leading-tight">
               The Ultimate
               <br />
-              <span className="text-[#801B2B]">AI Strategic Commander</span>
+              <span className="text-brand-burgundy">AI Strategic Commander</span>
               <br />
               for Executive Excellence
             </h1>
@@ -70,16 +70,18 @@ export function Hero() {
               variant="cartier" 
               size="xl" 
               className="text-lg px-10 py-4"
+              aria-label="Begin strategic trial - Start your free trial of Napoleon AI"
             >
               Begin Strategic Trial
-              <ArrowRight className="ml-3 w-5 h-5" />
+              <ArrowRight className="ml-3 w-5 h-5" aria-hidden="true" />
             </Button>
             <Button 
               variant="cartier-secondary" 
               size="xl" 
               className="text-lg px-10 py-4"
+              aria-label="Watch executive demo - View a demonstration of Napoleon AI features"
             >
-              <Play className="mr-3 w-5 h-5" />
+              <Play className="mr-3 w-5 h-5" aria-hidden="true" />
               Executive Demo
             </Button>
           </motion.div>
@@ -90,17 +92,19 @@ export function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.8 }}
             className="flex flex-col sm:flex-row items-center justify-center gap-12 text-[#4A4A4A]"
+            role="list"
+            aria-label="Trust indicators and features"
           >
-            <div className="flex items-center">
-              <Shield className="w-6 h-6 mr-3 text-[#801B2B]" />
+            <div className="flex items-center" role="listitem">
+              <Shield className="w-6 h-6 mr-3 text-brand-burgundy" aria-hidden="true" />
               <span className="text-body-cartier font-medium">Enterprise Security</span>
             </div>
-            <div className="flex items-center">
-              <Zap className="w-6 h-6 mr-3 text-[#801B2B]" />
+            <div className="flex items-center" role="listitem">
+              <Zap className="w-6 h-6 mr-3 text-brand-burgundy" aria-hidden="true" />
               <span className="text-body-cartier font-medium">Lightning Performance</span>
             </div>
-            <div className="flex items-center">
-              <Sparkles className="w-6 h-6 mr-3 text-[#801B2B]" />
+            <div className="flex items-center" role="listitem">
+              <Sparkles className="w-6 h-6 mr-3 text-brand-burgundy" aria-hidden="true" />
               <span className="text-body-cartier font-medium">AI-Powered Intelligence</span>
             </div>
           </motion.div>
@@ -115,9 +119,9 @@ export function Hero() {
         className="absolute bottom-10 left-1/2 transform -translate-x-1/2"
       >
         <div className="flex space-x-3">
-          <div className="w-3 h-3 bg-[#801B2B] rounded-full animate-bounce"></div>
-          <div className="w-3 h-3 bg-[#801B2B] rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-          <div className="w-3 h-3 bg-[#801B2B] rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+          <div className="w-3 h-3 bg-brand-burgundy rounded-full animate-bounce"></div>
+          <div className="w-3 h-3 bg-brand-burgundy rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+          <div className="w-3 h-3 bg-brand-burgundy rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
         </div>
       </motion.div>
     </section>

@@ -62,7 +62,7 @@ const config: Config = {
           900: '#7f1d1d',
           950: '#450a0a',
         },
-        'brand-burgundy': '#800020',
+        'brand-burgundy': '#5D001E',
       },
       fontFamily: {
         'playfair': ['Playfair Display', 'serif'],
