@@ -1,9 +1,23 @@
 import type { Metadata } from "next";
+import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import ClientLayout from "./client-layout";
 
 // Validate environment variables on app startup
 import "@/lib/invariantEnv";
+
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter',
+});
+
+const playfair = Playfair_Display({
+  weight: ['400', '500', '600', '700'],
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-playfair',
+});
 
 export const dynamic = 'force-dynamic';
 
@@ -77,7 +91,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
       <body className="font-sans text-base text-black bg-[var(--bg-primary)]">
         <ClientLayout>{children}</ClientLayout>
       </body>

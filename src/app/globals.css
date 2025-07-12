@@ -34,13 +34,14 @@
   }
   
   body {
-    @apply bg-white text-black font-sans antialiased;
+    @apply bg-white text-black antialiased;
+    font-family: var(--font-inter), system-ui, sans-serif;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
   
   /* Cartier Typography Hierarchy */
   .text-hero-cartier {
-    font-family: var(--font-serif);
+    font-family: var(--font-playfair), serif;
     font-size: clamp(48px, 8vw, 72px);
     font-weight: 700;
     color: var(--color-black);
@@ -49,7 +50,7 @@
   }
 
   .text-headline-cartier {
-    font-family: var(--font-serif);
+    font-family: var(--font-playfair), serif;
     font-size: clamp(32px, 5vw, 48px);
     font-weight: 600;
     color: var(--color-black);
@@ -57,7 +58,7 @@
   }
 
   .text-subhead-cartier {
-    font-family: var(--font-sans);
+    font-family: var(--font-inter), system-ui, sans-serif;
     font-size: clamp(18px, 3vw, 24px);
     font-weight: 600;
     color: var(--color-black);
@@ -65,7 +66,7 @@
   }
 
   .text-body-cartier {
-    font-family: var(--font-sans);
+    font-family: var(--font-inter), system-ui, sans-serif;
     font-size: 16px;
     font-weight: 400;
     color: #4A4A4A;
@@ -79,7 +80,7 @@
 
   /* Legacy typography classes for compatibility */
   .text-hero {
-    font-family: var(--font-serif);
+    font-family: var(--font-playfair), serif;
     font-size: clamp(48px, 8vw, 72px);
     font-weight: 700;
     color: var(--color-black);
@@ -88,7 +89,7 @@
   }
 
   .text-h1 {
-    font-family: var(--font-serif);
+    font-family: var(--font-playfair), serif;
     font-size: clamp(36px, 6vw, 48px);
     font-weight: 600;
     color: var(--color-black);
@@ -96,7 +97,7 @@
   }
 
   .text-h2 {
-    font-family: var(--font-serif);
+    font-family: var(--font-playfair), serif;
     font-size: clamp(28px, 4vw, 36px);
     font-weight: 600;
     color: var(--color-black);
@@ -104,7 +105,7 @@
   }
 
   .text-h3 {
-    font-family: var(--font-sans);
+    font-family: var(--font-inter), system-ui, sans-serif;
     font-size: clamp(20px, 3vw, 24px);
     font-weight: 600;
     color: var(--color-black);
@@ -112,7 +113,7 @@
   }
 
   .text-body-large {
-    font-family: var(--font-sans);
+    font-family: var(--font-inter), system-ui, sans-serif;
     font-size: 18px;
     font-weight: 400;
     color: #4A4A4A;
@@ -120,7 +121,7 @@
   }
 
   .text-body {
-    font-family: var(--font-sans);
+    font-family: var(--font-inter), system-ui, sans-serif;
     font-size: 16px;
     font-weight: 400;
     color: #4A4A4A;
@@ -128,7 +129,7 @@
   }
 
   .text-small {
-    font-family: var(--font-sans);
+    font-family: var(--font-inter), system-ui, sans-serif;
     font-size: 14px;
     font-weight: 400;
     color: #4A4A4A;
@@ -136,7 +137,7 @@
   }
 
   .text-caption {
-    font-family: var(--font-sans);
+    font-family: var(--font-inter), system-ui, sans-serif;
     font-size: 12px;
     font-weight: 500;
     color: #4A4A4A;

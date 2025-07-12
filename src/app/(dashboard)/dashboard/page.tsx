@@ -1,20 +1,41 @@
 'use client';
 
 import { useState, useEffect, Suspense } from 'react';
+import dynamic from 'next/dynamic';
 import { useAuth } from '@clerk/nextjs';
 import { useEmails } from '@/hooks/useEmails';
 import { useSlackMessages } from '@/hooks/useSlackMessages';
 import { useRealtimeData } from '@/hooks/useRealtimeData';
-import { EmailList } from '@/components/email/EmailList';
-import { MessageList } from '@/components/slack/MessageList';
-import { ContextPanel } from '@/components/dashboard/ContextPanel';
-import { Sidebar } from '@/components/dashboard/Sidebar';
 import { Button } from '@/components/ui/button';
 import { Typography } from '@/components/ui/typography';
 import { Badge } from '@/components/ui/badge';
 import { LoadingSpinner, DashboardSkeleton } from '@/components/ui/LoadingSpinner';
-import { PerformanceMonitor } from '@/components/ui/PerformanceMonitor';
 import { Email, SlackMessage } from '@/types';
+
+// Lazy load heavy components
+const EmailList = dynamic(() => import('@/components/email/EmailList').then(mod => ({ default: mod.EmailList })), {
+  loading: () => <LoadingSpinner size="lg" text="Loading email interface..." />,
+  ssr: false
+});
+
+const MessageList = dynamic(() => import('@/components/slack/MessageList').then(mod => ({ default: mod.MessageList })), {
+  loading: () => <LoadingSpinner size="lg" text="Loading messaging interface..." />,
+  ssr: false
+});
+
+const ContextPanel = dynamic(() => import('@/components/dashboard/ContextPanel').then(mod => ({ default: mod.ContextPanel })), {
+  loading: () => <LoadingSpinner size="sm" text="Loading context..." />,
+  ssr: false
+});
+
+const Sidebar = dynamic(() => import('@/components/dashboard/Sidebar').then(mod => ({ default: mod.Sidebar })), {
+  loading: () => <LoadingSpinner size="sm" text="Loading navigation..." />,
+  ssr: false
+});
+
+const PerformanceMonitor = dynamic(() => import('@/components/ui/PerformanceMonitor').then(mod => ({ default: mod.PerformanceMonitor })), {
+  ssr: false
+});
 
 export default function DashboardPage() {
   const { userId } = useAuth();
