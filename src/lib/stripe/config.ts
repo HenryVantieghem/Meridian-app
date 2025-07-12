@@ -1,5 +1,4 @@
 import Stripe from 'stripe';
-import { headers } from 'next/headers';
 import { NextRequest } from 'next/server';
 
 // Stripe configuration with proper error handling
@@ -159,7 +158,7 @@ export const verifyWebhookSignature = async (
   request: NextRequest,
   body: string
 ): Promise<Stripe.Event> => {
-  const headersList = await headers();
+  const headersList = await request.headers;
   const signature = headersList.get('stripe-signature');
   
   if (!signature) {

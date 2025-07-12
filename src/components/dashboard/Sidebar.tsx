@@ -6,6 +6,8 @@ import { Typography } from '@/components/ui/typography';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { Mail, MessageSquare, Settings, RefreshCw, AlertCircle, Crown, CreditCard } from 'lucide-react';
+import { getBillingPortalUrl } from '@/lib/stripe/portal';
+import Link from 'next/link';
 
 interface SidebarProps {
   activeTab: 'emails' | 'messages';
@@ -35,16 +37,15 @@ export function Sidebar({
   onSyncEmails,
 }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
-  const [portalUrl, setPortalUrl] = useState<string>();
+  const [portal, setPortal] = useState<string>();
 
   useEffect(() => {
-    // Fetch billing portal URL on mount
     (async () => {
       try {
         const response = await fetch('/api/stripe/portal');
         if (response.ok) {
           const data = await response.json();
-          setPortalUrl(data.url);
+          setPortal(data.url);
         }
       } catch (error) {
         console.error('Failed to fetch billing portal URL:', error);
@@ -217,15 +218,13 @@ export function Sidebar({
           {!collapsed && <span className="font-medium">Strategic Settings</span>}
         </Button>
         
-        {portalUrl && !collapsed && (
-          <Button
-            variant="ghost"
-            className="w-full justify-start nav-item mt-2"
-            onClick={() => window.open(portalUrl, '_blank')}
+        {portal && (
+          <Link
+            href={portal}
+            className="mt-6 inline-block rounded-md bg-brand-burgundy px-4 py-2 text-white transition hover:opacity-90"
           >
-            <CreditCard className="h-4 w-4 mr-3" />
-            <span className="font-medium">Manage Subscription</span>
-          </Button>
+            Manage&nbsp;subscription
+          </Link>
         )}
       </div>
     </div>
