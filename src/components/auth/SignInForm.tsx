@@ -224,7 +224,7 @@ export function SignInForm({ redirectUrl = '/dashboard', className }: SignInForm
 
         <div className="text-center">
           <Typography variant="body" className="text-gray-600">
-            Don't have an account?{' '}
+              Don&apos;t have an account?{' '}
             <a
               href="/sign-up"
                               className="text-brand-burgundy hover:text-brand-burgundy-dark font-medium transition-colors"

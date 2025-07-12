@@ -50,19 +50,19 @@ async function checkDatabase(): Promise<HealthCheck> {
     );
 
     // Test database connection
-    const { error } = await supabase
+    const { error: dbError } = await supabase
       .from('users')
       .select('count')
       .limit(1);
 
     const responseTime = Date.now() - startTime;
 
-    if (error) {
+    if (dbError) {
       return {
         status: 'unhealthy',
         responseTime,
-        error: error.message,
-        details: { message: error.message, code: error.code },
+        error: dbError.message,
+        details: { message: dbError.message, code: dbError.code },
       };
     }
 

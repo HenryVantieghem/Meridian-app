@@ -72,7 +72,7 @@ export const DailyDigest: React.FC<DailyDigestProps> = ({
         </div>
         
         <div className="summary">
-          <h2>Today's Priority Emails</h2>
+          <h2>Today&apos;s Priority Emails</h2>
           <p>Here are the emails that need your attention today:</p>
         </div>
         

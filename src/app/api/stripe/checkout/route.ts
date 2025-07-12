@@ -5,10 +5,10 @@ import {
   createOrRetrieveCustomer, 
   PRICES, 
   PRODUCTS,
-  handleStripeError,
   StripeError 
 } from '@/lib/stripe/config';
 import { z } from 'zod';
+import Stripe from 'stripe';
 
 // Validation schemas
 const checkoutSchema = z.object({
@@ -154,18 +154,22 @@ async function createCheckoutSession({
   ];
 
   // Add trial period if applicable
-  const subscriptionData: any = {
+  const subscriptionData: {
+    metadata?: Record<string, string>;
+    trial_period_days?: number;
+    billing_cycle_anchor?: number;
+    default_payment_method?: string;
+  } = {
     metadata,
     trial_period_days: price.trialDays,
   };
 
   // Add billing cycle anchor for yearly plans
   if (price.interval === 'year') {
-    subscriptionData.billing_cycle_anchor = 'now';
+    subscriptionData.billing_cycle_anchor = Math.floor(Date.now() / 1000);
   }
 
-  // Add proration and default payment method to subscriptionData
-  subscriptionData.proration_behavior = 'create_prorations';
+  // Add default payment method to subscriptionData
   subscriptionData.default_payment_method = 'pm_card_visa';
 
   // Create checkout session

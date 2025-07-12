@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { slackManager } from '@/lib/integrations/slack';
 import { logger } from '@/lib/monitoring/logging';
+import crypto from 'crypto';
 
 // Handle Slack webhook events
 export const POST = async (req: NextRequest) => {
@@ -17,7 +18,6 @@ export const POST = async (req: NextRequest) => {
     }
 
     // Verify webhook signature
-    const crypto = require('crypto');
     const signingSecret = process.env.SLACK_SIGNING_SECRET;
     
     const timestamp = req.headers.get('x-slack-request-timestamp');

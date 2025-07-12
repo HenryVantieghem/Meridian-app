@@ -24,12 +24,12 @@ export const WelcomeEmail: React.FC<WelcomeEmailProps> = ({
         <h1 className="greeting">Welcome to Napoleon, {userName}! 👋</h1>
         
         <p className="intro">
-          Thank you for joining Napoleon. We're excited to help you transform your communication
+          Thank you for joining Napoleon. We&apos;re excited to help you transform your communication
           workflow with AI-powered insights and intelligent automation.
         </p>
         
         <p className="features-intro">
-          With Napoleon, you'll experience:
+          With Napoleon, you&apos;ll experience:
         </p>
         
         <div className="features">
@@ -72,7 +72,7 @@ export const WelcomeEmail: React.FC<WelcomeEmailProps> = ({
       
       <div className="footer">
         <p className="footer-text">
-          Need help? We're here for you at{' '}
+          Need help? We&apos;re here for you at{' '}
           <a href={`mailto:${supportEmail}`} className="footer-link">
             {supportEmail}
           </a>

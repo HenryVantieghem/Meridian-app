@@ -1,29 +1,28 @@
 'use client';
+import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { ClerkProvider } from '@clerk/nextjs';
-import * as React from 'react';
 
-export default function ClientLayout({ children }: { children: React.ReactNode }) {
+export default function ClerkWrapper({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  const [isRouterReady, setIsRouterReady] = useState(false);
+  
+  useEffect(() => {
+    // Ensure router context is available
+    setIsRouterReady(true);
+  }, [pathname]);
+  
+  if (!isRouterReady) {
+    return <div>Loading...</div>;
+  }
+  
   return (
     <ClerkProvider
+      publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY!}
       appearance={{
-        elements: {
-          formButtonPrimary: 'bg-brand-burgundy hover:bg-brand-burgundy-dark',
-          card: 'shadow-soft',
-          headerTitle: 'text-gray-900',
-          headerSubtitle: 'text-gray-600',
-          socialButtonsBlockButton: 'border border-gray-300 bg-white text-gray-900 hover:bg-gray-50',
-          formFieldInput: 'input-field',
-          formFieldLabel: 'text-sm font-medium text-gray-900',
-          formFieldLabelRow: 'mb-1',
-                      footerActionLink: 'text-brand-burgundy hover:text-brand-burgundy-dark',
-        },
+        baseTheme: undefined,
         variables: {
           colorPrimary: '#D4AF37',
-          colorBackground: '#FFFFFF',
-          colorText: '#000000',
-          colorTextSecondary: '#6B7280',
-          colorInputBackground: '#FFFFFF',
-          colorInputText: '#000000',
         },
       }}
     >

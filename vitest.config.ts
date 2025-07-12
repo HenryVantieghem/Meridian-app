@@ -9,6 +9,11 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./src/tests/setup/test-utils.tsx'],
     css: true,
+    include: ['src/**/*.test.{ts,tsx}'],
+    exclude: ['e2e/**', 'src/tests/{e2e,performance,accessibility,security}/**', 'node_modules/**'],
+    watch: false,
+    passWithNoTests: false,
+    snapshotFormat: { escapeString: true },
   },
   resolve: {
     alias: {

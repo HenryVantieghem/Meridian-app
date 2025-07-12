@@ -7,6 +7,29 @@ import {
 } from '@/lib/stripe/config';
 import { createClient } from '@supabase/supabase-js';
 
+// Stripe webhook types
+interface StripeSubscription {
+  id: string;
+  status: string;
+  metadata: Record<string, string>;
+  items: {
+    data: Array<{
+      price: {
+        product: string | { id: string };
+      };
+    }>;
+  };
+  current_period_start: number;
+  current_period_end: number;
+  trial_end?: number | null;
+  cancel_at_period_end: boolean;
+}
+
+interface StripeInvoice {
+  id: string;
+  subscription: StripeSubscription | string | null;
+}
+
 // Initialize Supabase client
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -73,7 +96,7 @@ export async function POST(request: NextRequest) {
 }
 
 // Subscription lifecycle handlers
-async function handleSubscriptionCreated(subscription: any) {
+async function handleSubscriptionCreated(subscription: StripeSubscription) {
   try {
     const { userId } = subscription.metadata;
     
@@ -88,7 +111,7 @@ async function handleSubscriptionCreated(subscription: any) {
       .update({
         subscription_id: subscription.id,
         subscription_status: subscription.status,
-        subscription_tier: getProductTier(subscription.items.data[0].price.product),
+        subscription_tier: getProductTier(typeof subscription.items.data[0].price.product === 'string' ? subscription.items.data[0].price.product : subscription.items.data[0].price.product.id),
         current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
         current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
         trial_end: subscription.trial_end ? new Date(subscription.trial_end * 1000).toISOString() : null,
@@ -113,7 +136,7 @@ async function handleSubscriptionCreated(subscription: any) {
   }
 }
 
-async function handleSubscriptionUpdated(subscription: any) {
+async function handleSubscriptionUpdated(subscription: StripeSubscription) {
   try {
     const { userId } = subscription.metadata;
     
@@ -127,7 +150,7 @@ async function handleSubscriptionUpdated(subscription: any) {
       .from('users')
       .update({
         subscription_status: subscription.status,
-        subscription_tier: getProductTier(subscription.items.data[0].price.product),
+        subscription_tier: getProductTier(typeof subscription.items.data[0].price.product === 'string' ? subscription.items.data[0].price.product : subscription.items.data[0].price.product.id),
         current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
         current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
         trial_end: subscription.trial_end ? new Date(subscription.trial_end * 1000).toISOString() : null,
@@ -154,7 +177,7 @@ async function handleSubscriptionUpdated(subscription: any) {
   }
 }
 
-async function handleSubscriptionDeleted(subscription: any) {
+async function handleSubscriptionDeleted(subscription: StripeSubscription) {
   try {
     const { userId } = subscription.metadata;
     
@@ -193,10 +216,10 @@ async function handleSubscriptionDeleted(subscription: any) {
 }
 
 // Payment handlers
-async function handlePaymentSucceeded(invoice: any) {
+async function handlePaymentSucceeded(invoice: StripeInvoice) {
   try {
-    const { userId } = invoice.subscription.metadata;
-    
+    const subscription = invoice.subscription && typeof invoice.subscription !== 'string' ? invoice.subscription : null;
+    const userId = subscription?.metadata?.userId;
     if (!userId) {
       console.error('No userId in subscription metadata');
       return;
@@ -226,10 +249,10 @@ async function handlePaymentSucceeded(invoice: any) {
   }
 }
 
-async function handlePaymentFailed(invoice: any) {
+async function handlePaymentFailed(invoice: StripeInvoice) {
   try {
-    const { userId } = invoice.subscription.metadata;
-    
+    const subscription = invoice.subscription && typeof invoice.subscription !== 'string' ? invoice.subscription : null;
+    const userId = subscription?.metadata?.userId;
     if (!userId) {
       console.error('No userId in subscription metadata');
       return;
@@ -259,7 +282,7 @@ async function handlePaymentFailed(invoice: any) {
 }
 
 // Trial handlers
-async function handleTrialWillEnd(subscription: any) {
+async function handleTrialWillEnd(subscription: StripeSubscription) {
   try {
     const { userId } = subscription.metadata;
     
@@ -303,37 +326,37 @@ function getProductTier(productId: string): string {
 }
 
 // Email notification functions (disabled - Resend removed)
-async function sendWelcomeEmail(userId: string, subscription: any) {
+async function sendWelcomeEmail(userId: string, subscription: StripeSubscription) {
   // Email sending disabled - Resend removed
   console.log(`Welcome email disabled - Resend removed for user ${userId}`);
 }
 
-async function sendPaymentReminder(userId: string, subscription: any) {
+async function sendPaymentReminder(userId: string, subscription: StripeSubscription) {
   // Email sending disabled - Resend removed
   console.log(`Payment reminder disabled - Resend removed for user ${userId}`);
 }
 
-async function sendCancellationEmail(userId: string, subscription: any) {
+async function sendCancellationEmail(userId: string, subscription: StripeSubscription) {
   // Email sending disabled - Resend removed
   console.log(`Cancellation email disabled - Resend removed for user ${userId}`);
 }
 
-async function sendPaymentConfirmationEmail(userId: string, invoice: any) {
+async function sendPaymentConfirmationEmail(userId: string, invoice: StripeInvoice) {
   // Email sending disabled - Resend removed
   console.log(`Payment confirmation disabled - Resend removed for user ${userId}`);
 }
 
-async function sendPaymentFailureEmail(userId: string, invoice: any) {
+async function sendPaymentFailureEmail(userId: string, invoice: StripeInvoice) {
   // Email sending disabled - Resend removed
   console.log(`Payment failure notification disabled - Resend removed for user ${userId}`);
 }
 
-async function sendTrialEndingEmail(userId: string, subscription: any) {
+async function sendTrialEndingEmail(userId: string, subscription: StripeSubscription) {
   // Email sending disabled - Resend removed
   console.log(`Trial ending reminder disabled - Resend removed for user ${userId}`);
 }
 
-async function sendTrialEndedEmail(userId: string, subscription: any) {
+async function sendTrialEndedEmail(userId: string, subscription: StripeSubscription) {
   // Email sending disabled - Resend removed
   console.log(`Trial ended notification disabled - Resend removed for user ${userId}`);
 }

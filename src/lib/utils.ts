@@ -11,8 +11,12 @@ export function cn(...inputs: ClassValue[]) {
 /**
  * Format date to human readable string
  */
-export function formatDate(date: Date | string): string {
+export function formatDate(date: Date | string | null | undefined): string {
+  if (!date) return "Invalid date";
+  
   const d = new Date(date);
+  if (isNaN(d.getTime())) return "Invalid date";
+  
   return d.toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
@@ -39,9 +43,10 @@ export function formatRelativeTime(date: Date | string): string {
 /**
  * Truncate text to specified length
  */
-export function truncateText(text: string, length: number): string {
+export function truncateText(text: string | null | undefined, length: number): string {
+  if (!text) return "";
   if (text.length <= length) return text;
-  return text.slice(0, length) + "...";
+  return text.slice(0, length).trim() + "...";
 }
 
 /**
@@ -102,16 +107,16 @@ export function capitalizeWords(str: string): string {
 /**
  * Convert bytes to human readable format
  */
-export function formatBytes(bytes: number, decimals = 2): string {
+export function formatBytes(bytes: number, decimals?: number): string {
   if (bytes === 0) return "0 Bytes";
   
   const k = 1024;
-  const dm = decimals < 0 ? 0 : decimals;
+  const dm = typeof decimals === 'number' ? (decimals < 0 ? 0 : decimals) : 0;
   const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
   
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+  const value = bytes / Math.pow(k, i);
+  return (dm === 0 ? Math.round(value) : value.toFixed(dm)) + " " + sizes[i];
 }
 
 /**

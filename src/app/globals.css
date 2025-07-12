@@ -2,593 +2,277 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  :root {
-    --bg-primary: #FFFFFF; /* 70% */
-    --bg-secondary: #F8F6F0; /* 5% */
-    --text-primary: #000000;
-    --accent-burgundy: #801B2B; /* 3% */
-    --border-pearl: #F5F5F5; /* 2% */
-  }
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
 
-  .dark {
-    --background: 0 0% 0%;
-    --foreground: 0 0% 100%;
-    --primary: 348 100% 32%;
-    --primary-foreground: 0 0% 0%;
-    --muted: 0 0% 9%;
-    --muted-foreground: 0 0% 64%;
-    --accent: 0 0% 9%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 20%;
-    --input: 0 0% 20%;
-    --ring: 348 100% 32%;
-  }
-}
-
+/* Base styles */
 @layer base {
-  * {
-    @apply border-gray-200;
+  html {
+    font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
   }
   
   body {
     @apply bg-white text-black antialiased;
-    font-family: var(--font-inter), system-ui, sans-serif;
-    font-feature-settings: "rlig" 1, "calt" 1;
   }
   
-  /* Cartier Typography Hierarchy */
-  .text-hero-cartier {
-    font-family: var(--font-playfair), serif;
-    font-size: clamp(48px, 8vw, 72px);
-    font-weight: 700;
-    color: var(--color-black);
-    line-height: 1.1;
-    letter-spacing: -0.02em;
-  }
-
-  .text-headline-cartier {
-    font-family: var(--font-playfair), serif;
-    font-size: clamp(32px, 5vw, 48px);
-    font-weight: 600;
-    color: var(--color-black);
-    line-height: 1.2;
-  }
-
-  .text-subhead-cartier {
-    font-family: var(--font-inter), system-ui, sans-serif;
-    font-size: clamp(18px, 3vw, 24px);
-    font-weight: 600;
-    color: var(--color-black);
-    line-height: 1.3;
-  }
-
-  .text-body-cartier {
-    font-family: var(--font-inter), system-ui, sans-serif;
-    font-size: 16px;
-    font-weight: 400;
-    color: #4A4A4A;
-    line-height: 1.6;
-  }
-
-  .text-accent-cartier {
-    color: var(--color-cartier-burgundy);
-    font-weight: 600;
-  }
-
-  /* Legacy typography classes for compatibility */
-  .text-hero {
-    font-family: var(--font-playfair), serif;
-    font-size: clamp(48px, 8vw, 72px);
-    font-weight: 700;
-    color: var(--color-black);
-    line-height: 1.1;
-    letter-spacing: -0.02em;
-  }
-
-  .text-h1 {
-    font-family: var(--font-playfair), serif;
-    font-size: clamp(36px, 6vw, 48px);
-    font-weight: 600;
-    color: var(--color-black);
-    line-height: 1.2;
-  }
-
-  .text-h2 {
-    font-family: var(--font-playfair), serif;
-    font-size: clamp(28px, 4vw, 36px);
-    font-weight: 600;
-    color: var(--color-black);
-    line-height: 1.3;
-  }
-
-  .text-h3 {
-    font-family: var(--font-inter), system-ui, sans-serif;
-    font-size: clamp(20px, 3vw, 24px);
-    font-weight: 600;
-    color: var(--color-black);
-    line-height: 1.4;
-  }
-
-  .text-body-large {
-    font-family: var(--font-inter), system-ui, sans-serif;
-    font-size: 18px;
-    font-weight: 400;
-    color: #4A4A4A;
-    line-height: 1.6;
-  }
-
-  .text-body {
-    font-family: var(--font-inter), system-ui, sans-serif;
-    font-size: 16px;
-    font-weight: 400;
-    color: #4A4A4A;
-    line-height: 1.6;
-  }
-
-  .text-small {
-    font-family: var(--font-inter), system-ui, sans-serif;
-    font-size: 14px;
-    font-weight: 400;
-    color: #4A4A4A;
-    line-height: 1.5;
-  }
-
-  .text-caption {
-    font-family: var(--font-inter), system-ui, sans-serif;
-    font-size: 12px;
-    font-weight: 500;
-    color: #4A4A4A;
-    line-height: 1.4;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+  /* Cartier typography system */
+  .font-playfair {
+    font-family: 'Playfair Display', Georgia, serif;
   }
   
-  /* Custom scrollbar */
-  ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+  .font-inter {
+    font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
   }
   
-  ::-webkit-scrollbar-track {
-    @apply bg-gray-100;
-  }
-  
-  ::-webkit-scrollbar-thumb {
-    @apply bg-gray-300 rounded-full;
-  }
-  
-  ::-webkit-scrollbar-thumb:hover {
-    @apply bg-gray-400;
-  }
-  
-  /* Focus styles */
-  *:focus-visible {
-    @apply outline-none ring-2 ring-brand-burgundy ring-offset-2;
-  }
-  
-  /* Selection styles */
-  ::selection {
-    @apply bg-brand-burgundy text-white;
-  }
-  
-  /* Reduced motion */
-  @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-    }
+  .font-helvetica {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
   }
 }
 
+/* Component styles */
 @layer components {
-  /* Primary Cartier Button */
-  .btn-primary {
-    background: var(--color-cartier-burgundy);
-    color: var(--color-white);
-    border: none;
-    font-family: var(--font-sans);
-    font-weight: 500;
-    font-size: 16px;
-    padding: 12px 32px;
-    border-radius: var(--border-radius);
-    transition: all 0.2s ease;
-    cursor: pointer;
-    letter-spacing: 0.01em;
-  }
-
-  .btn-primary:hover {
-    background: var(--color-burgundy-dark);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 16px rgba(128, 27, 43, 0.25);
-  }
-
-  .btn-primary:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 8px rgba(128, 27, 43, 0.2);
-  }
-
-  /* Secondary Cartier Button */
-  .btn-secondary {
-    background: var(--color-white);
-    color: var(--color-black);
-    border: var(--border-width) solid var(--color-pearl-gray);
-    font-family: var(--font-sans);
-    font-weight: 500;
-    font-size: 16px;
-    padding: 12px 32px;
-    border-radius: var(--border-radius);
-    transition: all 0.2s ease;
-    cursor: pointer;
-  }
-
-  .btn-secondary:hover {
-    border-color: var(--color-cartier-burgundy);
-    color: var(--color-cartier-burgundy);
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-subtle);
-  }
-
-  /* Subtle Cartier Button */
-  .btn-subtle {
-    background: var(--color-cream);
-    color: var(--color-black);
-    border: none;
-    font-family: var(--font-sans);
-    font-weight: 500;
-    font-size: 16px;
-    padding: 12px 32px;
-    border-radius: var(--border-radius);
-    transition: all 0.2s ease;
-    cursor: pointer;
-  }
-
-  .btn-subtle:hover {
-    background: var(--color-burgundy-subtle);
-    color: var(--color-cartier-burgundy);
+  /* Typography utilities */
+  .text-display-1 {
+    @apply font-playfair text-6xl font-bold leading-tight tracking-tight;
   }
   
-  /* Legacy button styles (for compatibility) */
-  .btn-outline {
-    @apply border border-gray-300 bg-white text-gray-900 hover:bg-gray-50 focus:ring-2 focus:ring-brand-burgundy focus:ring-offset-2 transition-colors duration-200;
+  .text-display-2 {
+    @apply font-playfair text-5xl font-bold leading-tight tracking-tight;
   }
   
-  /* Luxury Card Components */
-  .card-luxury {
-    background: var(--color-white);
-    border: var(--border-width) solid var(--color-pearl-gray);
-    border-radius: var(--border-radius);
-    padding: var(--spacing-lg);
-    box-shadow: var(--shadow-subtle);
-    transition: all 0.3s ease;
-  }
-
-  .card-luxury:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-medium);
-    border-color: #E5E5E5;
-  }
-
-  .card-luxury.card-featured {
-    border-color: var(--color-cartier-burgundy);
-    background: linear-gradient(135deg, var(--color-white) 0%, var(--color-cream) 100%);
-  }
-
-  .card-luxury.card-featured:hover {
-    box-shadow: 0 8px 32px rgba(128, 27, 43, 0.15);
+  .text-display-3 {
+    @apply font-playfair text-4xl font-bold leading-tight tracking-tight;
   }
   
-  /* Legacy card styles (for compatibility) */
-  .card {
-    @apply rounded-lg border border-gray-200 bg-white shadow-sm;
+  .text-headline-1 {
+    @apply font-inter text-3xl font-semibold leading-tight tracking-tight;
   }
   
-  .card-hover {
-    @apply rounded-lg border border-gray-200 bg-white shadow-sm transition-all duration-200 hover:shadow-md hover:border-gray-300;
+  .text-headline-2 {
+    @apply font-inter text-2xl font-semibold leading-tight tracking-tight;
   }
   
-  /* Custom input styles */
-  .input-field {
-    @apply w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-burgundy focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+  .text-headline-3 {
+    @apply font-inter text-xl font-semibold leading-tight tracking-tight;
   }
   
-  /* Custom modal styles */
-  .modal-overlay {
-    @apply fixed inset-0 z-50 bg-black/50 backdrop-blur-sm;
+  .text-title-1 {
+    @apply font-inter text-lg font-medium leading-relaxed tracking-normal;
   }
   
-  .modal-content {
-    @apply fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border border-gray-200 bg-white p-6 shadow-lg duration-200 sm:rounded-lg;
+  .text-title-2 {
+    @apply font-inter text-base font-medium leading-relaxed tracking-normal;
   }
   
-  /* Dashboard Layout (Cartier Style) */
-  .dashboard-cartier {
-    background: var(--color-white);
-    min-height: 100vh;
-    display: grid;
-    grid-template-columns: 280px 1fr 320px;
-    gap: 0;
-  }
-
-  .sidebar-left {
-    background: var(--color-white);
-    border-right: var(--border-width) solid var(--color-pearl-gray);
-    padding: var(--spacing-lg);
-  }
-
-  .main-panel {
-    background: var(--color-white);
-    padding: var(--spacing-lg);
-    overflow-y: auto;
-  }
-
-  .sidebar-right {
-    background: var(--color-cream);
-    border-left: var(--border-width) solid var(--color-pearl-gray);
-    padding: var(--spacing-lg);
-  }
-
-  /* Cartier-inspired header */
-  .header-cartier {
-    background: var(--color-white);
-    border-bottom: var(--border-width) solid var(--color-pearl-gray);
-    padding: var(--spacing-md) var(--spacing-lg);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  /* Legacy dashboard styles (for compatibility) */
-  .dashboard-container {
-    background: var(--color-white);
-    min-height: 100vh;
-    display: grid;
-    grid-template-columns: 280px 1fr 320px;
-    gap: 0;
-  }
-
-  /* Mobile responsive adjustments */
-  @media (max-width: 768px) {
-    .dashboard-cartier,
-    .dashboard-container {
-      grid-template-columns: 1fr;
-      grid-template-rows: auto 1fr auto;
-    }
-    
-    .sidebar-left,
-    .sidebar-right {
-      display: none; /* Hide on mobile, show via overlay */
-    }
-  }
-
-  /* Executive Navigation */
-  .nav-executive {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-xs);
-  }
-
-  .nav-item {
-    display: flex;
-    align-items: center;
-    padding: var(--spacing-sm) var(--spacing-md);
-    border-radius: var(--border-radius);
-    color: #4A4A4A;
-    text-decoration: none;
-    font-family: var(--font-sans);
-    font-weight: 500;
-    transition: all 0.2s ease;
-  }
-
-  .nav-item:hover,
-  .nav-item.active {
-    background: var(--color-burgundy-subtle);
-    color: var(--color-cartier-burgundy);
+  .text-body-1 {
+    @apply font-inter text-base font-normal leading-relaxed tracking-normal;
   }
   
-  /* Custom animation classes */
-  .animate-fade-in {
-    animation: fadeIn 0.3s ease-in-out;
+  .text-body-2 {
+    @apply font-inter text-sm font-normal leading-relaxed tracking-normal;
   }
   
-  .animate-slide-up {
-    animation: slideUp 0.3s ease-out;
+  .text-caption {
+    @apply font-inter text-xs font-normal leading-relaxed tracking-wide;
   }
   
-  .animate-slide-down {
-    animation: slideDown 0.3s ease-out;
+  .text-button {
+    @apply font-inter text-sm font-medium leading-none tracking-wide uppercase;
   }
   
-  .animate-scale-in {
-    animation: scaleIn 0.2s ease-out;
+  .text-overline {
+    @apply font-inter text-xs font-medium leading-none tracking-widest uppercase;
   }
   
-  /* Blob animation for hero section */
-  .animate-blob {
-    animation: blob 7s infinite;
+  /* Cartier color utilities */
+  .text-cartier-primary {
+    @apply text-cartier-900;
   }
   
-  .animation-delay-2000 {
-    animation-delay: 2s;
+  .text-cartier-secondary {
+    @apply text-cartier-700;
   }
   
-  .animation-delay-4000 {
-    animation-delay: 4s;
+  .text-cartier-muted {
+    @apply text-cartier-500;
   }
   
-  @keyframes blob {
-    0% {
-      transform: translate(0px, 0px) scale(1);
-    }
-    33% {
-      transform: translate(30px, -50px) scale(1.1);
-    }
-    66% {
-      transform: translate(-20px, 20px) scale(0.9);
-    }
-    100% {
-      transform: translate(0px, 0px) scale(1);
-    }
+  .text-cartier-accent {
+    @apply text-gold-600;
   }
   
-  /* Custom slider styles */
-  .slider {
-    -webkit-appearance: none;
-    appearance: none;
-    background: transparent;
-    cursor: pointer;
+  .bg-cartier-primary {
+    @apply bg-cartier-50;
   }
   
-  .slider::-webkit-slider-track {
-    background: #e5e7eb;
-    height: 8px;
-    border-radius: 4px;
+  .bg-cartier-secondary {
+    @apply bg-cartier-100;
   }
   
-  .slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    background: var(--color-cartier-burgundy);
-    height: 20px;
-    width: 20px;
-    border-radius: 50%;
-    cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  .bg-cartier-accent {
+    @apply bg-gold-50;
   }
   
-  .slider::-webkit-slider-thumb:hover {
-    background: var(--color-burgundy-dark);
+  .border-cartier-primary {
+    @apply border-cartier-200;
   }
   
-  .slider::-moz-range-track {
-    background: #e5e7eb;
-    height: 8px;
-    border-radius: 4px;
-    border: none;
+  .border-cartier-secondary {
+    @apply border-cartier-300;
   }
   
-  .slider::-moz-range-thumb {
-    background: var(--color-cartier-burgundy);
-    height: 20px;
-    width: 20px;
-    border-radius: 50%;
-    cursor: pointer;
-    border: none;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  .border-cartier-accent {
+    @apply border-gold-200;
   }
   
-  .slider::-moz-range-thumb:hover {
-    background: var(--color-burgundy-dark);
+  /* Luxury spacing utilities */
+  .space-cartier-xs {
+    @apply space-y-1;
   }
   
-  /* Custom utility classes */
-  .text-balance {
-    text-wrap: balance;
+  .space-cartier-sm {
+    @apply space-y-2;
   }
   
-  .text-pretty {
-    text-wrap: pretty;
+  .space-cartier-md {
+    @apply space-y-4;
   }
   
-  /* Custom grid layouts */
-  .grid-dashboard {
-    @apply grid grid-cols-1 lg:grid-cols-12 gap-6;
+  .space-cartier-lg {
+    @apply space-y-6;
   }
   
-  .grid-email-list {
-    @apply grid grid-cols-1 gap-4;
+  .space-cartier-xl {
+    @apply space-y-8;
   }
   
-  .grid-email-detail {
-    @apply grid grid-cols-1 lg:grid-cols-3 gap-6;
+  .space-cartier-2xl {
+    @apply space-y-12;
+  }
+  
+  /* Luxury shadow utilities */
+  .shadow-cartier-sm {
+    @apply shadow-cartier;
+  }
+  
+  .shadow-cartier-md {
+    @apply shadow-cartier-lg;
+  }
+  
+  .shadow-cartier-lg {
+    @apply shadow-cartier-xl;
+  }
+  
+  /* Luxury animation utilities */
+  .animate-cartier-fade-in {
+    @apply animate-fade-in;
+  }
+  
+  .animate-cartier-slide-up {
+    @apply animate-slide-up;
+  }
+  
+  .animate-cartier-scale-in {
+    @apply animate-scale-in;
+  }
+  
+  .animate-cartier-bounce-gentle {
+    @apply animate-bounce-gentle;
+  }
+  
+  /* Luxury component styles */
+  .btn-cartier-primary {
+    @apply bg-cartier-900 text-white font-medium px-6 py-3 rounded-lg 
+           hover:bg-cartier-800 focus:ring-2 focus:ring-cartier-500 focus:ring-offset-2 
+           transition-all duration-200 ease-in-out;
+  }
+  
+  .btn-cartier-secondary {
+    @apply bg-white text-cartier-900 font-medium px-6 py-3 rounded-lg border border-cartier-200
+           hover:bg-cartier-50 focus:ring-2 focus:ring-cartier-500 focus:ring-offset-2 
+           transition-all duration-200 ease-in-out;
+  }
+  
+  .btn-cartier-accent {
+    @apply bg-gold-500 text-white font-medium px-6 py-3 rounded-lg 
+           hover:bg-gold-600 focus:ring-2 focus:ring-gold-400 focus:ring-offset-2 
+           transition-all duration-200 ease-in-out;
+  }
+  
+  .card-cartier {
+    @apply bg-white rounded-xl border border-cartier-200 shadow-cartier-sm 
+           hover:shadow-cartier-md transition-all duration-200 ease-in-out;
+  }
+  
+  .input-cartier {
+    @apply w-full px-4 py-3 border border-cartier-200 rounded-lg 
+           focus:ring-2 focus:ring-cartier-500 focus:border-cartier-500 
+           transition-all duration-200 ease-in-out;
+  }
+  
+  .modal-cartier {
+    @apply bg-white rounded-2xl shadow-cartier-xl border border-cartier-100;
+  }
+  
+  .overlay-cartier {
+    @apply bg-black bg-opacity-50 backdrop-blur-sm;
   }
 }
 
+/* Utility styles */
 @layer utilities {
-  /* Custom spacing utilities */
-  .space-y-0\.5 > * + * {
-    margin-top: 0.125rem;
+  /* Luxury text gradients */
+  .text-gradient-cartier {
+    @apply bg-gradient-to-r from-cartier-900 to-gold-600 bg-clip-text text-transparent;
   }
   
-  .space-y-1 > * + * {
-    margin-top: 0.25rem;
+  .text-gradient-gold {
+    @apply bg-gradient-to-r from-gold-500 to-champagne-500 bg-clip-text text-transparent;
   }
   
-  .space-y-2 > * + * {
-    margin-top: 0.5rem;
+  /* Luxury backgrounds */
+  .bg-gradient-cartier {
+    @apply bg-gradient-to-br from-cartier-50 to-gold-50;
   }
   
-  .space-y-3 > * + * {
-    margin-top: 0.75rem;
+  .bg-gradient-gold {
+    @apply bg-gradient-to-br from-gold-50 to-champagne-50;
   }
   
-  .space-y-4 > * + * {
-    margin-top: 1rem;
+  /* Luxury borders */
+  .border-gradient-cartier {
+    @apply border border-transparent bg-gradient-to-r from-cartier-200 to-gold-200 bg-clip-border;
   }
   
-  .space-y-6 > * + * {
-    margin-top: 1.5rem;
+  /* Luxury effects */
+  .backdrop-blur-cartier {
+    @apply backdrop-blur-md bg-white bg-opacity-80;
   }
   
-  .space-y-8 > * + * {
-    margin-top: 2rem;
+  .glass-cartier {
+    @apply backdrop-blur-md bg-white bg-opacity-90 border border-white border-opacity-20;
   }
   
-  /* Flex utilities */
-  .flex-center {
-    @apply flex items-center justify-center;
+  /* Luxury animations */
+  .hover-lift {
+    @apply hover:-translate-y-1 hover:shadow-cartier-lg transition-all duration-300 ease-out;
   }
   
-  .flex-between {
-    @apply flex items-center justify-between;
+  .hover-glow {
+    @apply hover:shadow-cartier-lg hover:shadow-gold-200/50 transition-all duration-300 ease-out;
   }
   
-  .flex-start {
-    @apply flex items-center justify-start;
+  /* Luxury spacing */
+  .section-cartier {
+    @apply py-16 px-6 md:px-8 lg:px-12;
   }
   
-  .flex-end {
-    @apply flex items-center justify-end;
+  .container-cartier {
+    @apply max-w-7xl mx-auto;
   }
   
-  /* Text utilities */
-  .text-gradient {
-    @apply bg-gradient-to-r from-brand-burgundy to-brand-burgundy-dark bg-clip-text text-transparent;
-  }
-  
-  .text-shadow {
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Border utilities */
-  .border-gradient {
-    @apply border border-transparent bg-gradient-to-r from-brand-burgundy to-brand-burgundy-dark bg-clip-border;
-  }
-  
-  /* Background utilities */
-  .bg-gradient-primary {
-    @apply bg-gradient-to-r from-brand-burgundy to-brand-burgundy-dark;
-  }
-  
-  .bg-gradient-secondary {
-    @apply bg-gradient-to-r from-gray-100 to-gray-200;
-  }
-  
-  /* Shadow utilities */
-  .shadow-soft {
-    box-shadow: var(--shadow-subtle);
-  }
-  
-  .shadow-medium {
-    box-shadow: var(--shadow-medium);
-  }
-  
-  .shadow-strong {
-    box-shadow: var(--shadow-strong);
+  /* Luxury responsive */
+  .responsive-cartier {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 lg:gap-12;
   }
 }

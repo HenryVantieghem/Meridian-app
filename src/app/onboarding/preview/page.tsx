@@ -226,7 +226,7 @@ export default function PreviewPage() {
                 AI Analysis Complete
               </Typography>
               <Typography variant="body" className="text-gray-600">
-                Here's how Napoleon prioritized your emails
+                Here&apos;s how Napoleon prioritized your emails
               </Typography>
             </div>
 
@@ -327,7 +327,7 @@ export default function PreviewPage() {
             </motion.div>
             
             <Typography variant="h3" className="text-2xl font-bold text-gray-900 mb-4">
-              🎉 You're All Set!
+              🎉 You&apos;re All Set!
             </Typography>
             
             <Typography variant="body" className="text-gray-600 mb-8 max-w-2xl mx-auto">
