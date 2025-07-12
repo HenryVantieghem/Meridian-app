@@ -1,87 +1,171 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { validateEnvironment } from '@/lib/config/production';
-import { createClient } from '@supabase/supabase-js';
-import { productionUtils } from '@/lib/config/production';
+import { productionMonitor } from '@/lib/monitoring/production-monitor';
 
-// Health check response interface
-interface HealthCheckResponse {
-  status: 'healthy' | 'degraded' | 'unhealthy';
-  timestamp: string;
-  version: string;
-  environment: string;
-  uptime: number;
-  checks: {
-    database: HealthCheck;
-    ai: HealthCheck;
-    email: HealthCheck;
-    slack: HealthCheck;
-    gmail: HealthCheck;
-    outlook: HealthCheck;
-    stripe: HealthCheck;
-    environment: HealthCheck;
-  };
-  metrics: {
-    memory: {
-      used: number;
-      total: number;
-      percentage: number;
-    };
-    cpu: {
-      load: number;
-    };
-  };
-}
-
-interface HealthCheck {
-  status: 'healthy' | 'degraded' | 'unhealthy';
-  responseTime?: number;
-  error?: string;
-  details?: Record<string, unknown>;
-}
-
-// Database health check
-async function checkDatabase(): Promise<HealthCheck> {
+export async function GET(request: NextRequest) {
   const startTime = Date.now();
   
   try {
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    // Get health status
+    const healthStatus = productionMonitor.getHealthStatus();
+    
+    // Check database connectivity
+    const dbStatus = await checkDatabaseHealth();
+    
+    // Check external services
+    const externalServices = await checkExternalServices();
+    
+    // Calculate response time
+    const responseTime = Date.now() - startTime;
+    
+    // Track this request
+    productionMonitor.trackPerformance({
+      timestamp: new Date().toISOString(),
+      pageLoadTime: responseTime,
+      apiResponseTime: responseTime,
+      databaseQueryTime: dbStatus.responseTime,
+      aiProcessingTime: 0,
+      memoryUsage: process.memoryUsage().heapUsed,
+      cpuUsage: process.cpuUsage().user,
+    });
 
+    const overallStatus = determineOverallStatus(healthStatus.status, dbStatus.status, externalServices);
+    
+    return NextResponse.json({
+      status: overallStatus,
+      timestamp: new Date().toISOString(),
+      uptime: healthStatus.metrics.uptime,
+      responseTime,
+      services: {
+        database: dbStatus,
+        external: externalServices,
+        memory: {
+          used: healthStatus.metrics.memoryUsage.heapUsed,
+          total: healthStatus.metrics.memoryUsage.heapTotal,
+          external: healthStatus.metrics.memoryUsage.external,
+        },
+        cpu: {
+          user: healthStatus.metrics.cpuUsage.user,
+          system: healthStatus.metrics.cpuUsage.system,
+        },
+      },
+      errors: healthStatus.recentErrors.length,
+      version: process.env.npm_package_version || '1.0.0',
+      environment: process.env.NODE_ENV,
+    }, {
+      status: overallStatus === 'healthy' ? 200 : overallStatus === 'warning' ? 200 : 503,
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+      },
+    });
+  } catch (error) {
+    const responseTime = Date.now() - startTime;
+    
+    productionMonitor.reportError({
+      timestamp: new Date().toISOString(),
+      error: error instanceof Error ? error.message : 'Unknown health check error',
+      stack: error instanceof Error ? error.stack : undefined,
+      url: request.url,
+      userAgent: request.headers.get('user-agent') || 'unknown',
+      ip: request.headers.get('x-forwarded-for') || 'unknown',
+      severity: 'critical',
+    });
+
+    return NextResponse.json({
+      status: 'critical',
+      error: 'Health check failed',
+      timestamp: new Date().toISOString(),
+      responseTime,
+    }, { status: 503 });
+  }
+}
+
+async function checkDatabaseHealth(): Promise<{
+  status: 'healthy' | 'warning' | 'critical';
+  responseTime: number;
+  error?: string;
+}> {
+  const startTime = Date.now();
+  
+  try {
     // Test database connection
-    const { error: dbError } = await supabase
+    const { createClient } = await import('@supabase/supabase-js');
+    
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    
+    if (!supabaseUrl || !supabaseKey) {
+      return {
+        status: 'critical',
+        responseTime: Date.now() - startTime,
+        error: 'Database credentials not configured',
+      };
+    }
+    
+    const supabase = createClient(supabaseUrl, supabaseKey);
+    
+    // Simple query to test connection
+    const { data, error } = await supabase
       .from('users')
       .select('count')
       .limit(1);
-
+    
     const responseTime = Date.now() - startTime;
-
-    if (dbError) {
+    
+    if (error) {
       return {
-        status: 'unhealthy',
+        status: 'critical',
         responseTime,
-        error: dbError.message,
-        details: { message: dbError.message, code: dbError.code },
+        error: error.message,
       };
     }
-
+    
     return {
       status: 'healthy',
       responseTime,
-      details: { connected: true },
     };
   } catch (error) {
     return {
-      status: 'unhealthy',
+      status: 'critical',
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message : 'Unknown database error',
+      error: error instanceof Error ? error.message : 'Database connection failed',
     };
   }
 }
 
-// AI service health check
-async function checkAI(): Promise<HealthCheck> {
+async function checkExternalServices(): Promise<{
+  [key: string]: {
+    status: 'healthy' | 'warning' | 'critical';
+    responseTime: number;
+    error?: string;
+  };
+}> {
+  const services: { [key: string]: any } = {};
+  
+  // Check OpenAI API
+  if (process.env.OPENAI_API_KEY) {
+    services.openai = await checkOpenAI();
+  }
+  
+  // Check Stripe API
+  if (process.env.STRIPE_SECRET_KEY) {
+    services.stripe = await checkStripe();
+  }
+  
+  // Check Clerk API
+  if (process.env.CLERK_SECRET_KEY) {
+    services.clerk = await checkClerk();
+  }
+  
+  return services;
+}
+
+async function checkOpenAI(): Promise<{
+  status: 'healthy' | 'warning' | 'critical';
+  responseTime: number;
+  error?: string;
+}> {
   const startTime = Date.now();
   
   try {
@@ -90,148 +174,35 @@ async function checkAI(): Promise<HealthCheck> {
         'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
       },
     });
-
+    
     const responseTime = Date.now() - startTime;
-
+    
     if (!response.ok) {
       return {
-        status: 'degraded',
+        status: 'critical',
         responseTime,
-        error: `OpenAI API returned ${response.status}`,
+        error: `OpenAI API error: ${response.status}`,
       };
     }
-
+    
     return {
       status: 'healthy',
       responseTime,
-      details: { available: true },
     };
   } catch (error) {
     return {
-      status: 'unhealthy',
+      status: 'critical',
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message : 'AI service unavailable',
+      error: error instanceof Error ? error.message : 'OpenAI connection failed',
     };
   }
 }
 
-// Email service health check
-async function checkEmail(): Promise<HealthCheck> {
-  const startTime = Date.now();
-  
-  try {
-    // Email service disabled - Resend removed
-    const responseTime = Date.now() - startTime;
-
-    return {
-      status: 'degraded',
-      responseTime,
-      error: 'Email service disabled - Resend removed',
-      details: { available: false },
-    };
-  } catch (error) {
-    return {
-      status: 'unhealthy',
-      responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message : 'Email service unavailable',
-    };
-  }
-}
-
-// Slack API health check
-async function checkSlack(): Promise<HealthCheck> {
-  const startTime = Date.now();
-  
-  try {
-    const response = await fetch('https://slack.com/api/auth.test', {
-      headers: {
-        'Authorization': `Bearer ${process.env.SLACK_BOT_TOKEN}`,
-      },
-    });
-
-    const responseTime = Date.now() - startTime;
-    const data = await response.json();
-
-    if (!data.ok) {
-      return {
-        status: 'degraded',
-        responseTime,
-        error: data.error || 'Slack API error',
-      };
-    }
-
-    return {
-      status: 'healthy',
-      responseTime,
-      details: { authenticated: true },
-    };
-  } catch (error) {
-    return {
-      status: 'unhealthy',
-      responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message : 'Slack service unavailable',
-    };
-  }
-}
-
-// Gmail API health check
-async function checkGmail(): Promise<HealthCheck> {
-  const startTime = Date.now();
-  
-  try {
-    // Check if Gmail credentials are configured
-    if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
-      return {
-        status: 'degraded',
-        responseTime: Date.now() - startTime,
-        error: 'Gmail credentials not configured',
-      };
-    }
-
-    return {
-      status: 'healthy',
-      responseTime: Date.now() - startTime,
-      details: { configured: true },
-    };
-  } catch (error) {
-    return {
-      status: 'unhealthy',
-      responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message : 'Gmail service error',
-    };
-  }
-}
-
-// Outlook API health check
-async function checkOutlook(): Promise<HealthCheck> {
-  const startTime = Date.now();
-  
-  try {
-    // Check if Outlook credentials are configured
-    if (!process.env.MICROSOFT_CLIENT_ID || !process.env.MICROSOFT_CLIENT_SECRET) {
-      return {
-        status: 'degraded',
-        responseTime: Date.now() - startTime,
-        error: 'Outlook credentials not configured',
-      };
-    }
-
-    return {
-      status: 'healthy',
-      responseTime: Date.now() - startTime,
-      details: { configured: true },
-    };
-  } catch (error) {
-    return {
-      status: 'unhealthy',
-      responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message : 'Outlook service error',
-    };
-  }
-}
-
-// Stripe API health check
-async function checkStripe(): Promise<HealthCheck> {
+async function checkStripe(): Promise<{
+  status: 'healthy' | 'warning' | 'critical';
+  responseTime: number;
+  error?: string;
+}> {
   const startTime = Date.now();
   
   try {
@@ -240,199 +211,81 @@ async function checkStripe(): Promise<HealthCheck> {
         'Authorization': `Bearer ${process.env.STRIPE_SECRET_KEY}`,
       },
     });
-
+    
     const responseTime = Date.now() - startTime;
-
+    
     if (!response.ok) {
       return {
-        status: 'degraded',
+        status: 'critical',
         responseTime,
-        error: `Stripe API returned ${response.status}`,
+        error: `Stripe API error: ${response.status}`,
       };
     }
-
-    return {
-      status: 'healthy',
-      responseTime,
-      details: { connected: true },
-    };
-  } catch (error) {
-    return {
-      status: 'unhealthy',
-      responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message : 'Stripe service unavailable',
-    };
-  }
-}
-
-// Environment health check
-function checkEnvironment(): HealthCheck {
-  const startTime = Date.now();
-  
-  try {
-    const result = validateEnvironment();
-    const responseTime = Date.now() - startTime;
-
-    if (!result.valid) {
-      return {
-        status: 'unhealthy',
-        responseTime,
-        error: 'Environment validation failed',
-        details: result.errors ? { errors: result.errors } : undefined,
-      };
-    }
-
-    return {
-      status: 'healthy',
-      responseTime,
-      details: { validated: true },
-    };
-  } catch (error) {
-    return {
-      status: 'unhealthy',
-      responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message : 'Environment check failed',
-    };
-  }
-}
-
-// Get system metrics
-function getSystemMetrics() {
-  if (typeof process !== 'undefined') {
-    const memUsage = process.memoryUsage();
-    const totalMemory = memUsage.heapTotal + memUsage.external;
-    const usedMemory = memUsage.heapUsed + memUsage.external;
     
     return {
-      memory: {
-        used: Math.round(usedMemory / 1024 / 1024), // MB
-        total: Math.round(totalMemory / 1024 / 1024), // MB
-        percentage: Math.round((usedMemory / totalMemory) * 100),
-      },
-      cpu: {
-        load: process.cpuUsage().user / 1000000, // Convert to seconds
-      },
+      status: 'healthy',
+      responseTime,
+    };
+  } catch (error) {
+    return {
+      status: 'critical',
+      responseTime: Date.now() - startTime,
+      error: error instanceof Error ? error.message : 'Stripe connection failed',
     };
   }
-
-  return {
-    memory: { used: 0, total: 0, percentage: 0 },
-    cpu: { load: 0 },
-  };
 }
 
-// Determine overall health status
-function determineOverallStatus(checks: HealthCheckResponse['checks']): 'healthy' | 'degraded' | 'unhealthy' {
-  const statuses = Object.values(checks).map(check => check.status);
-  
-  if (statuses.every(status => status === 'healthy')) {
-    return 'healthy';
-  }
-  
-  if (statuses.some(status => status === 'unhealthy')) {
-    return 'unhealthy';
-  }
-  
-  return 'degraded';
-}
-
-export async function GET() {
+async function checkClerk(): Promise<{
+  status: 'healthy' | 'warning' | 'critical';
+  responseTime: number;
+  error?: string;
+}> {
   const startTime = Date.now();
-
+  
   try {
-    // Run all health checks in parallel
-    const [
-      databaseCheck,
-      aiCheck,
-      emailCheck,
-      slackCheck,
-      gmailCheck,
-      outlookCheck,
-      stripeCheck,
-      environmentCheck,
-    ] = await Promise.all([
-      checkDatabase(),
-      checkAI(),
-      checkEmail(),
-      checkSlack(),
-      checkGmail(),
-      checkOutlook(),
-      checkStripe(),
-      Promise.resolve(checkEnvironment()),
-    ]);
-
-    const checks = {
-      database: databaseCheck,
-      ai: aiCheck,
-      email: emailCheck,
-      slack: slackCheck,
-      gmail: gmailCheck,
-      outlook: outlookCheck,
-      stripe: stripeCheck,
-      environment: environmentCheck,
-    };
-
-    const overallStatus = determineOverallStatus(checks);
-    // const responseTime = Date.now() - startTime;
-
-    const healthResponse: HealthCheckResponse = {
-      status: overallStatus,
-      timestamp: new Date().toISOString(),
-      version: process.env.npm_package_version || '1.0.0',
-      environment: process.env.NODE_ENV || 'development',
-      uptime: process.uptime(),
-      checks,
-      metrics: getSystemMetrics(),
-    };
-
-    // Set appropriate HTTP status code
-    const statusCode = overallStatus === 'healthy' ? 200 : overallStatus === 'degraded' ? 200 : 503;
-
-    return NextResponse.json(healthResponse, {
-      status: statusCode,
+    const response = await fetch('https://api.clerk.dev/v1/instances', {
       headers: {
-        'Cache-Control': 'no-cache, no-store, must-revalidate',
-        'Pragma': 'no-cache',
-        'Expires': '0',
+        'Authorization': `Bearer ${process.env.CLERK_SECRET_KEY}`,
       },
     });
-  } catch (error: unknown) {
-    const errorResponse = {
-      status: 'unhealthy' as const,
-      timestamp: new Date().toISOString(),
-      error: error instanceof Error ? error.message : 'Unknown error',
-      responseTime: Date.now() - startTime,
+    
+    const responseTime = Date.now() - startTime;
+    
+    if (!response.ok) {
+      return {
+        status: 'critical',
+        responseTime,
+        error: `Clerk API error: ${response.status}`,
+      };
+    }
+    
+    return {
+      status: 'healthy',
+      responseTime,
     };
-
-    return NextResponse.json(errorResponse, { status: 503 });
+  } catch (error) {
+    return {
+      status: 'critical',
+      responseTime: Date.now() - startTime,
+      error: error instanceof Error ? error.message : 'Clerk connection failed',
+    };
   }
 }
 
-// Detailed health check endpoint
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-    const { detailed = false } = body;
-
-    if (detailed) {
-      // Return detailed health information including configuration
-      const config = productionUtils.getConfig();
-      
-      return NextResponse.json({
-        status: 'healthy',
-        timestamp: new Date().toISOString(),
-        environment: process.env.NODE_ENV,
-        config: productionUtils.sanitizeForLogging(config),
-        features: config.features,
-      });
-    }
-
-    // Return basic health check
-    return GET();
-  } catch (error) {
-    return NextResponse.json(
-      { error: 'Invalid request body' },
-      { status: 400 }
-    );
+function determineOverallStatus(
+  healthStatus: 'healthy' | 'warning' | 'critical',
+  dbStatus: 'healthy' | 'warning' | 'critical',
+  externalServices: { [key: string]: any }
+): 'healthy' | 'warning' | 'critical' {
+  const allStatuses = [healthStatus, dbStatus, ...Object.values(externalServices).map(s => s.status)];
+  
+  if (allStatuses.some(s => s === 'critical')) {
+    return 'critical';
   }
+  
+  if (allStatuses.some(s => s === 'warning')) {
+    return 'warning';
+  }
+  
+  return 'healthy';
 } 
