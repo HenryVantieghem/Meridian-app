@@ -67,9 +67,8 @@ export default function MicroInteractionsDemo() {
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
             Micro-Interactions Demo
           </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Delightful animations and interactions following Dieter Rams principles. 
-            Each component demonstrates calm technology and purposeful design.
+          <p className="text-lg text-gray-600 mb-8">
+            Napoleon&apos;s AI-powered micro-interactions create a seamless, delightful user experience.
           </p>
         </motion.div>
 

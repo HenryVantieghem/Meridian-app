@@ -384,6 +384,9 @@ export function SignUpForm({ redirectUrl = '/onboarding', className }: SignUpFor
             </a>
           </Typography>
         </div>
+        <p className="text-sm text-gray-600 mt-2">
+          By signing up, you agree to our Terms of Service and Privacy Policy.
+        </p>
       </Card>
     </motion.div>
   );

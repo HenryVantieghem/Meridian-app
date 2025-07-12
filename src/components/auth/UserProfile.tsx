@@ -22,6 +22,7 @@ import {
   Bell,
   Palette
 } from 'lucide-react';
+import Image from 'next/image';
 
 interface UserProfileProps {
   className?: string;
@@ -94,15 +95,13 @@ export function UserProfile({ className }: UserProfileProps) {
           <div className="flex items-center space-x-6">
             <div className="relative">
               <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
-                {user.imageUrl ? (
-                  <img
-                    src={user.imageUrl}
-                    alt={user.fullName || 'Profile'}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <User className="h-12 w-12 text-gray-400" />
-                )}
+                <Image
+                  src={user?.imageUrl || '/default-avatar.png'}
+                  alt="Profile"
+                  width={64}
+                  height={64}
+                  className="rounded-full"
+                />
               </div>
                               <button className="absolute bottom-0 right-0 p-1 bg-brand-burgundy text-white rounded-full hover:bg-brand-burgundy-dark transition-colors">
                 <Camera className="h-3 w-3" />
