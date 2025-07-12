@@ -5,6 +5,8 @@ import {
   createOrRetrieveCustomer, 
   PRICES, 
   PRODUCTS,
+  STRIPE_PRICE_PRO,
+  STRIPE_PRICE_ENTERPRISE,
   StripeError 
 } from '@/lib/stripe/config';
 import { z } from 'zod';
@@ -135,6 +137,13 @@ async function createCheckoutSession({
   cancelUrl: string;
   metadata?: Record<string, string>;
 }) {
+  // Map price IDs to actual Stripe price IDs
+  const stripePriceId = priceId === 'price_pro_monthly' || priceId === 'price_pro_yearly' 
+    ? STRIPE_PRICE_PRO 
+    : priceId === 'price_enterprise_monthly' || priceId === 'price_enterprise_yearly'
+    ? STRIPE_PRICE_ENTERPRISE
+    : priceId;
+
   const price = Object.values(PRICES).find(p => p.id === priceId);
   if (!price) {
     throw new StripeError('Invalid price ID', 'invalid_price', 400);
@@ -148,7 +157,7 @@ async function createCheckoutSession({
   // Build line items
   const lineItems = [
     {
-      price: priceId,
+      price: stripePriceId,
       quantity: 1,
     },
   ];

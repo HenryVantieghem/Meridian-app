@@ -8,6 +8,10 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   typescript: true,
 });
 
+// Stripe price IDs from environment
+export const STRIPE_PRICE_PRO = process.env.NEXT_PUBLIC_STRIPE_PRICE_PRO!;
+export const STRIPE_PRICE_ENTERPRISE = process.env.NEXT_PUBLIC_STRIPE_PRICE_ENTERPRISE!;
+
 // Product configuration
 export const PRODUCTS = {
   FREE: {
