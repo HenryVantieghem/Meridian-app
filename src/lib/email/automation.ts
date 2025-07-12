@@ -15,6 +15,9 @@ export const EMAIL_TYPES = {
   BILLING: 'billing',
   SUPPORT: 'support',
   MARKETING: 'marketing',
+  RE_ENGAGEMENT: 're_engagement',
+  AI_NOTIFICATION: 'ai_notification',
+  BILLING_CONFIRMATION: 'billing_confirmation',
 } as const;
 
 export const EMAIL_PRIORITY = {
@@ -248,7 +251,7 @@ export class EmailAutomationService {
       
       await sendEmail({
         to: notificationData.userEmail,
-        subject: 'AI Actions Summary - Super Intelligence AI',
+        subject: 'AI Actions Summary - Napoleon AI',
         html: html,
         priority: EMAIL_PRIORITY.NORMAL,
         metadata: {
@@ -279,7 +282,7 @@ export class EmailAutomationService {
       
       await sendEmail({
         to: billingData.userEmail,
-        subject: `${this.getBillingSubject(emailType)} - Super Intelligence AI`,
+        subject: `${this.getBillingSubject(emailType)} - Napoleon AI`,
         html: html,
         priority: EMAIL_PRIORITY.HIGH,
         metadata: {

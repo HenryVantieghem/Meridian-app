@@ -2,44 +2,44 @@ import { Metadata } from 'next'
 
 // Base metadata configuration
 export const baseMetadata: Metadata = {
-  title: 'Super Intelligence - AI-Powered Email Management',
+  title: 'Napoleon - AI-Powered Email Management',
   description: 'Transform communication chaos into clarity through intelligent email management, AI-powered prioritization, and elegant UX design.',
   keywords: ['AI email management', 'productivity', 'email automation', 'AI assistant', 'email prioritization'],
-  authors: [{ name: 'Super Intelligence AI' }],
-  creator: 'Super Intelligence AI',
-  publisher: 'Super Intelligence AI',
+  authors: [{ name: 'Napoleon AI' }],
+  creator: 'Napoleon AI',
+  publisher: 'Napoleon AI',
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://super-intelligence.ai'),
+  metadataBase: new URL('https://napoleon.ai'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://super-intelligence.ai',
-    siteName: 'Super Intelligence',
-    title: 'Super Intelligence - AI-Powered Email Management Platform',
+    url: 'https://napoleon.ai',
+    siteName: 'Napoleon',
+    title: 'Napoleon - AI-Powered Email Management Platform',
     description: 'Transform communication chaos into clarity through intelligent email management, AI-powered prioritization, and elegant UX design.',
     images: [
       {
-        url: 'https://super-intelligence.ai/og-image.png',
+        url: 'https://napoleon.ai/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Super Intelligence - AI-Powered Email Management',
+        alt: 'Napoleon - AI-Powered Email Management',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Super Intelligence - AI-Powered Email Management',
+    title: 'Napoleon - AI-Powered Email Management',
     description: 'Transform communication chaos into clarity through intelligent email management, AI-powered prioritization, and elegant UX design.',
-    images: ['https://super-intelligence.ai/og-image.png'],
-    creator: '@super_intelligence_ai',
-    site: '@super_intelligence_ai',
+    images: ['https://napoleon.ai/og-image.png'],
+    creator: '@napoleon_ai',
+    site: '@napoleon_ai',
   },
   robots: {
     index: true,
@@ -62,28 +62,28 @@ export const baseMetadata: Metadata = {
 // Page-specific metadata
 export const pageMetadata = {
   home: {
-    title: 'Super Intelligence - AI-Powered Email Management Platform',
+    title: 'Napoleon - AI-Powered Email Management Platform',
     description: 'Transform communication chaos into clarity through intelligent email management, AI-powered prioritization, and elegant UX design.',
     keywords: ['AI email management', 'productivity', 'email automation', 'AI assistant'],
   },
   dashboard: {
-    title: 'Dashboard - Super Intelligence',
+    title: 'Dashboard - Napoleon',
     description: 'Your AI-powered dashboard for intelligent email management and productivity insights.',
     keywords: ['dashboard', 'email management', 'productivity', 'AI insights'],
   },
   pricing: {
-    title: 'Pricing - Super Intelligence',
+    title: 'Pricing - Napoleon',
     description: 'Choose the perfect plan for your AI-powered email management needs.',
     keywords: ['pricing', 'plans', 'subscription', 'AI email management'],
   },
   signIn: {
-    title: 'Sign In - Super Intelligence',
-    description: 'Sign in to your Super Intelligence account and access your AI-powered email management dashboard.',
+    title: 'Sign In - Napoleon',
+    description: 'Sign in to your Napoleon account and access your AI-powered email management dashboard.',
     keywords: ['sign in', 'login', 'authentication', 'AI email management'],
   },
   signUp: {
-    title: 'Get Started - Super Intelligence',
-    description: 'Join Super Intelligence and transform your email management with AI-powered productivity tools.',
+    title: 'Get Started - Napoleon',
+    description: 'Join Napoleon and transform your email management with AI-powered productivity tools.',
     keywords: ['sign up', 'register', 'AI email management', 'productivity'],
   },
 }
@@ -93,36 +93,36 @@ export const structuredData = {
   organization: {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: 'Super Intelligence',
-    url: 'https://super-intelligence.ai',
-    logo: 'https://super-intelligence.ai/logo.png',
+    name: 'Napoleon',
+    url: 'https://napoleon.ai',
+    logo: 'https://napoleon.ai/logo.png',
     sameAs: [
-      'https://twitter.com/super_intelligence_ai',
-      'https://linkedin.com/company/super-intelligence-ai',
-      'https://facebook.com/super-intelligence-ai',
+      'https://twitter.com/napoleon_ai',
+      'https://linkedin.com/company/napoleon-ai',
+      'https://facebook.com/napoleon-ai',
     ],
     contactPoint: {
       '@type': 'ContactPoint',
-      telephone: '+1-555-SUPER-INT',
+      telephone: '+1-555-NAPOLEON',
       contactType: 'customer service',
-      email: 'support@super-intelligence.ai',
+      email: 'support@napoleon.ai',
     },
   },
   website: {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'Super Intelligence',
-    url: 'https://super-intelligence.ai',
+    name: 'Napoleon',
+    url: 'https://napoleon.ai',
     potentialAction: {
       '@type': 'SearchAction',
-      target: 'https://super-intelligence.ai/search?q={search_term_string}',
+      target: 'https://napoleon.ai/search?q={search_term_string}',
       'query-input': 'required name=search_term_string',
     },
   },
   webApplication: {
     '@context': 'https://schema.org',
     '@type': 'WebApplication',
-    name: 'Super Intelligence',
+    name: 'Napoleon',
     applicationCategory: 'ProductivityApplication',
     operatingSystem: 'Web Browser',
     offers: {
@@ -135,8 +135,8 @@ export const structuredData = {
 
 // App manifest for PWA
 export const appManifest = {
-  name: 'Super Intelligence',
-  short_name: 'Super Intelligence',
+  name: 'Napoleon',
+  short_name: 'Napoleon',
   description: 'AI-Powered Email Management Platform',
   start_url: '/',
   display: 'standalone',
@@ -164,7 +164,7 @@ export function generateMetadata(page: keyof typeof pageMetadata): Metadata {
     ...baseMetadata,
     title: {
       default: pageMeta.title,
-      template: '%s | Super Intelligence',
+      template: '%s | Napoleon',
     },
     description: pageMeta.description,
     keywords: pageMeta.keywords,

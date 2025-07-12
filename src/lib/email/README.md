@@ -1,6 +1,6 @@
-# Email System - Super Intelligence AI
+# Email System - Napoleon AI
 
-A comprehensive transactional email system for Super Intelligence AI, built with Resend, featuring automation, templates, analytics, and management capabilities.
+A comprehensive transactional email system for Napoleon AI, built with Resend, featuring automation, templates, analytics, and management capabilities.
 
 ## Features
 
@@ -36,7 +36,7 @@ EMAIL_ONBOARDING_URL=https://super-intelligence.ai/onboarding
 #### Welcome Email
 ```typescript
 const welcomeEmail = {
-  subject: 'Welcome to Super Intelligence!',
+          subject: 'Welcome to Napoleon!',
   template: 'welcome',
   data: {
     userName: 'John Doe',
@@ -55,7 +55,7 @@ const welcomeEmail = {
 #### Billing Email
 ```typescript
 const billingEmail = {
-  subject: 'Your Super Intelligence subscription',
+          subject: 'Your Napoleon subscription',
   template: 'billing',
   data: {
     userName: 'John Doe',
@@ -77,7 +77,7 @@ import { sendEmail } from '@/lib/email/resend';
 
 await sendEmail(
   'user@example.com',
-  'Welcome to Super Intelligence!',
+          'Welcome to Napoleon!',
   '<h1>Welcome!</h1>',
   {
     replyTo: 'support@super-intelligence.ai'
@@ -113,20 +113,20 @@ await automation.sendBillingEmail({
 ```html
 <div class="email-container">
   <div class="header">
-    <div class="logo">Super Intelligence</div>
+    <div class="logo">Napoleon</div>
     <div class="tagline">AI-Powered Productivity Platform</div>
   </div>
   
   <div class="content">
-    <h1 class="greeting">Welcome to Super Intelligence, {userName}! 👋</h1>
+    <h1 class="greeting">Welcome to Napoleon, {userName}! 👋</h1>
     
     <p class="intro">
-      Thank you for joining Super Intelligence. We're excited to help you transform your communication
+      Thank you for joining Napoleon. We're excited to help you transform your communication
       workflow with AI-powered insights and intelligent automation.
     </p>
     
     <p class="features-intro">
-      With Super Intelligence, you'll experience:
+      With Napoleon, you'll experience:
     </p>
     
     <ul class="features">
@@ -143,7 +143,7 @@ await automation.sendBillingEmail({
   
   <div class="footer">
     <p class="footer-text">
-      You received this email because you signed up for Super Intelligence. 
+      You received this email because you signed up for Napoleon. 
       <a href="/unsubscribe"> Unsubscribe</a>
     </p>
   </div>
@@ -154,7 +154,7 @@ await automation.sendBillingEmail({
 ```html
 <div class="email-container">
   <div class="header">
-    <div class="logo">Super Intelligence</div>
+    <div class="logo">Napoleon</div>
     <div class="tagline">Billing & Subscription</div>
   </div>
   
@@ -180,7 +180,7 @@ await automation.sendBillingEmail({
   
   <div class="footer">
     <p class="footer-text">
-      Thank you for choosing Super Intelligence. We're committed to helping you 
+      Thank you for choosing Napoleon. We're committed to helping you 
       transform your productivity with AI-powered email management.
     </p>
   </div>

@@ -1,6 +1,6 @@
-# Stripe Integration - Super Intelligence AI
+# Stripe Integration - Napoleon AI
 
-Complete subscription management system for Super Intelligence with secure payment processing, webhook handling, and user experience optimization.
+Complete subscription management system for Napoleon with secure payment processing, webhook handling, and user experience optimization.
 
 ## Features
 

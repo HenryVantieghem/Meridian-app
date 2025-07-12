@@ -19,11 +19,21 @@ interface ConnectedClient {
 }
 
 class RealtimeServer {
-  private wss: WebSocketServer;
+  private wss: WebSocketServer | null = null;
   private clients: Map<string, ConnectedClient> = new Map();
   private updateQueue: RealtimeUpdate[] = [];
+  private isInitialized = false;
 
   constructor(port: number = 3001) {
+    // Only initialize if not in build mode
+    if (process.env.NODE_ENV !== 'production' || process.env.VERCEL_ENV) {
+      this.initialize(port);
+    }
+  }
+
+  private initialize(port: number) {
+    if (this.isInitialized) return;
+    
     const server = createServer();
     this.wss = new WebSocketServer({ server });
 
@@ -37,6 +47,8 @@ class RealtimeServer {
     setInterval(() => {
       this.processUpdateQueue();
     }, 100);
+
+    this.isInitialized = true;
   }
 
   private async handleConnection(ws: WebSocket, request: any) {

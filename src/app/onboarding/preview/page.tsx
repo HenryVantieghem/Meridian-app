@@ -56,14 +56,14 @@ const mockEmails: EmailPreview[] = [
   },
   {
     id: '3',
-    from: 'support@super-intelligence.ai',
-    subject: 'Welcome to Super Intelligence - Getting Started',
-    preview: 'Welcome to Super Intelligence! We\'re excited to help you transform your email workflow...',
+    from: 'support@napoleon.ai',
+    subject: 'Welcome to Napoleon - Getting Started',
+    preview: 'Welcome to Napoleon! We\'re excited to help you transform your email workflow...',
     priority: 'low',
     sentiment: 'positive',
     urgency: 'low',
-    aiSummary: 'Welcome email from Super Intelligence. Informational only.',
-    suggestedResponse: 'Thank you for the warm welcome! I\'m excited to get started with Super Intelligence and see how it can improve my email workflow.'
+    aiSummary: 'Welcome email from Napoleon. Informational only.',
+    suggestedResponse: 'Thank you for the warm welcome! I\'m excited to get started with Napoleon and see how it can improve my email workflow.'
   }
 ];
 
@@ -138,7 +138,7 @@ export default function PreviewPage() {
           See the Magic
         </Typography>
         <Typography variant="body" className="text-xl text-gray-600 max-w-2xl mx-auto">
-          Connect your email account and watch Super Intelligence analyze your emails in real-time.
+          Connect your email account and watch Napoleon analyze your emails in real-time.
         </Typography>
       </motion.div>
 
@@ -226,7 +226,7 @@ export default function PreviewPage() {
                 AI Analysis Complete
               </Typography>
               <Typography variant="body" className="text-gray-600">
-                Here's how Super Intelligence prioritized your emails
+                Here's how Napoleon prioritized your emails
               </Typography>
             </div>
 
@@ -331,7 +331,7 @@ export default function PreviewPage() {
             </Typography>
             
             <Typography variant="body" className="text-gray-600 mb-8 max-w-2xl mx-auto">
-              Super Intelligence is now analyzing your emails and will help you stay focused on what matters most. 
+              Napoleon is now analyzing your emails and will help you stay focused on what matters most. 
               Your personalized dashboard is ready!
             </Typography>
             

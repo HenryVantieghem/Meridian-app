@@ -92,7 +92,7 @@ export function SignInForm({ redirectUrl = '/dashboard', className }: SignInForm
             Welcome back
           </Typography>
           <Typography variant="body" className="text-gray-600">
-            Sign in to your Super Intelligence account
+            Sign in to your Napoleon account
           </Typography>
         </div>
 

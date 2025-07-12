@@ -1,4 +1,4 @@
-# Super Intelligence - AI-Powered Email Management Platform
+# Napoleon - AI-Powered Email Management Platform
 
 Transform communication chaos into clarity through intelligent email management, AI-powered prioritization, and elegant UX design following Dieter Rams principles.
 
@@ -14,7 +14,7 @@ Transform communication chaos into clarity through intelligent email management,
 ## 🛠 Tech Stack
 
 - **Frontend**: Next.js 15 (App Router), React 18, TypeScript 5.0+
-- **Styling**: Tailwind CSS with custom Super Intelligence design system
+- **Styling**: Tailwind CSS with custom Napoleon design system
 - **Authentication**: Clerk with JWT templates for Supabase
 - **Database**: Supabase (PostgreSQL) with Row Level Security
 - **AI**: OpenAI GPT-4o for email analysis and generation
@@ -51,7 +51,7 @@ Transform communication chaos into clarity through intelligent email management,
 
 ```bash
 git clone <repository-url>
-cd super-intelligence-app
+cd napoleon-ai-platform
 ```
 
 ### 2. Install dependencies
@@ -130,7 +130,7 @@ Open [http://localhost:3000](http://localhost:3000) to view the application.
 ## 🏗 Project Structure
 
 ```
-super-intelligence-app/
+napoleon-ai-platform/
 ├── src/
 │   ├── app/
 │   │   ├── (auth)/           # Authentication pages
@@ -253,12 +253,12 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🆘 Support
 
-If you need help with Super Intelligence:
+If you need help with Napoleon:
 
-- 📧 Email: support@super-intelligence.ai
-- 💬 Discord: [Join our community](https://discord.gg/super-intelligence)
-- 📖 Documentation: [docs.super-intelligence.ai](https://docs.super-intelligence.ai)
-- 🐛 Issues: [GitHub Issues](https://github.com/your-org/super-intelligence-app/issues)
+- 📧 Email: support@napoleon.ai
+- 💬 Discord: [Join our community](https://discord.gg/napoleon)
+- 📖 Documentation: [docs.napoleon.ai](https://docs.napoleon.ai)
+- 🐛 Issues: [GitHub Issues](https://github.com/your-org/napoleon-ai-platform/issues)
 
 ## 🎉 Acknowledgments
 

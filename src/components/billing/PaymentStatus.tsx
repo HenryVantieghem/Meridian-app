@@ -289,7 +289,7 @@ export const PaymentSuccess: React.FC<Omit<PaymentStatusProps, 'status'> & {
   return (
     <PaymentStatus
       status="success"
-      message={`Welcome to ${subscriptionTier || 'Super Intelligence'}! Your subscription is now active.`}
+                      message={`Welcome to ${subscriptionTier || 'Napoleon'}! Your subscription is now active.`}
       details={nextBillingDate ? `Next billing date: ${nextBillingDate}` : undefined}
       {...props}
     />

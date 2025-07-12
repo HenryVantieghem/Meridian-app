@@ -6,7 +6,7 @@ import { CTA } from '@/components/marketing/CTA';
 import { Pricing } from '@/components/marketing/Pricing';
 
 export const metadata: Metadata = {
-  title: 'Super Intelligence - Your AI Chief of Staff for Perfect Focus',
+  title: 'Napoleon - Your AI Strategic Commander for Perfect Focus',
   description: 'Transform communication chaos into clarity through intelligent email management, AI-powered prioritization, and elegant UX design.',
   keywords: [
     'email management',
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     'productivity platform',
   ],
   openGraph: {
-    title: 'Super Intelligence - Your AI Chief of Staff for Perfect Focus',
+    title: 'Napoleon - Your AI Strategic Commander for Perfect Focus',
     description: 'Transform communication chaos into clarity through intelligent email management, AI-powered prioritization, and elegant UX design.',
     type: 'website',
     url: '/',
@@ -26,13 +26,13 @@ export const metadata: Metadata = {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Super Intelligence - AI-Powered Email Management',
+        alt: 'Napoleon - AI-Powered Email Management',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Super Intelligence - Your AI Chief of Staff for Perfect Focus',
+    title: 'Napoleon - Your AI Strategic Commander for Perfect Focus',
     description: 'Transform communication chaos into clarity through intelligent email management, AI-powered prioritization, and elegant UX design.',
     images: ['/og-image.png'],
   },

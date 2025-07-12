@@ -4,19 +4,19 @@ import { Metadata } from 'next'
 export const SEO_CONFIG = {
   // Default metadata
   DEFAULT: {
-    title: 'Super Intelligence - AI-Powered Email Management',
+    title: 'Napoleon - AI-Powered Email Management',
     description: 'Transform communication chaos into clarity with intelligent email management, AI-powered prioritization, and elegant UX design.',
     keywords: 'email management, AI productivity, email prioritization, communication tools, AI assistant',
-    author: 'Super Intelligence AI',
+    author: 'Napoleon AI',
     robots: 'index, follow',
     viewport: 'width=device-width, initial-scale=1',
   },
   
   // Social media
   SOCIAL: {
-    twitter: '@super_intelligence_ai',
-    facebook: 'super-intelligence.ai',
-    linkedin: 'company/super-intelligence-ai',
+    twitter: '@napoleon_ai',
+    facebook: 'napoleon.ai',
+    linkedin: 'company/napoleon-ai',
   },
   
   // Performance targets
@@ -32,14 +32,14 @@ export const SEO_CONFIG = {
 export const PAGE_METADATA = {
   // Landing page
   landing: {
-    title: 'Super Intelligence - AI-Powered Email Management Platform',
+    title: 'Napoleon - AI-Powered Email Management Platform',
     description: 'Transform your email workflow with AI-powered prioritization, intelligent replies, and elegant design. Get more done with less effort.',
     keywords: 'email management, AI productivity, email automation, communication tools',
     ogImage: '/og-landing.jpg',
     structuredData: {
       '@context': 'https://schema.org',
       '@type': 'SoftwareApplication',
-      name: 'Super Intelligence',
+      name: 'Napoleon',
       description: 'AI-powered email management platform',
       applicationCategory: 'ProductivityApplication',
       operatingSystem: 'Web',
@@ -53,7 +53,7 @@ export const PAGE_METADATA = {
   
   // Dashboard
   dashboard: {
-    title: 'Dashboard - Super Intelligence',
+    title: 'Dashboard - Napoleon',
     description: 'Manage your emails with AI-powered insights and intelligent prioritization.',
     keywords: 'email dashboard, email management, AI insights',
     robots: 'noindex, nofollow', // Private dashboard
@@ -61,14 +61,14 @@ export const PAGE_METADATA = {
   
   // Pricing
   pricing: {
-    title: 'Pricing - Super Intelligence',
+    title: 'Pricing - Napoleon',
     description: 'Choose the perfect plan for your email management needs. Start free, scale as you grow.',
     keywords: 'pricing, plans, subscription, email management pricing',
     ogImage: '/og-pricing.jpg',
     structuredData: {
       '@context': 'https://schema.org',
       '@type': 'Product',
-      name: 'Super Intelligence',
+      name: 'Napoleon',
       description: 'AI-powered email management platform',
       offers: [
         {
@@ -95,7 +95,7 @@ export const PAGE_METADATA = {
   
   // Onboarding
   onboarding: {
-    title: 'Get Started - Super Intelligence',
+    title: 'Get Started - Napoleon',
     description: 'Set up your AI-powered email management experience in just a few steps.',
     keywords: 'onboarding, setup, email configuration',
     robots: 'noindex, nofollow',
@@ -112,7 +112,7 @@ export const generateMetadata = (
   return {
     title: {
       default: baseMetadata.title,
-      template: '%s | Super Intelligence',
+      template: '%s | Napoleon',
     },
     description: baseMetadata.description,
     keywords: baseMetadata.keywords,
@@ -128,7 +128,7 @@ export const generateMetadata = (
       description: baseMetadata.description,
       type: 'website',
       locale: 'en_US',
-      siteName: 'Super Intelligence',
+      siteName: 'Napoleon',
       images: (baseMetadata as any).ogImage ? [
         {
           url: (baseMetadata as any).ogImage,
@@ -150,8 +150,8 @@ export const generateMetadata = (
     
     // Structured data
     other: {
-      'application-name': 'Super Intelligence',
-      'apple-mobile-web-app-title': 'Super Intelligence',
+      'application-name': 'Napoleon',
+      'apple-mobile-web-app-title': 'Napoleon',
       'apple-mobile-web-app-capable': 'yes',
       'apple-mobile-web-app-status-bar-style': 'default',
       'format-detection': 'telephone=no',
@@ -180,9 +180,9 @@ export const generateStructuredData = (
 
 // Organization structured data
 export const ORGANIZATION_STRUCTURED_DATA = generateStructuredData('Organization', {
-  name: 'Super Intelligence AI',
-  url: 'https://super-intelligence.ai',
-  logo: 'https://super-intelligence.ai/logo.png',
+  name: 'Napoleon AI',
+  url: 'https://napoleon.ai',
+  logo: 'https://napoleon.ai/logo.png',
   description: 'AI-powered email management platform',
   sameAs: [
     `https://twitter.com/${SEO_CONFIG.SOCIAL.twitter}`,
@@ -192,7 +192,7 @@ export const ORGANIZATION_STRUCTURED_DATA = generateStructuredData('Organization
   contactPoint: {
     '@type': 'ContactPoint',
     contactType: 'customer service',
-    email: 'support@super-intelligence.ai',
+    email: 'support@napoleon.ai',
   },
 })
 

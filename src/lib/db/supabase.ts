@@ -1,40 +1,53 @@
 import { createClient } from '@supabase/supabase-js';
 import { Database } from '@/types';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
+// Only throw error if we're not in build mode and the variables are missing
 if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables');
+  if (process.env.NODE_ENV === 'production' && !process.env.VERCEL_ENV) {
+    throw new Error('Missing Supabase environment variables');
+  }
+  // For build time, create a mock client
+  console.warn('Supabase environment variables not found, using mock client for build');
 }
 
 // Client for browser usage (with RLS)
-export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: true,
-  },
-  global: {
-    headers: {
-      'x-application-name': 'super-intelligence-app',
+export const supabase = createClient<Database>(
+  supabaseUrl || 'https://mock.supabase.co',
+  supabaseAnonKey || 'mock-key',
+  {
+    auth: {
+      autoRefreshToken: true,
+      persistSession: true,
+      detectSessionInUrl: true,
     },
-  },
-});
+    global: {
+      headers: {
+        'x-application-name': 'super-intelligence-app',
+      },
+    },
+  }
+);
 
 // Admin client for server-side operations (bypasses RLS)
-export const supabaseAdmin = createClient<Database>(supabaseUrl, supabaseServiceKey, {
-  auth: {
-    autoRefreshToken: false,
-    persistSession: false,
-  },
-  global: {
-    headers: {
-      'x-application-name': 'super-intelligence-app-admin',
+export const supabaseAdmin = createClient<Database>(
+  supabaseUrl || 'https://mock.supabase.co',
+  supabaseServiceKey || 'mock-service-key',
+  {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
     },
-  },
-});
+    global: {
+      headers: {
+        'x-application-name': 'super-intelligence-app-admin',
+      },
+    },
+  }
+);
 
 // Utility function to handle database errors
 export function handleDatabaseError(error: any): never {

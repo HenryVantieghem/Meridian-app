@@ -16,20 +16,20 @@ export const WelcomeEmail: React.FC<WelcomeEmailProps> = ({
   return (
     <div className="email-container">
       <div className="header">
-        <div className="logo">Super Intelligence</div>
+        <div className="logo">Napoleon</div>
         <div className="tagline">AI-Powered Productivity Platform</div>
       </div>
       
       <div className="content">
-        <h1 className="greeting">Welcome to Super Intelligence, {userName}! 👋</h1>
+        <h1 className="greeting">Welcome to Napoleon, {userName}! 👋</h1>
         
         <p className="intro">
-          Thank you for joining Super Intelligence. We're excited to help you transform your communication
+          Thank you for joining Napoleon. We're excited to help you transform your communication
           workflow with AI-powered insights and intelligent automation.
         </p>
         
         <p className="features-intro">
-          With Super Intelligence, you'll experience:
+          With Napoleon, you'll experience:
         </p>
         
         <div className="features">
@@ -85,7 +85,7 @@ export const WelcomeEmail: React.FC<WelcomeEmailProps> = ({
         </div>
         
         <p className="unsubscribe">
-          You received this email because you signed up for Super Intelligence. 
+          You received this email because you signed up for Napoleon. 
           <a href="/unsubscribe"> Unsubscribe</a>
         </p>
       </div>

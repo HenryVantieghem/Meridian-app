@@ -1,10 +1,44 @@
-export * from './fetcher';
-export * from './gmail-sync';
-export * from './processor';
-export * from './sync-service';
-export * from './automation';
-export * from './management';
-export * from './test';
+// Explicit exports from each module to avoid conflicts
+export type {
+  EmailMessage,
+  EmailProvider,
+  FetchOptions
+} from './fetcher';
+export { EmailFetchError, EmailFetcher } from './fetcher';
+
+export type { GmailEmail, GmailAttachment } from './gmail-sync';
+export { GmailClient } from './gmail-sync';
+
+export { EmailProcessor } from './processor';
+export type { ProcessingJob, ProcessingResult, ProcessingOptions } from './processor';
+export { ProcessingError } from './processor';
+
+export { EmailSyncService, emailSyncService } from './sync-service';
+export type { SyncOptions, SyncResult } from './sync-service';
+
+export {
+  EMAIL_TYPES,
+  EMAIL_PRIORITY,
+  sendEmail,
+  renderEmailTemplate,
+  AUTOMATION_TRIGGERS,
+  AUTOMATION_SCHEDULES,
+  EmailAutomationService
+} from './automation';
+export type { EmailAutomation } from './automation';
+
+export {
+  getEmailStats,
+  getEmailAnalytics,
+  exportEmailData
+} from './management';
+export type { EmailStats, EmailAnalytics } from './management';
+
+export {
+  testEmailConnection,
+  validateEmailConfig
+} from './test';
+export type { EmailTestResult } from './test';
 
 // Email types and interfaces
 export interface Email {
@@ -41,31 +75,4 @@ export interface EmailAttachment {
   size: number;
   data?: Buffer;
   url?: string;
-}
-
-export interface EmailProvider {
-  name: string;
-  type: 'gmail' | 'outlook' | 'slack';
-  enabled: boolean;
-  config: Record<string, any>;
-}
-
-export interface FetchOptions {
-  maxResults?: number;
-  query?: string;
-  labelIds?: string[];
-  includeSpamTrash?: boolean;
-  pageToken?: string;
-}
-
-export interface EmailFetcher {
-  fetchEmails(options?: FetchOptions): Promise<Email[]>;
-  fetchEmailById(id: string): Promise<Email | null>;
-  sendEmail(email: Partial<Email>): Promise<void>;
-  markAsRead(id: string): Promise<void>;
-  markAsUnread(id: string): Promise<void>;
-  addLabel(id: string, label: string): Promise<void>;
-  removeLabel(id: string, label: string): Promise<void>;
-  moveToTrash(id: string): Promise<void>;
-  restoreFromTrash(id: string): Promise<void>;
 } 

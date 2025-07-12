@@ -48,7 +48,7 @@ export const DailyDigest: React.FC<DailyDigestProps> = ({
   return (
     <div className="email-container">
       <div className="header">
-        <div className="logo">Super Intelligence</div>
+        <div className="logo">Napoleon</div>
         <div className="tagline">Your Daily Email Digest</div>
         <div className="date">{date}</div>
       </div>

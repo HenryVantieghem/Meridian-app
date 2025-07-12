@@ -117,7 +117,10 @@
     "GOOGLE_CLIENT_SECRET": "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",
     "GOOGLE_REDIRECT_URI": "http://localhost:3000/api/auth/google/callback",
     "SLACK_REDIRECT_URI": "http://localhost:3000/api/auth/slack/callback",
-    "NEXT_PUBLIC_APP_URL": "http://localhost:3000"
+    "NEXT_PUBLIC_APP_URL": "http://localhost:3000",
+    "NEXT_PUBLIC_APP_NAME": "Napoleon",
+    "REALTIME_PORT": "3001",
+    "NODE_ENV": "production"
   },
   "functions": {
     "src/app/api/emails/analyze/route.ts": {

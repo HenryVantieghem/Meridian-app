@@ -1,3 +1,4 @@
+// Napoleon AI Platform - tsconfig
 {
   "compilerOptions": {
     "lib": [

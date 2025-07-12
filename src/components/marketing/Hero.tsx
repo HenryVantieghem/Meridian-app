@@ -38,7 +38,7 @@ export function Hero() {
             className="mb-6"
           >
             <Typography variant="h1" className="text-5xl md:text-7xl font-bold text-gray-900 mb-6 leading-tight">
-              Your AI Chief of Staff
+              Your AI Strategic Commander
               <br />
               <span className="text-primary-600">for Perfect Focus</span>
             </Typography>

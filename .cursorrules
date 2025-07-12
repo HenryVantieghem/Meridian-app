@@ -1,5 +1,5 @@
-# MERIDIAN AI APPLICATION - PRODUCTION-READY DEVELOPMENT RULES
-# An AI-powered productivity platform that serves as an AI Chief of Staff
+# NAPOLEON AI APPLICATION - PRODUCTION-READY DEVELOPMENT RULES
+# An AI-powered productivity platform that serves as an AI Strategic Commander
 
 ## GOLD STANDARD FILES (Reference These Patterns)
 - UI Components: @/components/ui/button.tsx
@@ -13,7 +13,7 @@
 - Outlook Integration: @/lib/integrations/outlook.ts
 
 ## PROJECT OVERVIEW
-You are building "Meridian" - a revolutionary AI-powered productivity platform that transforms communication chaos into clarity through intelligent email management, AI-powered prioritization, and elegant UX design following Dieter Rams principles.
+You are building "Napoleon" - a revolutionary AI-powered productivity platform that transforms communication chaos into clarity through intelligent email management, AI-powered prioritization, and elegant UX design following Dieter Rams principles.
 
 ## CORE TECHNICAL STACK
 - **Frontend**: Next.js 15 (App Router), React 18, TypeScript 5.0+
@@ -41,7 +41,7 @@ You are building "Meridian" - a revolutionary AI-powered productivity platform t
 - **Mobile-first**: Progressive enhancement for all screen sizes
 
 ## PROJECT STRUCTURE
-meridian-app/ ├── app/ │ ├── (auth)/ │ │ ├── sign-in/page.tsx │ │ └── sign-up/page.tsx │ ├── (dashboard)/ │ │ ├── dashboard/page.tsx │ │ ├── settings/page.tsx │ │ └── profile/page.tsx │ ├── (marketing)/ │ │ ├── page.tsx (landing) │ │ └── pricing/page.tsx │ ├── onboarding/ │ │ ├── page.tsx │ │ ├── persona/page.tsx │ │ ├── preferences/page.tsx │ │ └── preview/page.tsx │ ├── api/ │ │ ├── auth/ │ │ ├── emails/ │ │ ├── ai/ │ │ ├── stripe/ │ │ ├── slack/ │ │ └── webhooks/ │ ├── globals.css │ ├── layout.tsx │ └── middleware.ts ├── components/ │ ├── ui/ (reusable design system) │ ├── auth/ │ ├── dashboard/ │ ├── onboarding/ │ ├── marketing/ │ ├── email/ │ ├── slack/ │ └── ai/ ├── lib/ │ ├── auth/ │ ├── db/ │ ├── ai/ │ ├── stripe/ │ ├── email/ │ ├── integrations/ │ │ ├── slack.ts │ │ ├── gmail.ts │ │ └── outlook.ts │ ├── validations/ │ └── utils/ ├── hooks/ ├── types/ ├── utils/ └── .cursorrules
+napoleon-app/ ├── app/ │ ├── (auth)/ │ │ ├── sign-in/page.tsx │ │ └── sign-up/page.tsx │ ├── (dashboard)/ │ │ ├── dashboard/page.tsx │ │ ├── settings/page.tsx │ │ └── profile/page.tsx │ ├── (marketing)/ │ │ ├── page.tsx (landing) │ │ └── pricing/page.tsx │ ├── onboarding/ │ │ ├── page.tsx │ │ ├── persona/page.tsx │ │ ├── preferences/page.tsx │ │ └── preview/page.tsx │ ├── api/ │ │ ├── auth/ │ │ ├── emails/ │ │ ├── ai/ │ │ ├── stripe/ │ │ ├── slack/ │ │ └── webhooks/ │ ├── globals.css │ ├── layout.tsx │ └── middleware.ts ├── components/ │ ├── ui/ (reusable design system) │ ├── auth/ │ ├── dashboard/ │ ├── onboarding/ │ ├── marketing/ │ ├── email/ │ ├── slack/ │ └── ai/ ├── lib/ │ ├── auth/ │ ├── db/ │ ├── ai/ │ ├── stripe/ │ ├── email/ │ ├── integrations/ │ │ ├── slack.ts │ │ ├── gmail.ts │ │ └── outlook.ts │ ├── validations/ │ └── utils/ ├── hooks/ ├── types/ ├── utils/ └── .cursorrules
 
 ## COMMUNICATION PLATFORM INTEGRATIONS
 
@@ -327,7 +327,7 @@ NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/onboarding
 NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key_here
 SUPABASE_SERVICE_ROLE_KEY=your_service_role_key_here
-DATABASE_URL=postgresql://postgres:password@localhost:5432/meridian
+DATABASE_URL=postgresql://postgres:password@localhost:5432/napoleon
 
 # AI (OpenAI)
 OPENAI_API_KEY=sk-your_openai_key_here
@@ -365,7 +365,7 @@ SLACK_WEBHOOK_URL=https://hooks.slack.com/services/your/webhook/url
 
 # App Configuration
 NEXT_PUBLIC_APP_URL=http://localhost:3000
-NEXT_PUBLIC_APP_NAME=Meridian
+NEXT_PUBLIC_APP_NAME=Napoleon
 NEXTAUTH_SECRET=your_nextauth_secret_for_oauth
 NEXTAUTH_URL=http://localhost:3000
 

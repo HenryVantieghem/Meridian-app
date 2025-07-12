@@ -49,7 +49,7 @@ const envSchema = z.object({
 
   // App Configuration
   NEXT_PUBLIC_APP_URL: z.string().url(),
-  NEXT_PUBLIC_APP_NAME: z.string().default('Super Intelligence'),
+  NEXT_PUBLIC_APP_NAME: z.string().default('Napoleon'),
   NEXTAUTH_SECRET: z.string().min(1),
   NEXTAUTH_URL: z.string().url(),
 

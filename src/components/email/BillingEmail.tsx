@@ -56,7 +56,7 @@ export const BillingEmail: React.FC<BillingEmailProps> = ({
   return (
     <div className="email-container">
       <div className="header">
-        <div className="logo">Super Intelligence</div>
+        <div className="logo">Napoleon</div>
         <div className="tagline">Billing & Subscription</div>
       </div>
       
@@ -120,7 +120,7 @@ export const BillingEmail: React.FC<BillingEmailProps> = ({
             <h3>⚠️ Payment Overdue</h3>
             <p>
               Your payment is overdue. Please update your payment method to continue 
-              enjoying Super Intelligence's features without interruption.
+              enjoying Napoleon's features without interruption.
             </p>
             <a href={billingPortalUrl} className="alert-button">
               Update Payment Method
@@ -142,7 +142,7 @@ export const BillingEmail: React.FC<BillingEmailProps> = ({
       
       <div className="footer">
         <p className="footer-text">
-          Thank you for choosing Super Intelligence. We're committed to helping you 
+          Thank you for choosing Napoleon. We're committed to helping you 
           transform your productivity with AI-powered email management.
         </p>
         

@@ -14,7 +14,7 @@ export default function SignInPage() {
           className="text-center mb-8"
         >
           <Typography variant="h1" className="text-4xl font-bold text-gray-900 mb-2">
-            Super Intelligence
+            Napoleon
           </Typography>
           <Typography variant="body" className="text-gray-600">
             AI-powered email management
