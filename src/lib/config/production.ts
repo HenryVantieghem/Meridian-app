@@ -158,8 +158,8 @@ export const productionConfig = {
 
   // Email settings
   email: {
-    from: 'noreply@super-intelligence.ai',
-    replyTo: 'support@super-intelligence.ai',
+    from: 'noreply@napoleon.ai',
+    replyTo: 'support@napoleon.ai',
     maxRetries: 3,
     batchSize: 100,
   },

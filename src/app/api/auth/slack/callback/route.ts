@@ -2,12 +2,17 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { createClient } from '@supabase/supabase-js';
 import { logger } from '@/lib/monitoring/logging';
+import { cookies } from 'next/headers';
 
-// Initialize Supabase client
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+// Initialize Supabase client with service role key validation
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+if (!supabaseUrl || !supabaseServiceRoleKey) {
+  throw new Error('Missing required Supabase configuration: NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY');
+}
+
+const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
 
 export async function GET(request: NextRequest) {
   let userId: string | null | undefined;
@@ -38,21 +43,12 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Verify state parameter
-    const { data: stateRecord, error: stateError } = await supabase
-      .from('oauth_states')
-      .select('*')
-      .eq('state', state)
-      .eq('provider', 'slack')
-      .eq('user_id', userId)
-      .gt('expires_at', new Date().toISOString())
-      .single();
-
-    if (stateError || !stateRecord) {
-      logger.error(`Slack OAuth invalid state for user ${userId}, state: ${state}`);
-      return NextResponse.redirect(
-        new URL('/dashboard?error=slack_oauth_failed&reason=invalid_state', request.url)
-      );
+    // Validate OAuth state
+    const cookieStore = await cookies();
+    const cookieState = cookieStore.get("oauth_state")?.value;
+    if (state !== cookieState) {
+      logger.error(`Slack OAuth invalid state for user ${userId}, state: ${state}, cookie: ${cookieState}`);
+      return NextResponse.json({ error: "Invalid state" }, { status: 400 });
     }
 
     // Exchange authorization code for tokens
@@ -116,12 +112,6 @@ export async function GET(request: NextRequest) {
         new URL('/dashboard?error=slack_oauth_failed&reason=database_error', request.url)
       );
     }
-
-    // Clean up used state
-    await supabase
-      .from('oauth_states')
-      .delete()
-      .eq('state', state);
 
     logger.info(`Slack OAuth completed successfully for user ${userId}, workspace: ${workspaceId}`);
 

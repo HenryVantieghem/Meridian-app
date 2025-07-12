@@ -78,7 +78,7 @@ export const SwipeToDelegate: React.FC<SwipeToDelegateProps> = ({
     setIsDragging(true);
   };
 
-  const handleDragEnd = (event: any, info: PanInfo) => {
+  const handleDragEnd = (_event: unknown, info: PanInfo) => {
     setIsDragging(false);
     
     if (Math.abs(info.offset.x) > 150) {

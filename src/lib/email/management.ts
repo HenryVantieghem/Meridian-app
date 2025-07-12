@@ -136,4 +136,56 @@ export class EmailManagementService {
   }
 }
 
-export const emailManagementService = EmailManagementService.getInstance(); 
+export const emailManagementService = EmailManagementService.getInstance();
+
+// Missing functions that are being exported from index.ts
+export interface EmailStats {
+  totalEmails: number;
+  readEmails: number;
+  unreadEmails: number;
+  starredEmails: number;
+  highPriorityEmails: number;
+  averageResponseTime: number;
+  topSenders: Array<{ email: string; count: number }>;
+  topSubjects: Array<{ subject: string; count: number }>;
+}
+
+export interface EmailAnalytics {
+  dailyStats: Array<{ date: string; count: number }>;
+  weeklyStats: Array<{ week: string; count: number }>;
+  monthlyStats: Array<{ month: string; count: number }>;
+  responseTimeDistribution: Array<{ range: string; count: number }>;
+  priorityDistribution: Array<{ priority: string; count: number }>;
+  providerDistribution: Array<{ provider: string; count: number }>;
+}
+
+export const getEmailStats = async (userId: string, timeRange?: string): Promise<EmailStats> => {
+  console.log('Getting email stats disabled - Resend removed:', { userId, timeRange });
+  return {
+    totalEmails: 0,
+    readEmails: 0,
+    unreadEmails: 0,
+    starredEmails: 0,
+    highPriorityEmails: 0,
+    averageResponseTime: 0,
+    topSenders: [],
+    topSubjects: [],
+  };
+};
+
+export const getEmailAnalytics = async (userId: string, timeRange?: string): Promise<EmailAnalytics> => {
+  console.log('Getting email analytics disabled - Resend removed:', { userId, timeRange });
+  return {
+    dailyStats: [],
+    weeklyStats: [],
+    monthlyStats: [],
+    responseTimeDistribution: [],
+    priorityDistribution: [],
+    providerDistribution: [],
+  };
+};
+
+export const exportEmailData = async (userId: string, format: 'csv' | 'json' = 'json'): Promise<string> => {
+  console.log('Exporting email data disabled - Resend removed:', { userId, format });
+  return JSON.stringify({ message: 'Export disabled - Resend removed' });
+}; 

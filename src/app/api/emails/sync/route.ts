@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
-import { google } from 'googleapis';
 import { createClient } from '@supabase/supabase-js';
 import { GmailClient } from '@/lib/email/gmail-sync';
 import { logger } from '@/lib/monitoring/logging';
@@ -101,12 +100,12 @@ export async function POST(request: NextRequest) {
           subject: gmailEmail.subject,
           body: gmailEmail.body,
           body_html: gmailEmail.bodyHtml,
-          attachments: gmailEmail.attachments.map((att: any) => ({
+          attachments: gmailEmail.attachments.map((att) => ({
             id: att.id,
             filename: att.filename,
             contentType: att.mimeType,
             size: att.size,
-            url: att.data
+            url: att.data || ''
           })),
           received_at: gmailEmail.date.toISOString(),
           read: gmailEmail.isRead,

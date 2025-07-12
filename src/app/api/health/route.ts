@@ -36,7 +36,7 @@ interface HealthCheck {
   status: 'healthy' | 'degraded' | 'unhealthy';
   responseTime?: number;
   error?: string;
-  details?: any;
+  details?: Record<string, unknown>;
 }
 
 // Database health check
@@ -50,7 +50,7 @@ async function checkDatabase(): Promise<HealthCheck> {
     );
 
     // Test database connection
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('users')
       .select('count')
       .limit(1);
@@ -62,7 +62,7 @@ async function checkDatabase(): Promise<HealthCheck> {
         status: 'unhealthy',
         responseTime,
         error: error.message,
-        details: error,
+        details: { message: error.message, code: error.code },
       };
     }
 
@@ -278,7 +278,7 @@ function checkEnvironment(): HealthCheck {
         status: 'unhealthy',
         responseTime,
         error: 'Environment validation failed',
-        details: result.errors,
+        details: result.errors ? { errors: result.errors } : undefined,
       };
     }
 
@@ -336,7 +336,7 @@ function determineOverallStatus(checks: HealthCheckResponse['checks']): 'healthy
   return 'degraded';
 }
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   const startTime = Date.now();
 
   try {
@@ -373,7 +373,7 @@ export async function GET(request: NextRequest) {
     };
 
     const overallStatus = determineOverallStatus(checks);
-    const responseTime = Date.now() - startTime;
+    // const responseTime = Date.now() - startTime;
 
     const healthResponse: HealthCheckResponse = {
       status: overallStatus,
@@ -396,7 +396,7 @@ export async function GET(request: NextRequest) {
         'Expires': '0',
       },
     });
-  } catch (error) {
+  } catch (error: unknown) {
     const errorResponse = {
       status: 'unhealthy' as const,
       timestamp: new Date().toISOString(),
@@ -428,7 +428,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Return basic health check
-    return GET(request);
+    return GET();
   } catch (error) {
     return NextResponse.json(
       { error: 'Invalid request body' },

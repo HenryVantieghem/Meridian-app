@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
-import { EmailProcessor } from '@/lib/email/processor';
-import { EmailFetcher, EmailProvider, FetchOptions } from '@/lib/email/fetcher';
 import { EmailAnalyzer, AnalysisRequest } from '@/lib/ai/email-analyzer';
 import { z } from 'zod';
 
@@ -39,75 +37,77 @@ const analyzeEmailSchema = z.object({
   }).optional()
 });
 
-const batchAnalyzeSchema = z.object({
-  emails: z.array(z.object({
-    id: z.string(),
-    threadId: z.string(),
-    from: z.string().email(),
-    fromName: z.string(),
-    to: z.array(z.string().email()),
-    cc: z.array(z.string().email()),
-    bcc: z.array(z.string().email()),
-    subject: z.string(),
-    body: z.string(),
-    bodyPlain: z.string(),
-    bodyHtml: z.string(),
-    receivedAt: z.string().datetime(),
-    sentAt: z.string().datetime(),
-    labels: z.array(z.string()),
-    isRead: z.boolean(),
-    isStarred: z.boolean(),
-    hasAttachments: z.boolean(),
-    attachmentCount: z.number(),
-    size: z.number(),
-    provider: z.enum(['gmail', 'outlook']),
-    rawData: z.any()
-  })),
-  userContext: z.object({
-    role: z.string().optional(),
-    industry: z.string().optional(),
-    preferences: z.array(z.string()).optional(),
-    vipContacts: z.array(z.string()).optional()
-  }).optional()
-});
+// Unused schemas - kept for future implementation
+// const batchAnalyzeSchema = z.object({
+//   emails: z.array(z.object({
+//     id: z.string(),
+//     threadId: z.string(),
+//     from: z.string().email(),
+//     fromName: z.string(),
+//     to: z.array(z.string().email()),
+//     cc: z.array(z.string().email()),
+//     bcc: z.array(z.string().email()),
+//     subject: z.string(),
+//     body: z.string(),
+//     bodyPlain: z.string(),
+//     bodyHtml: z.string(),
+//     receivedAt: z.string().datetime(),
+//     sentAt: z.string().datetime(),
+//     labels: z.array(z.string()),
+//     isRead: z.boolean(),
+//     isStarred: z.boolean(),
+//     hasAttachments: z.boolean(),
+//     attachmentCount: z.number(),
+//     size: z.number(),
+//     provider: z.enum(['gmail', 'outlook']),
+//     rawData: z.any()
+//   })),
+//   userContext: z.object({
+//     role: z.string().optional(),
+//     industry: z.string().optional(),
+//     preferences: z.array(z.string()).optional(),
+//     vipContacts: z.array(z.string()).optional()
+//   }).optional()
+// });
 
-const processEmailsSchema = z.object({
-  providers: z.array(z.object({
-    name: z.enum(['gmail', 'outlook']),
-    accessToken: z.string(),
-    refreshToken: z.string().optional(),
-    expiresAt: z.string().datetime(),
-    userId: z.string()
-  })),
-  options: z.object({
-    maxResults: z.number().optional(),
-    query: z.string().optional(),
-    labelIds: z.array(z.string()).optional(),
-    includeSpamTrash: z.boolean().optional(),
-    startDate: z.string().datetime().optional(),
-    endDate: z.string().datetime().optional()
-  }).optional(),
-  processingOptions: z.object({
-    batchSize: z.number().optional(),
-    maxRetries: z.number().optional(),
-    retryDelay: z.number().optional(),
-    timeout: z.number().optional(),
-    enableRealTime: z.boolean().optional(),
-    priorityThreshold: z.number().optional()
-  }).optional()
-});
+// Unused schemas - kept for future implementation
+// const processEmailsSchema = z.object({
+//   providers: z.array(z.object({
+//     name: z.enum(['gmail', 'outlook']),
+//     accessToken: z.string(),
+//     refreshToken: z.string().optional(),
+//     expiresAt: z.string().datetime(),
+//     userId: z.string()
+//   })),
+//   options: z.object({
+//     maxResults: z.number().optional(),
+//     query: z.string().optional(),
+//     labelIds: z.array(z.string()).optional(),
+//     includeSpamTrash: z.boolean().optional(),
+//     startDate: z.string().datetime().optional(),
+//     endDate: z.string().datetime().optional()
+//   }).optional(),
+//   processingOptions: z.object({
+//     batchSize: z.number().optional(),
+//     maxRetries: z.number().optional(),
+//     retryDelay: z.number().optional(),
+//     timeout: z.number().optional(),
+//     enableRealTime: z.boolean().optional(),
+//     priorityThreshold: z.number().optional()
+//   }).optional()
+// });
 
-const getJobStatusSchema = z.object({
-  jobId: z.string()
-});
+// const getJobStatusSchema = z.object({
+//   jobId: z.string()
+// });
 
-const cancelJobSchema = z.object({
-  jobId: z.string()
-});
+// const cancelJobSchema = z.object({
+//   jobId: z.string()
+// });
 
-const getStatsSchema = z.object({
-  userId: z.string().optional()
-});
+// const getStatsSchema = z.object({
+//   userId: z.string().optional()
+// });
 
 // Rate limiting
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
@@ -141,7 +141,6 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const validatedData = analyzeEmailSchema.parse(body);
 
-    const processor = new EmailProcessor();
     const analyzer = new EmailAnalyzer();
 
     // If emailId is provided, fetch from database
@@ -188,10 +187,10 @@ export async function POST(request: NextRequest) {
       { status: 400 }
     );
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error in email analysis:', error);
     
-    if (error.name === 'ZodError') {
+    if (error instanceof z.ZodError) {
       return NextResponse.json(
         { error: 'Invalid request data', details: error.errors },
         { status: 400 }

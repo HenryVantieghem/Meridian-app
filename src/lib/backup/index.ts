@@ -258,7 +258,7 @@ export const backupConfig = {
     cloud: {
       enabled: false,
       provider: 'aws', // or 'gcp', 'azure'
-      bucket: 'super-intelligence-backups',
+      bucket: 'napoleon-backups',
       region: 'us-east-1'
     }
   },

@@ -58,7 +58,7 @@ export const ReplyComposer: React.FC<ReplyComposerProps> = ({
       setEditorValue(result.replies[0]?.text || "");
       setConfidence(result.replies[0]?.confidence || 0.7);
       setFeedback(result.success ? null : "AI fallback: using template reply.");
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError("Failed to generate reply. Please try again.");
     } finally {
       setLoading(false);
@@ -106,7 +106,7 @@ export const ReplyComposer: React.FC<ReplyComposerProps> = ({
     try {
       await onSend(editorValue);
       setFeedback("Reply sent. AI is learning from your edits.");
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError("Failed to send reply.");
     } finally {
       setLoading(false);
@@ -119,7 +119,7 @@ export const ReplyComposer: React.FC<ReplyComposerProps> = ({
     try {
       await onSaveDraft(editorValue);
       setFeedback("Draft saved.");
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError("Failed to save draft.");
     } finally {
       setLoading(false);

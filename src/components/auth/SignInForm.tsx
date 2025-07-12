@@ -46,8 +46,11 @@ export function SignInForm({ redirectUrl = '/dashboard', className }: SignInForm
       } else {
         setError('Sign in failed. Please try again.');
       }
-    } catch (err: any) {
-      setError(err.errors?.[0]?.message || 'An error occurred during sign in.');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error && 'errors' in err && Array.isArray((err as any).errors) 
+        ? (err as any).errors[0]?.message 
+        : 'An error occurred during sign in.';
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -65,8 +68,11 @@ export function SignInForm({ redirectUrl = '/dashboard', className }: SignInForm
         redirectUrl: '/sso-callback',
         redirectUrlComplete: redirectUrl,
       });
-    } catch (err: any) {
-      setError(err.errors?.[0]?.message || 'OAuth sign in failed.');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error && 'errors' in err && Array.isArray((err as any).errors) 
+        ? (err as any).errors[0]?.message 
+        : 'OAuth sign in failed.';
+      setError(errorMessage);
       setIsOAuthLoading(false);
     }
   };
@@ -221,7 +227,7 @@ export function SignInForm({ redirectUrl = '/dashboard', className }: SignInForm
             Don't have an account?{' '}
             <a
               href="/sign-up"
-              className="text-primary-500 hover:text-primary-600 font-medium transition-colors"
+                              className="text-brand-burgundy hover:text-brand-burgundy-dark font-medium transition-colors"
             >
               Sign up
             </a>

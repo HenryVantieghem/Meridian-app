@@ -1,4 +1,4 @@
-import OpenAI from 'openai';
+import { openai } from './openai-client';
 import { EmailMessage } from '../email/fetcher';
 
 export interface EmailAnalysis {
@@ -69,18 +69,9 @@ export class EmailAnalysisError extends Error {
 }
 
 export class EmailAnalyzer {
-  private openai: OpenAI;
   private rateLimiter: Map<string, number> = new Map();
   private readonly RATE_LIMIT_WINDOW = 60000; // 1 minute
   private readonly MAX_REQUESTS_PER_MINUTE = 50;
-
-  constructor() {
-    this.openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-      maxRetries: 3,
-      timeout: 30000
-    });
-  }
 
   /**
    * Analyze a single email with comprehensive AI analysis
@@ -96,7 +87,7 @@ export class EmailAnalyzer {
       const prompt = this.buildAnalysisPrompt(request);
       
       // Call OpenAI API
-      const response = await this.openai.chat.completions.create({
+      const response = await openai.chat.completions.create({
         model: 'gpt-4o',
         messages: [
           {
@@ -194,7 +185,7 @@ export class EmailAnalyzer {
     keyPoints: string[];
   }> {
     try {
-      const response = await this.openai.chat.completions.create({
+      const response = await openai.chat.completions.create({
         model: 'gpt-4o',
         messages: [
           {
@@ -457,7 +448,7 @@ Always respond with valid JSON matching the exact format requested.`;
    */
   private async extractKeyPoints(email: EmailMessage): Promise<string[]> {
     try {
-      const response = await this.openai.chat.completions.create({
+      const response = await openai.chat.completions.create({
         model: 'gpt-4o',
         messages: [
           {

@@ -27,20 +27,20 @@ const bounceSchema = z.object({
   messageId: z.string().optional(),
 });
 
-// A/B test schema
-const abTestSchema = z.object({
-  name: z.string().min(1),
-  description: z.string(),
-  variants: z.array(z.object({
-    subject: z.string(),
-    html: z.string(),
-    weight: z.number().min(0).max(1),
-  })),
-  audience: z.array(z.string()),
-  startDate: z.string().datetime(),
-  endDate: z.string().datetime().optional(),
-  enabled: z.boolean().default(true),
-});
+// A/B test schema - unused but kept for future implementation
+// const abTestSchema = z.object({
+//   name: z.string().min(1),
+//   description: z.string(),
+//   variants: z.array(z.object({
+//     subject: z.string(),
+//     html: z.string(),
+//     weight: z.number().min(0).max(1),
+//   })),
+//   audience: z.array(z.string()),
+//   startDate: z.string().datetime(),
+//   endDate: z.string().datetime().optional(),
+//   enabled: z.boolean().default(true),
+// });
 
 export async function POST(request: NextRequest) {
   try {

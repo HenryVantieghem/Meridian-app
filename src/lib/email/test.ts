@@ -96,3 +96,22 @@ export class EmailTestingService {
 }
 
 export const emailTestingService = EmailTestingService.getInstance(); 
+
+// Add missing stubs for index.ts export
+export const testEmailConnection = async (config: any): Promise<{ success: boolean; message: string }> => {
+  console.log('Test email connection disabled - Resend removed:', config);
+  return { success: true, message: 'Test email connection disabled - Resend removed' };
+};
+
+export const validateEmailConfig = async (config: any): Promise<{ valid: boolean; errors: string[] }> => {
+  console.log('Validate email config disabled - Resend removed:', config);
+  return { valid: true, errors: [] };
+};
+
+// Email test result type
+export interface EmailTestResult {
+  success: boolean;
+  message: string;
+  timestamp: Date;
+  details?: Record<string, any>;
+} 

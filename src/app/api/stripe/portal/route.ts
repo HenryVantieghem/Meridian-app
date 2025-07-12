@@ -3,7 +3,6 @@ import { auth, currentUser } from '@clerk/nextjs/server';
 import { 
   stripe, 
   createOrRetrieveCustomer,
-  handleStripeError,
   StripeError 
 } from '@/lib/stripe/config';
 import { z } from 'zod';

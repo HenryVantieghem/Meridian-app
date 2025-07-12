@@ -9,7 +9,35 @@ export interface TypographyProps extends React.HTMLAttributes<HTMLElement> {
 
 const Typography = React.forwardRef<HTMLElement, TypographyProps>(
   ({ className, as, variant = "p", children, ...props }, ref) => {
-    const Component = as || variant;
+    // Map variants to valid HTML elements
+    const getElementType = (variant: string) => {
+      switch (variant) {
+        case "hero":
+          return "h1";
+        case "h1":
+        case "h2":
+        case "h3":
+        case "h4":
+        case "h5":
+        case "h6":
+          return variant;
+        case "body-large":
+        case "body":
+        case "p":
+          return "p";
+        case "span":
+          return "span";
+        case "div":
+          return "div";
+        case "small":
+        case "caption":
+          return "p";
+        default:
+          return "p";
+      }
+    };
+    
+    const Component = as || getElementType(variant);
     
     const baseStyles = "text-black";
     const variantStyles = {

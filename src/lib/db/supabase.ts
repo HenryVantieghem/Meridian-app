@@ -26,7 +26,7 @@ export const supabase = createClient<Database>(
     },
     global: {
       headers: {
-        'x-application-name': 'super-intelligence-app',
+        'x-application-name': 'napoleon-app',
       },
     },
   }
@@ -43,7 +43,7 @@ export const supabaseAdmin = createClient<Database>(
     },
     global: {
       headers: {
-        'x-application-name': 'super-intelligence-app-admin',
+        'x-application-name': 'napoleon-app-admin',
       },
     },
   }

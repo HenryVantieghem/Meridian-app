@@ -1,4 +1,4 @@
-import OpenAI from 'openai';
+import { openai } from './openai-client';
 import { EmailMessage } from '../email/fetcher';
 
 export type ReplyTone = 'formal' | 'friendly' | 'concise' | 'neutral' | 'custom';
@@ -48,7 +48,6 @@ export class ReplyGeneratorError extends Error {
 }
 
 export class ReplyGenerator {
-  private openai: OpenAI;
   private readonly model = 'gpt-4o';
   private readonly maxReplies = 3;
   private readonly defaultTemplates: ReplyTemplate[] = [
@@ -72,14 +71,6 @@ export class ReplyGenerator {
     },
   ];
 
-  constructor() {
-    this.openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-      maxRetries: 3,
-      timeout: 30000,
-    });
-  }
-
   /**
    * Generate AI-powered reply options for an email
    */
@@ -92,7 +83,7 @@ export class ReplyGenerator {
       const maxReplies = options.maxReplies || this.maxReplies;
       const systemPrompt = this.getSystemPrompt(options);
 
-      const response = await this.openai.chat.completions.create({
+      const response = await openai.chat.completions.create({
         model: this.model,
         messages: [
           { role: 'system', content: systemPrompt },

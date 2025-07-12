@@ -35,7 +35,7 @@ export default function SSOCallbackPage() {
           animate={{ opacity: 1 }}
           className="text-center space-y-4"
         >
-          <Loader2 className="h-8 w-8 animate-spin text-primary-500 mx-auto" />
+          <Loader2 className="h-8 w-8 animate-spin text-brand-burgundy mx-auto" />
           <Typography variant="body" className="text-gray-600">
             Completing sign in...
           </Typography>

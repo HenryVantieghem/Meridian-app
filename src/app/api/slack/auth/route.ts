@@ -6,7 +6,7 @@ import { logger } from '@/lib/monitoring/logging';
 
 // Initiate Slack OAuth
 export const GET = withSecurity(
-  async (req: NextRequest) => {
+  async () => {
     try {
       const { userId } = await auth();
       

@@ -12,7 +12,6 @@ import {
   User, 
   TrendingUp,
   Check,
-  Users,
   Target,
   Clock,
   Zap
@@ -112,7 +111,7 @@ export default function PersonaPage() {
             <Card
               className={`p-6 cursor-pointer transition-all duration-300 hover:shadow-lg ${
                 selectedPersona === persona.id
-                  ? 'ring-2 ring-primary-500 bg-primary-50'
+                  ? 'ring-2 ring-brand-burgundy bg-primary-50'
                   : 'hover:bg-gray-50'
               }`}
               onClick={() => handlePersonaSelect(persona.id)}

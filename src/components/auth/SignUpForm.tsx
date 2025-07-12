@@ -100,8 +100,11 @@ export function SignUpForm({ redirectUrl = '/onboarding', className }: SignUpFor
       } else {
         setError('Sign up failed. Please try again.');
       }
-    } catch (err: any) {
-      setError(err.errors?.[0]?.message || 'An error occurred during sign up.');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error && 'errors' in err && Array.isArray((err as any).errors) 
+        ? (err as any).errors[0]?.message 
+        : 'An error occurred during sign up.';
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -119,8 +122,11 @@ export function SignUpForm({ redirectUrl = '/onboarding', className }: SignUpFor
         redirectUrl: '/sso-callback',
         redirectUrlComplete: redirectUrl,
       });
-    } catch (err: any) {
-      setError(err.errors?.[0]?.message || 'OAuth sign up failed.');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error && 'errors' in err && Array.isArray((err as any).errors) 
+        ? (err as any).errors[0]?.message 
+        : 'OAuth sign up failed.';
+      setError(errorMessage);
       setIsOAuthLoading(false);
     }
   };
@@ -372,7 +378,7 @@ export function SignUpForm({ redirectUrl = '/onboarding', className }: SignUpFor
             Already have an account?{' '}
             <a
               href="/sign-in"
-              className="text-primary-500 hover:text-primary-600 font-medium transition-colors"
+                              className="text-brand-burgundy hover:text-brand-burgundy-dark font-medium transition-colors"
             >
               Sign in
             </a>

@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import ClientLayout from "./client-layout";
 
-export const dynamic = 'force-dynamic';
+// Validate environment variables on app startup
+import "@/lib/invariantEnv";
 
-const inter = Inter({ subsets: ["latin"] });
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: {
@@ -77,8 +77,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="h-full">
-      <body className={`${inter.className} h-full`}>
+    <html lang="en">
+      <body className="font-sans text-base text-black bg-[var(--bg-primary)]">
         <ClientLayout>{children}</ClientLayout>
       </body>
     </html>

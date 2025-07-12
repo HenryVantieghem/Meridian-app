@@ -15,16 +15,12 @@ import {
 import { 
   Mail, 
   User, 
-  Clock, 
-  Star,
-  TrendingUp,
-  MessageSquare
+  Clock
 } from "lucide-react";
 
 export default function MicroInteractionsDemo() {
   const [showCompletionRitual, setShowCompletionRitual] = useState(false);
   const [completedTasks, setCompletedTasks] = useState(8);
-  const [totalTasks, setTotalTasks] = useState(10);
 
   const handleDelegate = (option: string) => {
     console.log("Delegated to:", option);
@@ -183,13 +179,13 @@ export default function MicroInteractionsDemo() {
                 <div className="flex items-center gap-2">
                   <span className="text-lg font-bold text-[#D4AF37]">{completedTasks}</span>
                   <span className="text-gray-400">/</span>
-                  <span className="text-lg font-bold text-gray-900">{totalTasks}</span>
+                  <span className="text-lg font-bold text-gray-900">10</span>
                 </div>
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => {
-                    if (completedTasks < totalTasks) {
+                    if (completedTasks < 10) {
                       setCompletedTasks(prev => prev + 1);
                     }
                   }}
@@ -248,7 +244,7 @@ export default function MicroInteractionsDemo() {
         <CompletionRitual
           isVisible={showCompletionRitual}
           completedTasks={completedTasks}
-          totalTasks={totalTasks}
+          totalTasks={10}
           onViewArchive={handleViewArchive}
           onContinue={handleContinue}
         />

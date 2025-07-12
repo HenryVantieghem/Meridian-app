@@ -240,7 +240,7 @@ export default function PreviewPage() {
                 >
                   <Card 
                     className={`p-6 cursor-pointer transition-all hover:shadow-lg ${
-                      selectedEmail === email.id ? 'ring-2 ring-primary-500' : ''
+                      selectedEmail === email.id ? 'ring-2 ring-brand-burgundy' : ''
                     }`}
                     onClick={() => setSelectedEmail(selectedEmail === email.id ? null : email.id)}
                   >

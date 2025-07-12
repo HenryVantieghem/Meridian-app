@@ -37,7 +37,7 @@ export class EmailSyncService {
   async syncEmails(options: SyncOptions): Promise<SyncResult> {
     const { userId, maxResults = 100, syncFrom, forceFullSync = false } = options;
     const errors: string[] = [];
-    let emailsSynced = 0;
+    const emailsSynced = 0;
 
     try {
       // Get user's Gmail integration

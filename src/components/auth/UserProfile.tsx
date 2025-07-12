@@ -104,7 +104,7 @@ export function UserProfile({ className }: UserProfileProps) {
                   <User className="h-12 w-12 text-gray-400" />
                 )}
               </div>
-              <button className="absolute bottom-0 right-0 p-1 bg-primary-500 text-white rounded-full hover:bg-primary-600 transition-colors">
+                              <button className="absolute bottom-0 right-0 p-1 bg-brand-burgundy text-white rounded-full hover:bg-brand-burgundy-dark transition-colors">
                 <Camera className="h-3 w-3" />
               </button>
             </div>

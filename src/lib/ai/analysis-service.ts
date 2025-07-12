@@ -1,9 +1,5 @@
-import OpenAI from 'openai';
+import { openai } from './openai-client';
 import { Email, SlackMessage } from '@/types';
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
 
 export interface AIAnalysis {
   id: string;

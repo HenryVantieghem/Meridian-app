@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { EMAIL_TYPES } from '@/lib/email/automation';
 
 // Email automation request schema
 const automationSchema = z.object({
@@ -50,7 +49,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     // Get automation status (stub function since Resend is removed)
     console.log('Getting automation status disabled - Resend removed');

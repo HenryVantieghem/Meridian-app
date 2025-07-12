@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { Typography } from '@/components/ui/typography';
@@ -10,12 +10,9 @@ import { Input } from '@/components/ui/input';
 import { 
   Mail, 
   Clock, 
-  Users, 
-  Globe,
   Star,
   Zap,
-  Calendar,
-  Settings
+  Calendar
 } from 'lucide-react';
 
 interface Preferences {
@@ -265,7 +262,7 @@ export default function PreferencesPage() {
         >
           <Card className="p-6">
             <div className="flex items-center space-x-3 mb-6">
-              <Settings className="w-6 h-6 text-primary-600" />
+              <Calendar className="w-6 h-6 text-primary-600" />
               <Typography variant="h3" className="text-xl font-semibold text-gray-900">
                 Work Hours & Timezone
               </Typography>
@@ -304,7 +301,7 @@ export default function PreferencesPage() {
                 <select
                   value={preferences.timezone}
                   onChange={(e) => setPreferences(prev => ({ ...prev, timezone: e.target.value }))}
-                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-burgundy focus:border-brand-burgundy"
                 >
                   {timezones.map((tz) => (
                     <option key={tz} value={tz}>

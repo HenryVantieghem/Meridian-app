@@ -7,7 +7,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     <ClerkProvider
       appearance={{
         elements: {
-          formButtonPrimary: 'bg-primary-500 hover:bg-primary-600',
+          formButtonPrimary: 'bg-brand-burgundy hover:bg-brand-burgundy-dark',
           card: 'shadow-soft',
           headerTitle: 'text-gray-900',
           headerSubtitle: 'text-gray-600',
@@ -15,7 +15,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
           formFieldInput: 'input-field',
           formFieldLabel: 'text-sm font-medium text-gray-900',
           formFieldLabelRow: 'mb-1',
-          footerActionLink: 'text-primary-500 hover:text-primary-600',
+                      footerActionLink: 'text-brand-burgundy hover:text-brand-burgundy-dark',
         },
         variables: {
           colorPrimary: '#D4AF37',

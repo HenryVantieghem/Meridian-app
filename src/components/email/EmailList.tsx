@@ -124,7 +124,7 @@ export function EmailList({
       {/* Loading state */}
       {loading && emails.length === 0 && (
         <div className="flex items-center justify-center p-8">
-          <Loader2 className="h-8 w-8 animate-spin text-primary-500" />
+          <Loader2 className="h-8 w-8 animate-spin text-brand-burgundy" />
           <Typography variant="body" className="ml-2 text-gray-600">
             Loading emails...
           </Typography>

@@ -3,12 +3,17 @@ import { auth } from '@clerk/nextjs/server';
 import { google } from 'googleapis';
 import { createClient } from '@supabase/supabase-js';
 import { logger } from '@/lib/monitoring/logging';
+import { cookies } from 'next/headers';
 
-// Initialize Supabase client
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+// Initialize Supabase client with service role key validation
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+if (!supabaseUrl || !supabaseServiceRoleKey) {
+  throw new Error('Missing required Supabase configuration: NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY');
+}
+
+const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
 
 // OAuth2 client for Gmail
 const oauth2Client = new google.auth.OAuth2(
@@ -44,6 +49,14 @@ export async function GET(request: NextRequest) {
       return NextResponse.redirect(
         new URL('/dashboard?error=gmail_oauth_failed&reason=missing_code', request.url)
       );
+    }
+
+    // Validate OAuth state
+    const cookieStore = await cookies();
+    const cookieState = cookieStore.get("oauth_state")?.value;
+    if (state !== cookieState) {
+      logger.error(`Gmail OAuth invalid state for user ${userId}, state: ${state}, cookie: ${cookieState}`);
+      return NextResponse.json({ error: "Invalid state" }, { status: 400 });
     }
 
     // Exchange authorization code for tokens

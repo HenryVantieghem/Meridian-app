@@ -4,53 +4,11 @@
 
 @layer base {
   :root {
-    /* Official Cartier Foundation Colors */
-    --color-white: #FFFFFF;          /* Pure white - 70% of interface */
-    --color-black: #000000;          /* Deep black - 20% of interface */
-    --color-cream: #F8F6F0;          /* Warm cream - 5% of interface */
-    --color-cartier-burgundy: #801B2B; /* Official Cartier red - 3% of interface */
-    --color-pearl-gray: #F5F5F5;     /* Subtle gray - 2% of interface */
-    
-    /* Semantic Color Mappings */
-    --background: 0 0% 100%;
-    --foreground: 0 0% 0%;
-    --primary: 348 100% 32%;
-    --primary-foreground: 0 0% 100%;
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 29%;
-    --accent: 0 0% 96%;
-    --accent-foreground: 0 0% 0%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 96%;
-    --input: 0 0% 96%;
-    --ring: 348 100% 32%;
-    --radius: 6px;
-    
-    /* Cartier Typography System */
-    --font-serif: 'Georgia', 'Times New Roman', serif;
-    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    
-    /* Luxury Spacing (8px grid) */
-    --spacing-xs: 8px;
-    --spacing-sm: 16px;
-    --spacing-md: 24px;
-    --spacing-lg: 32px;
-    --spacing-xl: 48px;
-    --spacing-xxl: 64px;
-    --spacing-xxxl: 96px;
-    
-    /* Cartier UI Properties */
-    --border-radius: 6px;
-    --border-width: 1px;
-    --shadow-subtle: 0 2px 8px rgba(0, 0, 0, 0.06);
-    --shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.08);
-    --shadow-strong: 0 8px 24px rgba(0, 0, 0, 0.12);
-    
-    /* Cartier Red Variations */
-    --color-burgundy-light: #9D2B3A;
-    --color-burgundy-dark: #6B1724;
-    --color-burgundy-subtle: rgba(128, 27, 43, 0.1);
+    --bg-primary: #FFFFFF; /* 70% */
+    --bg-secondary: #F8F6F0; /* 5% */
+    --text-primary: #000000;
+    --accent-burgundy: #801B2B; /* 3% */
+    --border-pearl: #F5F5F5; /* 2% */
   }
 
   .dark {
@@ -207,12 +165,12 @@
   
   /* Focus styles */
   *:focus-visible {
-    @apply outline-none ring-2 ring-primary-500 ring-offset-2;
+    @apply outline-none ring-2 ring-brand-burgundy ring-offset-2;
   }
   
   /* Selection styles */
   ::selection {
-    @apply bg-primary-500 text-white;
+    @apply bg-brand-burgundy text-white;
   }
   
   /* Reduced motion */
@@ -296,7 +254,7 @@
   
   /* Legacy button styles (for compatibility) */
   .btn-outline {
-    @apply border border-gray-300 bg-white text-gray-900 hover:bg-gray-50 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors duration-200;
+    @apply border border-gray-300 bg-white text-gray-900 hover:bg-gray-50 focus:ring-2 focus:ring-brand-burgundy focus:ring-offset-2 transition-colors duration-200;
   }
   
   /* Luxury Card Components */
@@ -335,7 +293,7 @@
   
   /* Custom input styles */
   .input-field {
-    @apply w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+    @apply w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-burgundy focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
   }
   
   /* Custom modal styles */
@@ -599,7 +557,7 @@
   
   /* Text utilities */
   .text-gradient {
-    @apply bg-gradient-to-r from-primary-500 to-primary-600 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-brand-burgundy to-brand-burgundy-dark bg-clip-text text-transparent;
   }
   
   .text-shadow {
@@ -608,12 +566,12 @@
   
   /* Border utilities */
   .border-gradient {
-    @apply border border-transparent bg-gradient-to-r from-primary-500 to-primary-600 bg-clip-border;
+    @apply border border-transparent bg-gradient-to-r from-brand-burgundy to-brand-burgundy-dark bg-clip-border;
   }
   
   /* Background utilities */
   .bg-gradient-primary {
-    @apply bg-gradient-to-r from-primary-500 to-primary-600;
+    @apply bg-gradient-to-r from-brand-burgundy to-brand-burgundy-dark;
   }
   
   .bg-gradient-secondary {

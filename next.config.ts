@@ -2,14 +2,14 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  experimental: {
-    serverComponentsExternalPackages: [
-      'googleapis',
-      'google-auth-library',
-      'gaxios',
-      'gcp-metadata'
-    ],
-  },
+  output: 'standalone',
+  serverExternalPackages: [
+    'googleapis',
+    'google-auth-library',
+    'gaxios',
+    'gcp-metadata',
+    '@clerk/nextjs'
+  ],
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.resolve.fallback = {
@@ -31,7 +31,13 @@ const nextConfig: NextConfig = {
     return config;
   },
   images: {
-    domains: ['lh3.googleusercontent.com', 'avatars.slack-edge.com'],
+    unoptimized: true,
+    domains: [
+      'lh3.googleusercontent.com', 
+      'avatars.slack-edge.com',
+      'images.clerk.dev', 
+      'img.clerk.com'
+    ],
   },
   env: {
     CUSTOM_KEY: process.env.CUSTOM_KEY,
@@ -60,6 +66,11 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
+        source: '/',
+        destination: '/dashboard',
+        permanent: false,
+      },
+      {
         source: '/api/auth/sign-in',
         destination: '/sign-in',
         permanent: false,
@@ -71,6 +82,10 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  // Performance optimizations
+  compress: true,
+  poweredByHeader: false,
+  reactStrictMode: true,
 };
 
 export default nextConfig;

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { sendEmail, EMAIL_TYPES, EMAIL_PRIORITY } from '@/lib/email/automation';
+import { sendEmail, EMAIL_TYPES } from '@/lib/email/automation';
 
 // Email send request schema
 const emailSendSchema = z.object({

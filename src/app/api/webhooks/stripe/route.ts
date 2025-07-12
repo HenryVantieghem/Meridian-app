@@ -1,11 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { 
-  stripe, 
   verifyWebhookSignature, 
-  WEBHOOK_EVENTS,
   SUBSCRIPTION_STATUS,
   logStripeEvent,
-  handleStripeError,
   StripeError 
 } from '@/lib/stripe/config';
 import { createClient } from '@supabase/supabase-js';
@@ -198,8 +195,7 @@ async function handleSubscriptionDeleted(subscription: any) {
 // Payment handlers
 async function handlePaymentSucceeded(invoice: any) {
   try {
-    const subscription = invoice.subscription;
-    const { userId } = subscription.metadata;
+    const { userId } = invoice.subscription.metadata;
     
     if (!userId) {
       console.error('No userId in subscription metadata');
@@ -232,8 +228,7 @@ async function handlePaymentSucceeded(invoice: any) {
 
 async function handlePaymentFailed(invoice: any) {
   try {
-    const subscription = invoice.subscription;
-    const { userId } = subscription.metadata;
+    const { userId } = invoice.subscription.metadata;
     
     if (!userId) {
       console.error('No userId in subscription metadata');

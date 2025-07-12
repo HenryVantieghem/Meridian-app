@@ -50,7 +50,7 @@ const tierConfig = {
   },
 };
 
-function hasTrialDays(price: any): price is { trialDays: number } {
+function hasTrialDays(price: unknown): price is { trialDays: number } {
   return typeof price === 'object' && price !== null && 'trialDays' in price;
 }
 

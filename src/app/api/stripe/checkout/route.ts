@@ -21,13 +21,14 @@ const checkoutSchema = z.object({
   metadata: z.record(z.string()).optional(),
 });
 
-const createCheckoutSessionSchema = z.object({
-  customerId: z.string(),
-  priceId: z.string(),
-  successUrl: z.string(),
-  cancelUrl: z.string(),
-  metadata: z.record(z.string()).optional(),
-});
+// Unused schema - kept for type inference
+// const createCheckoutSessionSchema = z.object({
+//   customerId: z.string(),
+//   priceId: z.string(),
+//   successUrl: z.string(),
+//   cancelUrl: z.string(),
+//   metadata: z.record(z.string()).optional(),
+// });
 
 export async function POST(request: NextRequest) {
   try {
@@ -127,7 +128,13 @@ async function createCheckoutSession({
   successUrl,
   cancelUrl,
   metadata,
-}: z.infer<typeof createCheckoutSessionSchema>) {
+}: {
+  customerId: string;
+  priceId: string;
+  successUrl: string;
+  cancelUrl: string;
+  metadata?: Record<string, string>;
+}) {
   const price = Object.values(PRICES).find(p => p.id === priceId);
   if (!price) {
     throw new StripeError('Invalid price ID', 'invalid_price', 400);

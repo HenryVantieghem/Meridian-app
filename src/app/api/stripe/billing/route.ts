@@ -3,11 +3,10 @@ import { auth, currentUser } from '@clerk/nextjs/server';
 import { 
   stripe, 
   createOrRetrieveCustomer,
-  handleStripeError,
   StripeError 
 } from '@/lib/stripe/config';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     // Authenticate user
     const { userId } = await auth();

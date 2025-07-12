@@ -10,7 +10,6 @@ import { MessageList } from '@/components/slack/MessageList';
 import { ContextPanel } from '@/components/dashboard/ContextPanel';
 import { Sidebar } from '@/components/dashboard/Sidebar';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import { Typography } from '@/components/ui/typography';
 import { Badge } from '@/components/ui/badge';
 import { LoadingSpinner, DashboardSkeleton } from '@/components/ui/LoadingSpinner';
@@ -27,7 +26,6 @@ export default function DashboardPage() {
   const {
     emails,
     loading: emailsLoading,
-    error: emailsError,
     refresh: refreshEmails,
     syncEmails,
     syncStatus: emailSyncStatus,
