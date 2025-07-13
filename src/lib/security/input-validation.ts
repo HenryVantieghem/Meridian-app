@@ -8,7 +8,7 @@ export const baseSchemas = {
   password: z.string().min(8).max(128).regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, 'Password must contain at least one uppercase letter, one lowercase letter, and one number'),
   url: z.string().url(),
   date: z.string().datetime(),
-  phone: z.string().regex(/^\+?[\d\s\-\(\)]+$/, 'Invalid phone number format'),
+  phone: z.string().regex(/^\+?[\d\s\-()]+$/, 'Invalid phone number format'),
   name: z.string().min(1).max(100).regex(/^[a-zA-Z\s\-']+$/, 'Name contains invalid characters'),
   text: z.string().min(1).max(10000),
   html: z.string().min(1).max(50000),
