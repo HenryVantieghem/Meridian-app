@@ -140,7 +140,7 @@
       "GOOGLE_REDIRECT_URI": "https://napoleonai.app/api/auth/google/callback",
       "SLACK_REDIRECT_URI": "https://napoleonai.app/api/auth/slack/callback",
       "TEAMS_CLIENT_ID": "8a4546d6-6c71-482e-99de-a02f46b2589f",
-      "TEAMS_CLIENT_SECRET": "e0a234b3-5535-498b-8c3a-2f1e616d4c1a",
+      "TEAMS_CLIENT_SECRET": "@TEAMS_CLIENT_SECRET",
       "TEAMS_TENANT_ID": "ccb6deed-bd29-4b38-8979-d72780f62d3b",
       "TEAMS_REDIRECT_URI": "https://napoleonai.app/api/auth/teams/callback",
       "RESEND_API_KEY": "@RESEND_API_KEY",
