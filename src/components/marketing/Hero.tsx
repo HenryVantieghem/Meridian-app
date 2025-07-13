@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Typography } from '@/components/ui/typography';
+
 import { motion } from 'framer-motion';
 import { ArrowRight, Play, Sparkles, Zap, Shield, Crown } from 'lucide-react';
 
@@ -30,6 +30,7 @@ export function Hero() {
               className="mx-auto w-full max-w-2xl h-auto"
             />
           </motion.div>
+          
           {/* Badge */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -76,7 +77,7 @@ export function Hero() {
             className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16"
           >
             <Button 
-              className="rounded-2xl px-4 py-2 bg-black text-white hover:bg-brand-burgundy text-lg transition-all duration-200"
+              className="rounded-2xl px-4 py-2 bg-black text-white hover:bg-[#801B2B] text-lg transition-all duration-200"
               aria-label="Get Started with Napoleon AI"
             >
               Get Started

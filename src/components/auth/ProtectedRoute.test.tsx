@@ -10,7 +10,7 @@ vi.mock('@clerk/nextjs', () => ({
 
 describe('ProtectedRoute', () => {
   it('should render children when user is authenticated', () => {
-    (useAuth as any).mockReturnValue({
+    (useAuth as jest.MockedFunction<typeof useAuth>).mockReturnValue({
       userId: 'test-user-id',
       isSignedIn: true,
       isLoaded: true,
@@ -26,7 +26,7 @@ describe('ProtectedRoute', () => {
   });
 
   it('should show loading state when auth is not loaded', () => {
-    (useAuth as any).mockReturnValue({
+    (useAuth as jest.MockedFunction<typeof useAuth>).mockReturnValue({
       userId: null,
       isSignedIn: false,
       isLoaded: false,
@@ -43,7 +43,7 @@ describe('ProtectedRoute', () => {
   });
 
   it('should redirect to sign-in when user is not authenticated', () => {
-    (useAuth as any).mockReturnValue({
+    (useAuth as jest.MockedFunction<typeof useAuth>).mockReturnValue({
       userId: null,
       isSignedIn: false,
       isLoaded: true,
@@ -67,7 +67,7 @@ describe('ProtectedRoute', () => {
   });
 
   it('should show access denied message when user is not authenticated', () => {
-    (useAuth as any).mockReturnValue({
+    (useAuth as jest.MockedFunction<typeof useAuth>).mockReturnValue({
       userId: null,
       isSignedIn: false,
       isLoaded: true,

@@ -300,7 +300,7 @@ async function handleTrialWillEnd(subscription: StripeSubscription) {
   }
 }
 
-async function handleTrialEnded(subscription: any) {
+// async function _handleTrialEnded(_subscription: StripeSubscription) {
   try {
     const { userId } = subscription.metadata;
     
@@ -316,7 +316,7 @@ async function handleTrialEnded(subscription: any) {
   } catch (error) {
     console.error('Error handling trial ended:', error);
   }
-}
+// }
 
 // Utility functions
 function getProductTier(productId: string): string {
@@ -326,37 +326,37 @@ function getProductTier(productId: string): string {
 }
 
 // Email notification functions (disabled - Resend removed)
-async function sendWelcomeEmail(userId: string, subscription: StripeSubscription) {
+async function sendWelcomeEmail(userId: string, _subscription: StripeSubscription) {
   // Email sending disabled - Resend removed
   console.log(`Welcome email disabled - Resend removed for user ${userId}`);
 }
 
-async function sendPaymentReminder(userId: string, subscription: StripeSubscription) {
+async function sendPaymentReminder(userId: string, _subscription: StripeSubscription) {
   // Email sending disabled - Resend removed
   console.log(`Payment reminder disabled - Resend removed for user ${userId}`);
 }
 
-async function sendCancellationEmail(userId: string, subscription: StripeSubscription) {
+async function sendCancellationEmail(userId: string, _subscription: StripeSubscription) {
   // Email sending disabled - Resend removed
   console.log(`Cancellation email disabled - Resend removed for user ${userId}`);
 }
 
-async function sendPaymentConfirmationEmail(userId: string, invoice: StripeInvoice) {
+async function sendPaymentConfirmationEmail(userId: string, _invoice: StripeInvoice) {
   // Email sending disabled - Resend removed
   console.log(`Payment confirmation disabled - Resend removed for user ${userId}`);
 }
 
-async function sendPaymentFailureEmail(userId: string, invoice: StripeInvoice) {
+async function sendPaymentFailureEmail(userId: string, _invoice: StripeInvoice) {
   // Email sending disabled - Resend removed
   console.log(`Payment failure notification disabled - Resend removed for user ${userId}`);
 }
 
-async function sendTrialEndingEmail(userId: string, subscription: StripeSubscription) {
+async function sendTrialEndingEmail(userId: string, _subscription: StripeSubscription) {
   // Email sending disabled - Resend removed
   console.log(`Trial ending reminder disabled - Resend removed for user ${userId}`);
 }
 
-async function sendTrialEndedEmail(userId: string, subscription: StripeSubscription) {
+async function sendTrialEndedEmail(userId: string, _subscription: StripeSubscription) {
   // Email sending disabled - Resend removed
   console.log(`Trial ended notification disabled - Resend removed for user ${userId}`);
 }

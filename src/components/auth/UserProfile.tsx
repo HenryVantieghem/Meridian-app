@@ -113,20 +113,22 @@ export function UserProfile({ className }: UserProfileProps) {
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className="block text-sm font-medium text-gray-700">
+                      <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
                         First name
                       </label>
                       <Input
+                        id="firstName"
                         value={firstName}
                         onChange={(e) => setFirstName(e.target.value)}
                         placeholder="First name"
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="block text-sm font-medium text-gray-700">
+                      <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">
                         Last name
                       </label>
                       <Input
+                        id="lastName"
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
                         placeholder="Last name"
@@ -180,7 +182,7 @@ export function UserProfile({ className }: UserProfileProps) {
             </Typography>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                   Email
                 </label>
                 <div className="flex items-center space-x-2 p-3 bg-gray-50 rounded-md">
@@ -191,7 +193,7 @@ export function UserProfile({ className }: UserProfileProps) {
                 </div>
               </div>
               <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">
+                <label htmlFor="memberSince" className="block text-sm font-medium text-gray-700">
                   Member since
                 </label>
                 <div className="flex items-center space-x-2 p-3 bg-gray-50 rounded-md">

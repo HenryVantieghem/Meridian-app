@@ -55,6 +55,7 @@ export default function DashboardPage() {
   const [selectedWorkspace, setSelectedWorkspace] = useState<string>('');
   const [showAIActions, setShowAIActions] = useState(true);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showCommandBar, setShowCommandBar] = useState(false);
 
   // Real data hooks
   const {
@@ -107,6 +108,10 @@ export default function DashboardPage() {
 
   useHotkeys('a', () => {
     setShowAIActions(prev => !prev);
+  }, { enableOnFormTags: true });
+
+  useHotkeys('cmd+k, ctrl+k', () => {
+    setShowCommandBar(prev => !prev);
   }, { enableOnFormTags: true });
 
   // Auto-refresh when real-time updates come in
@@ -217,7 +222,7 @@ export default function DashboardPage() {
                 <Button
                   onClick={handleSyncEmails}
                   disabled={emailsLoading}
-                  className="px-4 py-2 rounded-2xl bg-black text-white hover:bg-brand-burgundy"
+                  className="rounded-2xl px-4 py-2 bg-black text-white hover:bg-[#801B2B] transition-all duration-200"
                 >
                   {emailsLoading ? 'Synchronizing...' : 'Sync Communications'}
                 </Button>
@@ -226,7 +231,7 @@ export default function DashboardPage() {
               <Button
                 onClick={() => setShowAIActions(!showAIActions)}
                 variant="outline"
-                className="px-4 py-2 rounded-2xl"
+                className="rounded-2xl px-4 py-2"
               >
                 {showAIActions ? 'Hide' : 'Show'} AI Actions
               </Button>
@@ -284,8 +289,26 @@ export default function DashboardPage() {
         <AIActionSidebar className="fixed right-0 top-0 h-full z-40" />
       )}
 
+      {/* Persistent Command Bar */}
+      <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50">
+        <div className="bg-white border border-gray-200 rounded-2xl shadow-lg px-6 py-3 min-w-[400px]">
+          <div className="flex items-center space-x-3">
+            <div className="w-2 h-2 bg-brand-burgundy rounded-full animate-pulse"></div>
+            <input
+              type="text"
+              placeholder="Ask Napoleon..."
+              className="flex-1 bg-transparent border-none outline-none text-black placeholder-gray-500"
+              onFocus={() => setShowCommandBar(true)}
+            />
+            <div className="text-xs text-gray-400">⌘K</div>
+          </div>
+        </div>
+      </div>
+
       {/* Command Bar */}
-      <CommandBar onCommand={handleCommand} />
+      {showCommandBar && (
+        <CommandBar onCommand={handleCommand} />
+      )}
     </div>
   );
 } 

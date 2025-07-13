@@ -47,8 +47,8 @@ export function SignInForm({ redirectUrl = '/dashboard', className }: SignInForm
         setError('Sign in failed. Please try again.');
       }
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error && 'errors' in err && Array.isArray((err as any).errors) 
-        ? (err as any).errors[0]?.message 
+      const errorMessage = err instanceof Error && 'errors' in err && Array.isArray((err as { errors: Array<{ message: string }> }).errors) 
+        ? (err as { errors: Array<{ message: string }> }).errors[0]?.message 
         : 'An error occurred during sign in.';
       setError(errorMessage);
     } finally {
@@ -69,8 +69,8 @@ export function SignInForm({ redirectUrl = '/dashboard', className }: SignInForm
         redirectUrlComplete: redirectUrl,
       });
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error && 'errors' in err && Array.isArray((err as any).errors) 
-        ? (err as any).errors[0]?.message 
+      const errorMessage = err instanceof Error && 'errors' in err && Array.isArray((err as { errors: Array<{ message: string }> }).errors) 
+        ? (err as { errors: Array<{ message: string }> }).errors[0]?.message 
         : 'OAuth sign in failed.';
       setError(errorMessage);
       setIsOAuthLoading(false);

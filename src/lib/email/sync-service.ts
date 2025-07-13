@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
-import { Email } from '@/types';
+// import { Email } from '@/types';
 
 // Initialize Supabase client
 const supabase = createClient(
@@ -36,8 +36,8 @@ export class EmailSyncService {
    */
   async syncEmails(options: SyncOptions): Promise<SyncResult> {
     const { userId, maxResults = 100, syncFrom, forceFullSync = false } = options;
-    const errors: string[] = [];
-    const emailsSynced = 0;
+    // const errors: string[] = [];
+    // const emailsSynced = 0;
 
     try {
       // Get user's Gmail integration

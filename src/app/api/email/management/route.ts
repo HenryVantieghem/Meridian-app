@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
     const { action, ...data } = body;
 
     switch (action) {
-      case 'create_list':
+      case 'create_list': {
         const listData = emailListSchema.parse(data);
         const newList = await emailManagementService.createEmailList(
           listData.name,
@@ -68,8 +68,9 @@ export async function POST(request: NextRequest) {
           success: true,
           list: newList,
         });
+      }
 
-      case 'add_subscriber':
+      case 'add_subscriber': {
         const { email, listId } = data;
         if (!email || !listId) {
           return NextResponse.json(
@@ -83,8 +84,9 @@ export async function POST(request: NextRequest) {
           success: true,
           message: 'Subscriber added successfully',
         });
+      }
 
-      case 'remove_subscriber':
+      case 'remove_subscriber': {
         const { email: removeEmail, listId: removeListId } = data;
         if (!removeEmail || !removeListId) {
           return NextResponse.json(
@@ -98,8 +100,9 @@ export async function POST(request: NextRequest) {
           success: true,
           message: 'Subscriber removed successfully',
         });
+      }
 
-      case 'unsubscribe':
+      case 'unsubscribe': {
         const unsubscribeData = unsubscribeSchema.parse(data);
         await emailManagementService.handleUnsubscribe(
           unsubscribeData.email,
@@ -110,8 +113,9 @@ export async function POST(request: NextRequest) {
           success: true,
           message: 'Unsubscribed successfully',
         });
+      }
 
-      case 'handle_bounce':
+      case 'handle_bounce': {
         const bounceData = bounceSchema.parse(data);
         await handleBounce(
           bounceData.email,
@@ -123,6 +127,7 @@ export async function POST(request: NextRequest) {
           success: true,
           message: 'Bounce handled successfully',
         });
+      }
 
       default:
         return NextResponse.json(
@@ -163,26 +168,29 @@ export async function GET(request: NextRequest) {
     const action = searchParams.get('action');
 
     switch (action) {
-      case 'lists':
+      case 'lists': {
         const lists = await emailManagementService.getEmailLists();
         return NextResponse.json({
           success: true,
           lists,
         });
+      }
 
-      case 'unsubscribe_reasons':
+      case 'unsubscribe_reasons': {
         const reasons = await emailManagementService.getUnsubscribeReasons();
         return NextResponse.json({
           success: true,
           reasons,
         });
+      }
 
-      case 'bounce_records':
+      case 'bounce_records': {
         const bounces = await emailManagementService.getBounceRecords();
         return NextResponse.json({
           success: true,
           bounces,
         });
+      }
 
       default:
         return NextResponse.json(

@@ -142,7 +142,7 @@ export default function OnboardingProfile() {
               >
                 {/* Role Selection */}
                 <div className="space-y-4">
-                  <h2 className="text-xl font-semibold text-cartier-900">What's your role?</h2>
+                  <h2 className="text-xl font-semibold text-cartier-900">What&apos;s your role?</h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {roles.map((role) => {
                       const Icon = role.icon;

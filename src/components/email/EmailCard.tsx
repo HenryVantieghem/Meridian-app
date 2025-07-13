@@ -11,7 +11,6 @@ import {
   Star, 
   StarOff, 
   Trash2, 
-  Archive, 
   Clock, 
   User,
   AlertCircle,
@@ -213,7 +212,7 @@ export function EmailCard({
                   variant="outline"
                   size="sm"
                   onClick={handleDone}
-                  className="px-4 py-2 rounded-2xl bg-black text-white hover:bg-brand-burgundy"
+                  className="px-4 py-2 rounded-2xl bg-black text-white hover:bg-[#801B2B] transition-all duration-200"
                 >
                   <Check className="h-4 w-4 mr-1" />
                   Done
@@ -224,7 +223,7 @@ export function EmailCard({
                   variant="outline"
                   size="sm"
                   onClick={handleSnooze}
-                  className="px-4 py-2 rounded-2xl"
+                  className="px-4 py-2 rounded-2xl hover:bg-gray-50 transition-all duration-200"
                 >
                   <Clock className="h-4 w-4 mr-1" />
                   Snooze

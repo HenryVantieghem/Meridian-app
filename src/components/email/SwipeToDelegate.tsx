@@ -3,8 +3,7 @@ import * as React from "react";
 import { useState, useRef } from "react";
 import { motion, AnimatePresence, PanInfo, useMotionValue, useTransform } from "framer-motion";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { User, Send, Clock, Archive, Trash2, Users, Calendar, MessageSquare } from "lucide-react";
+import { Send, Archive, Users, Calendar, MessageSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface DelegateOption {
@@ -58,9 +57,9 @@ const delegateOptions: DelegateOption[] = [
 export const SwipeToDelegate: React.FC<SwipeToDelegateProps> = ({
   children,
   onDelegate,
-  onSnooze,
-  onArchive,
-  onDelete,
+  onSnooze: _onSnooze,
+  onArchive: _onArchive,
+  onDelete: _onDelete,
   disabled = false,
 }) => {
   const [isDragging, setIsDragging] = useState(false);

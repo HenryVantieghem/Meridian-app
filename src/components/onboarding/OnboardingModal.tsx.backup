@@ -90,6 +90,19 @@ const urgencyOptions = [
   { id: '48h', label: '48 Hours', description: 'Respond within 48 hours', icon: Calendar }
 ];
 
+const timezones = [
+  'UTC-8 (PST)',
+  'UTC-7 (MST)',
+  'UTC-6 (CST)',
+  'UTC-5 (EST)',
+  'UTC+0 (GMT)',
+  'UTC+1 (CET)',
+  'UTC+2 (EET)',
+  'UTC+5:30 (IST)',
+  'UTC+8 (CST)',
+  'UTC+9 (JST)'
+];
+
 interface OnboardingModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -123,6 +136,7 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
     } else if (step === 2) {
       setStep(3);
     } else if (step === 3) {
+      // Save all data and complete onboarding
       localStorage.setItem('selectedPersona', selectedPersona!);
       localStorage.setItem('userPreferences', JSON.stringify(preferences));
       onClose();
@@ -178,6 +192,7 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
         exit={{ opacity: 0, scale: 0.95 }}
         className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden"
       >
+        {/* Header */}
         <div className="border-b border-gray-200 p-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-3">
@@ -200,6 +215,7 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
             </Button>
           </div>
           
+          {/* Progress */}
           <div className="flex items-center space-x-4">
             <div className="flex-1">
               <Progress value={progress} className="h-2" />
@@ -210,9 +226,10 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
           </div>
         </div>
 
+        {/* Content */}
         <div className="p-6 overflow-y-auto max-h-[60vh]">
           <AnimatePresence mode="wait">
-            {step === 1 && (
+            {step === 1 ? (
               <motion.div
                 key="step1"
                 initial={{ opacity: 0, x: 20 }}
@@ -285,9 +302,7 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
                   ))}
                 </div>
               </motion.div>
-            )}
-
-            {step === 2 && (
+            ) : (
               <motion.div
                 key="step2"
                 initial={{ opacity: 0, x: 20 }}
@@ -305,6 +320,7 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
                 </div>
 
                 <div className="space-y-6">
+                  {/* Email Volume */}
                   <Card className="p-4">
                     <div className="flex items-center space-x-3 mb-4">
                       <Mail className="w-5 h-5 text-black" />
@@ -337,6 +353,7 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
                     </div>
                   </Card>
 
+                  {/* VIP Contacts */}
                   <Card className="p-4">
                     <div className="flex items-center space-x-3 mb-4">
                       <Star className="w-5 h-5 text-black" />
@@ -382,6 +399,7 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
                     )}
                   </Card>
 
+                  {/* Response Urgency */}
                   <Card className="p-4">
                     <div className="flex items-center space-x-3 mb-4">
                       <Clock className="w-5 h-5 text-black" />
@@ -404,13 +422,6 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
                               : 'border-gray-200 hover:border-gray-300'
                           }`}
                           onClick={() => handleResponseUrgencyChange(option.id as 'instant' | 'same-day' | '48h')}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                              handleResponseUrgencyChange(option.id as 'instant' | 'same-day' | '48h');
-                            }
-                          }}
-                          role="button"
-                          tabIndex={0}
                         >
                           <div className="flex items-center space-x-3">
                             <option.icon className="w-4 h-4 text-black" />
@@ -429,9 +440,7 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
                   </Card>
                 </div>
               </motion.div>
-            )}
-
-            {step === 3 && (
+            ) : step === 3 ? (
               <motion.div
                 key="step3"
                 initial={{ opacity: 0, x: 20 }}
@@ -514,10 +523,11 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
                   </Card>
                 </div>
               </motion.div>
-            )}
+            ) : null}
           </AnimatePresence>
         </div>
 
+        {/* Footer */}
         <div className="border-t border-gray-200 p-6">
           <div className="flex items-center justify-between">
             <Button

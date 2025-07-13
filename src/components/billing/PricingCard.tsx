@@ -9,11 +9,8 @@ import {
   Check, 
   Star, 
   Zap, 
-  Shield, 
-  Users, 
   Sparkles,
-  Crown,
-  TrendingUp
+  Crown
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PRODUCTS, PRICES } from "@/lib/stripe/config";

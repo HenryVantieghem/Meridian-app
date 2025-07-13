@@ -40,8 +40,8 @@ export const routeComponents = {
   // Preview: createLazyComponent(() => import('@/app/onboarding/preview/page')),
   
   // Marketing components
-  Landing: createLazyComponent(() => import('@/app/(marketing)/page')),
-  Pricing: createLazyComponent(() => import('@/app/(marketing)/pricing/page')),
+  Landing: createLazyComponent(() => import('@/app/page')),
+  Pricing: createLazyComponent(() => import('@/components/marketing/Pricing')),
   
   // Email components
   EmailComposer: createLazyComponent(() => import('@/components/email/ReplyComposer')),

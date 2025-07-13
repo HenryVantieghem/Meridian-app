@@ -14,13 +14,13 @@ describe('Backup API Route', () => {
   });
 
   it('should handle GET request to list backups', async () => {
-    const { createBackup, restoreBackup, listBackups } = await import('@/lib/backup');
+    const { listBackups } = await import('@/lib/backup');
     const mockBackups = [
       { id: 'backup1', createdAt: new Date(), size: 1024 },
       { id: 'backup2', createdAt: new Date(), size: 2048 },
     ];
 
-    (listBackups as any).mockResolvedValue(mockBackups);
+    (listBackups as jest.MockedFunction<typeof listBackups>).mockResolvedValue(mockBackups);
 
     const request = new NextRequest('http://localhost:3000/api/backup', {
       method: 'GET',
@@ -38,7 +38,7 @@ describe('Backup API Route', () => {
     const { createBackup } = await import('@/lib/backup');
     const mockBackup = { id: 'backup1', createdAt: new Date(), size: 1024 };
 
-    (createBackup as any).mockResolvedValue(mockBackup);
+    (createBackup as jest.MockedFunction<typeof createBackup>).mockResolvedValue(mockBackup);
 
     const request = new NextRequest('http://localhost:3000/api/backup', {
       method: 'POST',
@@ -57,7 +57,7 @@ describe('Backup API Route', () => {
     const { restoreBackup } = await import('@/lib/backup');
     const mockRestore = { success: true, restoredAt: new Date() };
 
-    (restoreBackup as any).mockResolvedValue(mockRestore);
+    (restoreBackup as jest.MockedFunction<typeof restoreBackup>).mockResolvedValue(mockRestore);
 
     const request = new NextRequest('http://localhost:3000/api/backup', {
       method: 'PUT',
@@ -75,7 +75,7 @@ describe('Backup API Route', () => {
   it('should handle backup creation errors', async () => {
     const { createBackup } = await import('@/lib/backup');
 
-    (createBackup as any).mockRejectedValue(new Error('Backup failed'));
+    (createBackup as jest.MockedFunction<typeof createBackup>).mockRejectedValue(new Error('Backup failed'));
 
     const request = new NextRequest('http://localhost:3000/api/backup', {
       method: 'POST',
@@ -90,7 +90,7 @@ describe('Backup API Route', () => {
   it('should handle restore errors', async () => {
     const { restoreBackup } = await import('@/lib/backup');
 
-    (restoreBackup as any).mockRejectedValue(new Error('Restore failed'));
+    (restoreBackup as jest.MockedFunction<typeof restoreBackup>).mockRejectedValue(new Error('Restore failed'));
 
     const request = new NextRequest('http://localhost:3000/api/backup', {
       method: 'PUT',

@@ -1,7 +1,7 @@
 // @ts-check
 import { FullConfig } from '@playwright/test';
 
-async function globalSetup(config: FullConfig) {
+async function globalSetup(_config: FullConfig) {
   // Global setup for E2E tests
   // This can be used for:
   // - Setting up test data

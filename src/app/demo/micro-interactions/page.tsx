@@ -133,7 +133,7 @@ export default function MicroInteractionsDemo() {
           <section className="space-y-4">
             <h2 className="text-2xl font-semibold text-gray-900">Time Zone Awareness</h2>
             <p className="text-gray-600">
-              Subtle visual cues for sender's local time with color-coded freshness indicators.
+              Subtle visual cues for sender&apos;s local time with color-coded freshness indicators.
             </p>
             
             <div className="space-y-4">

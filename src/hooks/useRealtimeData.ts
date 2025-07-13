@@ -89,10 +89,11 @@ export function useRealtimeData(options: UseRealtimeDataOptions = {}): UseRealti
             case 'subscription_confirmed':
               console.log('Subscribed to channels:', message.channels);
               break;
-            case 'update':
+            case 'update': {
               const update: RealtimeUpdate = message.data;
               setUpdates(prev => [update, ...prev.slice(0, 99)]); // Keep last 100 updates
               break;
+            }
             case 'pong':
               // Handle ping/pong for connection health
               break;

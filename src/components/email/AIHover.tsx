@@ -9,9 +9,7 @@ import {
   Clock, 
   MessageSquare, 
   TrendingUp, 
-  AlertTriangle,
   Star,
-  Calendar,
   MapPin
 } from "lucide-react";
 import { cn } from "@/lib/utils";

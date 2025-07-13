@@ -9,7 +9,7 @@ interface WelcomeEmailProps {
 
 export const WelcomeEmail: React.FC<WelcomeEmailProps> = ({
   userName,
-  userEmail,
+  userEmail: _userEmail,
   onboardingUrl,
   supportEmail,
 }) => {

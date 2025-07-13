@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@clerk/nextjs';
-import { getEmails, getEmailById, updateEmail, deleteEmail } from '@/lib/db/emails';
+import { getEmails, updateEmail, deleteEmail } from '@/lib/db/emails';
 import { emailSyncService } from '@/lib/email/sync-service';
 import { Email, EmailPriority } from '@/types';
 

@@ -33,12 +33,11 @@ export const CheckoutButton: React.FC<CheckoutButtonProps> = ({
   variant = 'default',
   size = 'default',
   disabled = false,
-  onSuccess,
+  onSuccess: _onSuccess,
   onError,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [showSuccess, setShowSuccess] = useState(false);
 
   const handleCheckout = async () => {
     if (isLoading || disabled) return;

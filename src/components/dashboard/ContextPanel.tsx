@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Typography } from '@/components/ui/typography';
 import { Badge } from '@/components/ui/badge';
@@ -46,9 +46,7 @@ export function ContextPanel({ item, type, onClose }: ContextPanelProps) {
     return 'from' in item;
   };
 
-  const isSlackMessage = (item: Email | SlackMessage): item is SlackMessage => {
-    return 'sender' in item;
-  };
+
 
   const handleAnalyze = async () => {
     if (!item) return;

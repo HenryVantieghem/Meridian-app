@@ -1,87 +1,116 @@
-# Napoleon AI - Environment Variables Reference
+# Environment Variables - Napoleon AI Platform
 
-## Required Environment Variables for Production
+## Required Environment Variables
 
-### Public Variables (NEXT_PUBLIC_*)
-- `NEXT_PUBLIC_APP_URL` - App URL (https://napoleonai.app)
-- `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` - Clerk public key
+### Authentication (Clerk)
+- `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` - Public Clerk key for frontend
+- `CLERK_SECRET_KEY` - Secret Clerk key for backend
+
+### Database (Supabase)
 - `NEXT_PUBLIC_SUPABASE_URL` - Supabase project URL
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Supabase anonymous key
-- `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` - Stripe public key
-- `NEXT_PUBLIC_STRIPE_PRICE_PRO` - Stripe Pro plan price ID
-- `NEXT_PUBLIC_STRIPE_PRICE_ENTERPRISE` - Stripe Enterprise plan price ID
-- `NEXT_PUBLIC_WS_URL` - WebSocket URL (optional)
-- `NEXT_PUBLIC_PERFORMANCE_MONITORING_URL` - Performance monitoring endpoint (optional)
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Public Supabase key
+- `SUPABASE_SERVICE_ROLE_KEY` - Service role key for admin operations
 
-### Private Variables (Server-side only)
-- `CLERK_SECRET_KEY` - Clerk secret key
-- `SUPABASE_SERVICE_ROLE_KEY` - Supabase service role key
+### AI (OpenAI)
 - `OPENAI_API_KEY` - OpenAI API key
 - `OPENAI_ORGANIZATION_ID` - OpenAI organization ID
-- `STRIPE_SECRET_KEY` - Stripe secret key
-- `STRIPE_WEBHOOK_SECRET` - Stripe webhook secret
-- `RESEND_API_KEY` - Resend email service key
-- `NEXTAUTH_SECRET` - NextAuth secret
-- `NEXTAUTH_URL` - NextAuth URL
 
-### OAuth Configuration
+### Payments (Stripe)
+- `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` - Public Stripe key
+- `STRIPE_SECRET_KEY` - Secret Stripe key
+- `STRIPE_WEBHOOK_SECRET` - Webhook secret for verification
+- `NEXT_PUBLIC_STRIPE_PRICE_PRO` - Pro plan price ID
+- `NEXT_PUBLIC_STRIPE_PRICE_ENTERPRISE` - Enterprise plan price ID
+
+### Email Service (Resend)
+- `RESEND_API_KEY` - Resend API key for transactional emails
+
+### Google APIs (Gmail)
 - `GOOGLE_CLIENT_ID` - Google OAuth client ID
 - `GOOGLE_CLIENT_SECRET` - Google OAuth client secret
-- `GOOGLE_REDIRECT_URI` - Google OAuth redirect URI
+- `GOOGLE_REDIRECT_URI` - OAuth redirect URI
 - `GOOGLE_PROJECT_ID` - Google Cloud project ID
+
+### Slack API
 - `SLACK_CLIENT_ID` - Slack OAuth client ID
 - `SLACK_CLIENT_SECRET` - Slack OAuth client secret
-- `SLACK_REDIRECT_URI` - Slack OAuth redirect URI
-- `SLACK_WEBHOOK_URL` - Slack webhook URL
-- `MICROSOFT_CLIENT_ID` - Microsoft OAuth client ID
-- `MICROSOFT_CLIENT_SECRET` - Microsoft OAuth client secret
+- `SLACK_WEBHOOK_URL` - Slack webhook URL for notifications
+
+### Microsoft APIs (Outlook)
+- `MICROSOFT_CLIENT_ID` - Microsoft Graph client ID
+- `MICROSOFT_CLIENT_SECRET` - Microsoft Graph client secret
 - `MICROSOFT_TENANT_ID` - Microsoft tenant ID
-- `TEAMS_CLIENT_ID` - Teams OAuth client ID
-- `TEAMS_CLIENT_SECRET` - Teams OAuth client secret
-- `TEAMS_TENANT_ID` - Teams tenant ID
-- `TEAMS_REDIRECT_URI` - Teams OAuth redirect URI
 
 ### Monitoring & Analytics
-- `SENTRY_DSN` - Sentry DSN for error tracking
-- `APP_VERSION` - App version for monitoring
-- `LOG_LEVEL` - Logging level
+- `SENTRY_DSN` - Sentry error tracking DSN
+- `NODE_ENV` - Environment (development/production)
+- `APP_VERSION` - Application version for monitoring
+
+### Performance & Caching
+- `UPSTASH_REDIS_REST_URL` - Upstash Redis REST URL
+- `UPSTASH_REDIS_REST_TOKEN` - Upstash Redis REST token
+
+### App Configuration
+- `NEXT_PUBLIC_APP_URL` - Public app URL
+- `NEXT_PUBLIC_PERFORMANCE_MONITORING_URL` - Performance monitoring endpoint
+
+### Monitoring Webhooks (Optional)
 - `LOGGING_WEBHOOK_URL` - Logging webhook URL
-- `ERROR_TRACKING_WEBHOOK_URL` - Error tracking webhook
-- `ANALYTICS_WEBHOOK_URL` - Analytics webhook
-- `SECURITY_WEBHOOK_URL` - Security webhook
-- `MONITORING_WEBHOOK_URL` - Monitoring webhook
-- `ALERT_WEBHOOK_URL` - Alert webhook
+- `ERROR_TRACKING_WEBHOOK_URL` - Error tracking webhook URL
+- `ANALYTICS_WEBHOOK_URL` - Analytics webhook URL
+- `SECURITY_WEBHOOK_URL` - Security webhook URL
 - `MONITORING_ENDPOINT` - Monitoring endpoint
 - `MONITORING_API_KEY` - Monitoring API key
 - `ANALYTICS_ENDPOINT` - Analytics endpoint
 - `ANALYTICS_API_KEY` - Analytics API key
-- `ALERT_EMAIL` - Alert email address
-- `PAGERDUTY_API_KEY` - PagerDuty API key
 
 ### Backup & Recovery
-- `BACKUP_NOTIFICATION_EMAIL` - Backup notification email
-- `BACKUP_WEBHOOK_URL` - Backup webhook URL
+- `BACKUP_NOTIFICATION_EMAIL` - Email for backup notifications
+- `BACKUP_WEBHOOK_URL` - Webhook for backup notifications
 
-### Performance & Caching
-- `UPSTASH_REDIS_REST_URL` - Upstash Redis URL
-- `UPSTASH_REDIS_REST_TOKEN` - Upstash Redis token
+### Alerts & Notifications
+- `SLACK_WEBHOOK_URL` - Slack webhook for alerts
+- `ALERT_EMAIL` - Email for alerts
+- `PAGERDUTY_API_KEY` - PagerDuty API key
+- `MONITORING_WEBHOOK_URL` - Monitoring webhook URL
+- `ALERT_WEBHOOK_URL` - Alert webhook URL
 
-### Security
-- `ENCRYPTION_MASTER_KEY` - Encryption master key
+### Logging
+- `LOG_LEVEL` - Logging level (debug, info, warn, error)
 
-### System
-- `NODE_ENV` - Node environment (development/production)
-- `VERCEL_ENV` - Vercel environment
+## Vercel Deployment Variables
 
-## Deployment Checklist
+All variables marked with `@VAR` in `vercel.json` must be configured in Vercel dashboard:
 
-1. **Vercel Environment Variables**: Set all variables in Vercel dashboard
-2. **Secrets Management**: Use @VAR notation in vercel.json
-3. **OAuth Setup**: Configure all OAuth providers
-4. **Monitoring**: Set up Sentry, logging, and analytics
-5. **Database**: Initialize Supabase with proper RLS policies
-6. **Email**: Configure Resend for transactional emails
-7. **Payments**: Set up Stripe webhooks and products
-8. **AI**: Configure OpenAI API access
-9. **Security**: Set encryption keys and security webhooks
-10. **Performance**: Configure Redis and monitoring endpoints 
+### Public Variables (NEXT_PUBLIC_*)
+- `@NEXT_PUBLIC_APP_URL`
+- `@NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
+- `@NEXT_PUBLIC_SUPABASE_URL`
+- `@NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `@NEXT_PUBLIC_STRIPE_PRICE_PRO`
+- `@NEXT_PUBLIC_STRIPE_PRICE_ENTERPRISE`
+- `@NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
+
+### Build Variables (Server-side only)
+- `@CLERK_SECRET_KEY`
+- `@SUPABASE_SERVICE_ROLE_KEY`
+- `@OPENAI_API_KEY`
+- `@OPENAI_ORGANIZATION_ID`
+- `@STRIPE_SECRET_KEY`
+- `@STRIPE_WEBHOOK_SECRET`
+- `@RESEND_API_KEY`
+- `@GOOGLE_CLIENT_ID`
+- `@GOOGLE_CLIENT_SECRET`
+- `@SLACK_CLIENT_ID`
+- `@SLACK_CLIENT_SECRET`
+- `@SENTRY_DSN`
+- `@UPSTASH_REDIS_REST_URL`
+- `@UPSTASH_REDIS_REST_TOKEN`
+
+## Security Notes
+
+1. Never commit `.env` files to version control
+2. Use Vercel's environment variable management for production
+3. Rotate secrets regularly using the provided scripts
+4. Use different keys for development and production
+5. Monitor for secret leaks in logs and error reports 

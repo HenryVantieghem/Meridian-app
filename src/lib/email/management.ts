@@ -1,5 +1,5 @@
 // Email management system - Resend removed
-import { Email } from './index';
+// import { Email } from './index';
 
 // Email tracking and metrics stubs
 export interface EmailTracking {

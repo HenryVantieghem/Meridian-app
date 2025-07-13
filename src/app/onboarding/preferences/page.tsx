@@ -238,6 +238,13 @@ export default function PreferencesPage() {
                       : 'border-gray-200 hover:border-gray-300'
                   }`}
                   onClick={() => handleResponseUrgencyChange(option.id as 'instant' | 'same-day' | '48h')}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      handleResponseUrgencyChange(option.id as 'instant' | 'same-day' | '48h');
+                    }
+                  }}
+                  role="button"
+                  tabIndex={0}
                 >
                   <div className="flex items-center space-x-3 mb-2">
                     <option.icon className="w-5 h-5 text-primary-600" />

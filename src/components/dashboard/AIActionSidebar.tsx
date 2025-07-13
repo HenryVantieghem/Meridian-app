@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -121,9 +121,7 @@ export function AIActionSidebar({ className = '' }: AIActionSidebarProps) {
     return actionItems.filter(item => item.priority === priority).length;
   };
 
-  const getTypeCount = (type: ActionItem['type']) => {
-    return actionItems.filter(item => item.type === type).length;
-  };
+
 
   return (
     <div className={`w-80 bg-white border-l border-cartier-200 p-6 space-y-6 ${className}`}>

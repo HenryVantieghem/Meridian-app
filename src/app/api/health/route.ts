@@ -106,7 +106,7 @@ async function checkDatabaseHealth(): Promise<{
     const supabase = createClient(supabaseUrl, supabaseKey);
     
     // Simple query to test connection
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('users')
       .select('count')
       .limit(1);
@@ -141,7 +141,7 @@ async function checkExternalServices(): Promise<{
     error?: string;
   };
 }> {
-  const services: { [key: string]: any } = {};
+  const services: { [key: string]: { status: 'healthy' | 'warning' | 'critical'; responseTime: number; error?: string } } = {};
   
   // Check OpenAI API
   if (process.env.OPENAI_API_KEY) {
@@ -275,7 +275,7 @@ async function checkClerk(): Promise<{
 function determineOverallStatus(
   healthStatus: 'healthy' | 'warning' | 'critical',
   dbStatus: 'healthy' | 'warning' | 'critical',
-  externalServices: { [key: string]: any }
+  externalServices: { [key: string]: { status: 'healthy' | 'warning' | 'critical'; responseTime: number; error?: string } }
 ): 'healthy' | 'warning' | 'critical' {
   const allStatuses = [healthStatus, dbStatus, ...Object.values(externalServices).map(s => s.status)];
   

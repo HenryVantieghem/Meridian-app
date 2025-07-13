@@ -1,6 +1,6 @@
 "use client";
 import * as React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,9 +11,6 @@ import {
   Clock, 
   Loader2,
   CreditCard,
-  Shield,
-  Zap,
-  Crown,
   ExternalLink,
   RefreshCw,
   X,
@@ -275,16 +272,7 @@ export const PaymentSuccess: React.FC<Omit<PaymentStatusProps, 'status'> & {
   subscriptionTier?: string;
   nextBillingDate?: string;
 }> = ({ subscriptionTier, nextBillingDate, ...props }) => {
-  const getTierIcon = (tier?: string) => {
-    switch (tier?.toLowerCase()) {
-      case 'pro':
-        return <Zap className="w-4 h-4" />;
-      case 'enterprise':
-        return <Crown className="w-4 h-4" />;
-      default:
-        return <Shield className="w-4 h-4" />;
-    }
-  };
+
 
   return (
     <PaymentStatus
@@ -299,7 +287,7 @@ export const PaymentSuccess: React.FC<Omit<PaymentStatusProps, 'status'> & {
 export const PaymentError: React.FC<Omit<PaymentStatusProps, 'status'> & {
   errorCode?: string;
   retryable?: boolean;
-}> = ({ errorCode, retryable = true, ...props }) => {
+}> = ({ errorCode, retryable: _retryable = true, ...props }) => {
   const getErrorMessage = (code?: string) => {
     switch (code) {
       case 'card_declined':

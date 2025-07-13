@@ -19,7 +19,7 @@ interface EmailListProps {
 }
 
 export function EmailList({ 
-  status = 'unread', 
+  status: _status = 'unread', 
   priority, 
   limit = 20, 
   showFilters = true,

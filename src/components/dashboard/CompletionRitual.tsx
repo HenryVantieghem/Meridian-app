@@ -5,16 +5,11 @@ import { motion, AnimatePresence, useAnimation } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { 
-  CheckCircle, 
-  Star, 
   Sparkles, 
   Trophy, 
   Zap,
-  Heart,
-  Target,
   Award
 } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 interface CompletionRitualProps {
   isVisible: boolean;

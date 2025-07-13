@@ -77,7 +77,7 @@ export const ConfidenceMeter: React.FC<ConfidenceMeterProps> = ({
         max={1}
         step={0.01}
         value={[value]}
-        onValueChange={([v]) => onChange(v)}
+        onValueChange={([v]: [number]) => onChange(v)}
         disabled={disabled}
         className="w-full"
         aria-label="AI Confidence"
@@ -97,7 +97,7 @@ export const ConfidenceMeter: React.FC<ConfidenceMeterProps> = ({
               max={1}
               step={0.01}
               value={[toneValue]}
-              onValueChange={([v]) => setToneValue(v)}
+              onValueChange={([v]: [number]) => setToneValue(v)}
               className="w-full"
               aria-label="AI Tone"
             />

@@ -4,7 +4,7 @@ import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+
 import { ConfidenceMeter } from "@/components/ai/ConfidenceMeter";
 import { ReplyGenerator, GeneratedReply, ReplyTone } from "@/lib/ai/reply-generator";
 import { EmailMessage } from "@/lib/email/fetcher";

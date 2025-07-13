@@ -1,4 +1,6 @@
 import '@testing-library/jest-dom';
+import React from 'react';
+import { vi } from 'vitest';
 
 // Mock environment variables
 process.env.NEXT_PUBLIC_APP_URL = 'http://localhost:3000';
@@ -9,20 +11,20 @@ process.env.STRIPE_SECRET_KEY = 'sk_test_key';
 process.env.OPENAI_API_KEY = 'sk-test-key';
 
 // Mock Next.js router
-jest.mock('next/navigation', () => ({
+vi.mock('next/navigation', () => ({
   useRouter: () => ({
-    push: jest.fn(),
-    replace: jest.fn(),
-    back: jest.fn(),
-    forward: jest.fn(),
-    refresh: jest.fn(),
+    push: vi.fn(),
+    replace: vi.fn(),
+    back: vi.fn(),
+    forward: vi.fn(),
+    refresh: vi.fn(),
   }),
   useSearchParams: () => new URLSearchParams(),
   usePathname: () => '/',
 }));
 
 // Mock Clerk
-jest.mock('@clerk/nextjs', () => ({
+vi.mock('@clerk/nextjs', () => ({
   useAuth: () => ({
     userId: 'test-user-id',
     isSignedIn: true,
@@ -38,10 +40,10 @@ jest.mock('@clerk/nextjs', () => ({
 }));
 
 // Mock Framer Motion
-jest.mock('framer-motion', () => ({
+vi.mock('framer-motion', () => ({
   motion: {
-    div: ({ children, ...props }: any) => <div {...props}>{children}</div>,
-    button: ({ children, ...props }: any) => <button {...props}>{children}</button>,
+    div: ({ children, ...props }: any) => React.createElement('div', props, children),
+    button: ({ children, ...props }: any) => React.createElement('button', props, children),
   },
   AnimatePresence: ({ children }: any) => children,
 })); 

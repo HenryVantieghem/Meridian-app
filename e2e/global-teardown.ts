@@ -1,7 +1,7 @@
 // @ts-check
 import { FullConfig } from '@playwright/test';
 
-async function globalTeardown(config: FullConfig) {
+async function globalTeardown(_config: FullConfig) {
   // Global teardown for E2E tests
   // This can be used for:
   // - Cleaning up test data

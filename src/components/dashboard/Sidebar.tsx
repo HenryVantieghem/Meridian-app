@@ -2,11 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Typography } from '@/components/ui/typography';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
-import { Mail, MessageSquare, Settings, RefreshCw, AlertCircle, Crown, CreditCard } from 'lucide-react';
-import { getBillingPortalUrl } from '@/lib/stripe/portal';
+import { Mail, MessageSquare, Settings, RefreshCw, Crown } from 'lucide-react';
 import Link from 'next/link';
 
 interface SidebarProps {

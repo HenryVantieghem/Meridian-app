@@ -101,8 +101,8 @@ export function SignUpForm({ redirectUrl = '/onboarding', className }: SignUpFor
         setError('Sign up failed. Please try again.');
       }
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error && 'errors' in err && Array.isArray((err as any).errors) 
-        ? (err as any).errors[0]?.message 
+      const errorMessage = err instanceof Error && 'errors' in err && Array.isArray((err as { errors: Array<{ message: string }> }).errors) 
+        ? (err as { errors: Array<{ message: string }> }).errors[0]?.message 
         : 'An error occurred during sign up.';
       setError(errorMessage);
     } finally {
@@ -123,8 +123,8 @@ export function SignUpForm({ redirectUrl = '/onboarding', className }: SignUpFor
         redirectUrlComplete: redirectUrl,
       });
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error && 'errors' in err && Array.isArray((err as any).errors) 
-        ? (err as any).errors[0]?.message 
+      const errorMessage = err instanceof Error && 'errors' in err && Array.isArray((err as { errors: Array<{ message: string }> }).errors) 
+        ? (err as { errors: Array<{ message: string }> }).errors[0]?.message 
         : 'OAuth sign up failed.';
       setError(errorMessage);
       setIsOAuthLoading(false);
@@ -271,10 +271,10 @@ export function SignUpForm({ redirectUrl = '/onboarding', className }: SignUpFor
           </div>
 
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">
-              I'm a...
+            <label htmlFor="persona-selection" className="block text-sm font-medium text-gray-700">
+              I&apos;m a...
             </label>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-3" id="persona-selection" role="group" aria-labelledby="persona-selection">
               {Object.entries(PERSONAS).map(([key, persona]) => (
                 <button
                   key={key}

@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
-import { Send, Sparkles, X, Command } from 'lucide-react';
+import { Send, Sparkles, X } from 'lucide-react';
 
 interface CommandBarProps {
   onCommand?: (command: string) => void;
@@ -176,8 +176,8 @@ export function CommandBar({ onCommand, className = '' }: CommandBarProps) {
 
                 {/* Tips */}
                 <div className="text-xs text-cartier-500 space-y-1">
-                  <p>💡 Try: "Summarize my unread emails" or "Find urgent messages"</p>
-                  <p>⌨️ Use keyboard shortcuts: E=Done, R=Reply, S=Snooze</p>
+                                        <p>💡 Try: &quot;Summarize my unread emails&quot; or &quot;Find urgent messages&quot;</p>
+                      <p>⌨️ Use keyboard shortcuts: E=Done, R=Reply, S=Snooze</p>
                 </div>
               </Card>
             </motion.div>

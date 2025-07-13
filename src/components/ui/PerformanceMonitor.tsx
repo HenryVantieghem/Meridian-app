@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Typography } from '@/components/ui/typography';
 import { Badge } from '@/components/ui/badge';
-import { Activity, Clock, Zap, TrendingUp, AlertTriangle } from 'lucide-react';
+import { Activity, Clock, AlertTriangle } from 'lucide-react';
 
 interface PerformanceMetrics {
   fcp?: number; // First Contentful Paint

@@ -40,7 +40,7 @@ export function useAIAnalysis(options: UseAIAnalysisOptions = {}): UseAIAnalysis
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lastAnalysis, setLastAnalysis] = useState<AIAnalysis | null>(null);
-  const { contentType = 'email', includeReply = true, includeSummary = true } = options;
+  const { includeReply = true, includeSummary = true } = options;
 
   const analyzeContent = useCallback(async (content: string, contentType: 'email' | 'slack'): Promise<AIAnalysis> => {
     if (!userId) {

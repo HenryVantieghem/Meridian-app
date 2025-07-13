@@ -1,5 +1,5 @@
 import { EmailFetcher, EmailMessage, EmailProvider, FetchOptions } from './fetcher';
-import { EmailAnalyzer, AnalysisRequest, AnalysisResponse, EmailAnalysis } from '../ai/email-analyzer';
+import { EmailAnalyzer, AnalysisRequest, EmailAnalysis } from '../ai/email-analyzer';
 import { createClient } from '@supabase/supabase-js';
 
 export interface ProcessingJob {
@@ -71,7 +71,7 @@ export class EmailProcessor {
     userId: string,
     providers: EmailProvider[],
     options: FetchOptions = {},
-    processingOptions: ProcessingOptions = {}
+    _processingOptions: ProcessingOptions = {}
   ): Promise<ProcessingJob> {
     const job: ProcessingJob = {
       id: this.generateJobId(),
