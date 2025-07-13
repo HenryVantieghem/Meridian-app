@@ -104,7 +104,7 @@ export const useWebVitals = () => {
 export const withErrorMonitoring = <P extends object>(
   Component: React.ComponentType<P>
 ): React.ComponentType<P> => {
-  return (props: P) => {
+  const ErrorMonitoredComponent = (props: P) => {
     React.useEffect(() => {
       const handleError = (error: ErrorEvent) => {
         performanceMonitor.trackError({
@@ -133,4 +133,7 @@ export const withErrorMonitoring = <P extends object>(
 
     return React.createElement(Component, props);
   };
+  
+  ErrorMonitoredComponent.displayName = `withErrorMonitoring(${Component.displayName || Component.name})`;
+  return ErrorMonitoredComponent;
 }; 

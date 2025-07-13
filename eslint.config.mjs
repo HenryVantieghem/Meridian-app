@@ -25,6 +25,7 @@ const eslintConfig = [
       'react-hooks/rules-of-hooks': 'warn',
       'react-hooks/exhaustive-deps': 'warn',
       'prefer-const': 'warn',
+      'react/react-in-jsx-scope': 'off', // Disable this rule since we're using the new JSX transform
     },
     settings: {
       react: {

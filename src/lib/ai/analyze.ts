@@ -1,9 +1,9 @@
 import OpenAI from 'openai';
-import { invariantEnv } from '@/lib/invariantEnv';
+import { requireEnvVar } from '@/lib/invariantEnv';
 
 const openai = new OpenAI({
-  apiKey: invariantEnv('OPENAI_API_KEY'),
-  organization: invariantEnv('OPENAI_ORGANIZATION_ID'),
+  apiKey: requireEnvVar('OPENAI_API_KEY'),
+  organization: requireEnvVar('OPENAI_ORGANIZATION_ID'),
 });
 
 export interface EmailAnalysis {
@@ -261,22 +261,33 @@ Format as JSON:
 }
 
 export async function extractActions(analyses: (EmailAnalysis | MessageAnalysis)[]): Promise<ActionItem[]> {
-  const allActions: ActionItem[] = [];
-  
-  for (const analysis of analyses) {
-    allActions.push(...analysis.actionItems);
+  try {
+    const allActions = analyses.flatMap(analysis => analysis.actionItems);
+    
+    // Group actions by type and priority
+    const groupedActions = allActions.reduce((acc, action) => {
+      const key = `${action.type}-${action.priority}`;
+      if (!acc[key]) {
+        acc[key] = [];
+      }
+      acc[key].push(action);
+      return acc;
+    }, {} as Record<string, ActionItem[]>);
+
+    // Sort by priority and return top actions
+    const sortedActions = Object.values(groupedActions)
+      .flat()
+      .sort((a, b) => {
+        const priorityOrder = { high: 3, medium: 2, low: 1 };
+        return priorityOrder[b.priority] - priorityOrder[a.priority];
+      })
+      .slice(0, 10); // Return top 10 actions
+
+    return sortedActions;
+  } catch (error) {
+    console.error('Error extracting actions:', error);
+    return [];
   }
-  
-  // Sort by priority and type
-  return allActions.sort((a, b) => {
-    const priorityOrder = { high: 3, medium: 2, low: 1 };
-    const typeOrder = { urgent: 5, reply: 4, schedule: 3, delegate: 2, 'follow-up': 1 };
-    
-    const priorityDiff = priorityOrder[b.priority] - priorityOrder[a.priority];
-    if (priorityDiff !== 0) return priorityDiff;
-    
-    return typeOrder[b.type] - typeOrder[a.type];
-  });
 }
 
 export async function batchAnalyzeEmails(emails: Array<{

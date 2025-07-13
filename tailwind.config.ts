@@ -68,6 +68,7 @@ const config: Config = {
           950: '#450a0a',
         },
         'brand-burgundy': '#5D001E',
+        'brand-burgundy-dark': '#4A0018',
       },
       ringColor: {
         'brand-burgundy': '#5D001E',
