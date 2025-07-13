@@ -175,5 +175,4 @@
     }
   },
   "regions": ["iad1"]
-  // Cron jobs are now configured in the Vercel dashboard.
 } 
