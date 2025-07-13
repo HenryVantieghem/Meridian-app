@@ -479,14 +479,15 @@ export class SlackIntegrationManager {
     );
   }
 
-  async handleWebhookEvent(event: any, signature: string, timestamp: string, body: string): Promise<void> {
+  async handleWebhookEvent(event: unknown, signature: string, timestamp: string, body: string): Promise<void> {
     // Verify webhook signature
     if (!this.verifyWebhookSignature(signature, timestamp, body)) {
       throw new Error('Invalid webhook signature');
     }
 
+    const eventData = event as { type: string };
     // Handle different event types
-    switch (event.type) {
+    switch (eventData.type) {
       case 'message':
         await this.handleMessageEvent(event);
         break;
@@ -499,46 +500,49 @@ export class SlackIntegrationManager {
         await this.handleChannelEvent(event);
         break;
       default:
-        logger.info(`Unhandled Slack event type: ${event.type}`);
+        logger.info(`Unhandled Slack event type: ${eventData.type}`);
     }
   }
 
-  private async handleMessageEvent(event: any): Promise<void> {
+  private async handleMessageEvent(event: unknown): Promise<void> {
+    const eventData = event as { ts: string; channel: string; user: string; text: string; team: string };
     // Store message in database for processing
     await this.supabase
       .from('slack_messages')
       .insert({
-        message_id: event.ts,
-        channel_id: event.channel,
-        user_id: event.user,
-        text: event.text,
-        timestamp: new Date(parseFloat(event.ts) * 1000).toISOString(),
-        workspace_id: event.team,
+        message_id: eventData.ts,
+        channel_id: eventData.channel,
+        user_id: eventData.user,
+        text: eventData.text,
+        timestamp: new Date(parseFloat(eventData.ts) * 1000).toISOString(),
+        workspace_id: eventData.team,
       });
   }
 
-  private async handleReactionEvent(event: any): Promise<void> {
+  private async handleReactionEvent(event: unknown): Promise<void> {
+    const eventData = event as { item: { ts: string; channel: string }; reaction: string; user: string };
     // Update message reactions in database
     await this.supabase
       .from('slack_reactions')
       .upsert({
-        message_id: event.item.ts,
-        channel_id: event.item.channel,
-        reaction: event.reaction,
-        user_id: event.user,
+        message_id: eventData.item.ts,
+        channel_id: eventData.item.channel,
+        reaction: eventData.reaction,
+        user_id: eventData.user,
         timestamp: new Date().toISOString(),
       });
   }
 
-  private async handleChannelEvent(event: any): Promise<void> {
+  private async handleChannelEvent(event: unknown): Promise<void> {
+    const eventData = event as { channel: { id: string; name: string; is_private: boolean }; team_id: string };
     // Update channel information in database
     await this.supabase
       .from('slack_channels')
       .upsert({
-        channel_id: event.channel.id,
-        name: event.channel.name,
-        workspace_id: event.team_id,
-        is_private: event.channel.is_private,
+        channel_id: eventData.channel.id,
+        name: eventData.channel.name,
+        workspace_id: eventData.team_id,
+        is_private: eventData.channel.is_private,
         updated_at: new Date().toISOString(),
       });
   }
@@ -562,8 +566,9 @@ export class SlackIntegrationManager {
   }
 
   // Message analysis helpers
-  private determineMessagePriority(message: any): 'high' | 'medium' | 'low' {
-    const text = message.text?.toLowerCase() || '';
+  private determineMessagePriority(message: unknown): 'high' | 'medium' | 'low' {
+    const messageData = message as { text?: string };
+    const text = messageData.text?.toLowerCase() || '';
     
     // High priority indicators
     if (text.includes('urgent') || 
@@ -585,8 +590,9 @@ export class SlackIntegrationManager {
     return 'medium';
   }
 
-  private determineMessageCategory(message: any): 'work' | 'personal' | 'project' | 'meeting' {
-    const text = message.text?.toLowerCase() || '';
+  private determineMessageCategory(message: unknown): 'work' | 'personal' | 'project' | 'meeting' {
+    const messageData = message as { text?: string };
+    const text = messageData.text?.toLowerCase() || '';
     
     if (text.includes('meeting') || text.includes('call') || text.includes('zoom')) {
       return 'meeting';

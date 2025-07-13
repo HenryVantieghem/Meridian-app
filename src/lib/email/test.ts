@@ -55,7 +55,7 @@ export class EmailTestingService {
     };
   }
 
-  async validateEmailTemplate(template: string, data: any): Promise<{
+  async validateEmailTemplate(template: string, _data: unknown): Promise<{
     valid: boolean;
     errors: string[];
     warnings: string[];
@@ -81,7 +81,7 @@ export class EmailTestingService {
     };
   }
 
-  async testEmailRendering(template: string, data: any): Promise<{
+  async testEmailRendering(template: string, _data: unknown): Promise<{
     html: string;
     text: string;
     errors: string[];
@@ -97,21 +97,133 @@ export class EmailTestingService {
 
 export const emailTestingService = EmailTestingService.getInstance(); 
 
-// Add missing stubs for index.ts export
-export const testEmailConnection = async (config: any): Promise<{ success: boolean; message: string }> => {
-  console.log('Test email connection disabled - Resend removed:', config);
-  return { success: true, message: 'Test email connection disabled - Resend removed' };
-};
+export async function testEmailConnection(
+  provider: 'gmail' | 'outlook' | 'imap',
+  _credentials: unknown
+): Promise<{
+  success: boolean;
+  error?: string;
+  details?: unknown;
+}> {
+  try {
+    // Mock implementation
+    return {
+      success: true,
+      details: {
+        provider,
+        timestamp: new Date().toISOString(),
+      },
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
+    };
+  }
+}
 
-export const validateEmailConfig = async (config: any): Promise<{ valid: boolean; errors: string[] }> => {
-  console.log('Validate email config disabled - Resend removed:', config);
-  return { valid: true, errors: [] };
-};
+export async function testEmailSync(
+  _userId: string,
+  _provider: 'gmail' | 'outlook' | 'imap',
+  _credentials: unknown
+): Promise<{
+  success: boolean;
+  syncedCount: number;
+  error?: string;
+}> {
+  try {
+    // Mock implementation
+    return {
+      success: true,
+      syncedCount: 0,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      syncedCount: 0,
+      error: error instanceof Error ? error.message : 'Sync failed',
+    };
+  }
+}
+
+export async function validateEmailCredentials(
+  provider: 'gmail' | 'outlook' | 'imap',
+  _credentials: unknown
+): Promise<{
+  valid: boolean;
+  error?: string;
+  userInfo?: {
+    email: string;
+    name?: string;
+    provider: string;
+  };
+}> {
+  try {
+    // Mock implementation
+    return {
+      valid: true,
+      userInfo: {
+        email: 'test@example.com',
+        name: 'Test User',
+        provider,
+      },
+    };
+  } catch (error) {
+    return {
+      valid: false,
+      error: error instanceof Error ? error.message : 'Invalid credentials',
+    };
+  }
+}
+
+export async function getEmailProviderInfo(
+  provider: 'gmail' | 'outlook' | 'imap'
+): Promise<{
+  name: string;
+  description: string;
+  features: string[];
+  setupInstructions: string[];
+}> {
+  const providerInfo = {
+    gmail: {
+      name: 'Gmail',
+      description: 'Google Gmail integration',
+      features: ['OAuth2 authentication', 'Real-time sync', 'Label support'],
+      setupInstructions: [
+        'Create a Google Cloud project',
+        'Enable Gmail API',
+        'Configure OAuth2 credentials',
+      ],
+    },
+    outlook: {
+      name: 'Outlook',
+      description: 'Microsoft Outlook integration',
+      features: ['OAuth2 authentication', 'Calendar integration', 'Contact sync'],
+      setupInstructions: [
+        'Register your application in Azure AD',
+        'Configure API permissions',
+        'Set up OAuth2 flow',
+      ],
+    },
+    imap: {
+      name: 'IMAP',
+      description: 'Generic IMAP email server',
+      features: ['Standard IMAP protocol', 'Multiple server support'],
+      setupInstructions: [
+        'Configure IMAP server settings',
+        'Set up authentication credentials',
+        'Test connection',
+      ],
+    },
+  };
+
+  return providerInfo[provider];
+}
 
 // Email test result type
 export interface EmailTestResult {
   success: boolean;
   message: string;
   timestamp: Date;
-  details?: Record<string, any>;
+  details?: Record<string, unknown>;
 } 

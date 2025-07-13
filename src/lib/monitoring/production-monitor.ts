@@ -216,7 +216,7 @@ class ProductionMonitor {
     };
   }
 
-  private sendToMonitoringService(data: any): void {
+  private sendToMonitoringService(data: unknown): void {
     // Send to configured monitoring service (e.g., Sentry, DataDog, etc.)
     const webhookUrl = process.env.MONITORING_WEBHOOK_URL;
     if (webhookUrl) {
@@ -258,6 +258,10 @@ class ProductionMonitor {
       errors: this.errorReports,
       performance: this.performanceMetrics,
     };
+  }
+
+  async reportIncident(_incident: unknown): Promise<void> {
+    // Implementation here
   }
 }
 

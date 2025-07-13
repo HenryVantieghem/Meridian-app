@@ -159,7 +159,7 @@ export async function getUserSession(clerkId: string) {
  * Validate user access to features based on subscription
  */
 export function hasFeatureAccess(
-  subscription: any,
+  subscription: unknown,
   feature: 'email_analysis' | 'ai_replies' | 'priority_alerts' | 'advanced_analytics'
 ): boolean {
   if (!subscription) return false;
@@ -192,10 +192,10 @@ export function hasFeatureAccess(
 /**
  * Get user's current plan limits
  */
-export function getPlanLimits(subscription: any) {
-  const plan = subscription?.plan || 'free';
+export function getPlanLimits(subscription: unknown) {
+  const plan = (subscription as { plan?: string })?.plan || 'free';
   
-  const limits: Record<string, any> = {
+  const limits: Record<string, unknown> = {
     free: {
       emailsPerMonth: 100,
       aiAnalysesPerMonth: 50,
@@ -250,7 +250,7 @@ export class RateLimiter {
 /**
  * Security logging utility
  */
-export function logSecurityEvent(event: string, userId?: string, details?: any) {
+export function logSecurityEvent(event: string, userId?: string, details?: unknown) {
   console.log(`[SECURITY] ${event}`, {
     userId,
     timestamp: new Date().toISOString(),

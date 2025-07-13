@@ -119,7 +119,7 @@ export const generateMetadata = (
     authors: [{ name: SEO_CONFIG.DEFAULT.author }],
     creator: SEO_CONFIG.DEFAULT.author,
     publisher: SEO_CONFIG.DEFAULT.author,
-    robots: (baseMetadata as any).robots || SEO_CONFIG.DEFAULT.robots,
+    robots: (baseMetadata as Record<string, unknown>).robots || SEO_CONFIG.DEFAULT.robots,
     viewport: SEO_CONFIG.DEFAULT.viewport,
     
     // Open Graph
@@ -129,9 +129,9 @@ export const generateMetadata = (
       type: 'website',
       locale: 'en_US',
       siteName: 'Napoleon',
-      images: (baseMetadata as any).ogImage ? [
+      images: (baseMetadata as Record<string, unknown>).ogImage ? [
         {
-          url: (baseMetadata as any).ogImage,
+          url: (baseMetadata as Record<string, unknown>).ogImage as string,
           width: 1200,
           height: 630,
           alt: baseMetadata.title,
@@ -145,7 +145,7 @@ export const generateMetadata = (
       title: baseMetadata.title,
       description: baseMetadata.description,
       creator: SEO_CONFIG.SOCIAL.twitter,
-      images: (baseMetadata as any).ogImage ? [(baseMetadata as any).ogImage] : undefined,
+      images: (baseMetadata as Record<string, unknown>).ogImage ? [(baseMetadata as Record<string, unknown>).ogImage as string] : undefined,
     },
     
     // Structured data
@@ -169,7 +169,7 @@ export const generateMetadata = (
 // Generate structured data
 export const generateStructuredData = (
   type: string,
-  data: Record<string, any>
+  data: Record<string, unknown>
 ): string => {
   return JSON.stringify({
     '@context': 'https://schema.org',

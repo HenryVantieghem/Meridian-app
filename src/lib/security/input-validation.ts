@@ -24,9 +24,9 @@ export const baseSchemas = {
 
 // Email validation schemas
 export const emailSchemas: {
-  emailData: z.ZodObject<any>;
-  emailAnalysis: z.ZodObject<any>;
-  batchAnalysis: z.ZodObject<any>;
+  emailData: z.ZodObject<Record<string, unknown>>;
+  emailAnalysis: z.ZodObject<Record<string, unknown>>;
+  batchAnalysis: z.ZodObject<Record<string, unknown>>;
 } = {
   emailData: z.object({
     id: baseSchemas.id,
@@ -64,7 +64,7 @@ export const emailSchemas: {
   }),
 
   batchAnalysis: z.object({
-    emails: z.array(z.any()).min(1).max(100), // Use z.any() to avoid circular reference
+    emails: z.array(z.unknown()).min(1).max(100), // Use z.unknown() to avoid circular reference
     options: z.object({
       includeSummary: z.boolean().optional(),
       includePriority: z.boolean().optional(),
@@ -194,8 +194,8 @@ export const slackSchemas = {
   message: z.object({
     channel: z.string().min(1).max(100),
     text: z.string().min(1).max(3000),
-    blocks: z.array(z.any()).max(50).optional(),
-    attachments: z.array(z.any()).max(10).optional(),
+    blocks: z.array(z.unknown()).max(50).optional(),
+    attachments: z.array(z.unknown()).max(10).optional(),
     threadTs: z.string().optional(),
     unfurlLinks: z.boolean().optional(),
     unfurlMedia: z.boolean().optional()
@@ -204,7 +204,7 @@ export const slackSchemas = {
   webhook: z.object({
     type: z.string().min(1).max(100),
     teamId: z.string().min(1).max(100),
-    event: z.any(),
+    event: z.unknown(),
     eventId: z.string().min(1).max(100),
     eventTime: z.number().positive()
   })

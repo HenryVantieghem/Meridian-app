@@ -47,8 +47,8 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
     onLoad?.();
     
     // Track image load performance
-    if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
-      (window as any).gtag('event', 'image_load', {
+    if (typeof window !== 'undefined' && typeof (window as unknown as Window).gtag === 'function') {
+      (window as unknown as Window).gtag('event', 'image_load', {
         image_src: src,
         load_time: performance.now(),
       });
@@ -60,8 +60,8 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
     onError?.();
     
     // Track image error
-    if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
-      (window as any).gtag('event', 'image_error', {
+    if (typeof window !== 'undefined' && typeof (window as unknown as Window).gtag === 'function') {
+      (window as unknown as Window).gtag('event', 'image_error', {
         image_src: src,
       });
     }

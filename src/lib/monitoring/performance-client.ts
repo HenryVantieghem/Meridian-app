@@ -8,7 +8,7 @@ interface PerformanceMonitoringOptions {
   trackMetrics?: boolean;
 }
 
-export function withPerformanceMonitoring<P extends object>(
+export function withPerformanceMonitoring<P extends Record<string, unknown>>(
   Component: React.ComponentType<P>,
   options: PerformanceMonitoringOptions = { name: 'Unknown' }
 ) {
@@ -84,8 +84,8 @@ export const useWebVitals = () => {
       let clsValue = 0;
       new PerformanceObserver((list) => {
         for (const entry of list.getEntries()) {
-          if (!(entry as any).hadRecentInput) {
-            clsValue += (entry as any).value;
+          if (!(entry as unknown as LayoutShift).hadRecentInput) {
+            clsValue += (entry as unknown as LayoutShift).value;
           }
         }
         performanceMonitor.trackWebVitals({
@@ -101,7 +101,7 @@ export const useWebVitals = () => {
 };
 
 // Error boundary with monitoring
-export const withErrorMonitoring = <P extends object>(
+export const withErrorMonitoring = <P extends Record<string, unknown>>(
   Component: React.ComponentType<P>
 ): React.ComponentType<P> => {
   const ErrorMonitoredComponent = (props: P) => {

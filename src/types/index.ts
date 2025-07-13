@@ -100,7 +100,7 @@ export interface ActionItem {
 export type EmailPriority = 'critical' | 'high' | 'medium' | 'low' | 'none';
 
 // AI Types
-export interface AIResponse<T = any> {
+export interface AIResponse<T = unknown> {
   data: T;
   confidence: number;
   model: string;
@@ -126,7 +126,7 @@ export interface ReplyGenerationRequest {
 }
 
 // API Response Types
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: string;
@@ -207,7 +207,7 @@ export interface StripeWebhookEvent {
   id: string;
   type: string;
   data: {
-    object: any;
+    object: unknown;
   };
   created: number;
 }

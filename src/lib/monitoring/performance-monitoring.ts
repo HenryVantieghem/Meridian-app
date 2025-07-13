@@ -295,8 +295,8 @@ export class PerformanceMonitoringService {
     new PerformanceObserver((list) => {
       const entries = list.getEntries();
       entries.forEach(entry => {
-        if ('hadRecentInput' in entry && !(entry as any).hadRecentInput) {
-          clsValue += (entry as any).value;
+        if ('hadRecentInput' in entry && !(entry as { hadRecentInput?: boolean }).hadRecentInput) {
+          clsValue += (entry as { value?: number }).value || 0;
         }
       });
       
@@ -332,7 +332,7 @@ export class PerformanceMonitoringService {
 
     new PerformanceObserver((list) => {
       const entries = list.getEntries();
-      entries.forEach(entry => {
+      entries.forEach(_entry => {
         this.trackResourceLoad();
       });
     }).observe({ entryTypes: ['resource'] });
@@ -405,7 +405,7 @@ export class PerformanceMonitoringService {
   /**
    * Send individual metric
    */
-  private async sendMetric(metric: any): Promise<void> {
+  private async sendMetric(metric: unknown): Promise<void> {
     try {
       // Send to external monitoring service
       if (process.env.MONITORING_ENDPOINT) {

@@ -143,10 +143,10 @@ export function useSlackMessages(options: UseSlackMessagesOptions = {}): UseSlac
       const data = await response.json();
 
       if (data.channels) {
-        setChannels(data.channels.map((channel: any) => ({
-          id: channel.id,
-          name: channel.name,
-          isMember: channel.isMember
+        setChannels(data.channels.map((channel: unknown) => ({
+          id: (channel as { id: string }).id,
+          name: (channel as { name: string }).name,
+          isMember: (channel as { isMember: boolean }).isMember
         })));
       }
     } catch (err) {

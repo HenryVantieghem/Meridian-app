@@ -7,7 +7,7 @@ export interface EmailTracking {
   emailId: string;
   status: 'sent' | 'delivered' | 'opened' | 'clicked' | 'bounced' | 'failed';
   timestamp: Date;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface EmailMetrics {
@@ -36,7 +36,7 @@ export interface UnsubscribeReason {
   email: string;
   reason: string;
   timestamp: Date;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface BounceRecord {
@@ -45,7 +45,7 @@ export interface BounceRecord {
   type: 'hard' | 'soft' | 'blocked';
   reason: string;
   timestamp: Date;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 // Stub functions for email management

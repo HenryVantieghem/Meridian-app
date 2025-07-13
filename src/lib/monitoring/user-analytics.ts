@@ -51,7 +51,7 @@ export interface UserEvent {
   type: UserEventType;
   timestamp: Date;
   url: string;
-  properties: Record<string, any>;
+  properties: Record<string, unknown>;
   context: {
     userAgent: string;
     ip: string;
@@ -73,7 +73,7 @@ export class UserAnalyticsService {
     userId: string,
     sessionId: string,
     type: UserEventType,
-    properties: Record<string, any> = {},
+    properties: Record<string, unknown> = {},
     req?: NextRequest
   ): void {
     const event: UserEvent = {
@@ -137,7 +137,7 @@ export class UserAnalyticsService {
     userId: string,
     sessionId: string,
     formId: string,
-    formData?: Record<string, any>,
+    formData?: Record<string, unknown>,
     success?: boolean
   ): void {
     this.trackEvent(userId, sessionId, UserEventType.FORM_SUBMIT, {
@@ -377,8 +377,8 @@ export class UserAnalyticsService {
     const featureCounts = userEvents
       .filter(e => e.type === UserEventType.FEATURE_USE)
       .reduce((acc, event) => {
-        const feature = event.properties.feature;
-        acc[feature] = (acc[feature] || 0) + (event.properties.usageCount || 1);
+        const feature = event.properties.feature as string;
+        acc[feature] = (acc[feature] || 0) + (event.properties.usageCount as number || 1);
         return acc;
       }, {} as Record<string, number>);
 

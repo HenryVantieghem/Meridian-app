@@ -109,7 +109,7 @@ export class AIAnalysisService {
     }
   }
 
-  private buildSystemPrompt(contentType: 'email' | 'slack', context?: any): string {
+  private buildSystemPrompt(contentType: 'email' | 'slack', context?: { userRole?: string; industry?: string }): string {
     const role = context?.userRole || 'professional';
     const industry = context?.industry || 'general';
 
@@ -203,7 +203,7 @@ Provide a comprehensive analysis in the specified JSON format.`;
     }
   }
 
-  async analyzeEmail(email: Email, context?: any): Promise<AIAnalysis> {
+  async analyzeEmail(email: Email, context?: { senderInfo?: { name: string; email?: string } }): Promise<AIAnalysis> {
     const content = `${email.subject}\n\n${email.body}`;
     
     return this.analyzeContent({
@@ -219,7 +219,7 @@ Provide a comprehensive analysis in the specified JSON format.`;
     });
   }
 
-  async analyzeSlackMessage(message: SlackMessage, context?: any): Promise<AIAnalysis> {
+  async analyzeSlackMessage(message: SlackMessage, context?: { senderInfo?: { name: string } }): Promise<AIAnalysis> {
     return this.analyzeContent({
       content: message.content,
       contentType: 'slack',
@@ -232,7 +232,7 @@ Provide a comprehensive analysis in the specified JSON format.`;
     });
   }
 
-  async batchAnalyze(items: (Email | SlackMessage)[], context?: any): Promise<AIAnalysis[]> {
+  async batchAnalyze(items: (Email | SlackMessage)[], context?: { senderInfo?: { name: string } }): Promise<AIAnalysis[]> {
     const analyses: AIAnalysis[] = [];
     
     for (const item of items) {

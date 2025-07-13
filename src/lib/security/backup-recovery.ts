@@ -29,7 +29,7 @@ export interface Backup {
   location: string;
   encrypted: boolean;
   tables: string[];
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
 }
 
 // Recovery interface
@@ -41,12 +41,12 @@ export interface Recovery {
   completedAt?: Date;
   targetDatabase: string;
   tables: string[];
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
 }
 
 // Backup and recovery service
 export class BackupRecoveryService {
-  private supabase: any;
+  private supabase: ReturnType<typeof createClient>;
   private backupLocation: string;
   private encryptionKey: Buffer;
 
@@ -87,7 +87,7 @@ export class BackupRecoveryService {
       backup.tables = tables;
 
       // Create backup for each table
-      const backupData: Record<string, any> = {};
+      const backupData: Record<string, unknown> = {};
       
       for (const table of tables) {
         const data = await this.supabase
@@ -156,7 +156,7 @@ export class BackupRecoveryService {
       await this.saveBackupMetadata(backup);
 
       // Get changes since last backup
-      const changes: Record<string, any> = {};
+      const changes: Record<string, unknown> = {};
       
       for (const table of lastBackup.tables) {
         const lastBackupTime = lastBackup.createdAt;
@@ -498,7 +498,7 @@ export class BackupRecoveryService {
   /**
    * Save backup file
    */
-  private async saveBackupFile(path: string, data: string): Promise<void> {
+  private async saveBackupFile(path: string, _data: string): Promise<void> {
     // In a real implementation, you would save to cloud storage (S3, GCS, etc.)
     // For now, we'll simulate file saving
     console.log(`Saving backup to ${path}`);
@@ -526,6 +526,7 @@ export class BackupRecoveryService {
    * Calculate checksum
    */
   private calculateChecksum(data: string): string {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const crypto = require('crypto');
     return crypto.createHash('sha256').update(data).digest('hex');
   }
@@ -576,7 +577,7 @@ export async function restoreBackupHandler(req: NextRequest): Promise<NextRespon
   }
 }
 
-export async function listBackupsHandler(req: NextRequest): Promise<NextResponse> {
+export async function listBackupsHandler(_req: NextRequest): Promise<NextResponse> {
   try {
     const backupService = new BackupRecoveryService();
     const backups = await backupService.listBackups();

@@ -34,8 +34,8 @@ export interface ErrorContext {
   ip?: string;
   url?: string;
   method?: string;
-  params?: Record<string, any>;
-  body?: any;
+  params?: Record<string, unknown>;
+  body?: unknown;
   headers?: Record<string, string>;
   timestamp: Date;
   environment: string;
@@ -254,64 +254,71 @@ export class ErrorTrackingService {
   /**
    * Send Slack alert
    */
-  private async sendSlackAlert(error: AppError, context?: Partial<ErrorContext>): Promise<void> {
-    const webhookUrl = process.env.SLACK_WEBHOOK_URL;
-    if (!webhookUrl) return;
+  private async sendSlackAlert(error: AppError, _context?: Partial<ErrorContext>): Promise<void> {
+    try {
+      const webhookUrl = process.env.SLACK_WEBHOOK_URL;
+      if (!webhookUrl) {
+        console.warn('Slack webhook URL not configured');
+        return;
+      }
 
-    const message = {
-      text: `🚨 Critical Error Alert`,
-      blocks: [
-        {
-          type: 'header',
-          text: {
-            type: 'plain_text',
-            text: '🚨 Critical Error Alert'
-          }
-        },
-        {
-          type: 'section',
-          fields: [
-            {
-              type: 'mrkdwn',
-              text: `*Error Type:*\n${error.type}`
-            },
-            {
-              type: 'mrkdwn',
-              text: `*Severity:*\n${error.severity}`
-            },
-            {
-              type: 'mrkdwn',
-              text: `*Message:*\n${error.message}`
-            },
-            {
-              type: 'mrkdwn',
-              text: `*Environment:*\n${context?.environment || 'unknown'}`
+      const message = {
+        text: `🚨 Critical Error Alert`,
+        blocks: [
+          {
+            type: 'header',
+            text: {
+              type: 'plain_text',
+              text: `Critical Error: ${error.type}`
             }
-          ]
-        },
-        {
-          type: 'section',
-          text: {
-            type: 'mrkdwn',
-            text: `*Context:*\n\`\`\`${JSON.stringify(context, null, 2)}\`\`\``
+          },
+          {
+            type: 'section',
+            fields: [
+              {
+                type: 'mrkdwn',
+                text: `*Error:*\n${error.message}`
+              },
+              {
+                type: 'mrkdwn',
+                text: `*Severity:*\n${error.severity}`
+              },
+              {
+                type: 'mrkdwn',
+                text: `*Environment:*\n${error.context.environment}`
+              },
+              {
+                type: 'mrkdwn',
+                text: `*Timestamp:*\n${error.context.timestamp.toISOString()}`
+              }
+            ]
+          },
+          {
+            type: 'section',
+            text: {
+              type: 'mrkdwn',
+              text: `*Stack Trace:*\n\`\`\`${error.stack}\`\`\``
+            }
           }
-        }
-      ]
-    };
+        ]
+      };
 
-    await fetch(webhookUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(message)
-    });
+      await fetch(webhookUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(message),
+      });
+    } catch (alertError) {
+      console.error('Failed to send Slack alert:', alertError);
+    }
   }
 
   /**
    * Send email alert
    */
-  private async sendEmailAlert(error: AppError, context?: Partial<ErrorContext>): Promise<void> {
+  private async sendEmailAlert(error: AppError, _context?: Partial<ErrorContext>): Promise<void> {
     // Implementation would depend on your email service
     console.log('Email alert sent for critical error:', error.message);
   }

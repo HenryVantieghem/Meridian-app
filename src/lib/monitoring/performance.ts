@@ -60,13 +60,13 @@ export interface ErrorEvent {
   userId?: string;
   sessionId?: string;
   severity: 'low' | 'medium' | 'high' | 'critical';
-  context?: Record<string, any>;
+  context?: Record<string, unknown>;
 }
 
 // Analytics event interface
 export interface AnalyticsEvent {
   name: string;
-  properties: Record<string, any>;
+  properties: Record<string, unknown>;
   timestamp: number;
   userId?: string;
   sessionId?: string;
@@ -187,7 +187,7 @@ export class PerformanceMonitor {
   }
 
   // Track analytics events
-  trackEvent(name: string, properties: Record<string, any>): void {
+  trackEvent(name: string, properties: Record<string, unknown>): void {
     const event: AnalyticsEvent = {
       name,
       properties,

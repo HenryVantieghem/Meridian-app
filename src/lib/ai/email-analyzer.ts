@@ -129,12 +129,12 @@ export class EmailAnalyzer {
         retryable: true
       };
 
-    } catch (error: any) {
-      const isRetryable = this.isRetryableError(error);
+    } catch (error: unknown) {
+      const isRetryable = this.isRetryableError(error as Error);
       return {
         analysis: this.createFallbackAnalysis(request.email),
         success: false,
-        error: error.message,
+        error: (error as Error).message,
         retryable: isRetryable
       };
     }
@@ -161,7 +161,7 @@ export class EmailAnalyzer {
           results.push({
             analysis: this.createFallbackAnalysis(request.email),
             success: false,
-            error: result.reason?.message || 'Unknown error',
+            error: (result.reason as Error)?.message || 'Unknown error',
             retryable: true
           });
         }
@@ -215,7 +215,7 @@ export class EmailAnalyzer {
         keyPoints
       };
 
-    } catch (error) {
+    } catch (error: unknown) {
       return {
         summary: this.createBasicSummary(email),
         confidence: 0.5,
@@ -361,35 +361,35 @@ Always respond with valid JSON matching the exact format requested.`;
   /**
    * Validate and enhance AI analysis
    */
-  private validateAndEnhanceAnalysis(data: any, email: EmailMessage): EmailAnalysis {
+  private validateAndEnhanceAnalysis(data: unknown, email: EmailMessage): EmailAnalysis {
     // Validate required fields
     const analysis: EmailAnalysis = {
       id: email.id,
-      summary: data.summary || this.createBasicSummary(email),
+      summary: (data as { summary?: string }).summary || this.createBasicSummary(email),
       priority: {
-        level: this.validatePriorityLevel(data.priority?.level),
-        score: Math.max(0, Math.min(1, data.priority?.score || 0.5)),
-        reasoning: data.priority?.reasoning || 'No reasoning provided'
+        level: this.validatePriorityLevel((data as { priority?: { level?: unknown } }).priority?.level),
+        score: Math.max(0, Math.min(1, (data as { priority?: { score?: number } }).priority?.score || 0.5)),
+        reasoning: (data as { priority?: { reasoning?: string } }).priority?.reasoning || 'No reasoning provided'
       },
-      priorityScore: Math.max(0, Math.min(1, data.priority?.score ?? 0.5)),
+      priorityScore: Math.max(0, Math.min(1, (data as { priority?: { score?: number } }).priority?.score ?? 0.5)),
       sentiment: {
-        type: this.validateSentimentType(data.sentiment?.type),
-        score: Math.max(0, Math.min(1, data.sentiment?.score || 0.5)),
-        reasoning: data.sentiment?.reasoning || 'No reasoning provided'
+        type: this.validateSentimentType((data as { sentiment?: { type?: unknown } }).sentiment?.type),
+        score: Math.max(0, Math.min(1, (data as { sentiment?: { score?: number } }).sentiment?.score || 0.5)),
+        reasoning: (data as { sentiment?: { reasoning?: string } }).sentiment?.reasoning || 'No reasoning provided'
       },
-      sentimentScore: Math.max(0, Math.min(1, data.sentiment?.score ?? 0.5)),
+      sentimentScore: Math.max(0, Math.min(1, (data as { sentiment?: { score?: number } }).sentiment?.score ?? 0.5)),
       urgency: {
-        level: this.validateUrgencyLevel(data.urgency?.level),
-        score: Math.max(0, Math.min(1, data.urgency?.score || 0.5)),
-        reasoning: data.urgency?.reasoning || 'No reasoning provided'
+        level: this.validateUrgencyLevel((data as { urgency?: { level?: unknown } }).urgency?.level),
+        score: Math.max(0, Math.min(1, (data as { urgency?: { score?: number } }).urgency?.score || 0.5)),
+        reasoning: (data as { urgency?: { reasoning?: string } }).urgency?.reasoning || 'No reasoning provided'
       },
-      urgencyScore: Math.max(0, Math.min(1, data.urgency?.score ?? 0.5)),
-      actionRequired: Boolean(data.actionRequired),
-      suggestedActions: Array.isArray(data.suggestedActions) ? data.suggestedActions : [],
-      keyTopics: Array.isArray(data.keyTopics) ? data.keyTopics : [],
-      vipContact: Boolean(data.vipContact),
-      vipScore: Math.max(0, Math.min(1, data.vipScore || 0)),
-      confidence: Math.max(0, Math.min(1, data.confidence || 0.7)),
+      urgencyScore: Math.max(0, Math.min(1, (data as { urgency?: { score?: number } }).urgency?.score ?? 0.5)),
+      actionRequired: Boolean((data as { actionRequired?: boolean }).actionRequired),
+      suggestedActions: Array.isArray((data as { suggestedActions?: unknown[] }).suggestedActions) ? (data as { suggestedActions?: string[] }).suggestedActions : [],
+      keyTopics: Array.isArray((data as { keyTopics?: unknown[] }).keyTopics) ? (data as { keyTopics?: string[] }).keyTopics : [],
+      vipContact: Boolean((data as { vipContact?: boolean }).vipContact),
+      vipScore: Math.max(0, Math.min(1, (data as { vipScore?: number }).vipScore || 0)),
+      confidence: Math.max(0, Math.min(1, (data as { confidence?: number }).confidence || 0.7)),
       processingTime: 0,
       modelUsed: 'gpt-4o',
       timestamp: new Date()
@@ -470,7 +470,7 @@ Always respond with valid JSON matching the exact format requested.`;
         const data = JSON.parse(content);
         return Array.isArray(data.keyPoints) ? data.keyPoints : [];
       }
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error extracting key points:', error);
     }
 
@@ -529,7 +529,7 @@ Always respond with valid JSON matching the exact format requested.`;
   /**
    * Determine if error is retryable
    */
-  private isRetryableError(error: any): boolean {
+  private isRetryableError(error: Error): boolean {
     const retryableCodes = [
       'rate_limit_exceeded',
       'quota_exceeded',
@@ -538,27 +538,26 @@ Always respond with valid JSON matching the exact format requested.`;
       'network_error'
     ];
 
-    return retryableCodes.includes(error.code) || 
-           error.status >= 500 ||
+    return retryableCodes.includes(error.message) || 
            error.message?.includes('timeout');
   }
 
   /**
    * Validation helpers
    */
-  private validatePriorityLevel(level: any): 'critical' | 'high' | 'medium' | 'low' {
+  private validatePriorityLevel(level: unknown): 'critical' | 'high' | 'medium' | 'low' {
     const validLevels = ['critical', 'high', 'medium', 'low'];
-    return validLevels.includes(level) ? level : 'medium';
+    return validLevels.includes(level as string) ? level as 'critical' | 'high' | 'medium' | 'low' : 'medium';
   }
 
-  private validateSentimentType(type: any): 'positive' | 'negative' | 'neutral' | 'mixed' {
+  private validateSentimentType(type: unknown): 'positive' | 'negative' | 'neutral' | 'mixed' {
     const validTypes = ['positive', 'negative', 'neutral', 'mixed'];
-    return validTypes.includes(type) ? type : 'neutral';
+    return validTypes.includes(type as string) ? type as 'positive' | 'negative' | 'neutral' | 'mixed' : 'neutral';
   }
 
-  private validateUrgencyLevel(level: any): 'immediate' | 'today' | 'this_week' | 'when_convenient' {
+  private validateUrgencyLevel(level: unknown): 'immediate' | 'today' | 'this_week' | 'when_convenient' {
     const validLevels = ['immediate', 'today', 'this_week', 'when_convenient'];
-    return validLevels.includes(level) ? level : 'when_convenient';
+    return validLevels.includes(level as string) ? level as 'immediate' | 'today' | 'this_week' | 'when_convenient' : 'when_convenient';
   }
 
   /**

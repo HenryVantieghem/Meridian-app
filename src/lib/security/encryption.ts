@@ -5,7 +5,7 @@ import { createCipheriv, createDecipheriv, randomBytes, scrypt, timingSafeEqual 
 const ENCRYPTION_ALGORITHM = 'aes-256-gcm';
 const KEY_LENGTH = 32; // 256 bits
 const IV_LENGTH = 16; // 128 bits
-const TAG_LENGTH = 16; // 128 bits
+// const TAG_LENGTH = 16; // 128 bits
 const SALT_LENGTH = 64; // 512 bits
 const HASH_ALGORITHM = 'sha256';
 const HASH_ITERATIONS = 100000;

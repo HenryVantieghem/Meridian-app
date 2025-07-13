@@ -14,7 +14,7 @@ export interface LogEntry {
   timestamp: string;
   level: LogLevel;
   message: string;
-  context?: Record<string, any>;
+  context?: Record<string, unknown>;
   userId?: string;
   sessionId?: string;
   requestId?: string;
@@ -48,7 +48,7 @@ export class Logger {
     return Logger.instance;
   }
 
-  private log(level: LogLevel, message: string, context?: Record<string, any>): void {
+  private log(level: LogLevel, message: string, context?: Record<string, unknown>): void {
     if (level < this.logLevel) return;
 
     const entry: LogEntry = {
@@ -94,23 +94,23 @@ export class Logger {
     });
   }
 
-  debug(message: string, context?: Record<string, any>): void {
+  debug(message: string, context?: Record<string, unknown>): void {
     this.log(LogLevel.DEBUG, message, context);
   }
 
-  info(message: string, context?: Record<string, any>): void {
+  info(message: string, context?: Record<string, unknown>): void {
     this.log(LogLevel.INFO, message, context);
   }
 
-  warn(message: string, context?: Record<string, any>): void {
+  warn(message: string, context?: Record<string, unknown>): void {
     this.log(LogLevel.WARN, message, context);
   }
 
-  error(message: string, error?: Error, context?: Record<string, any>): void {
+  error(message: string, error?: Error, context?: Record<string, unknown>): void {
     this.log(LogLevel.ERROR, message, { ...context, error: error?.stack });
   }
 
-  fatal(message: string, error?: Error, context?: Record<string, any>): void {
+  fatal(message: string, error?: Error, context?: Record<string, unknown>): void {
     this.log(LogLevel.FATAL, message, { ...context, error: error?.stack });
   }
 }
@@ -210,8 +210,8 @@ export class PerformanceMonitor {
     this.recordMetric(`ai.${operation}`, duration);
   }
 
-  getPerformanceReport(): Record<string, any> {
-    const report: Record<string, any> = {};
+  getPerformanceReport(): Record<string, unknown> {
+    const report: Record<string, unknown> = {};
     
     for (const [name, values] of this.metrics.entries()) {
       report[name] = this.getMetricStats(name);
@@ -233,7 +233,7 @@ export class ErrorTracker {
     return ErrorTracker.instance;
   }
 
-  trackError(error: Error, context?: Record<string, any>): void {
+  trackError(error: Error, context?: Record<string, unknown>): void {
     const logger = Logger.getInstance();
     logger.error('Application error', error, context);
     
@@ -245,7 +245,7 @@ export class ErrorTracker {
     }
   }
 
-  private sendToErrorService(error: Error, context?: Record<string, any>): void {
+  private sendToErrorService(error: Error, context?: Record<string, unknown>): void {
     // Send to error tracking service (e.g., Sentry)
     fetch(process.env.ERROR_TRACKING_WEBHOOK_URL || '', {
       method: 'POST',
@@ -265,7 +265,7 @@ export class ErrorTracker {
     const now = Date.now();
     const oneHourAgo = now - 60 * 60 * 1000;
     
-    const recent = this.errors.filter(error => {
+    const recent = this.errors.filter(_error => {
       // This is a simplified check - in practice you'd store timestamps
       return true; // Assume all errors are recent for demo
     }).length;
@@ -283,7 +283,7 @@ export class UserAnalytics {
   private events: Array<{
     userId: string;
     event: string;
-    properties: Record<string, any>;
+    properties: Record<string, unknown>;
     timestamp: string;
   }> = [];
 
@@ -294,34 +294,26 @@ export class UserAnalytics {
     return UserAnalytics.instance;
   }
 
-  trackEvent(userId: string, event: string, properties: Record<string, any> = {}): void {
-    const eventData = {
-      userId,
-      event,
-      properties,
-      timestamp: new Date().toISOString(),
-    };
+  trackEvent(userId: string, event: string, properties: Record<string, unknown> = {}): void {
+    this.events.push({ userId, event, properties, timestamp: new Date().toISOString() });
+    this.sendToAnalyticsService({ userId, event, properties });
+  }
 
-    this.events.push(eventData);
-
+  private sendToAnalyticsService(eventData: unknown): void {
     // Send to analytics service
     if (process.env.NODE_ENV === 'production') {
-      this.sendToAnalyticsService(eventData);
+      fetch(process.env.ANALYTICS_WEBHOOK_URL || '', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(eventData),
+      }).catch(() => {
+        // Fallback if analytics service fails
+      });
     }
   }
 
-  private sendToAnalyticsService(eventData: any): void {
-    fetch(process.env.ANALYTICS_WEBHOOK_URL || '', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(eventData),
-    }).catch(() => {
-      // Fallback if analytics service fails
-    });
-  }
-
-  getUserEvents(userId: string): any[] {
-    return this.events.filter(event => event.userId === userId);
+  getUserEvents(userId: string): unknown[] {
+    return this.events.filter(e => e.userId === userId);
   }
 
   getEventStats(): Record<string, number> {
@@ -376,7 +368,7 @@ export class SecurityLogger {
   private static instance: SecurityLogger;
   private events: Array<{
     type: string;
-    details: Record<string, any>;
+    details: Record<string, unknown>;
     timestamp: string;
     severity: 'low' | 'medium' | 'high' | 'critical';
   }> = [];
@@ -390,39 +382,27 @@ export class SecurityLogger {
 
   logSecurityEvent(
     type: string,
-    details: Record<string, any>,
+    details: Record<string, unknown>,
     severity: 'low' | 'medium' | 'high' | 'critical' = 'medium'
   ): void {
-    const event = {
-      type,
-      details,
-      timestamp: new Date().toISOString(),
-      severity,
-    };
+    this.events.push({ type, details, timestamp: new Date().toISOString(), severity });
+    this.sendToSecurityService({ type, details, severity });
+  }
 
-    this.events.push(event);
-
-    // Log to security monitoring service
+  private sendToSecurityService(event: unknown): void {
+    // Send to security service
     if (process.env.NODE_ENV === 'production') {
-      this.sendToSecurityService(event);
+      fetch(process.env.SECURITY_WEBHOOK_URL || '', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(event),
+      }).catch(() => {
+        // Fallback if security service fails
+      });
     }
-
-    // Log locally
-    const logger = Logger.getInstance();
-    logger.warn(`Security event: ${type}`, { details, severity });
   }
 
-  private sendToSecurityService(event: any): void {
-    fetch(process.env.SECURITY_WEBHOOK_URL || '', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(event),
-    }).catch(() => {
-      // Fallback if security service fails
-    });
-  }
-
-  getSecurityEvents(): any[] {
+  getSecurityEvents(): unknown[] {
     return this.events;
   }
 

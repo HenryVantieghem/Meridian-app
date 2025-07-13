@@ -39,7 +39,7 @@ export type {
 // Performance Utilities
 export const performanceUtils = {
   // Debounce function calls
-  debounce: <T extends (...args: any[]) => any>(
+  debounce: <T extends (...args: unknown[]) => unknown>(
     func: T,
     wait: number
   ): ((...args: Parameters<T>) => void) => {
@@ -51,7 +51,7 @@ export const performanceUtils = {
   },
 
   // Throttle function calls
-  throttle: <T extends (...args: any[]) => any>(
+  throttle: <T extends (...args: unknown[]) => unknown>(
     func: T,
     limit: number
   ): ((...args: Parameters<T>) => void) => {
@@ -66,7 +66,7 @@ export const performanceUtils = {
   },
 
   // Memoize expensive calculations
-  memoize: <T extends (...args: any[]) => any>(
+  memoize: <T extends (...args: unknown[]) => unknown>(
     func: T,
     keyGenerator?: (...args: Parameters<T>) => string
   ): T => {
@@ -260,7 +260,7 @@ export const performanceMonitoring = {
       new PerformanceObserver((list) => {
         let cls = 0;
         const entries = list.getEntries();
-        entries.forEach((entry: any) => {
+        entries.forEach((entry: unknown) => {
           if (!entry.hadRecentInput) {
             cls += entry.value;
           }
@@ -271,7 +271,7 @@ export const performanceMonitoring = {
   },
 
   // Track API performance
-  trackApiPerformance: (req: any, res: any, startTime: number) => {
+  trackApiPerformance: (req: unknown, res: unknown, startTime: number) => {
     const duration = Date.now() - startTime;
     const path = req.url;
     const method = req.method;
@@ -294,7 +294,7 @@ export const performanceMonitoring = {
   },
 
   // Track bundle size
-  trackBundleSize: (bundleStats: any) => {
+  trackBundleSize: (bundleStats: unknown) => {
     const totalSize = bundleStats.totalSize;
     const budget = 500 * 1024; // 500KB budget
     
@@ -311,7 +311,7 @@ export const usePerformanceOptimizations = () => {
   // React hooks for performance optimization
   return {
     // Memoize expensive calculations
-    useMemoizedValue: <T>(value: T, deps: any[]): T => {
+    useMemoizedValue: <T>(value: T, deps: unknown[]): T => {
       const [memoizedValue, setMemoizedValue] = React.useState<T>(value);
       
       React.useEffect(() => {

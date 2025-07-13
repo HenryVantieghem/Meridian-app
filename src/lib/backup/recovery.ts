@@ -269,8 +269,8 @@ export class UserDataExportManager {
     };
   }
 
-  private async collectUserData(userId: string): Promise<Record<string, any>> {
-    const userData: Record<string, any> = {};
+  private async collectUserData(userId: string): Promise<Record<string, unknown>> {
+    const userData: Record<string, unknown> = {};
 
     // Collect emails
     const { data: emails } = await this.supabase
@@ -308,7 +308,7 @@ export class UserDataExportManager {
     return userData;
   }
 
-  private convertToCSV(data: Record<string, any>): string {
+  private convertToCSV(data: Record<string, unknown>): string {
     // Simple CSV conversion
     const csvRows: string[] = [];
     

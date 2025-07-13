@@ -124,7 +124,7 @@ export class ReplyGenerator {
       if (replies.length === 0) throw new ReplyGeneratorError('No replies generated', 'NO_REPLY', true);
 
       return { replies, success: true, retryable: true };
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Fallback: use template if available
       const fallback = this.getFallbackReply(email, options);
       return {

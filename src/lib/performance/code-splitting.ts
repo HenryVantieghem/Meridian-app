@@ -10,10 +10,10 @@ export interface PerformanceMetrics {
 }
 
 // Lazy loading with performance tracking
-export const createLazyComponent = <T extends ComponentType<any>>(
+export const createLazyComponent = <T extends ComponentType<unknown>>(
   importFn: () => Promise<{ default: T }>,
   options: {
-    loading?: ComponentType<any>;
+    loading?: ComponentType<unknown>;
     ssr?: boolean;
     preload?: boolean;
   } = {}
@@ -75,7 +75,7 @@ export const featureModules = {
 } as const;
 
 // Performance-aware component wrapper
-export const withPerformanceTracking = <P extends object>(
+export const withPerformanceTracking = <P extends Record<string, unknown>>(
   Component: ComponentType<P>,
   options: {
     name: string;

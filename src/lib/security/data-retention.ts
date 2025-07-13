@@ -1,5 +1,4 @@
 import { createClient } from '@supabase/supabase-js';
-import { encryptionService } from './encryption';
 
 // Data retention policies
 export enum RetentionPolicy {
@@ -31,12 +30,12 @@ export interface RetentionRule {
   createdAt: Date;
   updatedAt: Date;
   isActive: boolean;
-  conditions?: Record<string, any>;
+  conditions?: Record<string, unknown>;
 }
 
 // Data retention service
 export class DataRetentionService {
-  private supabase: any;
+  private supabase: ReturnType<typeof createClient>;
   private rules: Map<DataCategory, RetentionRule> = new Map();
 
   constructor() {
@@ -285,7 +284,7 @@ export class DataRetentionService {
   /**
    * Get expired data for a category
    */
-  private async getExpiredData(category: DataCategory, policy: RetentionPolicy): Promise<any[]> {
+  private async getExpiredData(category: DataCategory, policy: RetentionPolicy): Promise<Record<string, unknown>[]> {
     const cutoffDate = this.getCutoffDate(policy);
     
     let tableName: string;
@@ -356,7 +355,7 @@ export class DataRetentionService {
   /**
    * Delete expired emails
    */
-  private async deleteExpiredEmails(expiredData: any[]): Promise<number> {
+  private async deleteExpiredEmails(expiredData: Record<string, unknown>[]): Promise<number> {
     const emailIds = expiredData.map(d => d.id);
     
     const { error } = await this.supabase
@@ -374,7 +373,7 @@ export class DataRetentionService {
   /**
    * Delete expired AI analysis
    */
-  private async deleteExpiredAIAnalysis(expiredData: any[]): Promise<number> {
+  private async deleteExpiredAIAnalysis(expiredData: Record<string, unknown>[]): Promise<number> {
     const analysisIds = expiredData.map(d => d.id);
     
     const { error } = await this.supabase
@@ -392,7 +391,7 @@ export class DataRetentionService {
   /**
    * Delete expired audit logs
    */
-  private async deleteExpiredAuditLogs(expiredData: any[]): Promise<number> {
+  private async deleteExpiredAuditLogs(expiredData: Record<string, unknown>[]): Promise<number> {
     const logIds = expiredData.map(d => d.id);
     
     const { error } = await this.supabase
@@ -410,7 +409,7 @@ export class DataRetentionService {
   /**
    * Delete expired error logs
    */
-  private async deleteExpiredErrorLogs(expiredData: any[]): Promise<number> {
+  private async deleteExpiredErrorLogs(expiredData: Record<string, unknown>[]): Promise<number> {
     const logIds = expiredData.map(d => d.id);
     
     const { error } = await this.supabase
@@ -428,7 +427,7 @@ export class DataRetentionService {
   /**
    * Delete expired analytics
    */
-  private async deleteExpiredAnalytics(expiredData: any[]): Promise<number> {
+  private async deleteExpiredAnalytics(expiredData: Record<string, unknown>[]): Promise<number> {
     const eventIds = expiredData.map(d => d.id);
     
     const { error } = await this.supabase
@@ -446,7 +445,7 @@ export class DataRetentionService {
   /**
    * Delete expired backups
    */
-  private async deleteExpiredBackups(expiredData: any[]): Promise<number> {
+  private async deleteExpiredBackups(expiredData: Record<string, unknown>[]): Promise<number> {
     const backupIds = expiredData.map(d => d.id);
     
     const { error } = await this.supabase
@@ -556,12 +555,12 @@ export class DataRetentionService {
   /**
    * Export data for GDPR compliance
    */
-  async exportUserData(userId: string): Promise<{
-    userProfile: any;
-    emails: any[];
-    aiAnalysis: any[];
-    auditLogs: any[];
-    analytics: any[];
+  async exportUserData(_userId: string): Promise<{
+    userProfile: Record<string, unknown>;
+    emails: Record<string, unknown>[];
+    aiAnalysis: Record<string, unknown>[];
+    auditLogs: Record<string, unknown>[];
+    analytics: Record<string, unknown>[];
   }> {
     try {
       const [userProfile, emails, aiAnalysis, auditLogs, analytics] = await Promise.all([

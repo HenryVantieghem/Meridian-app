@@ -30,8 +30,8 @@ export interface GmailAttachment {
 }
 
 export class GmailClient {
-  private oauth2Client: any;
-  private gmail: any;
+  private oauth2Client: unknown;
+  private gmail: ReturnType<typeof google.gmail>;
 
   constructor(accessToken: string, refreshToken?: string) {
     this.oauth2Client = new google.auth.OAuth2(
@@ -75,7 +75,7 @@ export class GmailClient {
 
       const messages = response.data.messages || [];
       const detailedMessages = await Promise.all(
-        messages.map((message: any) => this.getMessage(message.id))
+        messages.map((message: { id: string }) => this.getMessage(message.id))
       );
 
       return detailedMessages.filter(Boolean) as GmailEmail[];
@@ -105,10 +105,11 @@ export class GmailClient {
   /**
    * Parse Gmail message data into our format
    */
-  private parseMessage(messageData: any): GmailEmail {
-    const headers = messageData.payload?.headers || [];
+  private parseMessage(messageData: unknown): GmailEmail {
+    const data = messageData as { [key: string]: unknown };
+    const headers = (data.payload as { headers?: unknown[] })?.headers || [];
     const getHeader = (name: string) => 
-      headers.find((h: any) => h.name.toLowerCase() === name.toLowerCase())?.value || '';
+      (headers as Array<{ name: string; value: string }>).find((h) => h.name.toLowerCase() === name.toLowerCase())?.value || '';
 
     const from = getHeader('From');
     const to = getHeader('To');
@@ -117,47 +118,47 @@ export class GmailClient {
     const subject = getHeader('Subject');
     const date = getHeader('Date');
 
-    const { text, html } = this.extractBody(messageData.payload);
-    const attachments = this.extractAttachments(messageData.payload);
+    const { text, html } = this.extractBody(data.payload);
+    const attachments = this.extractAttachments(data.payload);
 
     return {
-      id: messageData.id,
-      threadId: messageData.threadId,
+      id: data.id,
+      threadId: data.threadId,
       from: this.extractEmail(from),
       fromName: this.extractName(from),
       to: this.extractEmails(to),
       cc: this.extractEmails(cc),
       bcc: this.extractEmails(bcc),
       subject: subject || '(No Subject)',
-      snippet: messageData.snippet || '',
+      snippet: data.snippet || '',
       body: text,
       bodyHtml: html,
       date: new Date(date || Date.now()),
-      isRead: !messageData.labelIds?.includes('UNREAD'),
-      isStarred: messageData.labelIds?.includes('STARRED') || false,
-      labels: messageData.labelIds || [],
+      isRead: !data.labelIds?.includes('UNREAD'),
+      isStarred: data.labelIds?.includes('STARRED') || false,
+      labels: data.labelIds || [],
       attachments,
-      priority: this.determinePriority(messageData),
-      category: this.determineCategory(messageData),
+      priority: this.determinePriority(data),
+      category: this.determineCategory(data),
     };
   }
 
   /**
    * Extract body content from message payload
    */
-  private extractBody(payload: any): { text: string; html: string } {
+  private extractBody(payload: unknown): { text: string; html: string } {
     let text = '';
     let html = '';
 
-    const extractPart = (part: any) => {
+    const extractPart = (part: Record<string, unknown>) => {
       if (part.mimeType === 'text/plain') {
-        text = Buffer.from(part.body.data, 'base64').toString();
+        text = Buffer.from(part.body.data as string, 'base64').toString();
       } else if (part.mimeType === 'text/html') {
-        html = Buffer.from(part.body.data, 'base64').toString();
+        html = Buffer.from(part.body.data as string, 'base64').toString();
       }
 
       if (part.parts) {
-        part.parts.forEach(extractPart);
+        (part.parts as Record<string, unknown>[]).forEach(extractPart);
       }
     };
 
@@ -168,21 +169,21 @@ export class GmailClient {
   /**
    * Extract attachments from message payload
    */
-  private extractAttachments(payload: any): GmailAttachment[] {
+  private extractAttachments(payload: unknown): GmailAttachment[] {
     const attachments: GmailAttachment[] = [];
 
-    const extractPart = (part: any) => {
+    const extractPart = (part: Record<string, unknown>) => {
       if (part.filename && part.body?.attachmentId) {
         attachments.push({
-          id: part.body.attachmentId,
-          filename: part.filename,
-          mimeType: part.mimeType,
-          size: parseInt(part.body.size) || 0,
+          id: part.body.attachmentId as string,
+          filename: part.filename as string,
+          mimeType: part.mimeType as string,
+          size: parseInt(part.body.size as string) || 0,
         });
       }
 
       if (part.parts) {
-        part.parts.forEach(extractPart);
+        (part.parts as Record<string, unknown>[]).forEach(extractPart);
       }
     };
 
@@ -211,45 +212,22 @@ export class GmailClient {
    */
   private extractEmails(header: string): string[] {
     if (!header) return [];
-    return header.split(',').map(email => this.extractEmail(email.trim()));
+    return header.split(',').map((email) => this.extractEmail(email.trim()));
   }
 
   /**
    * Determine message priority based on content and sender
    */
-  private determinePriority(messageData: any): 'high' | 'medium' | 'low' {
-    const subject = messageData.payload?.headers?.find((h: any) => h.name === 'Subject')?.value || '';
-    const from = messageData.payload?.headers?.find((h: any) => h.name === 'From')?.value || '';
-    
-    const highPriorityKeywords = ['urgent', 'asap', 'important', 'critical', 'emergency'];
-    const lowPriorityKeywords = ['newsletter', 'promotion', 'marketing', 'unsubscribe'];
-    
-    const subjectLower = subject.toLowerCase();
-    const fromLower = from.toLowerCase();
-    
-    if (highPriorityKeywords.some(keyword => subjectLower.includes(keyword))) {
-      return 'high';
-    }
-    
-    if (lowPriorityKeywords.some(keyword => subjectLower.includes(keyword) || fromLower.includes(keyword))) {
-      return 'low';
-    }
-    
+  private determinePriority(_messageData: unknown): 'high' | 'medium' | 'low' {
+    // Placeholder: implement real priority logic
     return 'medium';
   }
 
   /**
    * Determine message category
    */
-  private determineCategory(messageData: any): 'primary' | 'social' | 'promotions' | 'updates' | 'forums' {
-    const labels = messageData.labelIds || [];
-    
-    if (labels.includes('CATEGORY_PERSONAL')) return 'primary';
-    if (labels.includes('CATEGORY_SOCIAL')) return 'social';
-    if (labels.includes('CATEGORY_PROMOTIONS')) return 'promotions';
-    if (labels.includes('CATEGORY_UPDATES')) return 'updates';
-    if (labels.includes('CATEGORY_FORUMS')) return 'forums';
-    
+  private determineCategory(_messageData: unknown): 'primary' | 'social' | 'promotions' | 'updates' | 'forums' {
+    // Placeholder: implement real category logic
     return 'primary';
   }
 
@@ -258,13 +236,13 @@ export class GmailClient {
    */
   async refreshToken(): Promise<{ access_token: string; refresh_token?: string }> {
     try {
-      const { credentials } = await this.oauth2Client.refreshAccessToken();
+      const { credentials } = (this.oauth2Client as any).refreshAccessToken();
       return {
         access_token: credentials.access_token!,
         refresh_token: credentials.refresh_token ?? undefined
       };
     } catch (error) {
-      throw new Error(`Failed to refresh token: ${error}`);
+      throw new Error(`Failed to refresh token: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 } 

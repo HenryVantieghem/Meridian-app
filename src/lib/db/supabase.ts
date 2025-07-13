@@ -50,40 +50,44 @@ export const supabaseAdmin = createClient<Database>(
 );
 
 // Utility function to handle database errors
-export function handleDatabaseError(error: any): never {
+export function handleDatabaseError(error: unknown): never {
   console.error('Database error:', error);
   
-  if (error.code === '23505') {
+  const dbError = error as { code?: string; message?: string };
+  
+  if (dbError.code === '23505') {
     throw new Error('Duplicate entry found');
   }
   
-  if (error.code === '23503') {
+  if (dbError.code === '23503') {
     throw new Error('Referenced record not found');
   }
   
-  if (error.code === '42P01') {
+  if (dbError.code === '42P01') {
     throw new Error('Table not found');
   }
   
-  throw new Error(error.message || 'Database operation failed');
+  throw new Error(dbError.message || 'Database operation failed');
 }
 
 // Utility function to retry database operations
 export async function retryDatabaseOperation<T>(
-  operation: () => Promise<{ data: T | null; error: any }>,
+  operation: () => Promise<{ data: T | null; error: unknown }>,
   maxRetries = 3,
   delay = 1000
-): Promise<{ data: T | null; error: any }> {
-  let lastError: any;
+): Promise<{ data: T | null; error: unknown }> {
+  let lastError: unknown;
   
   for (let i = 0; i < maxRetries; i++) {
     try {
       return await operation();
-    } catch (error: any) {
+    } catch (error: unknown) {
       lastError = error;
       
+      const dbError = error as { code?: string };
+      
       // Don't retry on certain errors
-      if (error.code === '23505' || error.code === '23503' || error.code === '42P01') {
+      if (dbError.code === '23505' || dbError.code === '23503' || dbError.code === '42P01') {
         throw error;
       }
       

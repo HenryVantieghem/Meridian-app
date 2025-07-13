@@ -33,7 +33,7 @@ export const sendEmail = async (emailData: Partial<Email>): Promise<void> => {
 };
 
 // Stub email template rendering
-export const renderEmailTemplate = async (template: string, data: any): Promise<string> => {
+export const renderEmailTemplate = async (template: string, data: unknown): Promise<string> => {
   console.log('Email template rendering disabled - Resend removed:', template, data);
   return `<p>Email template rendering disabled - Resend removed</p>`;
 };
@@ -64,7 +64,7 @@ export const AUTOMATION_SCHEDULES = {
 export interface AutomationTrigger {
   userId: string;
   trigger: keyof typeof AUTOMATION_TRIGGERS;
-  data?: Record<string, any>;
+  data?: Record<string, unknown>;
   timestamp: Date;
 }
 
@@ -74,7 +74,7 @@ export interface AutomationSchedule {
   nextRun: Date;
   frequency: 'daily' | 'weekly' | 'monthly';
   enabled: boolean;
-  data?: Record<string, any>;
+  data?: Record<string, unknown>;
 }
 
 export interface UserPreferences {
@@ -96,7 +96,7 @@ export interface EmailAutomation {
   emailType: keyof typeof EMAIL_TYPES;
   subject: string;
   template: string;
-  conditions: Record<string, any>;
+  conditions: Record<string, unknown>;
   enabled: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -105,7 +105,7 @@ export interface EmailAutomation {
 // Email automation service
 export class EmailAutomationService {
   private static instance: EmailAutomationService;
-  private schedules: Map<string, any> = new Map();
+  private schedules: Map<string, unknown> = new Map();
 
   private constructor() {}
 
@@ -216,7 +216,7 @@ export class EmailAutomationService {
       }
 
       const html = await this.renderDailyDigestTemplate(digestData);
-      
+
       await sendEmail({
         to: digestData.userEmail,
         subject: `Your Daily Email Digest - ${digestData.date}`,
@@ -235,7 +235,7 @@ export class EmailAutomationService {
   }
 
   // AI notification automation
-  async sendAINotification(userId: string, actions: any[]): Promise<void> {
+  async sendAINotification(userId: string, actions: unknown[]): Promise<void> {
     try {
       const userPrefs = await this.getUserPreferences(userId);
       if (!userPrefs || !userPrefs.aiNotifications) {
@@ -248,10 +248,10 @@ export class EmailAutomationService {
       }
 
       const html = await this.renderAINotificationTemplate(notificationData);
-      
+
       await sendEmail({
         to: notificationData.userEmail,
-        subject: 'AI Actions Summary - Napoleon AI',
+        subject: 'AI Analysis Complete - New Insights Available',
         html: html,
         priority: EMAIL_PRIORITY.NORMAL,
         metadata: {
@@ -270,7 +270,7 @@ export class EmailAutomationService {
   async sendBillingNotification(
     userId: string,
     emailType: 'confirmation' | 'failed' | 'trial_ending' | 'subscription_canceled' | 'payment_reminder',
-    billingData: any
+    billingData: unknown
   ): Promise<void> {
     try {
       const userPrefs = await this.getUserPreferences(userId);
@@ -279,14 +279,14 @@ export class EmailAutomationService {
       }
 
       const html = await this.renderBillingEmailTemplate(emailType, billingData);
-      
+
       await sendEmail({
         to: billingData.userEmail,
-        subject: `${this.getBillingSubject(emailType)} - Napoleon AI`,
+        subject: this.getBillingSubject(emailType),
         html: html,
         priority: EMAIL_PRIORITY.HIGH,
         metadata: {
-          type: EMAIL_TYPES.BILLING_CONFIRMATION,
+          type: EMAIL_TYPES.BILLING,
           campaignId: `billing_${emailType}_${userId}_${Date.now()}`,
         },
       });
@@ -301,10 +301,10 @@ export class EmailAutomationService {
   async updateUserPreferences(preferences: UserPreferences): Promise<void> {
     try {
       // userPreferencesSchema.parse(preferences);
-      
+
       // Update user preferences in database
       console.log(`Updated preferences for user: ${preferences.userId}`);
-      
+
     } catch (error) {
       console.error('Failed to update user preferences:', error);
       throw error;
@@ -352,7 +352,7 @@ export class EmailAutomationService {
     }
   }
 
-  async updateAutomation(id: string, updates: Partial<EmailAutomation>): Promise<EmailAutomation> {
+  async updateAutomation(id: string, _updates: Partial<EmailAutomation>): Promise<EmailAutomation> {
     try {
       // Update automation in database
       console.log(`Updated automation: ${id}`);
@@ -384,34 +384,34 @@ export class EmailAutomationService {
     return []; // Placeholder
   }
 
-  private evaluateConditions(_conditions: Record<string, any>, _data: Record<string, any> = {}): boolean {
-    // Evaluate automation conditions
-    return true; // Placeholder
+  private evaluateConditions(_conditions: Record<string, unknown>, _data: Record<string, unknown> = {}): boolean {
+    // Simple condition evaluation - in production, use a proper rule engine
+    return true;
   }
 
   private async sendAutomatedEmail(automation: EmailAutomation, _trigger: AutomationTrigger): Promise<void> {
     const html = await renderEmailTemplate(automation.template, {
-      ...trigger.data,
-      userId: trigger.userId,
-      timestamp: trigger.timestamp,
+      ..._trigger.data,
+      userId: _trigger.userId,
+      timestamp: _trigger.timestamp,
     });
 
     await sendEmail({
-      to: trigger.data?.userEmail || 'user@example.com',
+      to: _trigger.data?.userEmail || 'user@example.com',
       subject: automation.subject,
       html: html,
       priority: EMAIL_PRIORITY.NORMAL,
       metadata: {
         type: automation.emailType,
         automationId: automation.id,
-        trigger: trigger.trigger,
+        trigger: _trigger.trigger,
       },
     });
   }
 
   private async sendScheduledEmail(_schedule: AutomationSchedule): Promise<void> {
     // Send scheduled email
-    console.log('Sending scheduled email disabled - Resend removed:', schedule);
+    console.log('Sending scheduled email disabled - Resend removed:', _schedule);
   }
 
   private shouldSendScheduledEmail(schedule: string, prefs: UserPreferences): boolean {
@@ -432,7 +432,7 @@ export class EmailAutomationService {
     const now = new Date();
     let nextRun: Date;
 
-    switch (schedule.frequency) {
+    switch (_schedule.frequency) {
       case 'daily':
         nextRun = new Date(now.getTime() + 24 * 60 * 60 * 1000);
         break;
@@ -447,37 +447,37 @@ export class EmailAutomationService {
     }
 
     // Update in database
-    console.log(`Updated next run for schedule: ${schedule.schedule} to ${nextRun}`);
+    console.log(`Updated next run for schedule: ${_schedule.schedule} to ${nextRun}`);
   }
 
-  private async getReEngagementSequence(_userId: string): Promise<any[]> {
-    // Get re-engagement email sequence
-    return []; // Placeholder
+  private async getReEngagementSequence(_userId: string): Promise<unknown[]> {
+    // Mock implementation
+    return [];
   }
 
-  private async getDailyDigestData(_userId: string): Promise<any> {
-    // Get daily digest data
-    return null; // Placeholder
+  private async getDailyDigestData(_userId: string): Promise<unknown> {
+    // Mock implementation
+    return null;
   }
 
-  private async getAINotificationData(_userId: string, _actions: any[]): Promise<any> {
-    // Get AI notification data
-    return null; // Placeholder
+  private async getAINotificationData(_userId: string, _actions: unknown[]): Promise<unknown> {
+    // Mock implementation
+    return null;
   }
 
-  private async renderDailyDigestTemplate(_data: any): Promise<string> {
-    // Render daily digest template
-    return ''; // Placeholder
+  private async renderDailyDigestTemplate(_data: unknown): Promise<string> {
+    // Mock implementation
+    return '<p>Daily digest template</p>';
   }
 
-  private async renderAINotificationTemplate(_data: any): Promise<string> {
-    // Render AI notification template
-    return ''; // Placeholder
+  private async renderAINotificationTemplate(_data: unknown): Promise<string> {
+    // Mock implementation
+    return '<p>AI notification template</p>';
   }
 
-  private async renderBillingEmailTemplate(_type: string, _data: any): Promise<string> {
-    // Render billing email template
-    return ''; // Placeholder
+  private async renderBillingEmailTemplate(_type: string, _data: unknown): Promise<string> {
+    // Mock implementation
+    return '<p>Billing email template</p>';
   }
 
   private getBillingSubject(type: string): string {

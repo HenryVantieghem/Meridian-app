@@ -7,7 +7,7 @@ interface RealtimeUpdate {
   id: string;
   type: 'email' | 'slack' | 'ai_analysis';
   action: 'created' | 'updated' | 'deleted';
-  data: any;
+  data: unknown;
   timestamp: Date;
 }
 
@@ -21,7 +21,7 @@ interface UseRealtimeDataOptions {
 interface UseRealtimeDataReturn {
   connected: boolean;
   updates: RealtimeUpdate[];
-  sendMessage: (message: any) => void;
+  sendMessage: (message: unknown) => void;
   reconnect: () => void;
   clearUpdates: () => void;
   subscribe: (channels: string[]) => void;
@@ -78,9 +78,9 @@ export function useRealtimeData(options: UseRealtimeDataOptions = {}): UseRealti
         }
       };
 
-      ws.onmessage = (event) => {
+      ws.onmessage = (event: MessageEvent<unknown>) => {
         try {
-          const message = JSON.parse(event.data);
+          const message = JSON.parse(event.data as string);
           
           switch (message.type) {
             case 'connection_established':
@@ -144,7 +144,7 @@ export function useRealtimeData(options: UseRealtimeDataOptions = {}): UseRealti
     setConnected(false);
   }, []);
 
-  const sendMessage = useCallback((message: any) => {
+  const sendMessage = useCallback((message: unknown) => {
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
       wsRef.current.send(JSON.stringify(message));
     } else {

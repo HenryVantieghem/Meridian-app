@@ -300,7 +300,7 @@ async function handleTrialWillEnd(subscription: StripeSubscription) {
   }
 }
 
-// async function _handleTrialEnded(_subscription: StripeSubscription) {
+async function _handleTrialEnded(subscription: StripeSubscription) {
   try {
     const { userId } = subscription.metadata;
     
@@ -316,7 +316,7 @@ async function handleTrialWillEnd(subscription: StripeSubscription) {
   } catch (error) {
     console.error('Error handling trial ended:', error);
   }
-// }
+}
 
 // Utility functions
 function getProductTier(productId: string): string {

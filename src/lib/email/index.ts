@@ -65,7 +65,7 @@ export interface Email {
   size: number;
   snippet: string;
   provider: 'gmail' | 'outlook' | 'slack';
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface EmailAttachment {

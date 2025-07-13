@@ -7,7 +7,7 @@ interface RealtimeUpdate {
   id: string;
   type: 'email' | 'slack' | 'ai_analysis';
   action: 'created' | 'updated' | 'deleted';
-  data: any;
+  data: unknown;
   timestamp: Date;
   userId: string;
 }
@@ -51,7 +51,7 @@ class RealtimeServer {
     this.isInitialized = true;
   }
 
-  private async handleConnection(ws: WebSocket, request: any) {
+  private async handleConnection(ws: WebSocket, request: unknown) {
     try {
       const { query } = parse(request.url || '', true);
       const token = query.token as string;
@@ -153,7 +153,7 @@ class RealtimeServer {
     }
   }
 
-  private sendToUser(userId: string, data: any) {
+  private sendToUser(userId: string, data: unknown) {
     const client = this.clients.get(userId);
     if (client && client.ws.readyState === WebSocket.OPEN) {
       try {

@@ -50,7 +50,7 @@ export class ProcessingError extends Error {
 export class EmailProcessor {
   private fetcher: EmailFetcher;
   private analyzer: EmailAnalyzer;
-  private supabase: any;
+  private supabase: ReturnType<typeof createClient>;
   private activeJobs: Map<string, ProcessingJob> = new Map();
   private processingQueue: ProcessingJob[] = [];
   private isProcessing = false;
@@ -158,7 +158,7 @@ export class EmailProcessor {
       
       try {
         await this.processJob(job);
-      } catch (error) {
+      } catch (error: unknown) {
         console.error(`Error processing job ${job.id}:`, error);
         job.status = 'failed';
         job.error = error instanceof Error ? error.message : 'Unknown error';
@@ -201,9 +201,9 @@ export class EmailProcessor {
       job.updatedAt = new Date();
       await this.updateJob(job);
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       job.status = 'failed';
-      job.error = error.message;
+      job.error = error instanceof Error ? error.message : 'Unknown error';
       job.updatedAt = new Date();
       await this.updateJob(job);
       throw error;
@@ -229,7 +229,7 @@ export class EmailProcessor {
         }
 
         allEmails.push(...emails);
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error(`Error fetching emails from ${provider.name}:`, error);
         // Continue with other providers
       }
@@ -275,7 +275,7 @@ export class EmailProcessor {
    */
   private async processBatch(
     emails: EmailMessage[],
-    userContext: any
+    userContext: unknown
   ): Promise<ProcessingResult[]> {
     const results: ProcessingResult[] = [];
 
@@ -342,7 +342,7 @@ export class EmailProcessor {
   /**
    * Get user context for analysis
    */
-  private async getUserContext(userId: string): Promise<any> {
+  private async getUserContext(userId: string): Promise<unknown> {
     try {
       const { data, error } = await this.supabase
         .from('user_profiles')

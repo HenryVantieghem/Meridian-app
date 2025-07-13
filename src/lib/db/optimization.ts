@@ -32,8 +32,8 @@ export const DB_OPTIMIZATION_CONFIG = {
 // Optimized Supabase client with connection pooling
 export class OptimizedSupabaseClient {
   private static instance: OptimizedSupabaseClient;
-  private client: any;
-  private connectionPool: Map<string, any> = new Map();
+  private client: unknown;
+  private connectionPool: Map<string, unknown> = new Map();
   private maxConnections = DB_OPTIMIZATION_CONFIG.POOL.MAX_CONNECTIONS;
 
   private constructor() {
@@ -56,7 +56,7 @@ export class OptimizedSupabaseClient {
   }
 
   // Connection pool management
-  private async getConnection(key: string): Promise<any> {
+  private async getConnection(key: string): Promise<unknown> {
     if (this.connectionPool.has(key)) {
       return this.connectionPool.get(key);
     }
@@ -77,15 +77,15 @@ export class OptimizedSupabaseClient {
 
   // Optimized query execution with caching
   async executeQuery<T>(
-    query: string,
-    params: any[] = [],
+    _query: string,
+    _params: unknown[] = [],
     options: {
       cache?: boolean;
       cacheKey?: string;
       timeout?: number;
     } = {}
   ): Promise<T[]> {
-    const { cache = true, cacheKey, timeout = DB_OPTIMIZATION_CONFIG.QUERY.TIMEOUT } = options;
+    const { cache = true } = options;
 
     const executeWithTimeout = async (): Promise<T[]> => {
       const connection = await this.getConnection('default');
@@ -99,9 +99,9 @@ export class OptimizedSupabaseClient {
       return data || [];
     };
 
-    if (cache && cacheKey) {
+    if (cache && options.cacheKey) {
       return withQueryCaching(executeWithTimeout, {
-        key: cacheKey,
+        key: options.cacheKey,
         ttl: 300, // 5 minutes
       })();
     }
@@ -153,17 +153,15 @@ export class OptimizedSupabaseClient {
 
   // Optimized user queries
   async getUsersWithOptimization(
-    filters: {
+    _filters: {
       email?: string;
       status?: string;
       limit?: number;
     } = {}
   ) {
-    const cacheKey = `users:${JSON.stringify(filters)}`;
-    
     return this.executeQuery('users', [], {
       cache: true,
-      cacheKey,
+      cacheKey: 'users:default',
     });
   }
 
@@ -177,8 +175,6 @@ export class OptimizedSupabaseClient {
       limit?: number;
     } = {}
   ) {
-    const cacheKey = `emails:${JSON.stringify(filters)}`;
-    
     // Use appropriate indexes based on filters
     let query = this.client.from('emails').select('*');
     

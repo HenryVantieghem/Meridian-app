@@ -98,22 +98,22 @@ export type {
 // Monitoring Utilities
 export const monitoringUtils = {
   // Performance tracking
-  trackApiPerformance: (req: any, res: any, startTime: number) => {
+  trackApiPerformance: (req: unknown, res: unknown, startTime: number) => {
     return performanceMonitoring.trackApiPerformance(req, res, startTime);
   },
 
   // Error tracking
-  captureError: (error: Error | AppError, context?: any) => {
+  captureError: (error: Error | AppError, context?: unknown) => {
     return errorTracking.captureError(error, context);
   },
 
   // User analytics
-  trackEvent: (userId: string, sessionId: string, type: UserEventType, properties?: any) => {
+  trackEvent: (userId: string, sessionId: string, type: UserEventType, properties?: unknown) => {
     return userAnalytics.trackEvent(userId, sessionId, type, properties);
   },
 
   // Security monitoring
-  checkRateLimit: (type: keyof typeof rateLimiters, req: any) => {
+  checkRateLimit: (type: keyof typeof rateLimiters, req: unknown) => {
     return rateLimiters[type].middleware(req);
   },
 
@@ -133,7 +133,7 @@ export const monitoringMiddleware = {
   performance: performanceMiddleware,
 
   // Security middleware
-  security: (req: any) => {
+  security: (req: unknown) => {
     return securityMiddleware(req);
   },
 

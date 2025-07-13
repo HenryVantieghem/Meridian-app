@@ -24,7 +24,7 @@ export interface EmailMessage {
   attachmentCount: number;
   size: number;
   provider: 'gmail' | 'outlook';
-  rawData: any;
+  rawData: unknown;
 }
 
 export interface EmailProvider {
@@ -56,9 +56,26 @@ export class EmailFetchError extends Error {
   }
 }
 
+export interface EmailFetcherConfig {
+  provider: 'gmail' | 'outlook' | 'imap';
+  credentials: unknown;
+  options?: {
+    maxEmails?: number;
+    includeAttachments?: boolean;
+    markAsRead?: boolean;
+  };
+}
+
+export interface EmailFetcherResult {
+  emails: EmailMessage[];
+  totalCount: number;
+  hasMore: boolean;
+  error?: string;
+}
+
 export class EmailFetcher {
-  private gmailClient: any;
-  private outlookClient: any;
+  private gmailClient: ReturnType<typeof google.gmail>;
+  private outlookClient: Client;
 
   constructor() {
     this.initializeClients();
@@ -144,12 +161,14 @@ export class EmailFetcher {
       }
 
       return emails;
-    } catch (error: any) {
+    } catch (error: unknown) {
       const isRetryable = this.isRetryableError(error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      const errorCode = (error as { code?: string }).code;
       throw new EmailFetchError(
-        `Failed to fetch Gmail emails: ${error.message}`,
+        `Failed to fetch Gmail emails: ${errorMessage}`,
         'gmail',
-        error.code,
+        errorCode,
         isRetryable
       );
     }
@@ -202,12 +221,14 @@ export class EmailFetcher {
       }
 
       return emails;
-    } catch (error: any) {
+    } catch (error: unknown) {
       const isRetryable = this.isRetryableError(error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      const errorCode = (error as { code?: string }).code;
       throw new EmailFetchError(
-        `Failed to fetch Outlook emails: ${error.message}`,
+        `Failed to fetch Outlook emails: ${errorMessage}`,
         'outlook',
-        error.code,
+        errorCode,
         isRetryable
       );
     }
@@ -268,8 +289,8 @@ export class EmailFetcher {
       labels: message.labelIds || [],
       isRead: !message.labelIds?.includes('UNREAD'),
       isStarred: message.labelIds?.includes('STARRED') || false,
-      hasAttachments: message.payload.parts?.some((part: any) => part.filename) || false,
-      attachmentCount: message.payload.parts?.filter((part: any) => part.filename).length || 0,
+      hasAttachments: message.payload.parts?.some((part: Record<string, unknown>) => part.filename) || false,
+      attachmentCount: message.payload.parts?.filter((part: Record<string, unknown>) => part.filename).length || 0,
       size: parseInt(message.sizeEstimate) || 0,
       provider: 'gmail',
       rawData: message
@@ -279,7 +300,7 @@ export class EmailFetcher {
   /**
    * Parse Outlook message format
    */
-  private parseOutlookMessage(message: any): EmailMessage {
+  private parseOutlookMessage(message: Record<string, unknown>): EmailMessage {
     const from = message.from?.emailAddress?.address || '';
     const fromName = message.from?.emailAddress?.name || '';
 
@@ -288,9 +309,9 @@ export class EmailFetcher {
       threadId: message.conversationId || message.id,
       from,
       fromName,
-      to: message.toRecipients?.map((r: any) => r.emailAddress.address) || [],
-      cc: message.ccRecipients?.map((r: any) => r.emailAddress.address) || [],
-      bcc: message.bccRecipients?.map((r: any) => r.emailAddress.address) || [],
+      to: message.toRecipients?.map((r: Record<string, unknown>) => (r.emailAddress as { address: string }).address) || [],
+      cc: message.ccRecipients?.map((r: Record<string, unknown>) => (r.emailAddress as { address: string }).address) || [],
+      bcc: message.bccRecipients?.map((r: Record<string, unknown>) => (r.emailAddress as { address: string }).address) || [],
       subject: message.subject || '',
       body: message.body?.content || '',
       bodyPlain: message.body?.contentType === 'text' ? message.body.content : '',
@@ -326,7 +347,7 @@ export class EmailFetcher {
    * Setup Gmail push notifications
    */
   private async setupGmailWatch(
-    provider: EmailProvider,
+    _provider: EmailProvider,
     _callback: (email: EmailMessage) => void
   ): Promise<void> {
     try {
@@ -347,11 +368,13 @@ export class EmailFetcher {
       // In a real implementation, you'd set up a webhook endpoint
       // to receive the push notifications and call the callback
       console.log('Gmail watch setup complete');
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      const errorCode = (error as { code?: string }).code;
       throw new EmailFetchError(
-        `Failed to setup Gmail watch: ${error.message}`,
+        `Failed to setup Gmail watch: ${errorMessage}`,
         'gmail',
-        error.code,
+        errorCode,
         true
       );
     }
@@ -361,18 +384,20 @@ export class EmailFetcher {
    * Setup Outlook webhooks
    */
   private async setupOutlookWebhooks(
-    provider: EmailProvider,
+    _provider: EmailProvider,
     _callback: (email: EmailMessage) => void
   ): Promise<void> {
     try {
       // In a real implementation, you'd set up Microsoft Graph webhooks
       // to receive notifications when emails arrive
       console.log('Outlook webhook setup complete');
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      const errorCode = (error as { code?: string }).code;
       throw new EmailFetchError(
-        `Failed to setup Outlook webhooks: ${error.message}`,
+        `Failed to setup Outlook webhooks: ${errorMessage}`,
         'outlook',
-        error.code,
+        errorCode,
         true
       );
     }
@@ -381,7 +406,7 @@ export class EmailFetcher {
   /**
    * Helper methods
    */
-  private getHeaderValue(headers: any[], name: string): string {
+  private getHeaderValue(headers: Array<{ name: string; value: string }>, name: string): string {
     const header = headers.find(h => h.name.toLowerCase() === name.toLowerCase());
     return header?.value || '';
   }
@@ -406,9 +431,11 @@ export class EmailFetcher {
     return emailList.split(',').map(email => email.trim());
   }
 
-  private isRetryableError(error: any): boolean {
+  private isRetryableError(error: unknown): boolean {
     const retryableCodes = ['rate_limit_exceeded', 'quota_exceeded', 'internal_error'];
-    return retryableCodes.includes(error.code) || error.status >= 500;
+    const errorCode = (error as { code?: string }).code;
+    const errorStatus = (error as { status?: number }).status;
+    return retryableCodes.includes(errorCode || '') || (errorStatus || 0) >= 500;
   }
 
   /**

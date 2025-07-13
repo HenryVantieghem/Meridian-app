@@ -238,7 +238,7 @@ export function getValidatedEnv() {
 // Production-specific utilities
 export const productionUtils = {
   // Sanitize sensitive data for logging
-  sanitizeForLogging: (data: any): any => {
+  sanitizeForLogging: (data: unknown): unknown => {
     const sensitiveKeys = ['password', 'token', 'secret', 'key', 'authorization'];
     const sanitized = { ...data };
     

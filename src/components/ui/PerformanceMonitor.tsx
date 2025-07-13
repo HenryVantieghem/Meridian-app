@@ -46,7 +46,7 @@ export function PerformanceMonitor({ showDetails = false, className }: Performan
             setMetrics(prev => ({ ...prev, fid: event.processingStart - event.startTime }));
           }
           if (entry.entryType === 'layout-shift') {
-            const cls = (entry as any).value;
+            const cls = (entry as unknown as { value: number }).value;
             setMetrics(prev => ({ ...prev, cls }));
           }
         });
