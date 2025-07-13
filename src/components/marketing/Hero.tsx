@@ -38,11 +38,7 @@ export function Hero() {
             className="mb-8"
           >
             <h1 className="text-hero-cartier text-black font-serif mb-6 leading-tight">
-              The Ultimate
-              <br />
-              <span className="text-brand-burgundy">AI Strategic Commander</span>
-              <br />
-              for Executive Excellence
+              Transform <span className="text-brand-burgundy">Chaos</span> into <span className="text-brand-burgundy">Clarity</span>.
             </h1>
           </motion.div>
 
@@ -67,12 +63,10 @@ export function Hero() {
             className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16"
           >
             <Button 
-              variant="cartier" 
-              size="xl" 
-              className="text-lg px-10 py-4"
-              aria-label="Begin strategic trial - Start your free trial of Napoleon AI"
+              className="rounded-2xl px-4 py-2 bg-black text-white hover:bg-brand-burgundy text-lg transition-all duration-200"
+              aria-label="Get Started with Napoleon AI"
             >
-              Begin Strategic Trial
+              Get Started
               <ArrowRight className="ml-3 w-5 h-5" aria-hidden="true" />
             </Button>
             <Button 
