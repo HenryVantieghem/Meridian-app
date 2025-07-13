@@ -3,11 +3,6 @@ import React, { useEffect } from 'react';
 import { logger } from '@/lib/monitoring/logging';
 import { performanceMonitor } from './performance';
 
-interface PerformanceMonitoringOptions {
-  name: string;
-  trackMetrics?: boolean;
-}
-
 export function withPerformanceMonitoring<P extends Record<string, unknown>>(
   Component: React.ComponentType<P>
 ) {

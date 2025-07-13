@@ -231,7 +231,7 @@ export class DataProtection {
   /**
    * Encrypt sensitive user data
    */
-  async encryptUserData(userId: string, data: any): Promise<string> {
+  async encryptUserData(userId: string, data: unknown): Promise<string> {
     const jsonData = JSON.stringify(data);
     return await this.encryptionService.encrypt(jsonData);
   }
@@ -239,7 +239,7 @@ export class DataProtection {
   /**
    * Decrypt sensitive user data
    */
-  async decryptUserData(userId: string, encryptedData: string): Promise<any> {
+  async decryptUserData(userId: string, encryptedData: string): Promise<unknown> {
     const decrypted = await this.encryptionService.decrypt(encryptedData);
     return JSON.parse(decrypted);
   }
@@ -283,7 +283,7 @@ export class DataProtection {
   /**
    * Sanitize sensitive data for logging
    */
-  sanitizeForLogging(data: any): any {
+  sanitizeForLogging(data: unknown): unknown {
     if (typeof data === 'string') {
       // Mask email addresses
       return data.replace(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g, '[EMAIL]');
@@ -320,7 +320,7 @@ export class DataProtection {
   /**
    * Validate session token
    */
-  validateSessionToken(token: string, userId: string, maxAge: number = 24 * 60 * 60 * 1000): boolean {
+  validateSessionToken(token: string, userId: string, _maxAge: number = 24 * 60 * 60 * 1000): boolean {
     try {
       // This is a simplified validation - in practice, you'd store tokens in a database
       // and check against stored values with proper expiration handling

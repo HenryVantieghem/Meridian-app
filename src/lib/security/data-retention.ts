@@ -509,7 +509,7 @@ export class DataRetentionService {
         created_at: string;
         updated_at: string;
         is_active: boolean;
-        conditions: Record<string, any>;
+        conditions: Record<string, unknown>;
       }) => {
         this.rules.set(rule.category, {
           id: rule.id,

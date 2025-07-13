@@ -242,7 +242,7 @@ export const securityAudit = {
   },
 
   // Audit user permissions
-  async auditUserPermissions(userId: string): Promise<{
+  async auditUserPermissions(_userId: string): Promise<{
     permissions: string[];
     roles: string[];
     lastAccess: Date;
@@ -258,7 +258,7 @@ export const securityAudit = {
   },
 
   // Check data access patterns
-  async auditDataAccess(userId: string): Promise<{
+  async auditDataAccess(_userId: string): Promise<{
     tables: string[];
     operations: string[];
     frequency: number;
@@ -282,7 +282,7 @@ export const securityMonitoring = {
     userId?: string;
     ip?: string;
     userAgent?: string;
-    details: any;
+    details: unknown;
   }) => {
     console.log('Security event:', event);
     // Implementation would log to security monitoring service
