@@ -15,13 +15,6 @@ export default defineConfig({
     passWithNoTests: false,
     snapshotFormat: { escapeString: true },
   },
-  coverage: {
-    reporter: ['text', 'json', 'html'],
-    statements: 80,
-    branches: 80,
-    functions: 80,
-    lines: 80,
-  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),

@@ -1,5 +1,4 @@
 import { google } from 'googleapis';
-import { OAuth2Client } from 'google-auth-library';
 
 export interface GmailEmail {
   id: string;
@@ -31,7 +30,7 @@ export interface GmailAttachment {
 }
 
 export class GmailClient {
-  private oauth2Client: OAuth2Client;
+  private oauth2Client: any;
   private gmail: any;
 
   constructor(accessToken: string, refreshToken?: string) {

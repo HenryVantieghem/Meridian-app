@@ -133,3 +133,5 @@ export function BillingPortal({ className }: BillingPortalProps) {
     </div>
   );
 } 
+
+export default BillingPortal; 
