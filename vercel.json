@@ -7,6 +7,21 @@
   "functions": {
     "src/app/api/**/*.ts": {
       "maxDuration": 30
+    },
+    "src/app/api/emails/analyze/route.ts": {
+      "maxDuration": 60
+    },
+    "src/app/api/emails/batch-analyze/route.ts": {
+      "maxDuration": 300
+    },
+    "src/app/api/ai/generate-reply/route.ts": {
+      "maxDuration": 60
+    },
+    "src/app/api/billing/checkout/route.ts": {
+      "maxDuration": 30
+    },
+    "src/app/api/email/send/route.ts": {
+      "maxDuration": 30
     }
   },
   "headers": [
@@ -157,23 +172,6 @@
       "NEXT_PUBLIC_APP_NAME": "@NEXT_PUBLIC_APP_NAME",
       "REALTIME_PORT": "@REALTIME_PORT",
       "NODE_ENV": "@NODE_ENV"
-    }
-  },
-  "functions": {
-    "src/app/api/emails/analyze/route.ts": {
-      "maxDuration": 60
-    },
-    "src/app/api/emails/batch-analyze/route.ts": {
-      "maxDuration": 300
-    },
-    "src/app/api/ai/generate-reply/route.ts": {
-      "maxDuration": 60
-    },
-    "src/app/api/billing/checkout/route.ts": {
-      "maxDuration": 30
-    },
-    "src/app/api/email/send/route.ts": {
-      "maxDuration": 30
     }
   },
   "regions": ["iad1"]

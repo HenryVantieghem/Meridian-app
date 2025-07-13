@@ -9,7 +9,8 @@ import "@/lib/invariantEnv";
 const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
-  variable: '--font-inter',
+  preload: true,
+  fallback: ['system-ui', 'arial'],
 });
 
 const playfair = Playfair_Display({
@@ -91,7 +92,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
+    <html lang="en" className={playfair.variable}>
       <body className={inter.className}>
         <a
           href="#main-content"

@@ -12,10 +12,6 @@ export default function ClerkWrapper({ children }: { children: React.ReactNode }
     setIsRouterReady(true);
   }, [pathname]);
   
-  if (!isRouterReady) {
-    return <div>Loading...</div>;
-  }
-  
   return (
     <ClerkProvider
       publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY!}
@@ -26,7 +22,7 @@ export default function ClerkWrapper({ children }: { children: React.ReactNode }
         },
       }}
     >
-      {children}
+      {isRouterReady ? children : <div>Loading...</div>}
     </ClerkProvider>
   );
 } 

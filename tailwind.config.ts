@@ -64,6 +64,9 @@ const config: Config = {
         },
         'brand-burgundy': '#5D001E',
       },
+      ringColor: {
+        'brand-burgundy': '#5D001E',
+      },
       fontFamily: {
         'playfair': ['Playfair Display', 'serif'],
         'inter': ['Inter', 'sans-serif'],

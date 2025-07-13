@@ -1,5 +1,6 @@
 import Stripe from 'stripe';
 import { NextRequest } from 'next/server';
+import { loadStripe } from '@stripe/stripe-js';
 
 // Stripe configuration with proper error handling
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -327,6 +328,11 @@ export const attachPaymentMethod = async (
   } catch (error) {
     throw handleStripeError(error);
   }
+};
+
+// Dynamic import for Stripe
+export const getStripe = () => {
+  return loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 };
 
 // Security utilities
