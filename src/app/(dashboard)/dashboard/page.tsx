@@ -11,6 +11,7 @@ import { Typography } from '@/components/ui/typography';
 import { Badge } from '@/components/ui/badge';
 import { LoadingSpinner, DashboardSkeleton } from '@/components/ui/LoadingSpinner';
 import { Email, SlackMessage } from '@/types';
+import OnboardingModal from '@/components/onboarding/OnboardingModal';
 
 // Lazy load heavy components
 const EmailList = dynamic(() => import('@/components/email/EmailList').then(mod => ({ default: mod.EmailList })), {
@@ -52,6 +53,7 @@ export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<'emails' | 'messages'>('emails');
   const [selectedWorkspace, setSelectedWorkspace] = useState<string>('');
   const [showAIActions, setShowAIActions] = useState(true);
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   // Real data hooks
   const {
@@ -138,6 +140,14 @@ export default function DashboardPage() {
     }
   }, [workspaces, selectedWorkspace]);
 
+  // Check if user needs onboarding
+  useEffect(() => {
+    const hasCompletedOnboarding = localStorage.getItem('selectedPersona') && localStorage.getItem('userPreferences');
+    if (!hasCompletedOnboarding) {
+      setShowOnboarding(true);
+    }
+  }, []);
+
   // Calculate statistics
   const unreadEmails = emails.filter(email => !email.read && !email.archived).length;
   const urgentEmails = emails.filter(email => email.priority === 'critical' && !email.archived).length;
@@ -180,6 +190,12 @@ export default function DashboardPage() {
 
   return (
     <div className="dashboard-cartier">
+      {/* Onboarding Modal */}
+      <OnboardingModal 
+        isOpen={showOnboarding} 
+        onClose={() => setShowOnboarding(false)} 
+      />
+
       {/* Left Sidebar */}
       <div className="sidebar-left">
         <Sidebar
