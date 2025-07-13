@@ -6,6 +6,11 @@ const config: Config = {
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
+  safelist: [
+    'ring-brand-burgundy',
+    'focus:ring-brand-burgundy',
+    'focus-visible:ring-brand-burgundy',
+  ],
   theme: {
     extend: {
       colors: {
@@ -128,7 +133,9 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/forms'),
+  ],
 };
 
 export default config; 

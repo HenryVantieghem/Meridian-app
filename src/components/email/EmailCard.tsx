@@ -16,7 +16,8 @@ import {
   User,
   AlertCircle,
   CheckCircle,
-  Clock as ClockIcon
+  Clock as ClockIcon,
+  Check
 } from 'lucide-react';
 import { Email, EmailPriority } from '@/types';
 import { formatDistanceToNow } from 'date-fns';
@@ -27,6 +28,8 @@ interface EmailCardProps {
   onMarkAsUnread: () => void;
   onDelete: () => void;
   onUpdatePriority: (priority: EmailPriority) => void;
+  onDone?: () => void;
+  onSnooze?: () => void;
   className?: string;
 }
 
@@ -36,6 +39,8 @@ export function EmailCard({
   onMarkAsUnread, 
   onDelete, 
   onUpdatePriority,
+  onDone,
+  onSnooze,
   className = '' 
 }: EmailCardProps) {
   const [isHovered, setIsHovered] = useState(false);
@@ -76,6 +81,22 @@ export function EmailCard({
       onMarkAsRead();
     } else {
       onMarkAsUnread();
+    }
+  };
+
+  const handleDone = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onDone) {
+      onDone();
+    } else {
+      handleToggleRead();
+    }
+  };
+
+  const handleSnooze = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onSnooze) {
+      onSnooze();
     }
   };
 
@@ -185,47 +206,72 @@ export function EmailCard({
                 </Typography>
               </div>
 
-              {/* Priority actions */}
-              <div className="flex items-center space-x-1">
-                {email.priority !== 'low' && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onUpdatePriority('low');
-                    }}
-                    className="h-6 px-2 text-xs"
-                  >
-                    Low
-                  </Button>
-                )}
-                {email.priority !== 'medium' && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onUpdatePriority('medium');
-                    }}
-                    className="h-6 px-2 text-xs"
-                  >
-                    Medium
-                  </Button>
-                )}
-                {email.priority !== 'high' && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onUpdatePriority('high');
-                    }}
-                    className="h-6 px-2 text-xs"
-                  >
-                    High
-                  </Button>
-                )}
+              {/* Action Buttons */}
+              <div className="flex items-center space-x-2">
+                {/* Done Button */}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleDone}
+                  className="px-4 py-2 rounded-2xl bg-black text-white hover:bg-brand-burgundy"
+                >
+                  <Check className="h-4 w-4 mr-1" />
+                  Done
+                </Button>
+
+                {/* Snooze Button */}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleSnooze}
+                  className="px-4 py-2 rounded-2xl"
+                >
+                  <Clock className="h-4 w-4 mr-1" />
+                  Snooze
+                </Button>
+
+                {/* Priority actions */}
+                <div className="flex items-center space-x-1">
+                  {email.priority !== 'low' && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onUpdatePriority('low');
+                      }}
+                      className="h-6 px-2 text-xs"
+                    >
+                      Low
+                    </Button>
+                  )}
+                  {email.priority !== 'medium' && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onUpdatePriority('medium');
+                      }}
+                      className="h-6 px-2 text-xs"
+                    >
+                      Medium
+                    </Button>
+                  )}
+                  {email.priority !== 'high' && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onUpdatePriority('high');
+                      }}
+                      className="h-6 px-2 text-xs"
+                    >
+                      High
+                    </Button>
+                  )}
+                </div>
               </div>
             </div>
           </div>

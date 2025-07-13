@@ -28,6 +28,15 @@ const ContextPanel = dynamic(() => import('@/components/dashboard/ContextPanel')
   ssr: false
 });
 
+const AIActionSidebar = dynamic(() => import('@/components/dashboard/AIActionSidebar').then(mod => ({ default: mod.AIActionSidebar })), {
+  loading: () => <LoadingSpinner size="sm" text="Loading AI actions..." />,
+  ssr: false
+});
+
+const CommandBar = dynamic(() => import('@/components/CommandBar').then(mod => ({ default: mod.CommandBar })), {
+  ssr: false
+});
+
 const Sidebar = dynamic(() => import('@/components/dashboard/Sidebar').then(mod => ({ default: mod.Sidebar })), {
   loading: () => <LoadingSpinner size="sm" text="Loading navigation..." />,
   ssr: false
@@ -42,6 +51,7 @@ export default function DashboardPage() {
   const [selectedItem, setSelectedItem] = useState<Email | SlackMessage | null>(null);
   const [activeTab, setActiveTab] = useState<'emails' | 'messages'>('emails');
   const [selectedWorkspace, setSelectedWorkspace] = useState<string>('');
+  const [showAIActions, setShowAIActions] = useState(true);
 
   // Real data hooks
   const {
@@ -69,6 +79,47 @@ export default function DashboardPage() {
   });
 
   const { updates } = useRealtimeData();
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // E = Mark as Done
+      if (e.key === 'e' && !e.metaKey && !e.ctrlKey) {
+        e.preventDefault();
+        if (selectedItem) {
+          // Mark item as done
+          console.log('Marking item as done:', selectedItem.id);
+        }
+      }
+      
+      // R = Reply
+      if (e.key === 'r' && !e.metaKey && !e.ctrlKey) {
+        e.preventDefault();
+        if (selectedItem) {
+          // Open reply composer
+          console.log('Opening reply for:', selectedItem.id);
+        }
+      }
+      
+      // S = Snooze
+      if (e.key === 's' && !e.metaKey && !e.ctrlKey) {
+        e.preventDefault();
+        if (selectedItem) {
+          // Snooze item
+          console.log('Snoozing item:', selectedItem.id);
+        }
+      }
+      
+      // A = Toggle AI Actions
+      if (e.key === 'a' && !e.metaKey && !e.ctrlKey) {
+        e.preventDefault();
+        setShowAIActions(prev => !prev);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [selectedItem]);
 
   // Auto-refresh when real-time updates come in
   useEffect(() => {
@@ -107,6 +158,11 @@ export default function DashboardPage() {
 
   const handleWorkspaceChange = (workspaceId: string) => {
     setSelectedWorkspace(workspaceId);
+  };
+
+  const handleCommand = (command: string) => {
+    console.log('Executing command:', command);
+    // Handle AI commands here
   };
 
   if (!userId) {
@@ -159,12 +215,19 @@ export default function DashboardPage() {
                 <Button
                   onClick={handleSyncEmails}
                   disabled={emailsLoading}
-                  variant="cartier-secondary"
-                  size="cartier"
+                  className="px-4 py-2 rounded-2xl bg-black text-white hover:bg-brand-burgundy"
                 >
                   {emailsLoading ? 'Synchronizing...' : 'Sync Communications'}
                 </Button>
               )}
+              
+              <Button
+                onClick={() => setShowAIActions(!showAIActions)}
+                variant="outline"
+                className="px-4 py-2 rounded-2xl"
+              >
+                {showAIActions ? 'Hide' : 'Show'} AI Actions
+              </Button>
               
               <Badge className="bg-[#F8F6F0] text-black border-[#801B2B]">
                 {activeTab === 'emails' ? emails.length : messages.length} items
@@ -213,6 +276,14 @@ export default function DashboardPage() {
           onClose={() => setSelectedItem(null)}
         />
       </div>
+
+      {/* AI Action Sidebar */}
+      {showAIActions && (
+        <AIActionSidebar className="fixed right-0 top-0 h-full z-40" />
+      )}
+
+      {/* Command Bar */}
+      <CommandBar onCommand={handleCommand} />
     </div>
   );
 } 
