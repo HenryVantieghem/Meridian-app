@@ -113,6 +113,10 @@
     {
       "source": "/api/(.*)",
       "destination": "/api/$1"
+    },
+    {
+      "source": "/health",
+      "destination": "/api/health"
     }
   ],
   "env": {
@@ -145,7 +149,7 @@
       "GOOGLE_CLIENT_SECRET": "@GOOGLE_CLIENT_SECRET",
       "SLACK_CLIENT_ID": "@SLACK_CLIENT_ID",
       "SLACK_CLIENT_SECRET": "@SLACK_CLIENT_SECRET",
-      "ENCRYPTION_MASTER_KEY": "ce1c624f06ce645021123783e848113115dfa8f8ea7f6780f53f5af3b691d441"
+      "ENCRYPTION_MASTER_KEY": "@ENCRYPTION_MASTER_KEY"
     }
   },
   "regions": ["iad1"],
@@ -154,8 +158,5 @@
       "path": "/api/backup",
       "schedule": "0 2 * * *"
     }
-  ],
-  "routes": [
-    { "src": "/api/health", "dest": "/api/health" }
   ]
 } 
