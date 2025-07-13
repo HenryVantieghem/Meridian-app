@@ -212,7 +212,7 @@ export function Sidebar({
         <Button
           variant="ghost"
           className="w-full justify-start nav-item"
-          onClick={() => {/* TODO: Navigate to settings */}}
+          onClick={() => window.location.href = '/settings'}
         >
           <Settings className="h-4 w-4 mr-3" />
           {!collapsed && <span className="font-medium">Strategic Settings</span>}

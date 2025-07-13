@@ -29,8 +29,6 @@ interface RequiredEnvVars {
   
   // Runtime URLs
   NEXT_PUBLIC_APP_URL: string;
-  NEXTAUTH_SECRET: string;
-  NEXTAUTH_URL: string;
   
   // Email Service
   RESEND_API_KEY: string;
@@ -86,8 +84,6 @@ export function validateEnvironment(): RequiredEnvVars {
     
     // Runtime URLs
     'NEXT_PUBLIC_APP_URL',
-    'NEXTAUTH_SECRET',
-    'NEXTAUTH_URL',
     
     // Email Service
     'RESEND_API_KEY',
