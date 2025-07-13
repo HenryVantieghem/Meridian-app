@@ -267,3 +267,21 @@ If you need help with Napoleon:
 - Styled with Tailwind CSS
 - Icons by Lucide React
 - Animations by Framer Motion
+
+## Microsoft Teams/Outlook OAuth Scopes
+
+To enable Microsoft Teams/Outlook integration, the following Microsoft Graph API scopes are required:
+
+- `openid`
+- `profile`
+- `email`
+- `offline_access`
+- `User.Read`
+- `Mail.Read`
+- `Mail.Send`
+- `Calendars.Read`
+- `Group.Read.All`
+- `ChannelMessage.Read.All`
+- `Team.ReadBasic.All`
+
+These must be configured in your Azure AD app registration and consented by a Microsoft 365 admin.

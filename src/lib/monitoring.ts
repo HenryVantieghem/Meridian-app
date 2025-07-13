@@ -11,10 +11,6 @@ export function initializeSentry() {
       replaysOnErrorSampleRate: 1.0,
       environment: process.env.NODE_ENV || 'development',
       debug: process.env.NODE_ENV === 'development',
-      integrations: [
-        Sentry.browserTracingIntegration(),
-        Sentry.replayIntegration(),
-      ],
     });
   }
 }
