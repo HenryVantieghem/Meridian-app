@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { 
   CreditCard, 
@@ -72,25 +72,25 @@ export function BillingPortal({ className }: BillingPortalProps) {
   return (
     <div className={className}>
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+        <div className="p-6 border-b">
+          <div className="flex items-center gap-2 text-lg font-semibold">
             <CreditCard className="h-5 w-5" />
             Billing & Subscription
-          </CardTitle>
-          <CardDescription>
+          </div>
+          <div className="text-sm text-gray-500 mt-1">
             Manage your subscription and billing information
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
+          </div>
+        </div>
+        <div className="space-y-6 p-6">
           {/* Current Plan */}
           <div className="flex items-center justify-between p-4 border rounded-lg">
             <div>
               <h3 className="font-semibold">Pro Plan</h3>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-gray-500">
                 $29/month • Unlimited everything
               </p>
             </div>
-            <Badge variant="secondary">Active</Badge>
+            <Badge variant="cartier">Active</Badge>
           </div>
 
           {/* Features */}
@@ -102,7 +102,7 @@ export function BillingPortal({ className }: BillingPortalProps) {
                   <feature.icon className="h-4 w-4 text-green-500" />
                   <div>
                     <p className="text-sm font-medium">{feature.title}</p>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs text-gray-500">
                       {feature.description}
                     </p>
                   </div>
@@ -128,7 +128,7 @@ export function BillingPortal({ className }: BillingPortalProps) {
               <p className="text-sm text-red-700">{error}</p>
             </div>
           )}
-        </CardContent>
+        </div>
       </Card>
     </div>
   );

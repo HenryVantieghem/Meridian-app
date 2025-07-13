@@ -1,3 +1,4 @@
+;['OPENAI_API_KEY','SUPABASE_SERVICE_ROLE_KEY','STRIPE_SECRET_KEY'].forEach(k=>{if(!process.env[k]) throw new Error(`❌ Missing env: ${k}`);});
 // Napoleon AI Platform - next.config.ts
 import type { NextConfig } from 'next';
 

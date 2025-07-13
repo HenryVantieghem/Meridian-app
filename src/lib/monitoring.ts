@@ -57,16 +57,5 @@ export function setExtra(key: string, value: unknown) {
   }
 }
 
-// Performance monitoring
-export function startTransaction(name: string, operation: string) {
-  if (process.env.SENTRY_DSN) {
-    return Sentry.startTransaction({
-      name,
-      op: operation,
-    });
-  }
-  return null;
-}
-
 // Initialize on module load
 initializeSentry(); 
