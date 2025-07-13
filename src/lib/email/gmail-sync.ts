@@ -236,7 +236,7 @@ export class GmailClient {
    */
   async refreshToken(): Promise<{ access_token: string; refresh_token?: string }> {
     try {
-      const { credentials } = (this.oauth2Client as any).refreshAccessToken();
+      const { credentials } = (this.oauth2Client as unknown as { refreshAccessToken: () => { credentials: { access_token: string; refresh_token?: string } } }).refreshAccessToken();
       return {
         access_token: credentials.access_token!,
         refresh_token: credentials.refresh_token ?? undefined

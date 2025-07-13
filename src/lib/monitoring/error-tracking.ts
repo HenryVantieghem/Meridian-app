@@ -326,7 +326,7 @@ export class ErrorTrackingService {
   /**
    * Send PagerDuty alert
    */
-  private async sendPagerDutyAlert(error: AppError, context?: Partial<ErrorContext>): Promise<void> {
+  private async sendPagerDutyAlert(error: AppError, _context?: Partial<ErrorContext>): Promise<void> {
     // Implementation would depend on PagerDuty API
     console.log('PagerDuty alert sent for critical error:', error.message);
   }

@@ -213,7 +213,7 @@ export class PerformanceMonitor {
   getPerformanceReport(): Record<string, unknown> {
     const report: Record<string, unknown> = {};
     
-    for (const [name, values] of this.metrics.entries()) {
+    for (const [name] of this.metrics.entries()) {
       report[name] = this.getMetricStats(name);
     }
 
@@ -262,10 +262,10 @@ export class ErrorTracker {
   }
 
   getErrorStats(): { total: number; recent: number } {
-    const now = Date.now();
-    const oneHourAgo = now - 60 * 60 * 1000;
+    // const now = Date.now();
+    // const oneHourAgo = now - 60 * 60 * 1000;
     
-    const recent = this.errors.filter(_error => {
+    const recent = this.errors.filter(() => {
       // This is a simplified check - in practice you'd store timestamps
       return true; // Assume all errors are recent for demo
     }).length;

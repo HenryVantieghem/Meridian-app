@@ -300,23 +300,23 @@ async function handleTrialWillEnd(subscription: StripeSubscription) {
   }
 }
 
-async function _handleTrialEnded(subscription: StripeSubscription) {
-  try {
-    const { userId } = subscription.metadata;
-    
-    if (!userId) {
-      console.error('No userId in subscription metadata');
-      return;
-    }
-
-    // Send trial ended notification
-    await sendTrialEndedEmail(userId, subscription);
-
-    console.log(`Trial ended for user ${userId}: ${subscription.id}`);
-  } catch (error) {
-    console.error('Error handling trial ended:', error);
-  }
-}
+// async function _handleTrialEnded(subscription: StripeSubscription) {
+//   try {
+//     const { userId } = subscription.metadata;
+//     
+//     if (!userId) {
+//       console.error('No userId in subscription metadata');
+//       return;
+//     }
+//
+//     // Send trial ended notification
+//     await sendTrialEndedEmail(userId, subscription);
+//
+//     console.log(`Trial ended for user ${userId}: ${subscription.id}`);
+//   } catch (error) {
+//     console.error('Error handling trial ended:', error);
+//   }
+// }
 
 // Utility functions
 function getProductTier(productId: string): string {
@@ -356,10 +356,10 @@ async function sendTrialEndingEmail(userId: string, _subscription: StripeSubscri
   console.log(`Trial ending reminder disabled - Resend removed for user ${userId}`);
 }
 
-async function sendTrialEndedEmail(userId: string, _subscription: StripeSubscription) {
-  // Email sending disabled - Resend removed
-  console.log(`Trial ended notification disabled - Resend removed for user ${userId}`);
-}
+// async function sendTrialEndedEmail(userId: string, _subscription: StripeSubscription) {
+//   // Email sending disabled - Resend removed
+//   console.log(`Trial ended notification disabled - Resend removed for user ${userId}`);
+// }
 
 // GET endpoint for webhook verification (Stripe CLI)
 export async function GET() {

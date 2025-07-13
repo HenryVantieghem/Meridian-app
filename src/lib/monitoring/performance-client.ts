@@ -9,8 +9,7 @@ interface PerformanceMonitoringOptions {
 }
 
 export function withPerformanceMonitoring<P extends Record<string, unknown>>(
-  Component: React.ComponentType<P>,
-  options: PerformanceMonitoringOptions = { name: 'Unknown' }
+  Component: React.ComponentType<P>
 ) {
   return function PerformanceMonitoredComponent(props: P) {
     const componentName = Component.displayName || Component.name || 'Unknown';
