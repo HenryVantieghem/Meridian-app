@@ -10,7 +10,6 @@ import {
   StripeError 
 } from '@/lib/stripe/config';
 import { z } from 'zod';
-import Stripe from 'stripe';
 
 // Validation schemas
 const checkoutSchema = z.object({

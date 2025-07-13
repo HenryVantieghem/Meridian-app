@@ -1,6 +1,9 @@
 // Napoleon AI Platform - next.config.ts
 import type { NextConfig } from 'next';
 
+// Sentry configuration
+const { withSentryConfig } = require('@sentry/nextjs');
+
 const nextConfig: NextConfig = {
   output: 'standalone',
   serverExternalPackages: [
@@ -88,4 +91,11 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
 };
 
-export default nextConfig;
+// Sentry configuration options
+const sentryWebpackPluginOptions = {
+  silent: true,
+  org: "napoleon-ai",
+  project: "napoleon-ai-platform",
+};
+
+export default withSentryConfig(nextConfig, sentryWebpackPluginOptions);

@@ -3,6 +3,7 @@ import type { NextRequest } from 'next/server';
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 import { staticAssetCaching } from '@/lib/performance/caching';
 import { performanceMonitor } from '@/lib/monitoring/performance';
+import '@/lib/monitoring';
 
 // Performance monitoring middleware
 const withPerformanceMonitoring = (handler: (req: NextRequest) => NextResponse | Promise<NextResponse>) => {
