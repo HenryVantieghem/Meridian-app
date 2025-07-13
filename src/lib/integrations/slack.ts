@@ -3,7 +3,7 @@ import { SocketModeClient } from '@slack/socket-mode';
 import { LogLevel } from '@slack/logger';
 import { createClient } from '@supabase/supabase-js';
 import { logger } from '@/lib/monitoring/logging';
-import { performanceMonitor } from '@/lib/monitoring/logging';
+// import { performanceMonitor } from '@/lib/monitoring/logging';
 import crypto from 'crypto';
 
 // Slack integration types

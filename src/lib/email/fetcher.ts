@@ -313,7 +313,7 @@ export class EmailFetcher {
    */
   async setupRealtimeMonitoring(
     provider: EmailProvider,
-    callback: (email: EmailMessage) => void
+    _callback: (email: EmailMessage) => void
   ): Promise<void> {
     if (provider.name === 'gmail') {
       await this.setupGmailWatch(provider, callback);
@@ -327,7 +327,7 @@ export class EmailFetcher {
    */
   private async setupGmailWatch(
     provider: EmailProvider,
-    callback: (email: EmailMessage) => void
+    _callback: (email: EmailMessage) => void
   ): Promise<void> {
     try {
       this.gmailClient.setCredentials({
@@ -362,7 +362,7 @@ export class EmailFetcher {
    */
   private async setupOutlookWebhooks(
     provider: EmailProvider,
-    callback: (email: EmailMessage) => void
+    _callback: (email: EmailMessage) => void
   ): Promise<void> {
     try {
       // In a real implementation, you'd set up Microsoft Graph webhooks

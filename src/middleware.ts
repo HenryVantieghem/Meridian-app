@@ -58,10 +58,10 @@ const isPublicRoute = createRouteMatcher([
   '/sitemap.xml',
 ]);
 
-const isIgnoredRoute = createRouteMatcher([
-  '/api/webhooks(.*)',
-  '/api/health',
-]);
+// const isIgnoredRoute = createRouteMatcher([
+//   '/api/webhooks(.*)',
+//   '/api/health',
+// ]);
 
 // Main middleware function
 export default clerkMiddleware(async (auth, req) => {
@@ -127,7 +127,7 @@ export const config = {
 };
 
 // Performance monitoring wrapper
-export const performanceMiddleware = withPerformanceMonitoring((req: NextRequest) => {
+export const performanceMiddleware = withPerformanceMonitoring((_req: NextRequest) => {
   // This will be handled by the auth middleware
   return NextResponse.next();
 }); 

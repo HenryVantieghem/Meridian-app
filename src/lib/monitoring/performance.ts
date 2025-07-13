@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { logger } from '@/lib/monitoring/logging';
+// import { NextRequest, NextResponse } from 'next/server';
+// import { logger } from '@/lib/monitoring/logging';
 
 // Performance monitoring configuration
 export const MONITORING_CONFIG = {

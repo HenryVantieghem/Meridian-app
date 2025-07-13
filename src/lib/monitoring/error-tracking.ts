@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/nextjs';
 import { NextRequest, NextResponse } from 'next/server';
-import { BrowserTracing } from '@sentry/tracing';
-import { Replay } from '@sentry/replay';
+// import { BrowserTracing } from '@sentry/tracing';
+// import { Replay } from '@sentry/replay';
 
 // Error types
 export enum ErrorType {

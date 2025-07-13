@@ -374,22 +374,22 @@ export class EmailAutomationService {
   }
 
   // Private helper methods
-  private async getAutomationsForTrigger(trigger: string): Promise<EmailAutomation[]> {
+  private async getAutomationsForTrigger(_trigger: string): Promise<EmailAutomation[]> {
     // Fetch automations from database
     return []; // Placeholder
   }
 
-  private async getDueSchedules(now: Date): Promise<AutomationSchedule[]> {
+  private async getDueSchedules(_now: Date): Promise<AutomationSchedule[]> {
     // Fetch due schedules from database
     return []; // Placeholder
   }
 
-  private evaluateConditions(conditions: Record<string, any>, data: Record<string, any> = {}): boolean {
+  private evaluateConditions(_conditions: Record<string, any>, _data: Record<string, any> = {}): boolean {
     // Evaluate automation conditions
     return true; // Placeholder
   }
 
-  private async sendAutomatedEmail(automation: EmailAutomation, trigger: AutomationTrigger): Promise<void> {
+  private async sendAutomatedEmail(automation: EmailAutomation, _trigger: AutomationTrigger): Promise<void> {
     const html = await renderEmailTemplate(automation.template, {
       ...trigger.data,
       userId: trigger.userId,
@@ -409,7 +409,7 @@ export class EmailAutomationService {
     });
   }
 
-  private async sendScheduledEmail(schedule: AutomationSchedule): Promise<void> {
+  private async sendScheduledEmail(_schedule: AutomationSchedule): Promise<void> {
     // Send scheduled email
     console.log('Sending scheduled email disabled - Resend removed:', schedule);
   }
@@ -427,7 +427,7 @@ export class EmailAutomationService {
     }
   }
 
-  private async updateScheduleNextRun(schedule: AutomationSchedule): Promise<void> {
+  private async updateScheduleNextRun(_schedule: AutomationSchedule): Promise<void> {
     // Update next run time based on frequency
     const now = new Date();
     let nextRun: Date;
@@ -450,32 +450,32 @@ export class EmailAutomationService {
     console.log(`Updated next run for schedule: ${schedule.schedule} to ${nextRun}`);
   }
 
-  private async getReEngagementSequence(userId: string): Promise<any[]> {
+  private async getReEngagementSequence(_userId: string): Promise<any[]> {
     // Get re-engagement email sequence
     return []; // Placeholder
   }
 
-  private async getDailyDigestData(userId: string): Promise<any> {
+  private async getDailyDigestData(_userId: string): Promise<any> {
     // Get daily digest data
     return null; // Placeholder
   }
 
-  private async getAINotificationData(userId: string, actions: any[]): Promise<any> {
+  private async getAINotificationData(_userId: string, _actions: any[]): Promise<any> {
     // Get AI notification data
     return null; // Placeholder
   }
 
-  private async renderDailyDigestTemplate(data: any): Promise<string> {
+  private async renderDailyDigestTemplate(_data: any): Promise<string> {
     // Render daily digest template
     return ''; // Placeholder
   }
 
-  private async renderAINotificationTemplate(data: any): Promise<string> {
+  private async renderAINotificationTemplate(_data: any): Promise<string> {
     // Render AI notification template
     return ''; // Placeholder
   }
 
-  private async renderBillingEmailTemplate(type: string, data: any): Promise<string> {
+  private async renderBillingEmailTemplate(_type: string, _data: any): Promise<string> {
     // Render billing email template
     return ''; // Placeholder
   }

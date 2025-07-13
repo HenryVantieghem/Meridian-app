@@ -161,7 +161,7 @@ export const backupUtils = {
   },
 
   // Export backup to external storage
-  async exportBackup(backupId: string, destination: string): Promise<{
+  async exportBackup(backupId: string, _destination: string): Promise<{
     success: boolean;
     exportedSize: number;
     error?: string;
@@ -192,7 +192,7 @@ export const backupUtils = {
   },
 
   // Import backup from external storage
-  async importBackup(source: string): Promise<{
+  async importBackup(_source: string): Promise<{
     success: boolean;
     backupId?: string;
     importedSize: number;

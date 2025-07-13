@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, ComponentType } from 'react';
+import React, { ComponentType } from 'react';
 import dynamic from 'next/dynamic';
 
 // Performance monitoring
@@ -18,7 +18,7 @@ export const createLazyComponent = <T extends ComponentType<any>>(
     preload?: boolean;
   } = {}
 ) => {
-  const LazyComponent = lazy(importFn);
+  // const LazyComponent = lazy(importFn);
   
   return dynamic(() => importFn(), {
     loading: options.loading ? () => React.createElement(options.loading!) : undefined,

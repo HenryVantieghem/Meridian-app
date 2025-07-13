@@ -61,7 +61,7 @@ export class DatabaseBackupManager {
 
     try {
       // Create backup record
-      const { data: backup, error } = await this.supabase
+      const { error } = await this.supabase
         .from('database_backups')
         .insert({
           id: backupId,
@@ -151,7 +151,7 @@ export class DatabaseBackupManager {
     }
   }
 
-  private async performRestore(backup: DatabaseBackup): Promise<void> {
+  private async performRestore(_backup: DatabaseBackup): Promise<void> {
     // This would integrate with Supabase's restore API
     // For now, we'll simulate the restore process
     
@@ -201,7 +201,7 @@ export class UserDataExportManager {
 
     try {
       // Create export record
-      const { data: exportRecord, error } = await this.supabase
+      const { error } = await this.supabase
         .from('user_data_exports')
         .insert({
           userId,
@@ -422,7 +422,7 @@ export class DisasterRecoveryManager {
     );
 
     // Check if users table is accessible
-    const { data: users, error } = await supabase
+    const { error } = await supabase
       .from('users')
       .select('count')
       .limit(1);
