@@ -3,6 +3,7 @@
 import { useState, useEffect, Suspense } from 'react';
 import dynamic from 'next/dynamic';
 import { useAuth } from '@clerk/nextjs';
+import { useHotkeys } from 'react-hotkeys-hook';
 import { useEmails } from '@/hooks/useEmails';
 import { useSlackMessages } from '@/hooks/useSlackMessages';
 import { useRealtimeData } from '@/hooks/useRealtimeData';
@@ -83,45 +84,30 @@ export default function DashboardPage() {
   const { updates } = useRealtimeData();
 
   // Keyboard shortcuts
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // E = Mark as Done
-      if (e.key === 'e' && !e.metaKey && !e.ctrlKey) {
-        e.preventDefault();
-        if (selectedItem) {
-          // Mark item as done
-          console.log('Marking item as done:', selectedItem.id);
-        }
-      }
-      
-      // R = Reply
-      if (e.key === 'r' && !e.metaKey && !e.ctrlKey) {
-        e.preventDefault();
-        if (selectedItem) {
-          // Open reply composer
-          console.log('Opening reply for:', selectedItem.id);
-        }
-      }
-      
-      // S = Snooze
-      if (e.key === 's' && !e.metaKey && !e.ctrlKey) {
-        e.preventDefault();
-        if (selectedItem) {
-          // Snooze item
-          console.log('Snoozing item:', selectedItem.id);
-        }
-      }
-      
-      // A = Toggle AI Actions
-      if (e.key === 'a' && !e.metaKey && !e.ctrlKey) {
-        e.preventDefault();
-        setShowAIActions(prev => !prev);
-      }
-    };
+  useHotkeys('e', () => {
+    if (selectedItem) {
+      console.log('Marking item as done:', selectedItem.id);
+      // Mark item as done
+    }
+  }, { enableOnFormTags: true });
 
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [selectedItem]);
+  useHotkeys('r', () => {
+    if (selectedItem) {
+      console.log('Opening reply for:', selectedItem.id);
+      // Open reply composer
+    }
+  }, { enableOnFormTags: true });
+
+  useHotkeys('s', () => {
+    if (selectedItem) {
+      console.log('Snoozing item:', selectedItem.id);
+      // Snooze item
+    }
+  }, { enableOnFormTags: true });
+
+  useHotkeys('a', () => {
+    setShowAIActions(prev => !prev);
+  }, { enableOnFormTags: true });
 
   // Auto-refresh when real-time updates come in
   useEffect(() => {

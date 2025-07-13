@@ -3,17 +3,23 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 
 export default defineConfig({
-  plugins: [react()] as any,
+  plugins: [react()],
   test: {
-    globals: true,
     environment: 'jsdom',
-    setupFiles: ['./src/tests/setup/test-utils.tsx'],
-    css: true,
-    include: ['src/**/*.test.{ts,tsx}'],
-    exclude: ['e2e/**', 'src/tests/{e2e,performance,accessibility,security}/**', 'node_modules/**'],
-    watch: false,
-    passWithNoTests: false,
-    snapshotFormat: { escapeString: true },
+    setupFiles: ['./src/test/setup.ts'],
+    globals: true,
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html'],
+      thresholds: {
+        global: {
+          branches: 80,
+          functions: 80,
+          lines: 80,
+          statements: 80,
+        },
+      },
+    },
   },
   resolve: {
     alias: {

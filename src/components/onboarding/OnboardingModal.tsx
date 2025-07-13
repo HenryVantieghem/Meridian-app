@@ -124,7 +124,7 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
   });
   const [newVipContact, setNewVipContact] = useState('');
 
-  const progress = (step / 2) * 100;
+  const progress = (step / 3) * 100;
 
   const handlePersonaSelect = (personaId: string) => {
     setSelectedPersona(personaId);
@@ -134,6 +134,8 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
     if (step === 1 && selectedPersona) {
       setStep(2);
     } else if (step === 2) {
+      setStep(3);
+    } else if (step === 3) {
       // Save all data and complete onboarding
       localStorage.setItem('selectedPersona', selectedPersona!);
       localStorage.setItem('userPreferences', JSON.stringify(preferences));
@@ -219,7 +221,7 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
               <Progress value={progress} className="h-2" />
             </div>
             <Typography variant="body" className="text-sm text-gray-600">
-              Step {step} of 2
+              Step {step} of 3
             </Typography>
           </div>
         </div>
@@ -438,7 +440,90 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
                   </Card>
                 </div>
               </motion.div>
-            )}
+            ) : step === 3 ? (
+              <motion.div
+                key="step3"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div className="text-center mb-8">
+                  <Typography variant="h2" className="text-3xl font-bold text-gray-900 mb-4">
+                    VIP Contact Setup
+                  </Typography>
+                  <Typography variant="body" className="text-gray-600">
+                    Add your most important contacts for priority handling.
+                  </Typography>
+                </div>
+
+                <div className="space-y-6">
+                  <Card className="p-4">
+                    <div className="flex items-center space-x-3 mb-4">
+                      <Star className="w-5 h-5 text-black" />
+                      <Typography variant="h4" className="text-lg font-semibold text-gray-900">
+                        VIP Contacts
+                      </Typography>
+                    </div>
+                    
+                    <Typography variant="body" className="text-sm text-gray-600 mb-3">
+                      Add 2-3 contacts that should always be prioritized. These will be marked as urgent and receive immediate attention.
+                    </Typography>
+                    
+                    <div className="space-y-3">
+                      {[1, 2, 3].map((index) => (
+                        <div key={index} className="flex space-x-2">
+                          <Input
+                            type="email"
+                            placeholder={`VIP Contact ${index} email`}
+                            className="flex-1 text-sm"
+                          />
+                          <Input
+                            type="text"
+                            placeholder="Name (optional)"
+                            className="flex-1 text-sm"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </Card>
+
+                  <Card className="p-4">
+                    <div className="flex items-center space-x-3 mb-4">
+                      <Clock className="w-5 h-5 text-black" />
+                      <Typography variant="h4" className="text-lg font-semibold text-gray-900">
+                        Priority Settings
+                      </Typography>
+                    </div>
+                    
+                    <Typography variant="body" className="text-sm text-gray-600 mb-3">
+                      How should we handle VIP communications?
+                    </Typography>
+                    
+                    <div className="space-y-2">
+                      <div className="flex items-center space-x-2">
+                        <input type="checkbox" id="instant-notify" className="rounded" defaultChecked />
+                        <label htmlFor="instant-notify" className="text-sm text-gray-700">
+                          Instant notifications for VIP messages
+                        </label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <input type="checkbox" id="auto-prioritize" className="rounded" defaultChecked />
+                        <label htmlFor="auto-prioritize" className="text-sm text-gray-700">
+                          Automatically mark as high priority
+                        </label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <input type="checkbox" id="quick-reply" className="rounded" />
+                        <label htmlFor="quick-reply" className="text-sm text-gray-700">
+                          Suggest quick replies for VIP contacts
+                        </label>
+                      </div>
+                    </div>
+                  </Card>
+                </div>
+              </motion.div>
+            ) : null}
           </AnimatePresence>
         </div>
 
@@ -460,7 +545,7 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
               disabled={(step === 1 && !selectedPersona) || (step === 2 && preferences.vipContacts.length === 0)}
               className="flex items-center space-x-2 bg-black hover:bg-gray-800 text-white"
             >
-              <span>{step === 1 ? 'Continue' : 'Complete Setup'}</span>
+              <span>{step === 1 ? 'Continue' : step === 2 ? 'Next' : 'Complete Setup'}</span>
               <ArrowRight className="w-4 h-4" />
             </Button>
           </div>

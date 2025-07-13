@@ -1,35 +1,47 @@
 name: Lighthouse CI
 
 on:
-  pull_request:
-    branches: [main]
   push:
-    branches: [main]
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   lighthouse:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: '18'
+          cache: 'npm'
+
       - name: Install dependencies
         run: npm ci
-      - name: Build Next.js app
+
+      - name: Build application
         run: npm run build
-      - name: Start Next.js server
-        run: npm run start &
-      - name: Wait for server
-        run: npx wait-on http://localhost:3000/dashboard
+
+      - name: Start application
+        run: npm start &
+        env:
+          NODE_ENV: production
+
+      - name: Wait for application to start
+        run: sleep 30
+
       - name: Run Lighthouse CI
-        run: |
-          npx -y @lhci/cli autorun \
-            --collect.url=http://localhost:3000/dashboard \
-            --assert.preset=lighthouse:recommended \
-            --assert.assertions.categories.performance.score=\">=0.9" \
-            --assert.assertions.categories.accessibility.score=\">=0.9" \
-            --assert.assertions.categories.seo.score=\">=0.9" \
-            --assert.assertions.categories.best-practices.score=\">=0.9" 
+        uses: treosh/lighthouse-ci-action@v10
+        with:
+          configPath: './lighthouserc.json'
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+
+      - name: Upload Lighthouse results
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-results
+          path: .lighthouseci/ 
