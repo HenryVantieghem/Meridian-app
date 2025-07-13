@@ -32,12 +32,12 @@
       "source": "/(.*)",
       "headers": [
         {
-          "key": "X-Frame-Options",
-          "value": "DENY"
-        },
-        {
           "key": "X-Content-Type-Options",
           "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
         },
         {
           "key": "X-XSS-Protection",
@@ -46,82 +46,19 @@
         {
           "key": "Referrer-Policy",
           "value": "strict-origin-when-cross-origin"
-        },
-        {
-          "key": "Permissions-Policy",
-          "value": "camera=(), microphone=(), geolocation=(), interest-cohort=()"
-        },
-        {
-          "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.stripe.com https://checkout.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.openai.com https://api.stripe.com https://api.clerk.dev https://*.supabase.co https://slack.com; frame-src https://js.stripe.com https://checkout.stripe.com; object-src 'none'; base-uri 'self'; form-action 'self';"
-        },
-        {
-          "key": "Strict-Transport-Security",
-          "value": "max-age=31536000; includeSubDomains; preload"
         }
       ]
-    },
-    {
-      "source": "/api/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-cache, no-store, must-revalidate"
-        },
-        {
-          "key": "Pragma",
-          "value": "no-cache"
-        },
-        {
-          "key": "Expires",
-          "value": "0"
-        }
-      ]
-    },
-    {
-      "source": "/_next/static/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
-        }
-      ]
-    },
-    {
-      "source": "/images/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
-        }
-      ]
-    }
-  ],
-  "redirects": [
-    {
-      "source": "/api/auth/sign-in",
-      "destination": "/sign-in",
-      "permanent": false
-    },
-    {
-      "source": "/api/auth/sign-up",
-      "destination": "/sign-up",
-      "permanent": false
     }
   ],
   "rewrites": [
     {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
-    },
-    {
-      "source": "/health",
-      "destination": "/api/health"
+      "source": "/api/health",
+      "destination": "/api/health/route.ts"
     }
   ],
   "env": {
     "NEXT_PUBLIC_APP_URL": "https://napoleonai.app",
-    "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_test_cHJlY2lzZS1jb2x0LTUuY2xlcmsuYWNjb3VudHMuZGV2JA",
+    "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_live_Y2xlcmsubmFwb2xlb25haS5hcHAk",
     "NEXT_PUBLIC_SUPABASE_URL": "https://dvhtamzvwrdjvgtjlbab.supabase.co",
     "NEXT_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR2aHRhbXp2d3JkanZndGpsYmFiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIwNzYzMzMsImV4cCI6MjA2NzY1MjMzM30.sMmLtVCxSp9hL5qU8U8OZNle87ZPE7FgaKsKH4EqlMU",
     "NEXT_PUBLIC_STRIPE_PRICE_PRO": "price_1RkAUlBQXryBTFI2BoG6k75U",
@@ -130,7 +67,7 @@
   },
   "build": {
     "env": {
-      "CLERK_SECRET_KEY": "sk_test_EnPEo6IMTMbKBTekPk9iftjJWGH6EHN2FK7TWxoAPi",
+      "CLERK_SECRET_KEY": "sk_live_ZdCbcy3tmcZmztF94r6uYVaSZuuCcHxHG58vGBaubG",
       "SUPABASE_SERVICE_ROLE_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR2aHRhbXp2d3JkanZndGpsYmFiIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MjA3NjMzMywiZXhwIjoyMDY3NjUyMzMzfQ.h3q_UkvQ4DDwII--uX_hP7WGntCEMczrIjH765xMdZA",
       "OPENAI_API_KEY": "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",
       "OPENAI_ORGANIZATION_ID": "org-org-sdWviS6T7zQYZd37rXaEL4yb",
@@ -151,12 +88,5 @@
       "SLACK_CLIENT_SECRET": "fc09de15c806b45740b7e6087723a39f",
       "ENCRYPTION_MASTER_KEY": "ce1c624f06ce645021123783e848113115dfa8f8ea7f6780f53f5af3b691d441%"
     }
-  },
-  "regions": ["iad1"],
-  "crons": [
-    {
-      "path": "/api/backup",
-      "schedule": "0 2 * * *"
-    }
-  ]
+  }
 }
