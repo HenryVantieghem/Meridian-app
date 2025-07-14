@@ -31,6 +31,45 @@
 
 /* Component styles */
 @layer components {
+  /* Dashboard Layout System */
+  .dashboard-cartier {
+    @apply min-h-screen bg-gradient-to-br from-cartier-50 to-gold-50;
+  }
+  
+  .sidebar-left {
+    @apply w-80 bg-white border-r border-cartier-200 shadow-cartier-sm 
+           backdrop-blur-cartier transition-all duration-300 ease-in-out;
+  }
+  
+  .main-panel {
+    @apply flex-1 bg-white/80 backdrop-blur-cartier 
+           transition-all duration-300 ease-in-out;
+  }
+  
+  .sidebar-right {
+    @apply w-96 bg-white border-l border-cartier-200 shadow-cartier-sm 
+           backdrop-blur-cartier transition-all duration-300 ease-in-out;
+  }
+  
+  .header-cartier {
+    @apply bg-white/90 backdrop-blur-cartier border-b border-cartier-200 
+           shadow-cartier-sm transition-all duration-300 ease-in-out;
+  }
+  
+  /* Navigation System */
+  .nav-cartier {
+    @apply flex items-center space-x-8 px-6 py-4;
+  }
+  
+  .nav-item-cartier {
+    @apply text-cartier-700 hover:text-cartier-900 font-medium 
+           transition-colors duration-200 ease-in-out;
+  }
+  
+  .nav-item-cartier.active {
+    @apply text-cartier-900 border-b-2 border-cartier-500;
+  }
+  
   /* Typography utilities */
   .text-display-1 {
     @apply font-playfair text-6xl font-bold leading-tight tracking-tight;
@@ -199,9 +238,23 @@
            transition-all duration-200 ease-in-out;
   }
   
+  .btn-cartier {
+    @apply bg-cartier-900 text-white font-medium px-6 py-3 rounded-lg 
+           hover:bg-cartier-800 focus:ring-2 focus:ring-cartier-500 focus:ring-offset-2 
+           transition-all duration-200 ease-in-out shadow-cartier-sm hover:shadow-cartier-md;
+  }
+  
+  .btn-cartier-subtle {
+    @apply bg-white text-cartier-900 font-medium px-6 py-3 rounded-lg 
+           border border-cartier-200 hover:bg-cartier-50 focus:ring-2 
+           focus:ring-cartier-500 focus:ring-offset-2 transition-all duration-200 ease-in-out 
+           shadow-cartier-sm hover:shadow-cartier-md;
+  }
+  
   .card-cartier {
     @apply bg-white rounded-xl border border-cartier-200 shadow-cartier-sm 
-           hover:shadow-cartier-md transition-all duration-200 ease-in-out;
+           hover:shadow-cartier-md transition-all duration-200 ease-in-out 
+           backdrop-blur-cartier;
   }
   
   .input-cartier {
