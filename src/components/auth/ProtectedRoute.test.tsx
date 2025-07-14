@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { useAuth } from '@clerk/nextjs';
-import ProtectedRoute from './ProtectedRoute';
+import { ProtectedRoute } from './ProtectedRoute';
 
 // Mock Clerk
 vi.mock('@clerk/nextjs', () => ({

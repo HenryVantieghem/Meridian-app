@@ -88,7 +88,7 @@ export const PricingCard = dynamic(
 
 // Lazy load onboarding components
 export const OnboardingModal = dynamic(
-  () => import('@/components/onboarding/OnboardingModal').then(mod => ({ default: mod.OnboardingModal })),
+  () => import('@/components/onboarding/OnboardingModal'),
   {
     loading: () => <LoadingSpinner size="md" text="Loading onboarding..." />,
     ssr: false

@@ -1,0 +1,27 @@
+{
+  "mcpServers": {
+    "github-repo-mcp": {
+      "command": "npx",
+      "args": ["github-repo-mcp"],
+      "env": {
+        "GITHUB_TOKEN": "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"
+      },
+      "enabled": true
+    },
+    "mcp-git": {
+      "command": "npx",
+      "args": ["mcp-git"],
+      "enabled": true
+    },
+    "serena": {
+      "command": "npx",
+      "args": ["serena"],
+      "enabled": true
+    },
+    "mcp-server-commands": {
+      "command": "npx",
+      "args": ["mcp-server-commands"],
+      "enabled": true
+    }
+  }
+}

@@ -5,7 +5,6 @@ import ClerkWrapper from "./client-layout";
 
 // Validate environment variables on app startup
 import "@/lib/invariantEnv";
-import "@/lib/monitoring";
 
 const inter = Inter({
   subsets: ['latin'],

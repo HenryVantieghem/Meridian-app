@@ -239,8 +239,12 @@ export function getValidatedEnv() {
 export const productionUtils = {
   // Sanitize sensitive data for logging
   sanitizeForLogging: (data: unknown): unknown => {
+    if (!data || typeof data !== 'object') {
+      return data;
+    }
+    
     const sensitiveKeys = ['password', 'token', 'secret', 'key', 'authorization'];
-    const sanitized = { ...data };
+    const sanitized = { ...data } as Record<string, unknown>;
     
     for (const key of sensitiveKeys) {
       if (sanitized[key]) {

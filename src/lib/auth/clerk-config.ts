@@ -185,7 +185,7 @@ export function hasFeatureAccess(
     },
   };
   
-  const plan = subscription.plan || 'free';
+  const plan = (subscription as { plan?: string }).plan || 'free';
   return featureAccess[plan]?.[feature] || false;
 }
 

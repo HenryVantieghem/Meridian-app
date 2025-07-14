@@ -4,18 +4,28 @@
       "command": "npx",
       "args": ["github-repo-mcp"],
       "env": {
-        "GITHUB_TOKEN": "${GITHUB_TOKEN}"
+        "GITHUB_TOKEN": "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"
       },
       "enabled": true
     },
-    "mcp-server-commands": {
+    "mcp-text-editor": {
       "command": "npx",
-      "args": ["mcp-server-commands"],
+      "args": ["mcp-text-editor"],
       "enabled": true
     },
-    "serena": {
+    "mcp-shell": {
       "command": "npx",
-      "args": ["serena"],
+      "args": ["@mcp/mcp-shell"],
+      "enabled": true
+    },
+    "mcp-python": {
+      "command": "npx",
+      "args": ["@mcp/mcp-python"],
+      "enabled": true
+    },
+    "mcp-http-client": {
+      "command": "npx",
+      "args": ["@mcp/mcp-http-client"],
       "enabled": true
     },
     "mcp-git": {
@@ -23,79 +33,184 @@
       "args": ["mcp-git"],
       "enabled": true
     },
-    "supabase-mcp": {
+    "serena": {
       "command": "npx",
-      "args": ["@supabase/mcp-utils"],
+      "args": ["serena"],
       "enabled": true
     },
-    "vercel-mcp": {
+    "pydantic-ai": {
       "command": "npx",
-      "args": ["@vercel/mcp-adapter"],
+      "args": ["pydantic-ai"],
       "enabled": true
     },
-    "notion-mcp": {
+    "mcp-server-commands": {
       "command": "npx",
-      "args": ["@notionhq/notion-mcp-server"],
+      "args": ["mcp-server-commands"],
       "enabled": true
     },
-    "langchain-mcp": {
+    "mcp-server-js": {
       "command": "npx",
-      "args": ["@langchain/mcp-adapters"],
+      "args": ["mcp-server-js"],
       "enabled": true
     },
-    "elasticsearch-mcp": {
+    "mcp-supabase": {
       "command": "npx",
-      "args": ["@elastic/mcp-server-elasticsearch"],
+      "args": ["@mcp/mcp-supabase"],
+      "env": {
+        "SUPABASE_URL": "https://dvhtamzvwrdjvgtjlbab.supabase.co",
+        "SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR2aHRhbXp2d3JkanZndGpsYmFiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIwNzYzMzMsImV4cCI6MjA2NzY1MjMzM30.sMmLtVCxSp9hL5qU8U8OZNle87ZPE7FgaKsKH4EqlMU",
+        "SUPABASE_SERVICE_ROLE_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR2aHRhbXp2d3JkanZndGpsYmFiIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MjA3NjMzMywiZXhwIjoyMDY3NjUyMzMzfQ.h3q_UkvQ4DDwII--uX_hP7WGntCEMczrIjH765xMdZA"
+      },
       "enabled": true
     },
-    "playwright-mcp": {
+    "mcp-clerk": {
       "command": "npx",
-      "args": ["@playwright/mcp"],
+      "args": ["@mcp/mcp-clerk"],
+      "env": {
+        "CLERK_API_KEY": "sk_live_ZdCbcy3tmcZmztF94r6uYVaSZuuCcHxHG58vGBaubG"
+      },
       "enabled": true
     },
-    "context7-mcp": {
+    "mcp-openai": {
       "command": "npx",
-      "args": ["@upstash/context7-mcp"],
+      "args": ["@mcp/mcp-openai"],
+      "env": {
+        "OPENAI_API_KEY": "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",
+        "OPENAI_ORGANIZATION_ID": "org-org-sdWviS6T7zQYZd37rXaEL4yb"
+      },
       "enabled": true
     },
-    "mcp-framework": {
+    "mcp-stripe": {
       "command": "npx",
-      "args": ["mcp-framework"],
+      "args": ["@mcp/mcp-stripe"],
+      "env": {
+        "STRIPE_SECRET_KEY": "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",
+        "STRIPE_WEBHOOK_SECRET": "whsec_uRhCmMLPQm24HMbmz15vfTApIsn0mD33"
+      },
       "enabled": true
     },
-    "composio-mcp": {
+    "mcp-calendar": {
       "command": "npx",
-      "args": ["@composio/mcp"],
+      "args": ["@mcp/mcp-calendar"],
+      "env": {
+        "GOOGLE_CALENDAR_CLIENT_ID": "1070879625346-mjkd1rlk8fd9i7b5gi2q13ss6opb7etf.apps.googleusercontent.com",
+        "GOOGLE_CALENDAR_CLIENT_SECRET": "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",
+        "GOOGLE_REDIRECT_URI": "https://napoleonai.app/api/auth/google/callback",
+        "NEXTAUTH_URL": "https://napoleonai.app"
+      },
       "enabled": true
     },
-    "browsermcp": {
+    "mcp-email": {
       "command": "npx",
-      "args": ["@browsermcp/mcp"],
+      "args": ["@mcp/mcp-email"],
+      "env": {
+        "RESEND_API_KEY": "re_5NbdUNrN_DYFNVnLo92rQTtsNSv9LRMnU"
+      },
       "enabled": true
     },
-    "mcp-proxy": {
+    "mcp-slack-server": {
       "command": "npx",
-      "args": ["mcp-proxy"],
+      "args": ["@mcp/mcp-slack-server"],
+      "env": {
+        "SLACK_CLIENT_ID": "9139741575408.9168961368182",
+        "SLACK_CLIENT_SECRET": "fc09de15c806b45740b7e6087723a39f",
+        "SLACK_REDIRECT_URI": "https://napoleonai.app/api/auth/slack/callback",
+        "SLACK_BOT_TOKEN": "<YOUR_SLACK_BOT_TOKEN>"
+      },
       "enabled": true
     },
-    "mastra-mcp": {
+    "mcp-postgres": {
       "command": "npx",
-      "args": ["@mastra/mcp"],
+      "args": ["@mcp/mcp-postgres"],
+      "env": {
+        "PGHOST": "<YOUR_PG_HOST>",
+        "PGUSER": "<YOUR_PG_USER>",
+        "PGPASSWORD": "<YOUR_PG_PASSWORD>",
+        "PGDATABASE": "<YOUR_PG_DB>",
+        "PGPORT": "<YOUR_PG_PORT>"
+      },
       "enabled": true
     },
-    "mcp-hello-world": {
+    "mcp-mongodb": {
       "command": "npx",
-      "args": ["mcp-hello-world"],
+      "args": ["@mcp/mcp-mongodb"],
+      "env": {
+        "MONGODB_URI": "<YOUR_MONGODB_URI>"
+      },
       "enabled": true
     },
-    "mcp-nest": {
+    "mcp-graphql": {
       "command": "npx",
-      "args": ["@rekog/mcp-nest"],
+      "args": ["@mcp/mcp-graphql"],
       "enabled": true
     },
-    "tavily-mcp": {
+    "mcp-redisearch": {
       "command": "npx",
-      "args": ["tavily-mcp"],
+      "args": ["@mcp/mcp-redisearch"],
+      "enabled": true
+    },
+    "mcp-sentry": {
+      "command": "npx",
+      "args": ["@mcp/mcp-sentry"],
+      "env": {
+        "SENTRY_DSN": "<YOUR_SENTRY_DSN>"
+      },
+      "enabled": true
+    },
+    "mcp-analytics": {
+      "command": "npx",
+      "args": ["@mcp/mcp-analytics"],
+      "env": {
+        "GA_MEASUREMENT_ID": "<YOUR_GA_MEASUREMENT_ID>"
+      },
+      "enabled": true
+    },
+    "mcp-ci": {
+      "command": "npx",
+      "args": ["@mcp/mcp-ci"],
+      "enabled": true
+    },
+    "mcp-cd": {
+      "command": "npx",
+      "args": ["@mcp/mcp-cd"],
+      "enabled": true
+    },
+    "mcp-feature-flags": {
+      "command": "npx",
+      "args": ["@mcp/mcp-feature-flags"],
+      "env": {
+        "LAUNCHDARKLY_SDK_KEY": "<YOUR_LD_SDK_KEY>"
+      },
+      "enabled": true
+    },
+    "mcp-i18n": {
+      "command": "npx",
+      "args": ["@mcp/mcp-i18n"],
+      "enabled": true
+    },
+    "mcp-security-scan": {
+      "command": "npx",
+      "args": ["@mcp/mcp-security-scan"],
+      "enabled": true
+    },
+    "mcp-docs": {
+      "command": "npx",
+      "args": ["@mcp/mcp-docs"],
+      "enabled": true
+    },
+    "mcp-test-runner": {
+      "command": "npx",
+      "args": ["@mcp/mcp-test-runner"],
+      "enabled": true
+    },
+    "mcp-webhooks": {
+      "command": "npx",
+      "args": ["@mcp/mcp-webhooks"],
+      "enabled": true
+    },
+    "mcp-vercel": {
+      "command": "npx",
+      "args": ["@mcp/mcp-shell", "vercel"],
       "enabled": true
     }
   }

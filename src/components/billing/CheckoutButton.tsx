@@ -38,6 +38,7 @@ export const CheckoutButton: React.FC<CheckoutButtonProps> = ({
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showSuccess] = useState(false);
 
   const handleCheckout = async () => {
     if (isLoading || disabled) return;

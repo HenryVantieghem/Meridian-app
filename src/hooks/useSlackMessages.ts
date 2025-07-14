@@ -65,10 +65,9 @@ export function useSlackMessages(options: UseSlackMessagesOptions = {}): UseSlac
       setError(null);
 
       // Try to get from cache first
-      const cacheKey = `${workspaceId || 'all'}_${channelId || 'all'}`;
       const cachedMessages = await slackCache.getMessages(workspaceId || 'all', channelId);
       
-      if (cachedMessages && pageNum === 1) {
+      if (cachedMessages && Array.isArray(cachedMessages) && pageNum === 1) {
         setMessages(cachedMessages);
         setLoading(false);
         return;

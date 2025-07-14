@@ -66,7 +66,7 @@ export function useEmails(options: UseEmailsOptions = {}): UseEmailsReturn {
       const cacheKey = `${status || 'all'}_${priority || 'all'}`;
       const cachedEmails = await emailCache.getEmails(userId, cacheKey);
       
-      if (cachedEmails && pageNum === 1) {
+      if (cachedEmails && Array.isArray(cachedEmails) && pageNum === 1) {
         setEmails(cachedEmails);
         setLoading(false);
         return;

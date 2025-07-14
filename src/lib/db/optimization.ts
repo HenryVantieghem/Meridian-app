@@ -88,7 +88,7 @@ export class OptimizedSupabaseClient {
     const { cache = true } = options;
 
     const executeWithTimeout = async (): Promise<T[]> => {
-      const connection = await this.getConnection('default');
+      const connection = await this.getConnection('default') as any;
       
       const { data, error } = await connection
         .from('your_table') // Replace with actual table
