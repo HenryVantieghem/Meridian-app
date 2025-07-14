@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@clerk/nextjs';
 import { getEmails, updateEmail, deleteEmail } from '@/lib/db/emails';
 import { emailSyncService } from '@/lib/email/sync-service';
+import { emailCache } from '@/lib/cache';
 import { Email, EmailPriority } from '@/types';
 
 interface UseEmailsOptions {
@@ -61,6 +62,16 @@ export function useEmails(options: UseEmailsOptions = {}): UseEmailsReturn {
       setLoading(true);
       setError(null);
 
+      // Try to get from cache first
+      const cacheKey = `${status || 'all'}_${priority || 'all'}`;
+      const cachedEmails = await emailCache.getEmails(userId, cacheKey);
+      
+      if (cachedEmails && pageNum === 1) {
+        setEmails(cachedEmails);
+        setLoading(false);
+        return;
+      }
+
       // Get emails from database
       const allEmails = await getEmails(userId);
       let fetchedEmails = allEmails;
@@ -89,6 +100,8 @@ export function useEmails(options: UseEmailsOptions = {}): UseEmailsReturn {
         setEmails(prev => [...prev, ...fetchedEmails]);
       } else {
         setEmails(fetchedEmails);
+        // Cache the results
+        await emailCache.setEmails(userId, fetchedEmails, cacheKey);
       }
 
       setHasMore(fetchedEmails.length === limit);
@@ -153,6 +166,8 @@ export function useEmails(options: UseEmailsOptions = {}): UseEmailsReturn {
             : email
         )
       );
+      // Invalidate cache
+      await emailCache.invalidateEmails(userId);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to mark email as read');
     }
@@ -170,6 +185,8 @@ export function useEmails(options: UseEmailsOptions = {}): UseEmailsReturn {
             : email
         )
       );
+      // Invalidate cache
+      await emailCache.invalidateEmails(userId);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to mark email as unread');
     }
@@ -181,6 +198,8 @@ export function useEmails(options: UseEmailsOptions = {}): UseEmailsReturn {
     try {
       await deleteEmail(userId, emailId);
       setEmails(prev => prev.filter(email => email.id !== emailId));
+      // Invalidate cache
+      await emailCache.invalidateEmails(userId);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to delete email');
     }
@@ -198,6 +217,8 @@ export function useEmails(options: UseEmailsOptions = {}): UseEmailsReturn {
             : email
         )
       );
+      // Invalidate cache
+      await emailCache.invalidateEmails(userId);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update email priority');
     }
