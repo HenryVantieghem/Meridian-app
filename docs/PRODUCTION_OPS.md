@@ -1,323 +1,266 @@
-# Napoleon AI - Production Operations Guide
+# Production Operations Guide
+
+## Overview
+This document outlines the operational procedures for Napoleon AI in production environments.
 
 ## Table of Contents
 1. [Backup & Recovery](#backup--recovery)
 2. [Incident Response](#incident-response)
-3. [Monitoring & Alerts](#monitoring--alerts)
-4. [Performance Optimization](#performance-optimization)
+3. [Monitoring & Alerting](#monitoring--alerting)
+4. [Deployment Procedures](#deployment-procedures)
 5. [Security Procedures](#security-procedures)
-6. [Deployment Procedures](#deployment-procedures)
+6. [Performance Optimization](#performance-optimization)
 
 ## Backup & Recovery
 
-### Automated Backups
-- **Frequency**: Daily at 2:00 AM UTC
-- **Retention**: 30 days
-- **Storage**: Supabase + S3 backup
-- **Type**: Full database + file system
-
-### Manual Backup Creation
+### Database Backups
 ```bash
-# Create immediate backup
-curl -X POST https://napoleonai.app/api/backup \
-  -H "Authorization: Bearer $ADMIN_TOKEN" \
-  -d '{"type": "full"}'
+# Automated daily backups via Supabase
+# Manual backup trigger
+curl -X POST https://api.supabase.com/v1/projects/{PROJECT_ID}/backups \
+  -H "Authorization: Bearer {SUPABASE_SERVICE_ROLE_KEY}"
 ```
 
-### Backup Restoration
-
-#### Emergency Recovery Steps
-1. **Stop the application**:
-   ```bash
-   vercel --prod --stop
-   ```
-
-2. **Restore from latest backup**:
-   ```bash
-   curl -X PUT https://napoleonai.app/api/backup \
-     -H "Authorization: Bearer $ADMIN_TOKEN" \
-     -d '{"backupId": "latest"}'
-   ```
-
-3. **Verify restoration**:
-   ```bash
-   curl -X GET https://napoleonai.app/api/health
-   ```
-
-4. **Restart the application**:
-   ```bash
-   vercel --prod --start
-   ```
-
-#### Database Recovery
-```sql
--- Connect to Supabase
-psql "postgresql://postgres:[password]@[host]:5432/postgres"
-
--- Restore specific backup
-\i /path/to/backup.sql
-
--- Verify data integrity
-SELECT COUNT(*) FROM users;
-SELECT COUNT(*) FROM emails;
+### File Storage Backups
+```bash
+# Backup user uploads and assets
+aws s3 sync s3://napoleon-ai-storage s3://napoleon-ai-backup/$(date +%Y%m%d)
 ```
 
-### Backup Verification
-- **Automated**: Daily integrity checks
-- **Manual**: Weekly full restore tests
-- **Monitoring**: Backup success/failure alerts
+### Recovery Procedures
+1. **Database Recovery**
+   ```bash
+   # Restore from Supabase backup
+   pg_restore -h db.supabase.co -U postgres -d napoleon_ai backup.sql
+   ```
+
+2. **Application Recovery**
+   ```bash
+   # Redeploy from Vercel
+   vercel --prod
+   ```
 
 ## Incident Response
 
 ### Severity Levels
-- **P0 (Critical)**: Complete service outage
-- **P1 (High)**: Major feature unavailable
-- **P2 (Medium)**: Minor feature issues
-- **P3 (Low)**: Cosmetic issues
+- **P0 (Critical)**: Service completely down, data loss
+- **P1 (High)**: Major functionality broken
+- **P2 (Medium)**: Minor functionality issues
+- **P3 (Low)**: Cosmetic issues, performance degradation
 
-### P0 - Critical Incident Response
+### Response Timeline
+- **P0**: Immediate response (< 15 minutes)
+- **P1**: Response within 1 hour
+- **P2**: Response within 4 hours
+- **P3**: Response within 24 hours
 
-#### Immediate Actions (0-5 minutes)
-1. **Acknowledge the incident**
-   ```bash
-   # Send immediate alert
-   curl -X POST $SLACK_WEBHOOK_URL \
-     -d '{"text": "🚨 P0 CRITICAL: Napoleon AI service outage detected"}'
-   ```
+### Escalation Matrix
+1. **On-Call Engineer** (Primary)
+2. **Senior Developer** (Secondary)
+3. **CTO** (Tertiary)
+4. **CEO** (Final escalation)
 
-2. **Check service status**
-   ```bash
-   curl -X GET https://napoleonai.app/api/health
-   ```
+### Communication Channels
+- **Internal**: Slack #incidents
+- **External**: Status page, email notifications
+- **Stakeholders**: Direct communication for P0/P1
 
-3. **Check monitoring dashboards**
-   - Vercel deployment status
-   - Supabase database status
-   - OpenAI API status
-   - Stripe payment status
-
-#### Investigation (5-15 minutes)
-1. **Review error logs**
-   ```bash
-   # Check Vercel logs
-   vercel logs --prod
-   
-   # Check Supabase logs
-   supabase logs
-   ```
-
-2. **Identify root cause**
-   - Database connection issues
-   - API rate limiting
-   - Authentication failures
-   - Payment processing errors
-
-#### Resolution (15-60 minutes)
-1. **Apply immediate fixes**
-   - Restart services if needed
-   - Scale up resources
-   - Update environment variables
-
-2. **Verify resolution**
-   ```bash
-   # Health check
-   curl -X GET https://napoleonai.app/api/health
-   
-   # Test critical flows
-   curl -X POST https://napoleonai.app/api/emails/analyze \
-     -H "Content-Type: application/json" \
-     -d '{"test": true}'
-   ```
-
-#### Communication
-1. **Internal team**: Slack #incidents channel
-2. **Customers**: Status page update
-3. **Stakeholders**: Executive summary email
-
-### P1 - High Priority Incident
-
-#### Response Timeline
-- **Acknowledgment**: 15 minutes
-- **Investigation**: 30 minutes
-- **Resolution**: 2 hours
-- **Communication**: 1 hour
-
-#### Common P1 Issues
-- Email processing delays
-- AI analysis failures
-- Payment processing issues
-- Authentication problems
-
-### Post-Incident Procedures
-
-#### Incident Review (Within 24 hours)
-1. **Document the incident**
-   - Timeline of events
-   - Root cause analysis
-   - Actions taken
-   - Lessons learned
-
-2. **Update runbooks**
-   - Add new procedures
-   - Improve existing steps
-   - Update contact lists
-
-3. **Implement preventive measures**
-   - Add monitoring alerts
-   - Improve error handling
-   - Update documentation
-
-## Monitoring & Alerts
+## Monitoring & Alerting
 
 ### Key Metrics
-- **Uptime**: Target 99.9%
+- **Uptime**: 99.9% target
 - **Response Time**: < 500ms average
 - **Error Rate**: < 1%
 - **Database Performance**: < 100ms queries
+- **AI Response Time**: < 2 seconds
 
-### Alert Channels
-- **Slack**: #alerts-napoleon
-- **Email**: alerts@napoleonai.app
-- **PagerDuty**: Critical incidents only
+### Alerting Rules
+```yaml
+# Vercel Alerts
+- Function execution time > 10s
+- Function error rate > 5%
+- Build failures
 
-### Monitoring Tools
-- **Vercel Analytics**: Performance monitoring
-- **Sentry**: Error tracking
-- **Supabase**: Database monitoring
-- **Stripe**: Payment monitoring
+# Supabase Alerts
+- Database connection failures
+- Query performance degradation
+- Storage quota exceeded
+
+# External Service Alerts
+- OpenAI API failures
+- Stripe webhook failures
+- Email delivery failures
+```
+
+### Dashboard URLs
+- **Vercel**: https://vercel.com/dashboard
+- **Supabase**: https://supabase.com/dashboard
+- **Sentry**: https://sentry.io/organizations/napoleon-ai
+- **Stripe**: https://dashboard.stripe.com
+
+## Deployment Procedures
+
+### Pre-Deployment Checklist
+- [ ] All tests passing
+- [ ] Code review completed
+- [ ] Security scan clean
+- [ ] Performance benchmarks met
+- [ ] Documentation updated
+
+### Deployment Steps
+```bash
+# 1. Create release branch
+git checkout -b release/v1.2.0
+
+# 2. Update version
+npm version patch
+
+# 3. Run full test suite
+npm run test:ci
+
+# 4. Build and test
+npm run build
+
+# 5. Deploy to staging
+vercel --target staging
+
+# 6. Run smoke tests
+npm run e2e:staging
+
+# 7. Deploy to production
+vercel --prod
+
+# 8. Monitor deployment
+vercel logs --prod
+```
+
+### Rollback Procedures
+```bash
+# Quick rollback to previous deployment
+vercel rollback --prod
+
+# Database rollback (if needed)
+pg_restore -h db.supabase.co -U postgres -d napoleon_ai backup.sql
+```
+
+## Security Procedures
+
+### Security Incident Response
+1. **Immediate Actions**
+   - Isolate affected systems
+   - Preserve evidence
+   - Notify security team
+
+2. **Investigation**
+   - Analyze logs and metrics
+   - Identify root cause
+   - Assess impact scope
+
+3. **Remediation**
+   - Apply security patches
+   - Update access controls
+   - Monitor for recurrence
+
+4. **Post-Incident**
+   - Document lessons learned
+   - Update procedures
+   - Conduct security review
+
+### Access Management
+- **Production Access**: Limited to senior developers
+- **Database Access**: Emergency access only
+- **API Keys**: Rotated quarterly
+- **User Data**: Encrypted at rest and in transit
+
+### Compliance
+- **GDPR**: Data retention and deletion procedures
+- **SOC 2**: Security controls and monitoring
+- **PCI DSS**: Payment data protection
+- **HIPAA**: Healthcare data handling (if applicable)
 
 ## Performance Optimization
 
 ### Database Optimization
 ```sql
--- Check slow queries
+-- Monitor slow queries
 SELECT query, mean_time, calls 
 FROM pg_stat_statements 
 ORDER BY mean_time DESC 
 LIMIT 10;
 
 -- Optimize indexes
+CREATE INDEX CONCURRENTLY idx_users_email ON users(email);
 CREATE INDEX CONCURRENTLY idx_emails_user_id ON emails(user_id);
-CREATE INDEX CONCURRENTLY idx_emails_created_at ON emails(created_at);
 ```
 
-### Cache Management
-```bash
-# Clear application cache
-curl -X POST https://napoleonai.app/api/cache/clear
+### Application Optimization
+- **Caching**: Redis for session data
+- **CDN**: Vercel Edge Network
+- **Image Optimization**: Next.js Image component
+- **Code Splitting**: Dynamic imports for heavy components
 
-# Check cache hit rates
-curl -X GET https://napoleonai.app/api/cache/stats
-```
-
-### CDN Optimization
-- **Static assets**: Vercel Edge Network
-- **API responses**: Cache frequently accessed data
-- **Images**: Optimize and compress
-
-## Security Procedures
-
-### Security Incident Response
-1. **Immediate containment**
-   - Isolate affected systems
-   - Revoke compromised credentials
-   - Update security configurations
-
-2. **Investigation**
-   - Review access logs
-   - Analyze security events
-   - Identify attack vectors
-
-3. **Recovery**
-   - Restore from clean backup
-   - Update security measures
-   - Notify affected users
-
-### Security Monitoring
-- **Authentication failures**: Alert on multiple failed attempts
-- **API abuse**: Monitor rate limiting violations
-- **Data access**: Log all database queries
-- **Payment fraud**: Monitor Stripe chargebacks
-
-### Regular Security Tasks
-- **Weekly**: Review access logs
-- **Monthly**: Update dependencies
-- **Quarterly**: Security audit
-- **Annually**: Penetration testing
-
-## Deployment Procedures
-
-### Pre-Deployment Checklist
-- [ ] All tests passing
-- [ ] Security scan completed
-- [ ] Performance benchmarks met
-- [ ] Documentation updated
-- [ ] Stakeholders notified
-
-### Deployment Process
-```bash
-# Deploy to staging
-vercel --staging
-
-# Run staging tests
-npm run test:staging
-
-# Deploy to production
-vercel --prod
-
-# Verify deployment
-curl -X GET https://napoleonai.app/api/health
-```
-
-### Rollback Procedures
-```bash
-# Rollback to previous deployment
-vercel --prod --rollback
-
-# Verify rollback
-curl -X GET https://napoleonai.app/api/health
-```
-
-### Post-Deployment Verification
-1. **Health checks**: All endpoints responding
-2. **Feature tests**: Critical user flows working
-3. **Performance**: Response times within limits
-4. **Monitoring**: No new errors or alerts
+### Monitoring Tools
+- **Application**: Sentry, Vercel Analytics
+- **Infrastructure**: Vercel Dashboard
+- **Database**: Supabase Dashboard
+- **External**: UptimeRobot, Pingdom
 
 ## Emergency Contacts
 
-### Primary Contacts
-- **DevOps Lead**: [Contact Info]
-- **Engineering Lead**: [Contact Info]
-- **Product Manager**: [Contact Info]
+### Technical Team
+- **On-Call**: +1-555-0123
+- **Senior Dev**: +1-555-0124
+- **CTO**: +1-555-0125
 
-### Escalation Path
-1. **On-call engineer**: Immediate response
-2. **Engineering lead**: Within 30 minutes
-3. **CTO**: Within 1 hour
-4. **CEO**: Within 2 hours
-
-### External Contacts
+### External Services
 - **Vercel Support**: support@vercel.com
 - **Supabase Support**: support@supabase.com
 - **Stripe Support**: support@stripe.com
 - **OpenAI Support**: support@openai.com
 
+### Escalation Procedures
+1. **First Level**: On-call engineer
+2. **Second Level**: Senior developer
+3. **Third Level**: CTO
+4. **Final Level**: CEO
+
 ## Maintenance Windows
 
 ### Scheduled Maintenance
-- **Weekly**: Sunday 2:00-4:00 AM UTC
-- **Monthly**: First Sunday 2:00-6:00 AM UTC
-- **Quarterly**: First Sunday 2:00-8:00 AM UTC
+- **Weekly**: Sunday 2-4 AM UTC
+- **Monthly**: First Sunday of month
+- **Quarterly**: Security updates and audits
 
-### Maintenance Procedures
-1. **Notify users**: 48 hours advance notice
-2. **Create backup**: Before maintenance starts
-3. **Execute maintenance**: Follow documented procedures
-4. **Verify systems**: Post-maintenance health checks
-5. **Update status**: Notify completion
+### Communication
+- **Internal**: Slack notification 24h before
+- **External**: Status page update
+- **Users**: Email notification for major changes
 
----
+## Recovery Time Objectives (RTO)
 
-*Last updated: [Date]*
-*Version: 1.0* 
+| Component | RTO | RPO |
+|-----------|-----|-----|
+| Application | 5 minutes | 1 hour |
+| Database | 15 minutes | 1 hour |
+| File Storage | 30 minutes | 4 hours |
+| External APIs | 1 hour | 1 hour |
+
+## Post-Incident Review
+
+### Review Process
+1. **Immediate**: Technical debrief within 24h
+2. **Detailed**: Full review within 1 week
+3. **Action Items**: Implementation within 2 weeks
+
+### Documentation
+- Incident timeline
+- Root cause analysis
+- Impact assessment
+- Remediation steps
+- Prevention measures
+
+### Continuous Improvement
+- Update runbooks based on incidents
+- Refine monitoring and alerting
+- Improve response procedures
+- Enhance automation 

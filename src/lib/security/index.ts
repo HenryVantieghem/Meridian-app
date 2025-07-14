@@ -288,37 +288,9 @@ export const securityMonitoring = {
     // Implementation would log to security monitoring service
   },
 
-  // Check for suspicious activity
-  checkSuspiciousActivity: (userId: string, ip: string, action: string) => {
-    // Implementation would check for suspicious patterns
-    return {
-      suspicious: false,
-      riskScore: 0,
-      recommendations: []
-    };
-  },
-
-  // Generate security report
-  generateSecurityReport: async () => {
-    const [
-      vulnerabilities,
-      userPermissions,
-      dataAccess,
-      retentionStats
-    ] = await Promise.all([
-      securityAudit.checkVulnerabilities(),
-      securityAudit.auditUserPermissions('all'),
-      securityAudit.auditDataAccess('all'),
-      dataRetentionService.getRetentionStats()
-    ]);
-
-    return {
-      vulnerabilities,
-      userPermissions,
-      dataAccess,
-      retentionStats,
-      timestamp: new Date()
-    };
+  async logSecurityEvent(_userId: string, _ip: string, _action: string): Promise<void> {
+    console.log('Security event logged');
+    // Implementation would log to security monitoring service
   }
 };
 

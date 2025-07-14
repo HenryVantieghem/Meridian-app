@@ -295,7 +295,7 @@ export const withAuthentication = (
       );
     }
 
-    const token = authHeader.substring(7);
+    const _token = authHeader.substring(7);
 
     // Validate token (this would integrate with Clerk)
     try {

@@ -290,7 +290,7 @@ export class DataProtection {
     }
     
     if (typeof data === 'object' && data !== null) {
-      const sanitized: any = {};
+      const sanitized: unknown = {};
       for (const [key, value] of Object.entries(data)) {
         if (key.toLowerCase().includes('password') || 
             key.toLowerCase().includes('token') || 

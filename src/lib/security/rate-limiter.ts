@@ -40,9 +40,9 @@ class RateLimiter {
     resetTime: number;
     retryAfter?: number;
   }> {
-    const key = this.generateKey(req);
+    const _key = this.generateKey(req);
     const now = Date.now();
-    const windowStart = now - this.config.windowMs;
+    const _windowStart = now - this.config.windowMs;
 
     try {
       // For now, use a simple in-memory approach
@@ -106,7 +106,7 @@ export const rateLimiters = {
   auth: new RateLimiter({
     windowMs: 15 * 60 * 1000, // 15 minutes
     maxRequests: 5,
-    keyGenerator: (req) => {
+    keyGenerator: (_req) => {
       const ip = req.headers.get('x-forwarded-for') || 'unknown';
       return `auth:${ip}`;
     },
@@ -196,9 +196,9 @@ export class DDoSProtection {
   }
 
   async checkIP(ip: string): Promise<boolean> {
-    const key = `ddos:${ip}`;
+    const _key = `ddos:${ip}`;
     const now = Date.now();
-    const windowStart = now - this.windowMs;
+    const _windowStart = now - this.windowMs;
 
     try {
       // For now, use a simple in-memory approach

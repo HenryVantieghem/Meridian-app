@@ -30,7 +30,7 @@ export const emailSchemas: {
 } = {
   emailData: z.object({
     id: baseSchemas.id,
-    subject: z.string().min(1).max(500).regex(/^[^\x00-\x1f\x7f]+$/, 'Subject contains invalid characters'),
+    subject: z.string().min(1).max(500).regex(/^[^\u0000-\u001f\u007f]+$/, 'Subject contains invalid characters'),
     from: baseSchemas.email,
     to: z.array(baseSchemas.email).min(1).max(50),
     cc: z.array(baseSchemas.email).max(50).optional(),

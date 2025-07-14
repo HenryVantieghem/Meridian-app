@@ -138,7 +138,7 @@ export class StripeError extends Error {
   }
 }
 
-export const handleStripeError = (error: any): StripeError => {
+export const handleStripeError = (error: unknown): StripeError => {
   if (error instanceof Stripe.errors.StripeError) {
     return new StripeError(
       error.message,
