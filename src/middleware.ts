@@ -37,6 +37,7 @@ const isPublicRoute = createRouteMatcher([
   '/api/email(.*)',
   '/api/stripe(.*)',
   '/api/health',
+  '/api/status',
   '/_next(.*)',
   '/favicon.ico',
   '/manifest.json',
@@ -129,7 +130,7 @@ export const config = {
      * - public folder
      * - api/health (health endpoint)
      */
-    '/((?!_next/static|_next/image|favicon.ico|public/|api/health).*)',
+    '/((?!_next/static|_next/image|favicon.ico|public/|api/health|api/status).*)',
   ],
 };
 
