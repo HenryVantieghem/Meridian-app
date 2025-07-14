@@ -51,17 +51,37 @@ const isPublicRoute = createRouteMatcher([
 
 // Main middleware function
 export default clerkMiddleware(async (auth, req) => {
+  // Skip Clerk authentication for health endpoint and other public routes
+  if (isPublicRoute(req)) {
+    // Static asset caching
+    const staticResponse = staticAssetCaching(req);
+    if (staticResponse) {
+      return staticResponse;
+    }
+    
+    // Create response with headers for public routes
+    const response = NextResponse.next();
+    
+    // Security headers
+    response.headers.set('X-Content-Type-Options', 'nosniff');
+    response.headers.set('X-Frame-Options', 'DENY');
+    response.headers.set('X-XSS-Protection', '1; mode=block');
+    response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+    
+    return response;
+  }
+
   // Static asset caching
   const staticResponse = staticAssetCaching(req);
   if (staticResponse) {
     return staticResponse;
   }
 
-  // Get userId from Clerk
+  // Get userId from Clerk for protected routes
   const { userId } = await auth();
 
-  // Handle authentication
-  if (!userId && !isPublicRoute(req)) {
+  // Handle authentication for protected routes
+  if (!userId) {
     const signInUrl = new URL('/sign-in', req.url);
     signInUrl.searchParams.set('redirect_url', req.url);
     return NextResponse.redirect(signInUrl);
