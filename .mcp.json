@@ -17,6 +17,11 @@
       "command": "npx",
       "args": ["serena"],
       "enabled": true
+    },
+    "mcp-git": {
+      "command": "npx",
+      "args": ["mcp-git"],
+      "enabled": true
     }
   }
 } 
