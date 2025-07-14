@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@clerk/nextjs';
 import { createClient } from '@supabase/supabase-js';
+import { slackCache } from '@/lib/cache';
 import { SlackMessage } from '@/types';
 
 // Initialize Supabase client
@@ -63,6 +64,16 @@ export function useSlackMessages(options: UseSlackMessagesOptions = {}): UseSlac
       setLoading(true);
       setError(null);
 
+      // Try to get from cache first
+      const cacheKey = `${workspaceId || 'all'}_${channelId || 'all'}`;
+      const cachedMessages = await slackCache.getMessages(workspaceId || 'all', channelId);
+      
+      if (cachedMessages && pageNum === 1) {
+        setMessages(cachedMessages);
+        setLoading(false);
+        return;
+      }
+
       // Get messages from database
       let query = supabase
         .from('slack_messages')
@@ -95,6 +106,8 @@ export function useSlackMessages(options: UseSlackMessagesOptions = {}): UseSlac
         setMessages(prev => [...prev, ...fetchedMessages]);
       } else {
         setMessages(fetchedMessages);
+        // Cache the results
+        await slackCache.setMessages(workspaceId || 'all', fetchedMessages, channelId);
       }
 
       setHasMore(fetchedMessages.length === limit);
