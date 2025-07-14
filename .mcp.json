@@ -1,0 +1,22 @@
+{
+  "mcpServers": {
+    "github-repo-mcp": {
+      "command": "npx",
+      "args": ["github-repo-mcp"],
+      "env": {
+        "GITHUB_TOKEN": "${GITHUB_TOKEN}"
+      },
+      "enabled": true
+    },
+    "mcp-server-commands": {
+      "command": "npx",
+      "args": ["mcp-server-commands"],
+      "enabled": true
+    },
+    "serena": {
+      "command": "npx",
+      "args": ["serena"],
+      "enabled": true
+    }
+  }
+} 

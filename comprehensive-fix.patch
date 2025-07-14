@@ -1,0 +1,660 @@
+diff --git a/.gitignore b/.gitignore
+index 1a2b3c4..5d6e7f8 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,42 +1,50 @@
+ # Dependencies
+ node_modules/
+ npm-debug.log*
+ yarn-debug.log*
+ yarn-error.log*
+ 
+ # Next.js
+ .next/
+ out/
+ 
+ # Production
+ build/
+ dist/
+ 
+ # Environment variables
+ .env
+ .env.local
+ .env.development.local
+ .env.test.local
+ .env.production.local
+ 
+ # Debug
+ .npm
+ .eslintcache
+ 
+ # IDE
+ .vscode/
+ .idea/
+ 
+ # OS
+ .DS_Store
+ .nvmrc
+ 
+ # Logs
+ *.log
+ 
+ # Runtime data
+ pids
+ *.pid
+ *.seed
+ *.pid.lock
+ 
+ # Coverage directory used by tools like istanbul
+ coverage/
+ *.lcov
+ 
+ # TypeScript
+ *.tsbuildinfo
+ 
+ # Temporary folders
+ tmp/
+ temp/
+ 
+ # Demo and example files
+ src/stories/
+ src/demo/
+ public/*.svg
+ public/sample/
+ 
+ # Build artifacts
+ .vercel/
+ 
+ # Test files
+ .nyc_output/
+ 
+ # Backup files
+ *.backup
+ *.bak
+ 
+diff --git a/package.json b/package.json
+index c4a40a0..c7e378b 100644
+--- a/package.json
++++ b/package.json
+@@ -42,7 +42,7 @@
+     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",
+     "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",
+     "pre-commit": "npm run lint && npm run test:run && npm run type-check",
+-    "postinstall": "husky install"
++    "prepare": "husky install"
+   },
+   "dependencies": {
+     "@azure/identity": "^4.10.2",
+@@ -117,6 +117,7 @@
+     "eslint-plugin-next": "^0.0.0",
+     "eslint-plugin-react": "^7.37.5",
+     "eslint-plugin-react-hooks": "^4.6.0",
++    "husky": "^8.0.3",
+     "lighthouse": "^11.6.0",
+     "nodemon": "^3.0.2",
+     "postcss": "^8.4.32",
+ 
+diff --git a/vercel.json b/vercel.json
+index 1234567..abcdef0 100644
+--- a/vercel.json
++++ b/vercel.json
+@@ -1,93 +1,85 @@
+ {
+   "version": 2,
+   "buildCommand": "npm run build",
+   "devCommand": "npm run dev",
+   "installCommand": "npm install",
+   "framework": "nextjs",
+   "functions": {
+     "src/app/api/**/*.ts": {
+       "maxDuration": 30
+     },
+     "src/app/api/emails/analyze/route.ts": {
+       "maxDuration": 60
+     },
+     "src/app/api/emails/batch-analyze/route.ts": {
+       "maxDuration": 300
+     },
+     "src/app/api/ai/generate-reply/route.ts": {
+       "maxDuration": 60
+     },
+     "src/app/api/billing/checkout/route.ts": {
+       "maxDuration": 30
+     },
+     "src/app/api/email/send/route.ts": {
+       "maxDuration": 30
+     },
+     "src/app/api/backup/route.ts": {
+       "maxDuration": 300
+     }
+   },
+   "headers": [
+     {
+       "source": "/(.*)",
+       "headers": [
+         {
+           "key": "X-Content-Type-Options",
+           "value": "nosniff"
+         },
+         {
+           "key": "X-Frame-Options",
+           "value": "DENY"
+         },
+         {
+           "key": "X-XSS-Protection",
+           "value": "1; mode=block"
+         },
+         {
+           "key": "Referrer-Policy",
+           "value": "strict-origin-when-cross-origin"
+         }
+       ]
+     }
+   ],
+   "rewrites": [
+     {
+       "source": "/api/health",
+       "destination": "/api/health/route.ts"
+     }
+   ],
+   "crons": [
+     {
+       "path": "/api/backup",
+       "schedule": "0 2 * * *"
+     }
+   ],
+   "env": {
+     "NEXT_PUBLIC_APP_URL": "@NEXT_PUBLIC_APP_URL",
+     "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY": "@NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY",
+     "NEXT_PUBLIC_SUPABASE_URL": "@NEXT_PUBLIC_SUPABASE_URL",
+     "NEXT_PUBLIC_SUPABASE_ANON_KEY": "@NEXT_PUBLIC_SUPABASE_ANON_KEY",
+     "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY": "@NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY"
+   },
+   "build": {
+     "env": {
+       "CLERK_SECRET_KEY": "@CLERK_SECRET_KEY",
+       "SUPABASE_SERVICE_ROLE_KEY": "@SUPABASE_SERVICE_ROLE_KEY",
+       "OPENAI_API_KEY": "@OPENAI_API_KEY",
+       "OPENAI_ORG_ID": "@OPENAI_ORG_ID",
+       "STRIPE_SECRET_KEY": "@STRIPE_SECRET_KEY",
+       "STRIPE_WEBHOOK_SECRET": "@STRIPE_WEBHOOK_SECRET",
+       "RESEND_API_KEY": "@RESEND_API_KEY",
+       "GOOGLE_CLIENT_ID": "@GOOGLE_CLIENT_ID",
+       "GOOGLE_CLIENT_SECRET": "@GOOGLE_CLIENT_SECRET",
+       "GOOGLE_REDIRECT_URI": "@GOOGLE_REDIRECT_URI",
+       "MICROSOFT_CLIENT_ID": "@MICROSOFT_CLIENT_ID",
+       "MICROSOFT_CLIENT_SECRET": "@MICROSOFT_CLIENT_SECRET",
+       "MICROSOFT_REDIRECT_URI": "@MICROSOFT_REDIRECT_URI",
+       "MICROSOFT_TENANT_ID": "@MICROSOFT_TENANT_ID",
+       "SLACK_CLIENT_ID": "@SLACK_CLIENT_ID",
+       "SLACK_CLIENT_SECRET": "@SLACK_CLIENT_SECRET",
+       "SLACK_SIGNING_SECRET": "@SLACK_SIGNING_SECRET",
+       "SLACK_BOT_TOKEN": "@SLACK_BOT_TOKEN",
+       "SLACK_USER_TOKEN": "@SLACK_USER_TOKEN",
+       "SLACK_REDIRECT_URI": "@SLACK_REDIRECT_URI",
+       "SLACK_WEBHOOK_URL": "@SLACK_WEBHOOK_URL",
+       "NEXTAUTH_SECRET": "@NEXTAUTH_SECRET",
+       "NEXTAUTH_URL": "@NEXTAUTH_URL",
+       "WEBHOOK_BASE_URL": "@WEBHOOK_BASE_URL",
+       "LOGGING_WEBHOOK_URL": "@LOGGING_WEBHOOK_URL",
+       "ERROR_TRACKING_WEBHOOK_URL": "@ERROR_TRACKING_WEBHOOK_URL",
+       "ANALYTICS_WEBHOOK_URL": "@ANALYTICS_WEBHOOK_URL",
+       "SECURITY_WEBHOOK_URL": "@SECURITY_WEBHOOK_URL"
+     }
+   }
+ }
+ 
+diff --git a/.env.example b/.env.example
+new file mode 100644
+--- /dev/null
++++ b/.env.example
+@@ -0,0 +1,50 @@
++# Napoleon AI Platform Environment Variables
++# Copy this file to .env.local and fill in your values
++
++# App Configuration
++NEXT_PUBLIC_APP_URL=http://localhost:3000
++NEXT_PUBLIC_APP_NAME=Napoleon
++
++# Authentication (Clerk)
++NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_your_key_here
++CLERK_SECRET_KEY=sk_test_your_secret_here
++NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
++NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
++NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/onboarding
++NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/onboarding
++
++# Database (Supabase)
++NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
++NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key_here
++SUPABASE_SERVICE_ROLE_KEY=your_service_role_key_here
++DATABASE_URL=postgresql://postgres:password@localhost:5432/napoleon
++
++# AI (OpenAI)
++OPENAI_API_KEY=sk-your_openai_key_here
++OPENAI_ORG_ID=org-your_org_id_here
++
++# Payments (Stripe)
++NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_your_stripe_key
++STRIPE_SECRET_KEY=sk_test_your_stripe_secret
++STRIPE_WEBHOOK_SECRET=whsec_your_webhook_secret
++
++# Email Service (Resend)
++RESEND_API_KEY=re_your_resend_key
++
++# Google APIs (Gmail, Calendar, Drive)
++GOOGLE_CLIENT_ID=your_google_client_id.apps.googleusercontent.com
++GOOGLE_CLIENT_SECRET=your_google_client_secret
++GOOGLE_REDIRECT_URI=http://localhost:3000/auth/google/callback
++GOOGLE_REFRESH_TOKEN=your_google_refresh_token
++GOOGLE_ACCESS_TOKEN=your_google_access_token
++
++# Microsoft APIs (Outlook, Office 365)
++MICROSOFT_CLIENT_ID=your_microsoft_client_id
++MICROSOFT_CLIENT_SECRET=your_microsoft_client_secret
++MICROSOFT_REDIRECT_URI=http://localhost:3000/auth/microsoft/callback
++MICROSOFT_TENANT_ID=your_microsoft_tenant_id
++
++# Slack API
++SLACK_CLIENT_ID=your_slack_client_id
++SLACK_CLIENT_SECRET=your_slack_client_secret
++SLACK_SIGNING_SECRET=your_slack_signing_secret
++SLACK_BOT_TOKEN=xoxb-your-slack-bot-token
++SLACK_USER_TOKEN=xoxp-your-slack-user-token
++SLACK_REDIRECT_URI=http://localhost:3000/auth/slack/callback
++SLACK_WEBHOOK_URL=https://hooks.slack.com/services/your/webhook/url
++
++# App Configuration
++NEXTAUTH_SECRET=your_nextauth_secret_for_oauth
++NEXTAUTH_URL=http://localhost:3000
++
++# Webhook URLs for development
++WEBHOOK_BASE_URL=http://localhost:3000/api/webhooks
++
++# Monitoring and Logging
++LOGGING_WEBHOOK_URL=your_logging_webhook_url
++ERROR_TRACKING_WEBHOOK_URL=your_error_tracking_webhook_url
++ANALYTICS_WEBHOOK_URL=your_analytics_webhook_url
++SECURITY_WEBHOOK_URL=your_security_webhook_url
++
+diff --git a/tailwind.config.ts b/tailwind.config.ts
+index 1234567..abcdef0 100644
+--- a/tailwind.config.ts
++++ b/tailwind.config.ts
+@@ -140,4 +140,7 @@
+       },
+     },
+   },
++  plugins: [
++    require('@tailwindcss/forms'),
++  ],
+ }
+ 
+diff --git a/.github/workflows/ci-lighthouse.yml b/.github/workflows/ci-lighthouse.yml
+new file mode 100644
+--- /dev/null
++++ b/.github/workflows/ci-lighthouse.yml
+@@ -0,0 +1,35 @@
++name: Lighthouse CI
++on:
++  pull_request:
++    branches: [main]
++  push:
++    branches: [main]
++
++jobs:
++  lighthouse:
++    runs-on: ubuntu-latest
++    steps:
++      - name: Checkout
++        uses: actions/checkout@v4
++
++      - name: Setup Node.js
++        uses: actions/setup-node@v4
++        with:
++          node-version: '18'
++          cache: 'npm'
++
++      - name: Install dependencies
++        run: npm ci
++
++      - name: Build application
++        run: npm run build
++
++      - name: Start application
++        run: npm start &
++        env:
++          PORT: 3000
++
++      - name: Wait for application
++        run: npx wait-on http://localhost:3000
++
++      - name: Run Lighthouse CI
++        run: npx lhci autorun --config=./lighthouserc.json
++
++      - name: Upload Lighthouse results
++        uses: actions/upload-artifact@v4
++        if: always()
++        with:
++          name: lighthouse-results
++          path: .lighthouseci/
+ 
+diff --git a/.eslintrc.json b/.eslintrc.json
+index 1234567..abcdef0 100644
+--- a/.eslintrc.json
++++ b/.eslintrc.json
+@@ -1,35 +1,40 @@
+ {
+   "root": true,
+   "env": {
+     "browser": true,
+     "node": true,
+     "es2021": true
+   },
+   "parser": "@typescript-eslint/parser",
+   "parserOptions": {
+     "ecmaVersion": 2021,
+     "sourceType": "module",
+     "project": "./tsconfig.json"
+   },
+   "plugins": ["@typescript-eslint", "react", "jsx-a11y"],
+   "extends": [
+     "eslint:recommended",
+     "plugin:@typescript-eslint/recommended",
+     "plugin:react/recommended",
+     "plugin:jsx-a11y/recommended",
+     "next/core-web-vitals"
+   ],
+   "rules": {
+     "no-case-declarations": "error",
+     "react/no-unescaped-entities": "error",
+     "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+     "jsx-a11y/click-events-have-key-events": "error",
+     "jsx-a11y/no-static-element-interactions": "error",
++    "@typescript-eslint/no-explicit-any": "error",
++    "react-hooks/exhaustive-deps": "warn",
++    "import/no-anonymous-default-export": "warn"
+   },
+   "overrides": [
+     {
+       "files": ["**/*.test.*", "e2e/**/*.ts"],
+       "env": { "jest": true, "browser": true, "node": true }
+     }
+   ]
+ }
+ 
+diff --git a/docs/PRODUCTION_OPS.md b/docs/PRODUCTION_OPS.md
+index 1234567..abcdef0 100644
+--- a/docs/PRODUCTION_OPS.md
++++ b/docs/PRODUCTION_OPS.md
+@@ -1,242 +1,300 @@
+ # PRODUCTION OPERATIONS
++
++## Overview
++This document outlines the production operations procedures for the Napoleon AI platform, including backup/restore procedures, incident response, and monitoring.
++
++## Backup and Recovery
++
++### Automated Backups
++- Daily backups run at 2:00 AM via Vercel cron job
++- Backup endpoint: `/api/backup`
++- Backup includes: user data, email analysis, AI models, configuration
++
++### Manual Backup Trigger
++```bash
++curl -X POST https://your-app.vercel.app/api/backup
++```
++
++### Restore Procedure
++1. Download latest backup from Supabase storage
++2. Run restore script: `npm run restore:backup`
++3. Verify data integrity
++4. Update application status
++
++### Backup Verification
++- Check backup logs in Vercel dashboard
++- Verify backup files in Supabase storage
++- Test restore procedure monthly
++
++## Incident Response
++
++### Severity Levels
++- **P0 (Critical)**: Complete service outage
++- **P1 (High)**: Major functionality broken
++- **P2 (Medium)**: Minor functionality issues
++- **P3 (Low)**: Cosmetic issues
++
++### Response Procedures
++
++#### P0 - Critical Incident
++1. **Immediate Response (0-5 minutes)**
++   - Alert on-call engineer
++   - Check Vercel status page
++   - Verify Supabase status
++   - Post status update to stakeholders
++
++2. **Investigation (5-30 minutes)**
++   - Check application logs
++   - Review recent deployments
++   - Check third-party service status
++   - Identify root cause
++
++3. **Resolution (30-60 minutes)**
++   - Implement hotfix if needed
++   - Rollback to last stable version
++   - Restore from backup if necessary
++   - Verify service restoration
++
++4. **Post-Incident (1-24 hours)**
++   - Document incident details
++   - Update runbooks
++   - Schedule post-mortem
++   - Implement preventive measures
++
++#### P1 - High Priority
++1. **Assessment (15 minutes)**
++   - Identify affected users
++   - Assess business impact
++   - Determine workaround
++
++2. **Resolution (1-4 hours)**
++   - Implement fix
++   - Test thoroughly
++   - Deploy to production
++   - Monitor for issues
++
++### Communication Plan
++
++#### Internal Communication
++- Slack: #napoleon-alerts
++- Email: alerts@napoleon.ai
++- Status page: status.napoleon.ai
++
++#### Customer Communication
++- Status page updates
++- Email notifications for affected users
++- Social media updates
++
++## Monitoring and Alerting
++
++### Key Metrics
++- Application response time
++- Error rates
++- User engagement
++- AI model performance
++- Database performance
++
++### Alerting Rules
++- Response time > 2 seconds
++- Error rate > 5%
++- Database connection failures
++- AI model failures
++- Payment processing errors
++
++### Monitoring Tools
++- Vercel Analytics
++- Sentry for error tracking
++- Supabase monitoring
++- Custom health checks
++
++## Security Procedures
++
++### Access Control
++- Use least privilege principle
++- Regular access reviews
++- Multi-factor authentication required
++- Audit logs for all admin actions
++
++### Data Protection
++- Encrypt data at rest and in transit
++- Regular security audits
++- GDPR compliance procedures
++- Data retention policies
++
++### Incident Response
++1. **Detection**: Automated monitoring + manual reports
++2. **Assessment**: Determine scope and impact
++3. **Containment**: Isolate affected systems
++4. **Eradication**: Remove threat
++5. **Recovery**: Restore normal operations
++6. **Lessons Learned**: Document and improve
++
++## Performance Optimization
++
++### Regular Maintenance
++- Weekly performance reviews
++- Monthly dependency updates
++- Quarterly architecture reviews
++- Annual security audits
++
++### Optimization Strategies
++- Code splitting and lazy loading
++- Image optimization
++- Database query optimization
++- CDN utilization
++- Caching strategies
++
++## Deployment Procedures
++
++### Pre-Deployment Checklist
++- [ ] All tests pass
++- [ ] Code review completed
++- [ ] Security scan passed
++- [ ] Performance benchmarks met
++- [ ] Documentation updated
++
++### Deployment Process
++1. Create feature branch
++2. Implement changes
++3. Run local tests
++4. Create pull request
++5. Code review
++6. Merge to main
++7. Automatic deployment via Vercel
++8. Post-deployment verification
++
++### Rollback Procedures
++- Keep previous deployment ready
++- Automated rollback triggers
++- Manual rollback procedures
++- Data consistency checks
++
++## Support and Maintenance
++
++### Customer Support
++- Tier 1: Basic troubleshooting
++- Tier 2: Technical issues
++- Tier 3: Complex problems
++- Escalation procedures
++
++### Maintenance Windows
++- Scheduled during low-traffic hours
++- 24-hour advance notice
++- Maximum 2-hour duration
++- Rollback plan always ready
++
++## Documentation
++
++### Required Documentation
++- Architecture diagrams
++- API documentation
++- Deployment procedures
++- Troubleshooting guides
++- Security procedures
++
++### Documentation Maintenance
++- Review monthly
++- Update with each release
++- Version control for procedures
++- Regular team training
++
++## Emergency Contacts
++
++### Primary Contacts
++- DevOps Lead: [Contact Info]
++- Security Lead: [Contact Info]
++- Product Manager: [Contact Info]
++
++### Escalation Path
++1. On-call engineer
++2. Team lead
++3. Engineering manager
++4. CTO
++5. CEO
++
++## Compliance and Governance
++
++### Regulatory Compliance
++- GDPR compliance
++- SOC 2 preparation
++- Industry-specific regulations
++- Regular compliance audits
++
++### Governance Procedures
++- Change management process
++- Risk assessment procedures
++- Vendor management
++- Contract reviews
++
++## Continuous Improvement
++
++### Metrics Tracking
++- Incident response times
++- Resolution times
++- Customer satisfaction
++- System reliability
++
++### Improvement Process
++- Monthly retrospectives
++- Quarterly reviews
++- Annual planning
++- Feedback integration
++
++## Appendices
++
++### A. Quick Reference Commands
++```bash
++# Check application status
++curl https://your-app.vercel.app/api/health
++
++# Trigger backup
++curl -X POST https://your-app.vercel.app/api/backup
++
++# View logs
++vercel logs your-app
++
++# Rollback deployment
++vercel rollback your-app
++```
++
++### B. Emergency Procedures
++1. **Service Down**: Check Vercel status, rollback if needed
++2. **Data Breach**: Isolate, assess, notify, remediate
++3. **Performance Issues**: Scale resources, optimize code
++4. **Security Incident**: Follow security runbook
++
++### C. Contact Information
++- Vercel Support: support@vercel.com
++- Supabase Support: support@supabase.com
++- OpenAI Support: support@openai.com
++- Stripe Support: support@stripe.com 

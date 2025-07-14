@@ -1,0 +1,21 @@
+diff --git a/package.json b/package.json
+index c4a40a0..c7e378b 100644
+--- a/package.json
++++ b/package.json
+@@ -42,7 +42,7 @@
+     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",
+     "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",
+     "pre-commit": "npm run lint && npm run test:run && npm run type-check",
+-    "postinstall": "husky install"
++    "prepare": "husky install"
+   },
+   "dependencies": {
+     "@azure/identity": "^4.10.2",
+@@ -117,6 +117,7 @@
+     "eslint-plugin-next": "^0.0.0",
+     "eslint-plugin-react": "^7.37.5",
+     "eslint-plugin-react-hooks": "^4.6.0",
++    "husky": "^8.0.3",
+     "lighthouse": "^11.6.0",
+     "nodemon": "^3.0.2",
+     "postcss": "^8.4.32",

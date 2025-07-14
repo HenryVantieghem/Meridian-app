@@ -1,0 +1,92 @@
+{
+  "version": 2,
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "framework": "nextjs",
+  "functions": {
+    "src/app/api/**/*.ts": {
+      "maxDuration": 30
+    },
+    "src/app/api/emails/analyze/route.ts": {
+      "maxDuration": 60
+    },
+    "src/app/api/emails/batch-analyze/route.ts": {
+      "maxDuration": 300
+    },
+    "src/app/api/ai/generate-reply/route.ts": {
+      "maxDuration": 60
+    },
+    "src/app/api/billing/checkout/route.ts": {
+      "maxDuration": 30
+    },
+    "src/app/api/email/send/route.ts": {
+      "maxDuration": 30
+    },
+    "src/app/api/backup/route.ts": {
+      "maxDuration": 300
+    }
+  },
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/health",
+      "destination": "/api/health/route.ts"
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/backup",
+      "schedule": "0 2 * * *"
+    }
+  ],
+  "env": {
+    "NEXT_PUBLIC_APP_URL": "@NEXT_PUBLIC_APP_URL",
+    "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY": "@NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY",
+    "NEXT_PUBLIC_SUPABASE_URL": "@NEXT_PUBLIC_SUPABASE_URL",
+    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "@NEXT_PUBLIC_SUPABASE_ANON_KEY",
+    "NEXT_PUBLIC_STRIPE_PRICE_PRO": "@NEXT_PUBLIC_STRIPE_PRICE_PRO",
+    "NEXT_PUBLIC_STRIPE_PRICE_ENTERPRISE": "@NEXT_PUBLIC_STRIPE_PRICE_ENTERPRISE",
+    "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY": "@NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY"
+  },
+  "build": {
+    "env": {
+      "CLERK_SECRET_KEY": "@CLERK_SECRET_KEY",
+      "SUPABASE_SERVICE_ROLE_KEY": "@SUPABASE_SERVICE_ROLE_KEY",
+      "OPENAI_API_KEY": "@OPENAI_API_KEY",
+      "OPENAI_ORGANIZATION_ID": "@OPENAI_ORGANIZATION_ID",
+      "STRIPE_SECRET_KEY": "@STRIPE_SECRET_KEY",
+      "STRIPE_WEBHOOK_SECRET": "@STRIPE_WEBHOOK_SECRET",
+      "RESEND_API_KEY": "@RESEND_API_KEY",
+      "GOOGLE_CLIENT_ID": "@GOOGLE_CLIENT_ID",
+      "GOOGLE_CLIENT_SECRET": "@GOOGLE_CLIENT_SECRET",
+      "SLACK_CLIENT_ID": "@SLACK_CLIENT_ID",
+      "SLACK_CLIENT_SECRET": "@SLACK_CLIENT_SECRET",
+      "SENTRY_DSN": "@SENTRY_DSN",
+      "UPSTASH_REDIS_REST_URL": "@UPSTASH_REDIS_REST_URL",
+      "UPSTASH_REDIS_REST_TOKEN": "@UPSTASH_REDIS_REST_TOKEN"
+    }
+  }
+}
