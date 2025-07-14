@@ -22,6 +22,81 @@
       "command": "npx",
       "args": ["mcp-git"],
       "enabled": true
+    },
+    "supabase-mcp": {
+      "command": "npx",
+      "args": ["@supabase/mcp-utils"],
+      "enabled": true
+    },
+    "vercel-mcp": {
+      "command": "npx",
+      "args": ["@vercel/mcp-adapter"],
+      "enabled": true
+    },
+    "notion-mcp": {
+      "command": "npx",
+      "args": ["@notionhq/notion-mcp-server"],
+      "enabled": true
+    },
+    "langchain-mcp": {
+      "command": "npx",
+      "args": ["@langchain/mcp-adapters"],
+      "enabled": true
+    },
+    "elasticsearch-mcp": {
+      "command": "npx",
+      "args": ["@elastic/mcp-server-elasticsearch"],
+      "enabled": true
+    },
+    "playwright-mcp": {
+      "command": "npx",
+      "args": ["@playwright/mcp"],
+      "enabled": true
+    },
+    "context7-mcp": {
+      "command": "npx",
+      "args": ["@upstash/context7-mcp"],
+      "enabled": true
+    },
+    "mcp-framework": {
+      "command": "npx",
+      "args": ["mcp-framework"],
+      "enabled": true
+    },
+    "composio-mcp": {
+      "command": "npx",
+      "args": ["@composio/mcp"],
+      "enabled": true
+    },
+    "browsermcp": {
+      "command": "npx",
+      "args": ["@browsermcp/mcp"],
+      "enabled": true
+    },
+    "mcp-proxy": {
+      "command": "npx",
+      "args": ["mcp-proxy"],
+      "enabled": true
+    },
+    "mastra-mcp": {
+      "command": "npx",
+      "args": ["@mastra/mcp"],
+      "enabled": true
+    },
+    "mcp-hello-world": {
+      "command": "npx",
+      "args": ["mcp-hello-world"],
+      "enabled": true
+    },
+    "mcp-nest": {
+      "command": "npx",
+      "args": ["@rekog/mcp-nest"],
+      "enabled": true
+    },
+    "tavily-mcp": {
+      "command": "npx",
+      "args": ["tavily-mcp"],
+      "enabled": true
     }
   }
-} 
+}
