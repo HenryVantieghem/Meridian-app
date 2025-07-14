@@ -29,14 +29,28 @@ vi.mock('@clerk/nextjs', () => ({
     userId: 'test-user-id',
     isSignedIn: true,
     isLoaded: true,
+    sessionId: 'test-session-id',
+    getToken: vi.fn().mockResolvedValue('test-token'),
   }),
   useUser: () => ({
     user: {
       id: 'test-user-id',
       emailAddresses: [{ emailAddress: 'test@example.com' }],
+      firstName: 'Test',
+      lastName: 'User',
     },
     isLoaded: true,
   }),
+  useClerk: () => ({
+    signOut: vi.fn(),
+    openSignIn: vi.fn(),
+    openSignUp: vi.fn(),
+    loaded: true,
+  }),
+  ClerkProvider: ({ children }: { children: React.ReactNode }) => children,
+  SignInButton: ({ children }: { children: React.ReactNode }) => children,
+  SignUpButton: ({ children }: { children: React.ReactNode }) => children,
+  UserButton: () => React.createElement('div', {}, 'User Button'),
 }));
 
 // Mock Framer Motion

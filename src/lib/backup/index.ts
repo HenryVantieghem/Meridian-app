@@ -18,6 +18,19 @@ export {
   encryptionService 
 } from '../security/encryption';
 
+// Individual function exports for easier testing
+export const listBackups = async (): Promise<Backup[]> => {
+  return backupRecoveryService.listBackups();
+};
+
+export const createBackup = async (): Promise<Backup> => {
+  return backupRecoveryService.createFullBackup();
+};
+
+export const restoreBackup = async (backupId: string): Promise<Recovery> => {
+  return backupRecoveryService.restoreFromBackup(backupId);
+};
+
 // Backup Utilities
 export const backupUtils = {
   // Create database backup

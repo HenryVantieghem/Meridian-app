@@ -130,7 +130,7 @@ export class ReplyGenerator {
       return {
         replies: [fallback],
         success: false,
-        error: error.message,
+        error: error instanceof Error ? error.message : String(error),
         retryable: true,
       };
     }

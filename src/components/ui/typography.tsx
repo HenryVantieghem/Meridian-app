@@ -41,20 +41,20 @@ const Typography = React.forwardRef<HTMLElement, TypographyProps>(
     
     const baseStyles = "text-black";
     const variantStyles = {
-      hero: "text-hero font-serif font-bold text-black leading-tight tracking-tight",
-      h1: "text-h1 font-serif font-semibold text-black leading-tight",
-      h2: "text-h2 font-serif font-semibold text-black leading-tight",
-      h3: "text-h3 font-sans font-semibold text-black leading-tight",
+      hero: "text-6xl font-serif font-bold text-black leading-tight tracking-tight",
+      h1: "text-4xl font-serif font-bold text-black leading-tight",
+      h2: "text-3xl font-serif font-bold text-black leading-tight",
+      h3: "text-2xl font-sans font-semibold text-black leading-tight",
       h4: "text-xl font-sans font-semibold text-black leading-tight",
       h5: "text-lg font-sans font-semibold text-black leading-tight",
       h6: "text-base font-sans font-semibold text-black leading-tight",
-      p: "text-body font-sans text-[#36454F] leading-relaxed",
-      span: "text-body font-sans text-[#36454F]",
-      div: "text-body font-sans text-[#36454F]",
-      body: "text-body font-sans text-[#36454F] leading-relaxed",
-      "body-large": "text-body-large font-sans text-[#36454F] leading-relaxed",
-      small: "text-small font-sans text-[#36454F] leading-relaxed",
-      caption: "text-caption font-sans text-[#36454F] uppercase tracking-wide",
+      p: "text-base font-sans text-black leading-relaxed",
+      span: "text-base font-sans text-black",
+      div: "text-base font-sans text-black",
+      body: "text-base font-sans text-black leading-relaxed",
+      "body-large": "text-lg font-sans text-black leading-relaxed",
+      small: "text-sm font-sans text-black leading-relaxed",
+      caption: "text-sm font-sans text-black uppercase tracking-wide",
     };
     
     return (

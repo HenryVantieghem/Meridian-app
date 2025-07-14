@@ -14,3 +14,6 @@ Sentry.init({
   debug: false,
   environment: process.env.NODE_ENV,
 });
+
+// Export router transition hook for navigation instrumentation
+export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;
