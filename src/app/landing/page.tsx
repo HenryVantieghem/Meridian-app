@@ -32,16 +32,29 @@ export default function LandingPage() {
               </Typography>
             </div>
             <div className="flex items-center space-x-4">
-              <SignInButton mode="modal">
-                <Button variant="outline" className="rounded-full">
-                  Sign In
-                </Button>
-              </SignInButton>
-              <SignUpButton mode="modal">
-                <Button className="bg-brand-burgundy text-white hover:bg-brand-burgundy/90 rounded-full">
-                  Get Started
-                </Button>
-              </SignUpButton>
+              {typeof window !== 'undefined' && process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY ? (
+                <>
+                  <SignInButton mode="modal">
+                    <Button variant="outline" className="rounded-full">
+                      Sign In
+                    </Button>
+                  </SignInButton>
+                  <SignUpButton mode="modal">
+                    <Button className="bg-brand-burgundy text-white hover:bg-brand-burgundy/90 rounded-full">
+                      Get Started
+                    </Button>
+                  </SignUpButton>
+                </>
+              ) : (
+                <>
+                  <Button variant="outline" className="rounded-full" onClick={() => alert('Authentication coming soon!')}>
+                    Sign In
+                  </Button>
+                  <Button className="bg-brand-burgundy text-white hover:bg-brand-burgundy/90 rounded-full" onClick={() => alert('Get started coming soon!')}>
+                    Get Started
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>
