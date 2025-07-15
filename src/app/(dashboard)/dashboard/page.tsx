@@ -13,6 +13,11 @@ import { Badge } from '@/components/ui/badge';
 import { LoadingSpinner, DashboardSkeleton } from '@/components/ui/LoadingSpinner';
 import { Email, SlackMessage } from '@/types';
 import OnboardingModal from '@/components/onboarding/OnboardingModal';
+import DailyBrief from '@/components/dashboard/DailyBrief';
+import VIPManager from '@/components/dashboard/VIPManager';
+import { usePriorityScoring } from '@/components/dashboard/PriorityScoring';
+import GuidedTour, { useGuidedTour } from '@/components/ui/GuidedTour';
+import SecurityHints from '@/components/ui/SecurityHints';
 
 // Lazy load heavy components
 const EmailList = dynamic(() => import('@/components/email/EmailList').then(mod => ({ default: mod.EmailList })), {
@@ -56,6 +61,12 @@ export default function DashboardPage() {
   const [showAIActions, setShowAIActions] = useState(true);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showCommandBar, setShowCommandBar] = useState(false);
+  const [showDailyBrief, setShowDailyBrief] = useState(true);
+  const [showVIPManager, setShowVIPManager] = useState(false);
+  const [showSecurity, setShowSecurity] = useState(false);
+  
+  const { scoreItem, updateVIPContacts, getPriorityLabel } = usePriorityScoring();
+  const { showTour, closeTour, completeTour, startTour } = useGuidedTour();
 
   // Real data hooks
   const {
@@ -165,6 +176,14 @@ export default function DashboardPage() {
     console.log('Executing command:', command);
     // Handle AI commands here
   };
+  
+  const handleVIPUpdate = (contacts: any[]) => {
+    updateVIPContacts(contacts);
+  };
+  
+  const handleItemClick = (item: Email | SlackMessage) => {
+    setSelectedItem(item);
+  };
 
   if (!userId) {
     return (
@@ -218,6 +237,30 @@ export default function DashboardPage() {
             </div>
 
             <div className="flex items-center space-x-4">
+              <Button
+                onClick={() => { setShowDailyBrief(true); setShowVIPManager(false); setShowSecurity(false); }}
+                variant={showDailyBrief ? "default" : "outline"}
+                className="rounded-2xl px-4 py-2"
+              >
+                Daily Brief
+              </Button>
+              
+              <Button
+                onClick={() => { setShowVIPManager(true); setShowDailyBrief(false); setShowSecurity(false); }}
+                variant={showVIPManager ? "default" : "outline"}
+                className="rounded-2xl px-4 py-2"
+              >
+                VIP Manager
+              </Button>
+              
+              <Button
+                onClick={() => { setShowSecurity(true); setShowDailyBrief(false); setShowVIPManager(false); }}
+                variant={showSecurity ? "default" : "outline"}
+                className="rounded-2xl px-4 py-2"
+              >
+                Security
+              </Button>
+              
               {activeTab === 'emails' && (
                 <Button
                   onClick={handleSyncEmails}
@@ -237,7 +280,10 @@ export default function DashboardPage() {
               </Button>
               
               <Badge className="bg-[#F8F6F0] text-black border-[#801B2B]">
-                {activeTab === 'emails' ? emails.length : messages.length} items
+                {showDailyBrief ? `${emails.length + messages.length} items` : 
+                 showVIPManager ? 'VIP Management' :
+                 showSecurity ? 'Security Center' :
+                 activeTab === 'emails' ? `${emails.length} emails` : `${messages.length} messages`}
               </Badge>
             </div>
           </div>
@@ -246,7 +292,23 @@ export default function DashboardPage() {
         {/* Content Area */}
         <div className="flex-1 overflow-hidden">
           <Suspense fallback={<LoadingSpinner size="lg" text="Loading strategic communications..." />}>
-            {activeTab === 'emails' ? (
+            {showDailyBrief ? (
+              <DailyBrief
+                emails={emails}
+                messages={messages}
+                onItemClick={handleItemClick}
+                className="p-6"
+              />
+            ) : showVIPManager ? (
+              <VIPManager
+                emails={emails}
+                messages={messages}
+                onVIPUpdate={handleVIPUpdate}
+                className="p-6"
+              />
+            ) : showSecurity ? (
+              <SecurityHints className="p-6" />
+            ) : activeTab === 'emails' ? (
               <EmailList
                 status="unread"
                 limit={50}
@@ -309,6 +371,13 @@ export default function DashboardPage() {
       {showCommandBar && (
         <CommandBar onCommand={handleCommand} />
       )}
+      
+      {/* Guided Tour */}
+      <GuidedTour 
+        isOpen={showTour}
+        onClose={closeTour}
+        onComplete={completeTour}
+      />
     </div>
   );
 } 
