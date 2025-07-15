@@ -19,6 +19,12 @@ import { usePriorityScoring } from '@/components/dashboard/PriorityScoring';
 import GuidedTour, { useGuidedTour } from '@/components/ui/GuidedTour';
 import SecurityHints from '@/components/ui/SecurityHints';
 
+// Lazy load ROI Dashboard
+const ROIDashboard = dynamic(() => import('@/components/dashboard/ROIDashboard').then(mod => ({ default: mod.ROIDashboard })), {
+  loading: () => <LoadingSpinner size="lg" text="Loading ROI metrics..." />,
+  ssr: false
+});
+
 // Lazy load heavy components
 const EmailList = dynamic(() => import('@/components/email/EmailList').then(mod => ({ default: mod.EmailList })), {
   loading: () => <LoadingSpinner size="lg" text="Loading email interface..." />,
@@ -64,6 +70,7 @@ export default function DashboardPage() {
   const [showDailyBrief, setShowDailyBrief] = useState(true);
   const [showVIPManager, setShowVIPManager] = useState(false);
   const [showSecurity, setShowSecurity] = useState(false);
+  const [showROI, setShowROI] = useState(false);
   
   const { scoreItem, updateVIPContacts, getPriorityLabel } = usePriorityScoring();
   const { showTour, closeTour, completeTour, startTour } = useGuidedTour();
@@ -238,7 +245,7 @@ export default function DashboardPage() {
 
             <div className="flex items-center space-x-4">
               <Button
-                onClick={() => { setShowDailyBrief(true); setShowVIPManager(false); setShowSecurity(false); }}
+                onClick={() => { setShowDailyBrief(true); setShowVIPManager(false); setShowSecurity(false); setShowROI(false); }}
                 variant={showDailyBrief ? "default" : "outline"}
                 className="rounded-2xl px-4 py-2"
               >
@@ -246,7 +253,7 @@ export default function DashboardPage() {
               </Button>
               
               <Button
-                onClick={() => { setShowVIPManager(true); setShowDailyBrief(false); setShowSecurity(false); }}
+                onClick={() => { setShowVIPManager(true); setShowDailyBrief(false); setShowSecurity(false); setShowROI(false); }}
                 variant={showVIPManager ? "default" : "outline"}
                 className="rounded-2xl px-4 py-2"
               >
@@ -254,7 +261,15 @@ export default function DashboardPage() {
               </Button>
               
               <Button
-                onClick={() => { setShowSecurity(true); setShowDailyBrief(false); setShowVIPManager(false); }}
+                onClick={() => { setShowROI(true); setShowDailyBrief(false); setShowVIPManager(false); setShowSecurity(false); }}
+                variant={showROI ? "default" : "outline"}
+                className="rounded-2xl px-4 py-2"
+              >
+                ROI Dashboard
+              </Button>
+              
+              <Button
+                onClick={() => { setShowSecurity(true); setShowDailyBrief(false); setShowVIPManager(false); setShowROI(false); }}
                 variant={showSecurity ? "default" : "outline"}
                 className="rounded-2xl px-4 py-2"
               >
@@ -282,6 +297,7 @@ export default function DashboardPage() {
               <Badge className="bg-[#F8F6F0] text-black border-[#801B2B]">
                 {showDailyBrief ? `${emails.length + messages.length} items` : 
                  showVIPManager ? 'VIP Management' :
+                 showROI ? 'ROI Analytics' :
                  showSecurity ? 'Security Center' :
                  activeTab === 'emails' ? `${emails.length} emails` : `${messages.length} messages`}
               </Badge>
@@ -306,6 +322,10 @@ export default function DashboardPage() {
                 onVIPUpdate={handleVIPUpdate}
                 className="p-6"
               />
+            ) : showROI ? (
+              <div className="p-6">
+                <ROIDashboard />
+              </div>
             ) : showSecurity ? (
               <SecurityHints className="p-6" />
             ) : activeTab === 'emails' ? (
