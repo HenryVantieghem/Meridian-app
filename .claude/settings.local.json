@@ -13,7 +13,13 @@
       "Bash(npm run test:run:*)",
       "Bash(npm run lint:*)",
       "Bash(npm run format:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git checkout:*)",
+      "Bash(git merge:*)",
+      "Bash(vercel ls:*)",
+      "Bash(touch:*)"
     ]
   },
   "enableAllProjectMcpServers": true,
