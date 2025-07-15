@@ -29,16 +29,13 @@ export default function middleware(req: NextRequest) {
   return response;
 }
 
-// Export configuration - simplified matcher
+// Export configuration - allow all public routes
 export const config = {
   matcher: [
     /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - api/health and api/status (health endpoints)
+     * Only run middleware on API routes that need authentication
+     * Skip all static files, pages, and public endpoints
      */
-    '/((?!_next/static|_next/image|favicon.ico|api/health|api/status).*)',
+    '/api/((?!health|status).*)',
   ],
 }; 
