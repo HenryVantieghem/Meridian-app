@@ -105,22 +105,22 @@ export default function DashboardPage() {
   // Keyboard shortcuts
   useHotkeys('e', () => {
     if (selectedItem) {
-      console.log('Marking item as done:', selectedItem.id);
-      // Mark item as done
+      // Mark item as done - implement actual logic
+      handleItemComplete(selectedItem);
     }
   }, { enableOnFormTags: true });
 
   useHotkeys('r', () => {
     if (selectedItem) {
-      console.log('Opening reply for:', selectedItem.id);
-      // Open reply composer
+      // Open reply composer - implement actual logic
+      handleItemReply(selectedItem);
     }
   }, { enableOnFormTags: true });
 
   useHotkeys('s', () => {
     if (selectedItem) {
-      console.log('Snoozing item:', selectedItem.id);
-      // Snooze item
+      // Snooze item - implement actual logic
+      handleItemSnooze(selectedItem);
     }
   }, { enableOnFormTags: true });
 
@@ -183,6 +183,53 @@ export default function DashboardPage() {
     console.log('Executing command:', command);
     // Handle AI commands here
   };
+
+  const handleItemComplete = async (item: Email | SlackMessage) => {
+    try {
+      // Mark item as completed
+      if ('subject' in item) {
+        // Handle email completion
+        await fetch(`/api/emails/${item.id}/complete`, { method: 'POST' });
+      } else {
+        // Handle message completion
+        await fetch(`/api/slack/messages/${item.id}/complete`, { method: 'POST' });
+      }
+      refreshEmails();
+      refreshMessages();
+    } catch (error) {
+      console.error('Failed to complete item:', error);
+    }
+  };
+
+  const handleItemReply = (item: Email | SlackMessage) => {
+    // Open reply composer - for now, just select the item
+    setSelectedItem(item);
+    // TODO: Open draft writer modal with this item as context
+  };
+
+  const handleItemSnooze = async (item: Email | SlackMessage) => {
+    try {
+      // Snooze item for 1 hour by default
+      const snoozeUntil = new Date(Date.now() + 60 * 60 * 1000);
+      if ('subject' in item) {
+        await fetch(`/api/emails/${item.id}/snooze`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ snoozeUntil })
+        });
+      } else {
+        await fetch(`/api/slack/messages/${item.id}/snooze`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ snoozeUntil })
+        });
+      }
+      refreshEmails();
+      refreshMessages();
+    } catch (error) {
+      console.error('Failed to snooze item:', error);
+    }
+  };
   
   const handleVIPUpdate = (contacts: any[]) => {
     updateVIPContacts(contacts);
@@ -235,7 +282,7 @@ export default function DashboardPage() {
               <h1 className="text-headline-cartier text-black font-serif">
                 {activeTab === 'emails' ? 'Strategic Communication Command' : 'Executive Messaging Hub'}
               </h1>
-              <p className="text-body-cartier text-[#4A4A4A] mt-2">
+              <p className="text-body-cartier text-cartier-secondary mt-2">
                 {activeTab === 'emails' 
                   ? `${unreadEmails} unread communications, ${urgentEmails} critical priorities`
                   : `${unreadMessages} unread messages, ${highPriorityMessages} high priority items`
@@ -280,7 +327,7 @@ export default function DashboardPage() {
                 <Button
                   onClick={handleSyncEmails}
                   disabled={emailsLoading}
-                  className="rounded-2xl px-4 py-2 bg-black text-white hover:bg-[#801B2B] transition-all duration-200"
+                  className="rounded-2xl px-4 py-2 bg-black text-white hover:bg-brand-burgundy transition-all duration-200"
                 >
                   {emailsLoading ? 'Synchronizing...' : 'Sync Communications'}
                 </Button>
