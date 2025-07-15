@@ -39,7 +39,7 @@ export function Hero() {
             className="inline-flex items-center px-6 py-3 rounded-full bg-[rgba(93,0,30,0.1)] border border-[rgba(93,0,30,0.2)] mb-8"
           >
             <Crown className="w-5 h-5 text-brand-burgundy mr-3" />
-            <span className="text-brand-burgundy font-medium text-body-cartier">
+            <span className="text-brand-burgundy font-medium text-sm">
               Luxury AI Strategic Commander
             </span>
           </motion.div>
@@ -51,7 +51,7 @@ export function Hero() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="mb-8"
           >
-            <h1 className="text-hero-cartier text-black font-serif mb-6 leading-tight">
+            <h1 className="text-6xl text-black font-serif mb-6 leading-tight">
               Transform <span className="text-brand-burgundy">Chaos</span> into <span className="text-brand-burgundy">Clarity</span>.
             </h1>
           </motion.div>
@@ -63,7 +63,7 @@ export function Hero() {
             transition={{ duration: 0.8, delay: 0.4 }}
             className="mb-12"
           >
-            <p className="text-body-cartier text-[#4A4A4A] max-w-4xl mx-auto leading-relaxed">
+            <p className="text-lg text-[#4A4A4A] max-w-4xl mx-auto leading-relaxed">
               Transform communication chaos into strategic clarity through intelligent email management, 
               AI-powered prioritization, and luxury UX design. Designed for C-level executives who demand excellence.
             </p>
@@ -105,15 +105,15 @@ export function Hero() {
           >
             <div className="flex items-center" role="listitem">
               <Shield className="w-6 h-6 mr-3 text-brand-burgundy" aria-hidden="true" />
-              <span className="text-body-cartier font-medium">Enterprise Security</span>
+              <span className="text-sm font-medium">Enterprise Security</span>
             </div>
             <div className="flex items-center" role="listitem">
               <Zap className="w-6 h-6 mr-3 text-brand-burgundy" aria-hidden="true" />
-              <span className="text-body-cartier font-medium">Lightning Performance</span>
+              <span className="text-sm font-medium">Lightning Performance</span>
             </div>
             <div className="flex items-center" role="listitem">
               <Sparkles className="w-6 h-6 mr-3 text-brand-burgundy" aria-hidden="true" />
-              <span className="text-body-cartier font-medium">AI-Powered Intelligence</span>
+              <span className="text-sm font-medium">AI-Powered Intelligence</span>
             </div>
           </motion.div>
         </div>
