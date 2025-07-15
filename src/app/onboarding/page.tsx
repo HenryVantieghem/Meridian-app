@@ -228,7 +228,7 @@ export default function OnboardingPage() {
                   <Button
                     onClick={() => setStep(2)}
                     disabled={!selectedPersona}
-                    className="bg-black text-white hover:bg-[#801B2B]"
+                    className="bg-black text-white hover:bg-brand-burgundy"
                   >
                     Continue
                     <ArrowRight className="ml-2 w-4 h-4" />
@@ -312,7 +312,7 @@ export default function OnboardingPage() {
                   <Button
                     onClick={handleConnectAccounts}
                     disabled={isConnecting}
-                    className="bg-black text-white hover:bg-[#801B2B]"
+                    className="bg-black text-white hover:bg-brand-burgundy"
                   >
                     {isConnecting ? 'Connecting...' : 'Continue'}
                     <ArrowRight className="ml-2 w-4 h-4" />
@@ -371,7 +371,7 @@ export default function OnboardingPage() {
                   </Button>
                   <Button
                     onClick={handleComplete}
-                    className="bg-black text-white hover:bg-[#801B2B]"
+                    className="bg-black text-white hover:bg-brand-burgundy"
                   >
                     Complete Setup
                     <Check className="ml-2 w-4 h-4" />
