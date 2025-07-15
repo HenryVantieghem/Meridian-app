@@ -1,26 +1,26 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
-import { 
-  Crown, 
-  Building2, 
-  User, 
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import {
+  Crown,
+  Building2,
+  User,
   TrendingUp,
   Check,
-  Mail, 
-  Clock, 
+  Mail,
+  Clock,
   Star,
   Zap,
   Calendar,
   ArrowRight,
-  ArrowLeft
-} from 'lucide-react';
+  ArrowLeft,
+} from "lucide-react";
 
 interface Persona {
   id: string;
@@ -34,91 +34,107 @@ interface Persona {
 
 const personas: Persona[] = [
   {
-    id: 'executive',
-    title: 'C-Level Executive',
-    description: 'CEO, CFO, CTO, or other C-suite leader',
+    id: "executive",
+    title: "C-Level Executive",
+    description: "CEO, CFO, CTO, or other C-suite leader",
     icon: Crown,
-    features: ['Strategic decision making', 'Board communications', 'Stakeholder management'],
-    color: 'text-brand-burgundy',
-    bgColor: 'bg-brand-burgundy/10'
+    features: [
+      "Strategic decision making",
+      "Board communications",
+      "Stakeholder management",
+    ],
+    color: "text-brand-burgundy",
+    bgColor: "bg-brand-burgundy/10",
   },
   {
-    id: 'director',
-    title: 'Senior Director',
-    description: 'VP, Director, or senior management',
+    id: "director",
+    title: "Senior Director",
+    description: "VP, Director, or senior management",
     icon: Building2,
-    features: ['Team leadership', 'Cross-functional coordination', 'Strategic planning'],
-    color: 'text-blue-600',
-    bgColor: 'bg-blue-50'
+    features: [
+      "Team leadership",
+      "Cross-functional coordination",
+      "Strategic planning",
+    ],
+    color: "text-blue-600",
+    bgColor: "bg-blue-50",
   },
   {
-    id: 'manager',
-    title: 'Middle Manager',
-    description: 'Manager, Team Lead, or department head',
+    id: "manager",
+    title: "Middle Manager",
+    description: "Manager, Team Lead, or department head",
     icon: User,
-    features: ['Team management', 'Process optimization', 'Resource allocation'],
-    color: 'text-green-600',
-    bgColor: 'bg-green-50'
+    features: [
+      "Team management",
+      "Process optimization",
+      "Resource allocation",
+    ],
+    color: "text-green-600",
+    bgColor: "bg-green-50",
   },
   {
-    id: 'entrepreneur',
-    title: 'Entrepreneur',
-    description: 'Founder, startup leader, or business owner',
+    id: "entrepreneur",
+    title: "Entrepreneur",
+    description: "Founder, startup leader, or business owner",
     icon: TrendingUp,
-    features: ['Business development', 'Investor relations', 'Growth strategy'],
-    color: 'text-purple-600',
-    bgColor: 'bg-purple-50'
-  }
+    features: ["Business development", "Investor relations", "Growth strategy"],
+    color: "text-purple-600",
+    bgColor: "bg-purple-50",
+  },
 ];
 
 const painPoints = [
-  { id: 'overwhelm', label: 'Email overwhelm', icon: Mail },
-  { id: 'prioritization', label: 'Difficulty prioritizing', icon: Star },
-  { id: 'meetings', label: 'Too many meetings', icon: Calendar },
-  { id: 'responsiveness', label: 'Pressure to respond quickly', icon: Clock },
-  { id: 'clarity', label: 'Lack of strategic clarity', icon: Zap },
-  { id: 'delegation', label: 'Difficulty delegating', icon: User }
+  { id: "overwhelm", label: "Email overwhelm", icon: Mail },
+  { id: "prioritization", label: "Difficulty prioritizing", icon: Star },
+  { id: "meetings", label: "Too many meetings", icon: Calendar },
+  { id: "responsiveness", label: "Pressure to respond quickly", icon: Clock },
+  { id: "clarity", label: "Lack of strategic clarity", icon: Zap },
+  { id: "delegation", label: "Difficulty delegating", icon: User },
 ];
 
 export default function OnboardingPage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
-  const [selectedPersona, setSelectedPersona] = useState<string>('');
+  const [selectedPersona, setSelectedPersona] = useState<string>("");
   const [selectedPainPoints, setSelectedPainPoints] = useState<string[]>([]);
   const [vipContacts, setVipContacts] = useState([
-    { name: '', email: '', role: '' },
-    { name: '', email: '', role: '' },
-    { name: '', email: '', role: '' }
+    { name: "", email: "", role: "" },
+    { name: "", email: "", role: "" },
+    { name: "", email: "", role: "" },
   ]);
   const [isConnecting, setIsConnecting] = useState(false);
 
   const handlePainPointToggle = (painPointId: string) => {
-    setSelectedPainPoints(prev => 
-      prev.includes(painPointId) 
-        ? prev.filter(id => id !== painPointId)
-        : [...prev, painPointId]
+    setSelectedPainPoints((prev) =>
+      prev.includes(painPointId)
+        ? prev.filter((id) => id !== painPointId)
+        : [...prev, painPointId],
     );
   };
 
-  const handleVipContactChange = (index: number, field: string, value: string) => {
-    setVipContacts(prev => 
-      prev.map((contact, i) => 
-        i === index ? { ...contact, [field]: value } : contact
-      )
+  const handleVipContactChange = (
+    index: number,
+    field: string,
+    value: string,
+  ) => {
+    setVipContacts((prev) =>
+      prev.map((contact, i) =>
+        i === index ? { ...contact, [field]: value } : contact,
+      ),
     );
   };
 
   const handleConnectAccounts = async () => {
     setIsConnecting(true);
     // Simulate OAuth flow
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
     setIsConnecting(false);
     setStep(3);
   };
 
   const handleComplete = () => {
     // Save onboarding data
-    router.push('/dashboard');
+    router.push("/dashboard");
   };
 
   const progress = (step / 3) * 100;
@@ -130,10 +146,14 @@ export default function OnboardingPage() {
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
             <Crown className="w-8 h-8 text-brand-burgundy mr-3" />
-            <h1 className="text-3xl font-serif text-black">Welcome to Napoleon</h1>
+            <h1 className="text-3xl font-serif text-black">
+              Welcome to Napoleon
+            </h1>
           </div>
-          <p className="text-gray-600 mb-6">Let&apos;s personalize your AI strategic commander</p>
-          
+          <p className="text-gray-600 mb-6">
+            Let&apos;s personalize your AI strategic commander
+          </p>
+
           {/* Progress Bar */}
           <div className="w-full mb-6">
             <Progress value={progress} className="h-2" />
@@ -157,14 +177,16 @@ export default function OnboardingPage() {
               <div className="space-y-8">
                 {/* Role Selection */}
                 <div>
-                  <h2 className="text-xl font-semibold mb-4">What&apos;s your role?</h2>
+                  <h2 className="text-xl font-semibold mb-4">
+                    What&apos;s your role?
+                  </h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {personas.map((persona) => (
                       <div
                         key={persona.id}
                         onClick={() => setSelectedPersona(persona.id)}
                         onKeyDown={(e) => {
-                          if (e.key === 'Enter' || e.key === ' ') {
+                          if (e.key === "Enter" || e.key === " ") {
                             setSelectedPersona(persona.id);
                           }
                         }}
@@ -172,15 +194,19 @@ export default function OnboardingPage() {
                         tabIndex={0}
                         className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
                           selectedPersona === persona.id
-                            ? 'border-brand-burgundy bg-brand-burgundy/5'
-                            : 'border-gray-200 hover:border-gray-300'
+                            ? "border-brand-burgundy bg-brand-burgundy/5"
+                            : "border-gray-200 hover:border-gray-300"
                         }`}
                       >
                         <div className="flex items-center mb-3">
-                          <persona.icon className={`w-6 h-6 mr-3 ${persona.color}`} />
+                          <persona.icon
+                            className={`w-6 h-6 mr-3 ${persona.color}`}
+                          />
                           <h3 className="font-semibold">{persona.title}</h3>
                         </div>
-                        <p className="text-sm text-gray-600 mb-3">{persona.description}</p>
+                        <p className="text-sm text-gray-600 mb-3">
+                          {persona.description}
+                        </p>
                         <ul className="text-xs text-gray-500 space-y-1">
                           {persona.features.map((feature, index) => (
                             <li key={index} className="flex items-center">
@@ -196,14 +222,16 @@ export default function OnboardingPage() {
 
                 {/* Pain Points */}
                 <div>
-                  <h2 className="text-xl font-semibold mb-4">What challenges do you face?</h2>
+                  <h2 className="text-xl font-semibold mb-4">
+                    What challenges do you face?
+                  </h2>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                     {painPoints.map((painPoint) => (
                       <div
                         key={painPoint.id}
                         onClick={() => handlePainPointToggle(painPoint.id)}
                         onKeyDown={(e) => {
-                          if (e.key === 'Enter' || e.key === ' ') {
+                          if (e.key === "Enter" || e.key === " ") {
                             handlePainPointToggle(painPoint.id);
                           }
                         }}
@@ -211,8 +239,8 @@ export default function OnboardingPage() {
                         tabIndex={0}
                         className={`p-3 rounded-lg border-2 cursor-pointer transition-all ${
                           selectedPainPoints.includes(painPoint.id)
-                            ? 'border-brand-burgundy bg-brand-burgundy/5'
-                            : 'border-gray-200 hover:border-gray-300'
+                            ? "border-brand-burgundy bg-brand-burgundy/5"
+                            : "border-gray-200 hover:border-gray-300"
                         }`}
                       >
                         <div className="flex items-center">
@@ -248,11 +276,14 @@ export default function OnboardingPage() {
             >
               <div className="space-y-8">
                 <div>
-                  <h2 className="text-xl font-semibold mb-4">Connect your accounts</h2>
+                  <h2 className="text-xl font-semibold mb-4">
+                    Connect your accounts
+                  </h2>
                   <p className="text-gray-600 mb-6">
-                    Napoleon will analyze your communications to provide strategic insights
+                    Napoleon will analyze your communications to provide
+                    strategic insights
                   </p>
-                  
+
                   <div className="space-y-4">
                     <div className="p-4 border border-gray-200 rounded-lg">
                       <div className="flex items-center justify-between">
@@ -260,7 +291,9 @@ export default function OnboardingPage() {
                           <Mail className="w-6 h-6 mr-3 text-red-500" />
                           <div>
                             <h3 className="font-semibold">Gmail</h3>
-                            <p className="text-sm text-gray-600">Connect your email account</p>
+                            <p className="text-sm text-gray-600">
+                              Connect your email account
+                            </p>
                           </div>
                         </div>
                         <Button variant="outline" size="sm">
@@ -275,7 +308,9 @@ export default function OnboardingPage() {
                           <Zap className="w-6 h-6 mr-3 text-blue-500" />
                           <div>
                             <h3 className="font-semibold">Slack</h3>
-                            <p className="text-sm text-gray-600">Connect your workspace</p>
+                            <p className="text-sm text-gray-600">
+                              Connect your workspace
+                            </p>
                           </div>
                         </div>
                         <Button variant="outline" size="sm">
@@ -290,7 +325,9 @@ export default function OnboardingPage() {
                           <Calendar className="w-6 h-6 mr-3 text-purple-500" />
                           <div>
                             <h3 className="font-semibold">Outlook</h3>
-                            <p className="text-sm text-gray-600">Connect your calendar</p>
+                            <p className="text-sm text-gray-600">
+                              Connect your calendar
+                            </p>
                           </div>
                         </div>
                         <Button variant="outline" size="sm">
@@ -302,10 +339,7 @@ export default function OnboardingPage() {
                 </div>
 
                 <div className="flex justify-between">
-                  <Button
-                    variant="outline"
-                    onClick={() => setStep(1)}
-                  >
+                  <Button variant="outline" onClick={() => setStep(1)}>
                     <ArrowLeft className="mr-2 w-4 h-4" />
                     Back
                   </Button>
@@ -314,7 +348,7 @@ export default function OnboardingPage() {
                     disabled={isConnecting}
                     className="bg-black text-white hover:bg-brand-burgundy"
                   >
-                    {isConnecting ? 'Connecting...' : 'Continue'}
+                    {isConnecting ? "Connecting..." : "Continue"}
                     <ArrowRight className="ml-2 w-4 h-4" />
                   </Button>
                 </div>
@@ -332,29 +366,53 @@ export default function OnboardingPage() {
             >
               <div className="space-y-8">
                 <div>
-                  <h2 className="text-xl font-semibold mb-4">Set up your VIP contacts</h2>
+                  <h2 className="text-xl font-semibold mb-4">
+                    Set up your VIP contacts
+                  </h2>
                   <p className="text-gray-600 mb-6">
-                    These are the people whose messages Napoleon will prioritize and analyze most carefully
+                    These are the people whose messages Napoleon will prioritize
+                    and analyze most carefully
                   </p>
-                  
+
                   <div className="space-y-4">
                     {vipContacts.map((contact, index) => (
-                      <div key={index} className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border border-gray-200 rounded-lg">
+                      <div
+                        key={index}
+                        className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border border-gray-200 rounded-lg"
+                      >
                         <Input
                           placeholder="Name"
                           value={contact.name}
-                          onChange={(e) => handleVipContactChange(index, 'name', e.target.value)}
+                          onChange={(e) =>
+                            handleVipContactChange(
+                              index,
+                              "name",
+                              e.target.value,
+                            )
+                          }
                         />
                         <Input
                           placeholder="Email"
                           type="email"
                           value={contact.email}
-                          onChange={(e) => handleVipContactChange(index, 'email', e.target.value)}
+                          onChange={(e) =>
+                            handleVipContactChange(
+                              index,
+                              "email",
+                              e.target.value,
+                            )
+                          }
                         />
                         <Input
                           placeholder="Role/Relationship"
                           value={contact.role}
-                          onChange={(e) => handleVipContactChange(index, 'role', e.target.value)}
+                          onChange={(e) =>
+                            handleVipContactChange(
+                              index,
+                              "role",
+                              e.target.value,
+                            )
+                          }
                         />
                       </div>
                     ))}
@@ -362,10 +420,7 @@ export default function OnboardingPage() {
                 </div>
 
                 <div className="flex justify-between">
-                  <Button
-                    variant="outline"
-                    onClick={() => setStep(2)}
-                  >
+                  <Button variant="outline" onClick={() => setStep(2)}>
                     <ArrowLeft className="mr-2 w-4 h-4" />
                     Back
                   </Button>
@@ -384,4 +439,4 @@ export default function OnboardingPage() {
       </Card>
     </div>
   );
-} 
+}

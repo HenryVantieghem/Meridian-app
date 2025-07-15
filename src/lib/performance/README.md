@@ -17,13 +17,16 @@ Comprehensive performance optimization system for Napoleon AI application, targe
 ### 1. Code Splitting & Lazy Loading (`code-splitting.ts`)
 
 ```typescript
-import { routeComponents, createLazyComponent } from '@/lib/performance/code-splitting';
+import {
+  routeComponents,
+  createLazyComponent,
+} from "@/lib/performance/code-splitting";
 
 // Route-based code splitting
 const Dashboard = routeComponents.Dashboard;
 
 // Custom lazy component with performance tracking
-const MyComponent = createLazyComponent(() => import('./MyComponent'), {
+const MyComponent = createLazyComponent(() => import("./MyComponent"), {
   loading: LoadingSpinner,
   ssr: true,
   preload: false,
@@ -31,6 +34,7 @@ const MyComponent = createLazyComponent(() => import('./MyComponent'), {
 ```
 
 **Features:**
+
 - Route-based code splitting
 - Feature-based module splitting
 - Performance tracking wrapper
@@ -40,22 +44,23 @@ const MyComponent = createLazyComponent(() => import('./MyComponent'), {
 ### 2. Caching Strategies (`caching.ts`)
 
 ```typescript
-import { cacheManager, withApiCaching } from '@/lib/performance/caching';
+import { cacheManager, withApiCaching } from "@/lib/performance/caching";
 
 // API response caching
 const cachedHandler = withApiCaching(handler, {
   ttl: 300, // 5 minutes
-  key: 'api:users',
+  key: "api:users",
 });
 
 // Database query caching
 const cachedQuery = withQueryCaching(getUsers, {
-  key: 'users:all',
+  key: "users:all",
   ttl: 300,
 });
 ```
 
 **Features:**
+
 - Memory, Redis, and database caching
 - API response caching with TTL
 - Database query optimization
@@ -65,22 +70,26 @@ const cachedQuery = withQueryCaching(getUsers, {
 ### 3. Database Optimization (`db/optimization.ts`)
 
 ```typescript
-import { optimizedDb, optimizeQuery } from '@/lib/performance/db/optimization';
+import { optimizedDb, optimizeQuery } from "@/lib/performance/db/optimization";
 
 // Optimized database queries
-const getUsers = optimizeQuery(async () => {
-  return optimizedDb.getUsersWithOptimization({
-    status: 'active',
-    limit: 100,
-  });
-}, {
-  name: 'get_users',
-  cache: true,
-  cacheKey: 'users:active',
-});
+const getUsers = optimizeQuery(
+  async () => {
+    return optimizedDb.getUsersWithOptimization({
+      status: "active",
+      limit: 100,
+    });
+  },
+  {
+    name: "get_users",
+    cache: true,
+    cacheKey: "users:active",
+  },
+);
 ```
 
 **Features:**
+
 - Connection pooling
 - Query optimization with indexing
 - Batch processing for large datasets
@@ -90,20 +99,24 @@ const getUsers = optimizeQuery(async () => {
 ### 4. Performance Monitoring (`monitoring/performance.ts`)
 
 ```typescript
-import { performanceMonitor, withPerformanceMonitoring } from '@/lib/performance/monitoring/performance';
+import {
+  performanceMonitor,
+  withPerformanceMonitoring,
+} from "@/lib/performance/monitoring/performance";
 
 // API route with performance monitoring
 const monitoredHandler = withPerformanceMonitoring(handler, {
-  name: 'user_api',
+  name: "user_api",
   trackMetrics: true,
 });
 
 // Track custom metrics
-performanceMonitor.trackApiPerformance('/api/users', 150, 200);
-performanceMonitor.trackAIOperation('email_analysis', 2000, true, 1500, 0.05);
+performanceMonitor.trackApiPerformance("/api/users", 150, 200);
+performanceMonitor.trackAIOperation("email_analysis", 2000, true, 1500, 0.05);
 ```
 
 **Features:**
+
 - Core Web Vitals tracking
 - API performance monitoring
 - Database query performance
@@ -126,12 +139,13 @@ export const metadata = generateMetadata('landing', {
 const MyPage = () => {
   useAccessibility();
   useCoreWebVitals();
-  
+
   return <div>Content</div>;
 };
 ```
 
 **Features:**
+
 - Structured data generation
 - Core Web Vitals optimization
 - Accessibility compliance (WCAG 2.1)
@@ -143,20 +157,23 @@ const MyPage = () => {
 ### API Route with Full Optimization
 
 ```typescript
-import { withApiCaching, withPerformanceMonitoring } from '@/lib/performance';
+import { withApiCaching, withPerformanceMonitoring } from "@/lib/performance";
 
 export const GET = withPerformanceMonitoring(
-  withApiCaching(async (req: NextRequest) => {
-    const users = await optimizedDb.getUsersWithOptimization();
-    return NextResponse.json(users);
-  }, {
-    ttl: 300,
-    key: 'api:users',
-  }),
+  withApiCaching(
+    async (req: NextRequest) => {
+      const users = await optimizedDb.getUsersWithOptimization();
+      return NextResponse.json(users);
+    },
+    {
+      ttl: 300,
+      key: "api:users",
+    },
+  ),
   {
-    name: 'get_users',
+    name: "get_users",
     trackMetrics: true,
-  }
+  },
 );
 ```
 
@@ -203,22 +220,22 @@ export default function DashboardPage() {
 ### Performance Metrics
 
 ```typescript
-import { performanceMonitor } from '@/lib/performance/monitoring/performance';
+import { performanceMonitor } from "@/lib/performance/monitoring/performance";
 
 // Get monitoring statistics
 const stats = performanceMonitor.getStats();
-console.log('Error rate:', stats.errorRate);
-console.log('Metrics count:', stats.metricsCount);
+console.log("Error rate:", stats.errorRate);
+console.log("Metrics count:", stats.metricsCount);
 ```
 
 ### Bundle Analysis
 
 ```typescript
-import { analyzeBundleSize } from '@/lib/performance/code-splitting';
+import { analyzeBundleSize } from "@/lib/performance/code-splitting";
 
 const analysis = await analyzeBundleSize();
-console.log('Total bundle size:', analysis.totalSize);
-console.log('Recommendations:', analysis.recommendations);
+console.log("Total bundle size:", analysis.totalSize);
+console.log("Recommendations:", analysis.recommendations);
 ```
 
 ## 🔧 Configuration
@@ -226,21 +243,23 @@ console.log('Recommendations:', analysis.recommendations);
 ### Performance Configuration
 
 ```typescript
-import { PERFORMANCE_CONFIG } from '@/lib/performance';
+import { PERFORMANCE_CONFIG } from "@/lib/performance";
 
 // Check if targets are met
-const isPageLoadFast = metrics.pageLoadTime < PERFORMANCE_CONFIG.TARGETS.PAGE_LOAD_TIME;
-const isApiFast = metrics.apiResponseTime < PERFORMANCE_CONFIG.TARGETS.API_RESPONSE_TIME;
+const isPageLoadFast =
+  metrics.pageLoadTime < PERFORMANCE_CONFIG.TARGETS.PAGE_LOAD_TIME;
+const isApiFast =
+  metrics.apiResponseTime < PERFORMANCE_CONFIG.TARGETS.API_RESPONSE_TIME;
 ```
 
 ### Cache Configuration
 
 ```typescript
-import { CACHE_CONFIG } from '@/lib/performance/caching';
+import { CACHE_CONFIG } from "@/lib/performance/caching";
 
 // Use appropriate cache TTL
-const userData = await cacheManager.get('user:123', 'memory');
-await cacheManager.set('user:123', userData, CACHE_CONFIG.DATABASE.USER_DATA);
+const userData = await cacheManager.get("user:123", "memory");
+await cacheManager.set("user:123", userData, CACHE_CONFIG.DATABASE.USER_DATA);
 ```
 
 ## 🚨 Error Handling
@@ -248,15 +267,15 @@ await cacheManager.set('user:123', userData, CACHE_CONFIG.DATABASE.USER_DATA);
 ### Performance Error Tracking
 
 ```typescript
-import { performanceMonitor } from '@/lib/performance/monitoring/performance';
+import { performanceMonitor } from "@/lib/performance/monitoring/performance";
 
 try {
   const result = await expensiveOperation();
 } catch (error) {
   performanceMonitor.trackError({
-    message: 'Expensive operation failed',
-    severity: 'high',
-    context: { operation: 'expensive_operation' },
+    message: "Expensive operation failed",
+    severity: "high",
+    context: { operation: "expensive_operation" },
   });
 }
 ```
@@ -264,11 +283,11 @@ try {
 ### Cache Error Recovery
 
 ```typescript
-import { cacheManager } from '@/lib/performance/caching';
+import { cacheManager } from "@/lib/performance/caching";
 
 const getData = async () => {
   try {
-    return await cacheManager.get('data:key');
+    return await cacheManager.get("data:key");
   } catch (error) {
     // Fallback to database
     return await fetchFromDatabase();
@@ -279,30 +298,35 @@ const getData = async () => {
 ## 📈 Best Practices
 
 ### 1. Code Splitting
+
 - Use route-based splitting for pages
 - Use feature-based splitting for large components
 - Preload critical components
 - Monitor bundle sizes
 
 ### 2. Caching
+
 - Cache API responses with appropriate TTL
 - Cache database queries for frequently accessed data
 - Use cache invalidation for data updates
 - Monitor cache hit rates
 
 ### 3. Database Optimization
+
 - Use indexes for frequently queried fields
 - Implement connection pooling
 - Use batch processing for large operations
 - Monitor query performance
 
 ### 4. Image Optimization
+
 - Use Next.js Image component
 - Implement lazy loading
 - Optimize image formats (WebP, AVIF)
 - Reserve space for dynamic images
 
 ### 5. Monitoring
+
 - Track Core Web Vitals
 - Monitor API response times
 - Track user interactions
@@ -352,6 +376,6 @@ npm run bundle:analyze
 ✅ **Lighthouse Score**: > 90  
 ✅ **Core Web Vitals**: Optimized  
 ✅ **Accessibility**: WCAG 2.1 Compliant  
-✅ **SEO**: Structured Data & Metadata  
+✅ **SEO**: Structured Data & Metadata
 
-This comprehensive performance optimization system ensures Napoleon meets all @.cursorrules performance requirements while maintaining excellent user experience and developer productivity. 
+This comprehensive performance optimization system ensures Napoleon meets all @.cursorrules performance requirements while maintaining excellent user experience and developer productivity.

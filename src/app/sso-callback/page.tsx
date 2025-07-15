@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import { useAuth } from '@clerk/nextjs';
-import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
-import { Loader2, CheckCircle, XCircle } from 'lucide-react';
-import { Typography } from '@/components/ui/typography';
+import { useEffect } from "react";
+import { useAuth } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import { Loader2, CheckCircle, XCircle } from "lucide-react";
+import { Typography } from "@/components/ui/typography";
 
 export default function SSOCallbackPage() {
   const { isLoaded, isSignedIn } = useAuth();
@@ -16,12 +16,12 @@ export default function SSOCallbackPage() {
       if (isSignedIn) {
         // Redirect to dashboard after successful SSO
         setTimeout(() => {
-          router.push('/dashboard');
+          router.push("/dashboard");
         }, 2000);
       } else {
         // Redirect to sign-in if SSO failed
         setTimeout(() => {
-          router.push('/sign-in');
+          router.push("/sign-in");
         }, 2000);
       }
     }
@@ -54,7 +54,10 @@ export default function SSOCallbackPage() {
         {isSignedIn ? (
           <>
             <CheckCircle className="h-12 w-12 text-green-500 mx-auto" />
-            <Typography variant="h2" className="text-2xl font-bold text-gray-900">
+            <Typography
+              variant="h2"
+              className="text-2xl font-bold text-gray-900"
+            >
               Sign in successful!
             </Typography>
             <Typography variant="body" className="text-gray-600">
@@ -64,7 +67,10 @@ export default function SSOCallbackPage() {
         ) : (
           <>
             <XCircle className="h-12 w-12 text-red-500 mx-auto" />
-            <Typography variant="h2" className="text-2xl font-bold text-gray-900">
+            <Typography
+              variant="h2"
+              className="text-2xl font-bold text-gray-900"
+            >
               Sign in failed
             </Typography>
             <Typography variant="body" className="text-gray-600">
@@ -75,4 +81,4 @@ export default function SSOCallbackPage() {
       </motion.div>
     </div>
   );
-} 
+}

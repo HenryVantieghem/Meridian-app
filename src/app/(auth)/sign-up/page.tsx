@@ -1,7 +1,7 @@
-'use client';
-import { SignUpForm } from '@/components/auth/SignUpForm';
-import { Typography } from '@/components/ui/typography';
-import { motion } from 'framer-motion';
+"use client";
+import { SignUpForm } from "@/components/auth/SignUpForm";
+import { Typography } from "@/components/ui/typography";
+import { motion } from "framer-motion";
 
 export default function SignUpPage() {
   return (
@@ -13,16 +13,19 @@ export default function SignUpPage() {
           transition={{ duration: 0.5 }}
           className="text-center mb-8"
         >
-          <Typography variant="h1" className="text-4xl font-bold text-gray-900 mb-2">
+          <Typography
+            variant="h1"
+            className="text-4xl font-bold text-gray-900 mb-2"
+          >
             Napoleon
           </Typography>
           <Typography variant="body" className="text-gray-600">
             Join the future of email management
           </Typography>
         </motion.div>
-        
+
         <SignUpForm />
       </div>
     </div>
   );
-} 
+}

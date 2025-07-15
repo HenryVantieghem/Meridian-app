@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 
 // Log levels
 export enum LogLevel {
@@ -31,14 +31,17 @@ export class Logger {
   constructor() {
     const logLevelStr = process.env.LOG_LEVEL?.toUpperCase();
     const logLevelMap: Record<string, LogLevel> = {
-      'DEBUG': LogLevel.DEBUG,
-      'INFO': LogLevel.INFO,
-      'WARN': LogLevel.WARN,
-      'ERROR': LogLevel.ERROR,
-      'FATAL': LogLevel.FATAL,
+      DEBUG: LogLevel.DEBUG,
+      INFO: LogLevel.INFO,
+      WARN: LogLevel.WARN,
+      ERROR: LogLevel.ERROR,
+      FATAL: LogLevel.FATAL,
     };
-    this.logLevel = logLevelStr && logLevelMap[logLevelStr] !== undefined ? logLevelMap[logLevelStr] : LogLevel.INFO;
-    this.isProduction = process.env.NODE_ENV === 'production';
+    this.logLevel =
+      logLevelStr && logLevelMap[logLevelStr] !== undefined
+        ? logLevelMap[logLevelStr]
+        : LogLevel.INFO;
+    this.isProduction = process.env.NODE_ENV === "production";
   }
 
   static getInstance(): Logger {
@@ -48,7 +51,11 @@ export class Logger {
     return Logger.instance;
   }
 
-  private log(level: LogLevel, message: string, context?: Record<string, unknown>): void {
+  private log(
+    level: LogLevel,
+    message: string,
+    context?: Record<string, unknown>,
+  ): void {
     if (level < this.logLevel) return;
 
     const entry: LogEntry = {
@@ -68,25 +75,25 @@ export class Logger {
   }
 
   private consoleLog(entry: LogEntry): void {
-    const levelNames = ['DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL'];
-    const colors = ['\x1b[36m', '\x1b[32m', '\x1b[33m', '\x1b[31m', '\x1b[35m'];
-    const reset = '\x1b[0m';
+    const levelNames = ["DEBUG", "INFO", "WARN", "ERROR", "FATAL"];
+    const colors = ["\x1b[36m", "\x1b[32m", "\x1b[33m", "\x1b[31m", "\x1b[35m"];
+    const reset = "\x1b[0m";
 
     const color = colors[entry.level];
     const levelName = levelNames[entry.level];
 
     console.log(
       `${color}[${levelName}]${reset} ${entry.timestamp} - ${entry.message}`,
-      entry.context ? JSON.stringify(entry.context, null, 2) : ''
+      entry.context ? JSON.stringify(entry.context, null, 2) : "",
     );
   }
 
   private sendToExternalService(entry: LogEntry): void {
     // Send to external logging service (e.g., Sentry, LogRocket, etc.)
     // This would integrate with your chosen logging service
-    fetch(process.env.LOGGING_WEBHOOK_URL || '', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    fetch(process.env.LOGGING_WEBHOOK_URL || "", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(entry),
     }).catch(() => {
       // Fallback to console if external service fails
@@ -106,18 +113,26 @@ export class Logger {
     this.log(LogLevel.WARN, message, context);
   }
 
-  error(message: string, error?: Error, context?: Record<string, unknown>): void {
+  error(
+    message: string,
+    error?: Error,
+    context?: Record<string, unknown>,
+  ): void {
     this.log(LogLevel.ERROR, message, { ...context, error: error?.stack });
   }
 
-  fatal(message: string, error?: Error, context?: Record<string, unknown>): void {
+  fatal(
+    message: string,
+    error?: Error,
+    context?: Record<string, unknown>,
+  ): void {
     this.log(LogLevel.FATAL, message, { ...context, error: error?.stack });
   }
 }
 
 // Request logging middleware
 export const withRequestLogging = (
-  handler: (req: NextRequest) => Promise<NextResponse>
+  handler: (req: NextRequest) => Promise<NextResponse>,
 ) => {
   return async (req: NextRequest): Promise<NextResponse> => {
     const logger = Logger.getInstance();
@@ -125,11 +140,11 @@ export const withRequestLogging = (
     const requestId = Math.random().toString(36).substring(7);
 
     // Log request start
-    logger.info('Request started', {
+    logger.info("Request started", {
       method: req.method,
       url: req.url,
-      userAgent: req.headers.get('user-agent'),
-      ip: req.headers.get('x-forwarded-for'),
+      userAgent: req.headers.get("user-agent"),
+      ip: req.headers.get("x-forwarded-for"),
       requestId,
     });
 
@@ -138,7 +153,7 @@ export const withRequestLogging = (
       const duration = Date.now() - startTime;
 
       // Log successful request
-      logger.info('Request completed', {
+      logger.info("Request completed", {
         method: req.method,
         url: req.url,
         status: response.status,
@@ -147,13 +162,13 @@ export const withRequestLogging = (
       });
 
       // Add request ID to response headers
-      response.headers.set('X-Request-ID', requestId);
+      response.headers.set("X-Request-ID", requestId);
       return response;
     } catch (error) {
       const duration = Date.now() - startTime;
 
       // Log error
-      logger.error('Request failed', error as Error, {
+      logger.error("Request failed", error as Error, {
         method: req.method,
         url: req.url,
         duration,
@@ -184,7 +199,12 @@ export class PerformanceMonitor {
     this.metrics.get(name)!.push(value);
   }
 
-  getMetricStats(name: string): { avg: number; min: number; max: number; count: number } {
+  getMetricStats(name: string): {
+    avg: number;
+    min: number;
+    max: number;
+    count: number;
+  } {
     const values = this.metrics.get(name) || [];
     if (values.length === 0) {
       return { avg: 0, min: 0, max: 0, count: 0 };
@@ -212,7 +232,7 @@ export class PerformanceMonitor {
 
   getPerformanceReport(): Record<string, unknown> {
     const report: Record<string, unknown> = {};
-    
+
     for (const [name] of this.metrics.entries()) {
       report[name] = this.getMetricStats(name);
     }
@@ -235,21 +255,24 @@ export class ErrorTracker {
 
   trackError(error: Error, context?: Record<string, unknown>): void {
     const logger = Logger.getInstance();
-    logger.error('Application error', error, context);
-    
+    logger.error("Application error", error, context);
+
     this.errors.push(error);
 
     // In production, send to error tracking service
-    if (process.env.NODE_ENV === 'production') {
+    if (process.env.NODE_ENV === "production") {
       this.sendToErrorService(error, context);
     }
   }
 
-  private sendToErrorService(error: Error, context?: Record<string, unknown>): void {
+  private sendToErrorService(
+    error: Error,
+    context?: Record<string, unknown>,
+  ): void {
     // Send to error tracking service (e.g., Sentry)
-    fetch(process.env.ERROR_TRACKING_WEBHOOK_URL || '', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    fetch(process.env.ERROR_TRACKING_WEBHOOK_URL || "", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         error: error.message,
         stack: error.stack,
@@ -264,7 +287,7 @@ export class ErrorTracker {
   getErrorStats(): { total: number; recent: number } {
     // const now = Date.now();
     // const oneHourAgo = now - 60 * 60 * 1000;
-    
+
     const recent = this.errors.filter(() => {
       // This is a simplified check - in practice you'd store timestamps
       return true; // Assume all errors are recent for demo
@@ -294,17 +317,26 @@ export class UserAnalytics {
     return UserAnalytics.instance;
   }
 
-  trackEvent(userId: string, event: string, properties: Record<string, unknown> = {}): void {
-    this.events.push({ userId, event, properties, timestamp: new Date().toISOString() });
+  trackEvent(
+    userId: string,
+    event: string,
+    properties: Record<string, unknown> = {},
+  ): void {
+    this.events.push({
+      userId,
+      event,
+      properties,
+      timestamp: new Date().toISOString(),
+    });
     this.sendToAnalyticsService({ userId, event, properties });
   }
 
   private sendToAnalyticsService(eventData: unknown): void {
     // Send to analytics service
-    if (process.env.NODE_ENV === 'production') {
-      fetch(process.env.ANALYTICS_WEBHOOK_URL || '', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+    if (process.env.NODE_ENV === "production") {
+      fetch(process.env.ANALYTICS_WEBHOOK_URL || "", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(eventData),
       }).catch(() => {
         // Fallback if analytics service fails
@@ -313,12 +345,12 @@ export class UserAnalytics {
   }
 
   getUserEvents(userId: string): unknown[] {
-    return this.events.filter(e => e.userId === userId);
+    return this.events.filter((e) => e.userId === userId);
   }
 
   getEventStats(): Record<string, number> {
     const stats: Record<string, number> = {};
-    
+
     for (const event of this.events) {
       stats[event.event] = (stats[event.event] || 0) + 1;
     }
@@ -345,7 +377,7 @@ export class HealthMonitor {
 
   async runHealthChecks(): Promise<Record<string, boolean>> {
     const results: Record<string, boolean> = {};
-    
+
     for (const [name, check] of this.checks.entries()) {
       try {
         results[name] = await check();
@@ -359,7 +391,7 @@ export class HealthMonitor {
 
   async isHealthy(): Promise<boolean> {
     const checks = await this.runHealthChecks();
-    return Object.values(checks).every(result => result);
+    return Object.values(checks).every((result) => result);
   }
 }
 
@@ -370,7 +402,7 @@ export class SecurityLogger {
     type: string;
     details: Record<string, unknown>;
     timestamp: string;
-    severity: 'low' | 'medium' | 'high' | 'critical';
+    severity: "low" | "medium" | "high" | "critical";
   }> = [];
 
   static getInstance(): SecurityLogger {
@@ -383,18 +415,23 @@ export class SecurityLogger {
   logSecurityEvent(
     type: string,
     details: Record<string, unknown>,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'medium'
+    severity: "low" | "medium" | "high" | "critical" = "medium",
   ): void {
-    this.events.push({ type, details, timestamp: new Date().toISOString(), severity });
+    this.events.push({
+      type,
+      details,
+      timestamp: new Date().toISOString(),
+      severity,
+    });
     this.sendToSecurityService({ type, details, severity });
   }
 
   private sendToSecurityService(event: unknown): void {
     // Send to security service
-    if (process.env.NODE_ENV === 'production') {
-      fetch(process.env.SECURITY_WEBHOOK_URL || '', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+    if (process.env.NODE_ENV === "production") {
+      fetch(process.env.SECURITY_WEBHOOK_URL || "", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(event),
       }).catch(() => {
         // Fallback if security service fails
@@ -408,7 +445,7 @@ export class SecurityLogger {
 
   getSecurityStats(): Record<string, number> {
     const stats: Record<string, number> = {};
-    
+
     for (const event of this.events) {
       stats[event.type] = (stats[event.type] || 0) + 1;
     }
@@ -423,4 +460,4 @@ export const performanceMonitor = PerformanceMonitor.getInstance();
 export const errorTracker = ErrorTracker.getInstance();
 export const userAnalytics = UserAnalytics.getInstance();
 export const healthMonitor = HealthMonitor.getInstance();
-export const securityLogger = SecurityLogger.getInstance(); 
+export const securityLogger = SecurityLogger.getInstance();

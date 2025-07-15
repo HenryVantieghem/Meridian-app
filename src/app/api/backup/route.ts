@@ -1,21 +1,23 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET() {
   try {
     // Check if service role key is available (server-only)
     if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
       return NextResponse.json(
-        { error: 'SUPABASE_SERVICE_ROLE_KEY not configured' },
-        { status: 500 }
+        { error: "SUPABASE_SERVICE_ROLE_KEY not configured" },
+        { status: 500 },
       );
     }
 
     // Dynamically import to avoid build-time initialization
-    const { backupRecoveryService } = await import('@/lib/security/backup-recovery');
-    
+    const { backupRecoveryService } = await import(
+      "@/lib/security/backup-recovery"
+    );
+
     // Start full backup
     const backup = await backupRecoveryService.createFullBackup();
-    
+
     return NextResponse.json({
       success: true,
       backup: {
@@ -28,18 +30,18 @@ export async function GET() {
         checksum: backup.checksum,
         location: backup.location,
         encrypted: backup.encrypted,
-        tables: backup.tables
-      }
+        tables: backup.tables,
+      },
     });
   } catch (error) {
-    console.error('Backup failed:', error);
-    
+    console.error("Backup failed:", error);
+
     return NextResponse.json(
-      { 
-        error: 'Backup failed',
-        details: error instanceof Error ? error.message : 'Unknown error'
+      {
+        error: "Backup failed",
+        details: error instanceof Error ? error.message : "Unknown error",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -49,17 +51,19 @@ export async function POST() {
     // Check if service role key is available (server-only)
     if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
       return NextResponse.json(
-        { error: 'SUPABASE_SERVICE_ROLE_KEY not configured' },
-        { status: 500 }
+        { error: "SUPABASE_SERVICE_ROLE_KEY not configured" },
+        { status: 500 },
       );
     }
 
     // Dynamically import to avoid build-time initialization
-    const { backupRecoveryService } = await import('@/lib/security/backup-recovery');
-    
+    const { backupRecoveryService } = await import(
+      "@/lib/security/backup-recovery"
+    );
+
     // Get backup statistics
     const stats = await backupRecoveryService.getBackupStats();
-    
+
     return NextResponse.json({
       success: true,
       stats: {
@@ -67,27 +71,27 @@ export async function POST() {
         totalSize: stats.totalSize,
         lastBackupDate: stats.lastBackupDate,
         averageBackupSize: stats.averageBackupSize,
-        backupSuccessRate: stats.backupSuccessRate
-      }
+        backupSuccessRate: stats.backupSuccessRate,
+      },
     });
   } catch (error) {
-    console.error('Failed to get backup stats:', error);
-    
+    console.error("Failed to get backup stats:", error);
+
     return NextResponse.json(
-      { 
-        error: 'Failed to get backup statistics',
-        details: error instanceof Error ? error.message : 'Unknown error'
+      {
+        error: "Failed to get backup statistics",
+        details: error instanceof Error ? error.message : "Unknown error",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
-} 
+}
 export async function PUT(request: NextRequest) {
   try {
     if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
       return NextResponse.json(
         { error: "SUPABASE_SERVICE_ROLE_KEY not configured" },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -97,26 +101,28 @@ export async function PUT(request: NextRequest) {
     if (!backupId) {
       return NextResponse.json(
         { error: "Backup ID is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     // Dynamically import to avoid build-time initialization
-    const { backupRecoveryService } = await import('@/lib/security/backup-recovery');
-    
+    const { backupRecoveryService } = await import(
+      "@/lib/security/backup-recovery"
+    );
+
     const recovery = await backupRecoveryService.restoreFromBackup(backupId);
-    
+
     return NextResponse.json({
       success: true,
-      recovery
+      recovery,
     });
   } catch (error) {
     return NextResponse.json(
-      { 
+      {
         error: "Restore failed",
-        details: error instanceof Error ? error.message : "Unknown error"
+        details: error instanceof Error ? error.message : "Unknown error",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -126,7 +132,7 @@ export async function DELETE(request: NextRequest) {
     if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
       return NextResponse.json(
         { error: "SUPABASE_SERVICE_ROLE_KEY not configured" },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -136,26 +142,28 @@ export async function DELETE(request: NextRequest) {
     if (!backupId) {
       return NextResponse.json(
         { error: "Backup ID is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     // Dynamically import to avoid build-time initialization
-    const { backupRecoveryService } = await import('@/lib/security/backup-recovery');
-    
+    const { backupRecoveryService } = await import(
+      "@/lib/security/backup-recovery"
+    );
+
     await backupRecoveryService.deleteBackup(backupId);
-    
+
     return NextResponse.json({
       success: true,
-      message: "Backup deleted successfully"
+      message: "Backup deleted successfully",
     });
   } catch (error) {
     return NextResponse.json(
-      { 
+      {
         error: "Delete backup failed",
-        details: error instanceof Error ? error.message : "Unknown error"
+        details: error instanceof Error ? error.message : "Unknown error",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

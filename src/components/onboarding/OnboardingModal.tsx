@@ -1,28 +1,28 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useRouter } from 'next/navigation';
-import { Typography } from '@/components/ui/typography';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Progress } from '@/components/ui/progress';
-import { 
-  Crown, 
-  Building2, 
-  User, 
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/navigation";
+import { Typography } from "@/components/ui/typography";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Progress } from "@/components/ui/progress";
+import {
+  Crown,
+  Building2,
+  User,
   TrendingUp,
   Check,
-  Mail, 
-  Clock, 
+  Mail,
+  Clock,
   Star,
   Zap,
   Calendar,
   X,
   ArrowRight,
-  ArrowLeft
-} from 'lucide-react';
+  ArrowLeft,
+} from "lucide-react";
 
 interface Persona {
   id: string;
@@ -37,7 +37,7 @@ interface Persona {
 interface Preferences {
   emailVolume: number;
   vipContacts: string[];
-  responseUrgency: 'instant' | 'same-day' | '48h';
+  responseUrgency: "instant" | "same-day" | "48h";
   workHours: {
     start: string;
     end: string;
@@ -47,47 +47,74 @@ interface Preferences {
 
 const personas: Persona[] = [
   {
-    id: 'founder',
-    title: 'Founder/CEO',
-    description: 'Leading your company with strategic focus',
+    id: "founder",
+    title: "Founder/CEO",
+    description: "Leading your company with strategic focus",
     icon: Crown,
-    features: ['Strategic email prioritization', 'Board communication', 'Investor relations'],
-    color: 'text-purple-600',
-    bgColor: 'bg-purple-50'
+    features: [
+      "Strategic email prioritization",
+      "Board communication",
+      "Investor relations",
+    ],
+    color: "text-purple-600",
+    bgColor: "bg-purple-50",
   },
   {
-    id: 'executive',
-    title: 'Executive',
-    description: 'Managing teams and driving results',
+    id: "executive",
+    title: "Executive",
+    description: "Managing teams and driving results",
     icon: Building2,
-    features: ['Team collaboration', 'Performance tracking', 'Stakeholder management'],
-    color: 'text-blue-600',
-    bgColor: 'bg-blue-50'
+    features: [
+      "Team collaboration",
+      "Performance tracking",
+      "Stakeholder management",
+    ],
+    color: "text-blue-600",
+    bgColor: "bg-blue-50",
   },
   {
-    id: 'solo',
-    title: 'Solo Operator',
-    description: 'Maximizing productivity as a one-person show',
+    id: "solo",
+    title: "Solo Operator",
+    description: "Maximizing productivity as a one-person show",
     icon: User,
-    features: ['Time optimization', 'Client management', 'Personal branding'],
-    color: 'text-green-600',
-    bgColor: 'bg-green-50'
+    features: ["Time optimization", "Client management", "Personal branding"],
+    color: "text-green-600",
+    bgColor: "bg-green-50",
   },
   {
-    id: 'investor',
-    title: 'Investor',
-    description: 'Managing portfolio and deal flow',
+    id: "investor",
+    title: "Investor",
+    description: "Managing portfolio and deal flow",
     icon: TrendingUp,
-    features: ['Deal flow management', 'Portfolio tracking', 'Network building'],
-    color: 'text-orange-600',
-    bgColor: 'bg-orange-50'
-  }
+    features: [
+      "Deal flow management",
+      "Portfolio tracking",
+      "Network building",
+    ],
+    color: "text-orange-600",
+    bgColor: "bg-orange-50",
+  },
 ];
 
 const urgencyOptions = [
-  { id: 'instant', label: 'Instant', description: 'Respond immediately to urgent emails', icon: Zap },
-  { id: 'same-day', label: 'Same Day', description: 'Respond within 24 hours', icon: Clock },
-  { id: '48h', label: '48 Hours', description: 'Respond within 48 hours', icon: Calendar }
+  {
+    id: "instant",
+    label: "Instant",
+    description: "Respond immediately to urgent emails",
+    icon: Zap,
+  },
+  {
+    id: "same-day",
+    label: "Same Day",
+    description: "Respond within 24 hours",
+    icon: Clock,
+  },
+  {
+    id: "48h",
+    label: "48 Hours",
+    description: "Respond within 48 hours",
+    icon: Calendar,
+  },
 ];
 
 interface OnboardingModalProps {
@@ -95,21 +122,24 @@ interface OnboardingModalProps {
   onClose: () => void;
 }
 
-export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProps) {
+export default function OnboardingModal({
+  isOpen,
+  onClose,
+}: OnboardingModalProps) {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [selectedPersona, setSelectedPersona] = useState<string | null>(null);
   const [preferences, setPreferences] = useState<Preferences>({
     emailVolume: 100,
     vipContacts: [],
-    responseUrgency: 'same-day',
+    responseUrgency: "same-day",
     workHours: {
-      start: '09:00',
-      end: '17:00'
+      start: "09:00",
+      end: "17:00",
     },
-    timezone: 'UTC-5 (EST)'
+    timezone: "UTC-5 (EST)",
   });
-  const [newVipContact, setNewVipContact] = useState('');
+  const [newVipContact, setNewVipContact] = useState("");
 
   const progress = (step / 3) * 100;
 
@@ -123,10 +153,10 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
     } else if (step === 2) {
       setStep(3);
     } else if (step === 3) {
-      localStorage.setItem('selectedPersona', selectedPersona!);
-      localStorage.setItem('userPreferences', JSON.stringify(preferences));
+      localStorage.setItem("selectedPersona", selectedPersona!);
+      localStorage.setItem("userPreferences", JSON.stringify(preferences));
       onClose();
-      router.push('/dashboard');
+      router.push("/dashboard");
     }
   };
 
@@ -137,35 +167,40 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
   };
 
   const handleEmailVolumeChange = (value: number) => {
-    setPreferences(prev => ({ ...prev, emailVolume: value }));
+    setPreferences((prev) => ({ ...prev, emailVolume: value }));
   };
 
-  const handleResponseUrgencyChange = (urgency: 'instant' | 'same-day' | '48h') => {
-    setPreferences(prev => ({ ...prev, responseUrgency: urgency }));
+  const handleResponseUrgencyChange = (
+    urgency: "instant" | "same-day" | "48h",
+  ) => {
+    setPreferences((prev) => ({ ...prev, responseUrgency: urgency }));
   };
 
   const handleAddVipContact = () => {
-    if (newVipContact.trim() && !preferences.vipContacts.includes(newVipContact.trim())) {
-      setPreferences(prev => ({
+    if (
+      newVipContact.trim() &&
+      !preferences.vipContacts.includes(newVipContact.trim())
+    ) {
+      setPreferences((prev) => ({
         ...prev,
-        vipContacts: [...prev.vipContacts, newVipContact.trim()]
+        vipContacts: [...prev.vipContacts, newVipContact.trim()],
       }));
-      setNewVipContact('');
+      setNewVipContact("");
     }
   };
 
   const handleRemoveVipContact = (contact: string) => {
-    setPreferences(prev => ({
+    setPreferences((prev) => ({
       ...prev,
-      vipContacts: prev.vipContacts.filter(c => c !== contact)
+      vipContacts: prev.vipContacts.filter((c) => c !== contact),
     }));
   };
 
   const getVolumeLabel = (volume: number) => {
-    if (volume < 50) return 'Light';
-    if (volume < 150) return 'Moderate';
-    if (volume < 300) return 'Heavy';
-    return 'Very Heavy';
+    if (volume < 50) return "Light";
+    if (volume < 150) return "Moderate";
+    if (volume < 300) return "Heavy";
+    return "Very Heavy";
   };
 
   if (!isOpen) return null;
@@ -182,11 +217,17 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
-                <Typography variant="body" className="text-white font-bold text-sm">
+                <Typography
+                  variant="body"
+                  className="text-white font-bold text-sm"
+                >
                   N
                 </Typography>
               </div>
-              <Typography variant="h3" className="text-xl font-bold text-gray-900">
+              <Typography
+                variant="h3"
+                className="text-xl font-bold text-gray-900"
+              >
                 Welcome to Napoleon
               </Typography>
             </div>
@@ -199,7 +240,7 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
               <X className="w-5 h-5" />
             </Button>
           </div>
-          
+
           <div className="flex items-center space-x-4">
             <div className="flex-1">
               <Progress value={progress} className="h-2" />
@@ -221,11 +262,15 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
                 transition={{ duration: 0.3 }}
               >
                 <div className="text-center mb-8">
-                  <Typography variant="h2" className="text-3xl font-bold text-gray-900 mb-4">
+                  <Typography
+                    variant="h2"
+                    className="text-3xl font-bold text-gray-900 mb-4"
+                  >
                     Choose Your Role
                   </Typography>
                   <Typography variant="body" className="text-gray-600">
-                    Help us personalize your experience by selecting the role that best describes your work.
+                    Help us personalize your experience by selecting the role
+                    that best describes your work.
                   </Typography>
                 </div>
 
@@ -240,33 +285,51 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
                       <Card
                         className={`p-4 cursor-pointer transition-all duration-300 hover:shadow-lg ${
                           selectedPersona === persona.id
-                            ? 'ring-2 ring-black bg-gray-50'
-                            : 'hover:bg-gray-50'
+                            ? "ring-2 ring-black bg-gray-50"
+                            : "hover:bg-gray-50"
                         }`}
                         onClick={() => handlePersonaSelect(persona.id)}
                       >
                         <div className="flex items-start space-x-3">
-                          <div className={`w-10 h-10 ${persona.bgColor} rounded-lg flex items-center justify-center`}>
-                            <persona.icon className={`w-5 h-5 ${persona.color}`} />
+                          <div
+                            className={`w-10 h-10 ${persona.bgColor} rounded-lg flex items-center justify-center`}
+                          >
+                            <persona.icon
+                              className={`w-5 h-5 ${persona.color}`}
+                            />
                           </div>
-                          
+
                           <div className="flex-1">
-                            <Typography variant="h4" className="text-lg font-semibold text-gray-900 mb-1">
+                            <Typography
+                              variant="h4"
+                              className="text-lg font-semibold text-gray-900 mb-1"
+                            >
                               {persona.title}
                             </Typography>
-                            <Typography variant="body" className="text-sm text-gray-600 mb-2">
+                            <Typography
+                              variant="body"
+                              className="text-sm text-gray-600 mb-2"
+                            >
                               {persona.description}
                             </Typography>
-                            
+
                             <div className="space-y-1">
-                              {persona.features.slice(0, 2).map((feature, featureIndex) => (
-                                <div key={featureIndex} className="flex items-center space-x-2">
-                                  <Check className="w-3 h-3 text-green-500" />
-                                  <Typography variant="body" className="text-xs text-gray-600">
-                                    {feature}
-                                  </Typography>
-                                </div>
-                              ))}
+                              {persona.features
+                                .slice(0, 2)
+                                .map((feature, featureIndex) => (
+                                  <div
+                                    key={featureIndex}
+                                    className="flex items-center space-x-2"
+                                  >
+                                    <Check className="w-3 h-3 text-green-500" />
+                                    <Typography
+                                      variant="body"
+                                      className="text-xs text-gray-600"
+                                    >
+                                      {feature}
+                                    </Typography>
+                                  </div>
+                                ))}
                             </div>
                           </div>
 
@@ -296,7 +359,10 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
                 transition={{ duration: 0.3 }}
               >
                 <div className="text-center mb-8">
-                  <Typography variant="h2" className="text-3xl font-bold text-gray-900 mb-4">
+                  <Typography
+                    variant="h2"
+                    className="text-3xl font-bold text-gray-900 mb-4"
+                  >
                     Set Your Preferences
                   </Typography>
                   <Typography variant="body" className="text-gray-600">
@@ -308,13 +374,19 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
                   <Card className="p-4">
                     <div className="flex items-center space-x-3 mb-4">
                       <Mail className="w-5 h-5 text-black" />
-                      <Typography variant="h4" className="text-lg font-semibold text-gray-900">
+                      <Typography
+                        variant="h4"
+                        className="text-lg font-semibold text-gray-900"
+                      >
                         Email Volume
                       </Typography>
                     </div>
-                    
+
                     <div className="mb-4">
-                      <Typography variant="body" className="text-sm text-gray-600 mb-2">
+                      <Typography
+                        variant="body"
+                        className="text-sm text-gray-600 mb-2"
+                      >
                         How many emails do you receive daily?
                       </Typography>
                       <input
@@ -323,14 +395,22 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
                         max="500"
                         step="10"
                         value={preferences.emailVolume}
-                        onChange={(e) => handleEmailVolumeChange(parseInt(e.target.value))}
+                        onChange={(e) =>
+                          handleEmailVolumeChange(parseInt(e.target.value))
+                        }
                         className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
                       />
                       <div className="flex justify-between items-center mt-2">
-                        <Typography variant="body" className="text-sm text-gray-600">
+                        <Typography
+                          variant="body"
+                          className="text-sm text-gray-600"
+                        >
                           {preferences.emailVolume} emails/day
                         </Typography>
-                        <Typography variant="body" className="text-sm font-medium text-black">
+                        <Typography
+                          variant="body"
+                          className="text-sm font-medium text-black"
+                        >
                           {getVolumeLabel(preferences.emailVolume)}
                         </Typography>
                       </div>
@@ -340,15 +420,21 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
                   <Card className="p-4">
                     <div className="flex items-center space-x-3 mb-4">
                       <Star className="w-5 h-5 text-black" />
-                      <Typography variant="h4" className="text-lg font-semibold text-gray-900">
+                      <Typography
+                        variant="h4"
+                        className="text-lg font-semibold text-gray-900"
+                      >
                         VIP Contacts
                       </Typography>
                     </div>
-                    
-                    <Typography variant="body" className="text-sm text-gray-600 mb-3">
+
+                    <Typography
+                      variant="body"
+                      className="text-sm text-gray-600 mb-3"
+                    >
                       Add contacts that should always be prioritized.
                     </Typography>
-                    
+
                     <div className="flex space-x-2 mb-3">
                       <Input
                         type="email"
@@ -357,16 +443,26 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
                         onChange={(e) => setNewVipContact(e.target.value)}
                         className="flex-1 text-sm"
                       />
-                      <Button onClick={handleAddVipContact} disabled={!newVipContact.trim()} size="sm">
+                      <Button
+                        onClick={handleAddVipContact}
+                        disabled={!newVipContact.trim()}
+                        size="sm"
+                      >
                         Add
                       </Button>
                     </div>
-                    
+
                     {preferences.vipContacts.length > 0 && (
                       <div className="space-y-2">
                         {preferences.vipContacts.map((contact, index) => (
-                          <div key={index} className="flex items-center justify-between bg-gray-50 p-2 rounded">
-                            <Typography variant="body" className="text-sm text-gray-700">
+                          <div
+                            key={index}
+                            className="flex items-center justify-between bg-gray-50 p-2 rounded"
+                          >
+                            <Typography
+                              variant="body"
+                              className="text-sm text-gray-700"
+                            >
                               {contact}
                             </Typography>
                             <Button
@@ -385,28 +481,40 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
                   <Card className="p-4">
                     <div className="flex items-center space-x-3 mb-4">
                       <Clock className="w-5 h-5 text-black" />
-                      <Typography variant="h4" className="text-lg font-semibold text-gray-900">
+                      <Typography
+                        variant="h4"
+                        className="text-lg font-semibold text-gray-900"
+                      >
                         Response Urgency
                       </Typography>
                     </div>
-                    
-                    <Typography variant="body" className="text-sm text-gray-600 mb-3">
+
+                    <Typography
+                      variant="body"
+                      className="text-sm text-gray-600 mb-3"
+                    >
                       How quickly should AI prioritize responses?
                     </Typography>
-                    
+
                     <div className="grid grid-cols-1 gap-3">
                       {urgencyOptions.map((option) => (
                         <div
                           key={option.id}
                           className={`p-3 rounded-lg border-2 cursor-pointer transition-all ${
                             preferences.responseUrgency === option.id
-                              ? 'border-black bg-gray-50'
-                              : 'border-gray-200 hover:border-gray-300'
+                              ? "border-black bg-gray-50"
+                              : "border-gray-200 hover:border-gray-300"
                           }`}
-                          onClick={() => handleResponseUrgencyChange(option.id as 'instant' | 'same-day' | '48h')}
+                          onClick={() =>
+                            handleResponseUrgencyChange(
+                              option.id as "instant" | "same-day" | "48h",
+                            )
+                          }
                           onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                              handleResponseUrgencyChange(option.id as 'instant' | 'same-day' | '48h');
+                            if (e.key === "Enter" || e.key === " ") {
+                              handleResponseUrgencyChange(
+                                option.id as "instant" | "same-day" | "48h",
+                              );
                             }
                           }}
                           role="button"
@@ -415,10 +523,16 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
                           <div className="flex items-center space-x-3">
                             <option.icon className="w-4 h-4 text-black" />
                             <div>
-                              <Typography variant="body" className="font-semibold text-gray-900 text-sm">
+                              <Typography
+                                variant="body"
+                                className="font-semibold text-gray-900 text-sm"
+                              >
                                 {option.label}
                               </Typography>
-                              <Typography variant="body" className="text-xs text-gray-600">
+                              <Typography
+                                variant="body"
+                                className="text-xs text-gray-600"
+                              >
                                 {option.description}
                               </Typography>
                             </div>
@@ -440,7 +554,10 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
                 transition={{ duration: 0.3 }}
               >
                 <div className="text-center mb-8">
-                  <Typography variant="h2" className="text-3xl font-bold text-gray-900 mb-4">
+                  <Typography
+                    variant="h2"
+                    className="text-3xl font-bold text-gray-900 mb-4"
+                  >
                     VIP Contact Setup
                   </Typography>
                   <Typography variant="body" className="text-gray-600">
@@ -452,15 +569,22 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
                   <Card className="p-4">
                     <div className="flex items-center space-x-3 mb-4">
                       <Star className="w-5 h-5 text-black" />
-                      <Typography variant="h4" className="text-lg font-semibold text-gray-900">
+                      <Typography
+                        variant="h4"
+                        className="text-lg font-semibold text-gray-900"
+                      >
                         VIP Contacts
                       </Typography>
                     </div>
-                    
-                    <Typography variant="body" className="text-sm text-gray-600 mb-3">
-                      Add 2-3 contacts that should always be prioritized. These will be marked as urgent and receive immediate attention.
+
+                    <Typography
+                      variant="body"
+                      className="text-sm text-gray-600 mb-3"
+                    >
+                      Add 2-3 contacts that should always be prioritized. These
+                      will be marked as urgent and receive immediate attention.
                     </Typography>
-                    
+
                     <div className="space-y-3">
                       {[1, 2, 3].map((index) => (
                         <div key={index} className="flex space-x-2">
@@ -482,31 +606,60 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
                   <Card className="p-4">
                     <div className="flex items-center space-x-3 mb-4">
                       <Clock className="w-5 h-5 text-black" />
-                      <Typography variant="h4" className="text-lg font-semibold text-gray-900">
+                      <Typography
+                        variant="h4"
+                        className="text-lg font-semibold text-gray-900"
+                      >
                         Priority Settings
                       </Typography>
                     </div>
-                    
-                    <Typography variant="body" className="text-sm text-gray-600 mb-3">
+
+                    <Typography
+                      variant="body"
+                      className="text-sm text-gray-600 mb-3"
+                    >
                       How should we handle VIP communications?
                     </Typography>
-                    
+
                     <div className="space-y-2">
                       <div className="flex items-center space-x-2">
-                        <input type="checkbox" id="instant-notify" className="rounded" defaultChecked />
-                        <label htmlFor="instant-notify" className="text-sm text-gray-700">
+                        <input
+                          type="checkbox"
+                          id="instant-notify"
+                          className="rounded"
+                          defaultChecked
+                        />
+                        <label
+                          htmlFor="instant-notify"
+                          className="text-sm text-gray-700"
+                        >
                           Instant notifications for VIP messages
                         </label>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <input type="checkbox" id="auto-prioritize" className="rounded" defaultChecked />
-                        <label htmlFor="auto-prioritize" className="text-sm text-gray-700">
+                        <input
+                          type="checkbox"
+                          id="auto-prioritize"
+                          className="rounded"
+                          defaultChecked
+                        />
+                        <label
+                          htmlFor="auto-prioritize"
+                          className="text-sm text-gray-700"
+                        >
                           Automatically mark as high priority
                         </label>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <input type="checkbox" id="quick-reply" className="rounded" />
-                        <label htmlFor="quick-reply" className="text-sm text-gray-700">
+                        <input
+                          type="checkbox"
+                          id="quick-reply"
+                          className="rounded"
+                        />
+                        <label
+                          htmlFor="quick-reply"
+                          className="text-sm text-gray-700"
+                        >
                           Suggest quick replies for VIP contacts
                         </label>
                       </div>
@@ -532,10 +685,19 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
 
             <Button
               onClick={handleNext}
-              disabled={(step === 1 && !selectedPersona) || (step === 2 && preferences.vipContacts.length === 0)}
+              disabled={
+                (step === 1 && !selectedPersona) ||
+                (step === 2 && preferences.vipContacts.length === 0)
+              }
               className="flex items-center space-x-2 bg-black hover:bg-gray-800 text-white"
             >
-              <span>{step === 1 ? 'Continue' : step === 2 ? 'Next' : 'Complete Setup'}</span>
+              <span>
+                {step === 1
+                  ? "Continue"
+                  : step === 2
+                    ? "Next"
+                    : "Complete Setup"}
+              </span>
               <ArrowRight className="w-4 h-4" />
             </Button>
           </div>
@@ -543,4 +705,4 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
       </motion.div>
     </div>
   );
-} 
+}

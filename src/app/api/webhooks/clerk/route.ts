@@ -1,8 +1,12 @@
-import { Webhook } from 'svix';
-import { headers } from 'next/headers';
-import { WebhookEvent } from '@clerk/nextjs/server';
-import { NextResponse } from 'next/server';
-import { syncUserFromClerk, handleUserDeletion, logSecurityEvent } from '@/lib/auth/clerk-config';
+import { Webhook } from "svix";
+import { headers } from "next/headers";
+import { WebhookEvent } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
+import {
+  syncUserFromClerk,
+  handleUserDeletion,
+  logSecurityEvent,
+} from "@/lib/auth/clerk-config";
 
 export async function POST(req: Request) {
   // Get the headers
@@ -13,9 +17,9 @@ export async function POST(req: Request) {
 
   // If there are no headers, error out
   if (!svix_id || !svix_timestamp || !svix_signature) {
-    logSecurityEvent('WEBHOOK_MISSING_HEADERS');
-    return new Response('Error occured -- no svix headers', {
-      status: 400
+    logSecurityEvent("WEBHOOK_MISSING_HEADERS");
+    return new Response("Error occured -- no svix headers", {
+      status: 400,
     });
   }
 
@@ -24,7 +28,7 @@ export async function POST(req: Request) {
   const body = JSON.stringify(payload);
 
   // Create a new Svix instance with your secret.
-  const wh = new Webhook(process.env.CLERK_WEBHOOK_SECRET || '');
+  const wh = new Webhook(process.env.CLERK_WEBHOOK_SECRET || "");
 
   let evt: WebhookEvent;
 
@@ -36,9 +40,9 @@ export async function POST(req: Request) {
       "svix-signature": svix_signature,
     }) as WebhookEvent;
   } catch (err) {
-    logSecurityEvent('WEBHOOK_VERIFICATION_FAILED', undefined, { error: err });
-    return new Response('Error occured', {
-      status: 400
+    logSecurityEvent("WEBHOOK_VERIFICATION_FAILED", undefined, { error: err });
+    return new Response("Error occured", {
+      status: 400,
     });
   }
 
@@ -47,10 +51,10 @@ export async function POST(req: Request) {
   const eventType = evt.type;
 
   if (!id) {
-    logSecurityEvent('WEBHOOK_NO_USER_ID');
+    logSecurityEvent("WEBHOOK_NO_USER_ID");
     return NextResponse.json(
-      { error: 'No user ID in webhook data' },
-      { status: 400 }
+      { error: "No user ID in webhook data" },
+      { status: 400 },
     );
   }
 
@@ -58,49 +62,49 @@ export async function POST(req: Request) {
 
   // Handle the webhook
   switch (eventType) {
-    case 'user.created':
+    case "user.created":
       try {
         await syncUserFromClerk(id);
-        logSecurityEvent('USER_CREATED_SUCCESS', id);
+        logSecurityEvent("USER_CREATED_SUCCESS", id);
       } catch (error) {
-        logSecurityEvent('USER_CREATED_FAILED', id, { error });
+        logSecurityEvent("USER_CREATED_FAILED", id, { error });
         return NextResponse.json(
-          { error: 'Failed to create user in database' },
-          { status: 500 }
+          { error: "Failed to create user in database" },
+          { status: 500 },
         );
       }
       break;
-    
-    case 'user.updated':
+
+    case "user.updated":
       try {
         await syncUserFromClerk(id);
-        logSecurityEvent('USER_UPDATED_SUCCESS', id);
+        logSecurityEvent("USER_UPDATED_SUCCESS", id);
       } catch (error) {
-        logSecurityEvent('USER_UPDATED_FAILED', id, { error });
+        logSecurityEvent("USER_UPDATED_FAILED", id, { error });
         return NextResponse.json(
-          { error: 'Failed to update user in database' },
-          { status: 500 }
+          { error: "Failed to update user in database" },
+          { status: 500 },
         );
       }
       break;
-    
-    case 'user.deleted':
+
+    case "user.deleted":
       try {
         await handleUserDeletion(id);
-        logSecurityEvent('USER_DELETED_SUCCESS', id);
+        logSecurityEvent("USER_DELETED_SUCCESS", id);
       } catch (error) {
-        logSecurityEvent('USER_DELETED_FAILED', id, { error });
+        logSecurityEvent("USER_DELETED_FAILED", id, { error });
         return NextResponse.json(
-          { error: 'Failed to delete user from database' },
-          { status: 500 }
+          { error: "Failed to delete user from database" },
+          { status: 500 },
         );
       }
       break;
-    
+
     default:
-      logSecurityEvent('WEBHOOK_UNKNOWN_EVENT', id, { eventType });
+      logSecurityEvent("WEBHOOK_UNKNOWN_EVENT", id, { eventType });
       break;
   }
 
   return NextResponse.json({ success: true });
-} 
+}

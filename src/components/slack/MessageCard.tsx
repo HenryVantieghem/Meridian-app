@@ -1,7 +1,7 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { SlackMessage } from '@/lib/integrations/slack';
-import { formatDate } from '@/lib/utils';
+import React from "react";
+import { motion } from "framer-motion";
+import { SlackMessage } from "@/lib/integrations/slack";
+import { formatDate } from "@/lib/utils";
 
 interface MessageCardProps {
   message: SlackMessage;
@@ -36,7 +36,7 @@ export const MessageCard: React.FC<MessageCardProps> = ({
       className={`
         relative p-4 bg-white border border-gray-200 rounded-lg shadow-sm
         cursor-pointer transition-all duration-200
-        ${isSelected ? 'ring-2 ring-gold border-gold' : 'hover:border-gray-300'}
+        ${isSelected ? "ring-2 ring-gold border-gold" : "hover:border-gray-300"}
       `}
       onClick={onClick}
     >
@@ -57,7 +57,7 @@ export const MessageCard: React.FC<MessageCardProps> = ({
             </p>
           </div>
         </div>
-        
+
         {/* Platform Badge */}
         <div className="flex items-center space-x-1">
           <div className="w-2 h-2 bg-green-500 rounded-full"></div>
@@ -67,9 +67,7 @@ export const MessageCard: React.FC<MessageCardProps> = ({
 
       {/* Message Content */}
       <div className="mb-3">
-        <p className="text-sm text-gray-800 leading-relaxed">
-          {message.text}
-        </p>
+        <p className="text-sm text-gray-800 leading-relaxed">{message.text}</p>
       </div>
 
       {/* Attachments */}
@@ -83,9 +81,7 @@ export const MessageCard: React.FC<MessageCardProps> = ({
                 </p>
               )}
               {attachment.text && (
-                <p className="text-xs text-gray-600">
-                  {attachment.text}
-                </p>
+                <p className="text-xs text-gray-600">{attachment.text}</p>
               )}
             </div>
           ))}
@@ -122,21 +118,21 @@ export const MessageCard: React.FC<MessageCardProps> = ({
           >
             Reply
           </button>
-          
+
           <button
             onClick={(e) => {
               e.stopPropagation();
-              handleReact('thumbsup');
+              handleReact("thumbsup");
             }}
             className="text-xs text-gray-500 hover:text-gray-700 transition-colors"
           >
             👍
           </button>
-          
+
           <button
             onClick={(e) => {
               e.stopPropagation();
-              handleReact('heart');
+              handleReact("heart");
             }}
             className="text-xs text-gray-500 hover:text-gray-700 transition-colors"
           >
@@ -159,4 +155,4 @@ export const MessageCard: React.FC<MessageCardProps> = ({
       </div>
     </motion.div>
   );
-}; 
+};

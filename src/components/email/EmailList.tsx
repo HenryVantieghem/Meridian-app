@@ -1,32 +1,41 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useEmails } from '@/hooks/useEmails';
-import { EmailCard } from './EmailCard';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Loader2, RefreshCw, AlertCircle, Inbox, Archive, Star } from 'lucide-react';
-import { Typography } from '@/components/ui/typography';
-import { EmailPriority } from '@/types';
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useEmails } from "@/hooks/useEmails";
+import { EmailCard } from "./EmailCard";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Loader2,
+  RefreshCw,
+  AlertCircle,
+  Inbox,
+  Archive,
+  Star,
+} from "lucide-react";
+import { Typography } from "@/components/ui/typography";
+import { EmailPriority } from "@/types";
 
 interface EmailListProps {
-  status?: 'unread' | 'read' | 'archived';
+  status?: "unread" | "read" | "archived";
   priority?: EmailPriority;
   limit?: number;
   showFilters?: boolean;
   className?: string;
 }
 
-export function EmailList({ 
-  status: _status = 'unread', 
-  priority, 
-  limit = 20, 
+export function EmailList({
+  status: _status = "unread",
+  priority,
+  limit = 20,
   showFilters = true,
-  className = '' 
+  className = "",
 }: EmailListProps) {
-  const [selectedFilter, setSelectedFilter] = useState<'all' | 'unread' | 'read' | 'archived'>('all');
-  
+  const [selectedFilter, setSelectedFilter] = useState<
+    "all" | "unread" | "read" | "archived"
+  >("all");
+
   const {
     emails,
     loading,
@@ -39,13 +48,15 @@ export function EmailList({
     hasMore,
     loadMore,
   } = useEmails({
-    status: selectedFilter === 'all' ? undefined : selectedFilter,
+    status: selectedFilter === "all" ? undefined : selectedFilter,
     priority,
     limit,
     refreshInterval: 30000, // 30 seconds
   });
 
-  const handleFilterChange = (filter: 'all' | 'unread' | 'read' | 'archived') => {
+  const handleFilterChange = (
+    filter: "all" | "unread" | "read" | "archived",
+  ) => {
     setSelectedFilter(filter);
   };
 
@@ -77,42 +88,45 @@ export function EmailList({
       {showFilters && (
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <Typography variant="h2" className="text-xl font-semibold text-gray-900">
+            <Typography
+              variant="h2"
+              className="text-xl font-semibold text-gray-900"
+            >
               Emails
             </Typography>
             <Badge className="ml-2 bg-gray-100 border-gray-300">
               {emails.length}
             </Badge>
           </div>
-          
+
           <div className="flex items-center space-x-2">
             <Button
-              variant={selectedFilter === 'all' ? 'default' : 'outline'}
+              variant={selectedFilter === "all" ? "default" : "outline"}
               size="sm"
-              onClick={() => handleFilterChange('all')}
+              onClick={() => handleFilterChange("all")}
             >
               All
             </Button>
             <Button
-              variant={selectedFilter === 'unread' ? 'default' : 'outline'}
+              variant={selectedFilter === "unread" ? "default" : "outline"}
               size="sm"
-              onClick={() => handleFilterChange('unread')}
+              onClick={() => handleFilterChange("unread")}
             >
               <Inbox className="h-4 w-4 mr-1" />
               Unread
             </Button>
             <Button
-              variant={selectedFilter === 'read' ? 'default' : 'outline'}
+              variant={selectedFilter === "read" ? "default" : "outline"}
               size="sm"
-              onClick={() => handleFilterChange('read')}
+              onClick={() => handleFilterChange("read")}
             >
               <Star className="h-4 w-4 mr-1" />
               Read
             </Button>
             <Button
-              variant={selectedFilter === 'archived' ? 'default' : 'outline'}
+              variant={selectedFilter === "archived" ? "default" : "outline"}
               size="sm"
-              onClick={() => handleFilterChange('archived')}
+              onClick={() => handleFilterChange("archived")}
             >
               <Archive className="h-4 w-4 mr-1" />
               Archived
@@ -143,10 +157,9 @@ export function EmailList({
             No emails found
           </Typography>
           <Typography variant="body" className="text-gray-600 mb-4">
-            {selectedFilter === 'all' 
-              ? 'No emails in your inbox yet.'
-              : `No ${selectedFilter} emails found.`
-            }
+            {selectedFilter === "all"
+              ? "No emails in your inbox yet."
+              : `No ${selectedFilter} emails found.`}
           </Typography>
           <Button onClick={refresh} variant="outline">
             <RefreshCw className="h-4 w-4 mr-2" />
@@ -170,7 +183,9 @@ export function EmailList({
               onMarkAsRead={() => markAsRead(email.id)}
               onMarkAsUnread={() => markAsUnread(email.id)}
               onDelete={() => deleteEmail(email.id)}
-              onUpdatePriority={(priority) => updatePriority(email.id, priority)}
+              onUpdatePriority={(priority) =>
+                updatePriority(email.id, priority)
+              }
             />
           </motion.div>
         ))}
@@ -179,18 +194,14 @@ export function EmailList({
       {/* Load more button */}
       {hasMore && emails.length > 0 && (
         <div className="flex justify-center pt-4">
-          <Button
-            onClick={handleLoadMore}
-            variant="outline"
-            disabled={loading}
-          >
+          <Button onClick={handleLoadMore} variant="outline" disabled={loading}>
             {loading ? (
               <>
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                 Loading...
               </>
             ) : (
-              'Load More'
+              "Load More"
             )}
           </Button>
         </div>
@@ -205,11 +216,13 @@ export function EmailList({
             size="sm"
             disabled={loading}
           >
-            <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+            <RefreshCw
+              className={`h-4 w-4 mr-2 ${loading ? "animate-spin" : ""}`}
+            />
             Refresh
           </Button>
         </div>
       )}
     </div>
   );
-} 
+}

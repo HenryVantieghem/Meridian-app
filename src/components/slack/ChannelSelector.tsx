@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { SlackChannel } from '@/lib/integrations/slack';
-import { ChevronDown, Hash, Lock } from 'lucide-react';
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { SlackChannel } from "@/lib/integrations/slack";
+import { ChevronDown, Hash, Lock } from "lucide-react";
 
 interface ChannelSelectorProps {
   channels: SlackChannel[];
@@ -19,13 +19,13 @@ export const ChannelSelector: React.FC<ChannelSelectorProps> = ({
   isLoading = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredChannels = channels.filter(channel =>
-    channel.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredChannels = channels.filter((channel) =>
+    channel.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
-  const selectedChannelData = channels.find(c => c.id === selectedChannel);
+  const selectedChannelData = channels.find((c) => c.id === selectedChannel);
 
   return (
     <div className="relative">
@@ -57,16 +57,14 @@ export const ChannelSelector: React.FC<ChannelSelectorProps> = ({
               </span>
             </>
           ) : (
-            <span className="text-sm text-gray-500">
-              Select a channel
-            </span>
+            <span className="text-sm text-gray-500">Select a channel</span>
           )}
         </div>
-        
-        <ChevronDown 
+
+        <ChevronDown
           className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${
-            isOpen ? 'rotate-180' : ''
-          }`} 
+            isOpen ? "rotate-180" : ""
+          }`}
         />
       </button>
 
@@ -109,14 +107,14 @@ export const ChannelSelector: React.FC<ChannelSelectorProps> = ({
                     onClick={() => {
                       onChannelSelect(channel.id);
                       setIsOpen(false);
-                      setSearchTerm('');
+                      setSearchTerm("");
                     }}
                     className={`
                       w-full px-4 py-3 text-left hover:bg-gray-50
                       transition-colors duration-150
-                      ${selectedChannel === channel.id ? 'bg-gold/10' : ''}
+                      ${selectedChannel === channel.id ? "bg-gold/10" : ""}
                     `}
-                    whileHover={{ backgroundColor: '#f9fafb' }}
+                    whileHover={{ backgroundColor: "#f9fafb" }}
                     whileTap={{ scale: 0.98 }}
                   >
                     <div className="flex items-center justify-between">
@@ -130,7 +128,7 @@ export const ChannelSelector: React.FC<ChannelSelectorProps> = ({
                           {channel.name}
                         </span>
                       </div>
-                      
+
                       <div className="flex items-center space-x-2">
                         <span className="text-xs text-gray-500">
                           {channel.memberCount} members
@@ -140,7 +138,7 @@ export const ChannelSelector: React.FC<ChannelSelectorProps> = ({
                         )}
                       </div>
                     </div>
-                    
+
                     {channel.topic && (
                       <p className="text-xs text-gray-500 mt-1 ml-6">
                         {channel.topic}
@@ -173,4 +171,4 @@ export const ChannelSelector: React.FC<ChannelSelectorProps> = ({
       )}
     </div>
   );
-}; 
+};

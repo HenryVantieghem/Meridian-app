@@ -1,26 +1,36 @@
-import { supabase } from './supabase';
-import { z } from 'zod';
-import { Email } from '@/types';
-import { handleDatabaseError } from './supabase';
+import { supabase } from "./supabase";
+import { z } from "zod";
+import { Email } from "@/types";
+import { handleDatabaseError } from "./supabase";
 
 export const EmailSchema = z.object({
   id: z.string().uuid().optional(),
   user_id: z.string().uuid(),
   external_id: z.string(),
   from_address: z.object({ name: z.string().optional(), email: z.string() }),
-  to_addresses: z.array(z.object({ name: z.string().optional(), email: z.string() })),
-  cc_addresses: z.array(z.object({ name: z.string().optional(), email: z.string() })).optional(),
-  bcc_addresses: z.array(z.object({ name: z.string().optional(), email: z.string() })).optional(),
+  to_addresses: z.array(
+    z.object({ name: z.string().optional(), email: z.string() }),
+  ),
+  cc_addresses: z
+    .array(z.object({ name: z.string().optional(), email: z.string() }))
+    .optional(),
+  bcc_addresses: z
+    .array(z.object({ name: z.string().optional(), email: z.string() }))
+    .optional(),
   subject: z.string(),
   body: z.string(),
   body_html: z.string().optional(),
-  attachments: z.array(z.object({
-    id: z.string(),
-    filename: z.string(),
-    contentType: z.string(),
-    size: z.number(),
-    url: z.string().optional(),
-  })).optional(),
+  attachments: z
+    .array(
+      z.object({
+        id: z.string(),
+        filename: z.string(),
+        contentType: z.string(),
+        size: z.number(),
+        url: z.string().optional(),
+      }),
+    )
+    .optional(),
   received_at: z.string(),
   read: z.boolean().optional(),
   starred: z.boolean().optional(),
@@ -34,20 +44,20 @@ export const EmailSchema = z.object({
 
 export async function getEmails(userId: string) {
   const { data, error } = await supabase
-    .from('emails')
-    .select('*')
-    .eq('user_id', userId)
-    .order('received_at', { ascending: false });
+    .from("emails")
+    .select("*")
+    .eq("user_id", userId)
+    .order("received_at", { ascending: false });
   if (error) handleDatabaseError(error);
   return data as Email[];
 }
 
 export async function getEmailById(userId: string, id: string) {
   const { data, error } = await supabase
-    .from('emails')
-    .select('*')
-    .eq('user_id', userId)
-    .eq('id', id)
+    .from("emails")
+    .select("*")
+    .eq("user_id", userId)
+    .eq("id", id)
     .single();
   if (error) handleDatabaseError(error);
   return data as Email;
@@ -56,7 +66,7 @@ export async function getEmailById(userId: string, id: string) {
 export async function createEmail(email: z.infer<typeof EmailSchema>) {
   const parsed = EmailSchema.parse(email);
   const { data, error } = await supabase
-    .from('emails')
+    .from("emails")
     .insert([parsed])
     .select()
     .single();
@@ -64,12 +74,16 @@ export async function createEmail(email: z.infer<typeof EmailSchema>) {
   return data as Email;
 }
 
-export async function updateEmail(userId: string, id: string, updates: Partial<z.infer<typeof EmailSchema>>) {
+export async function updateEmail(
+  userId: string,
+  id: string,
+  updates: Partial<z.infer<typeof EmailSchema>>,
+) {
   const { data, error } = await supabase
-    .from('emails')
+    .from("emails")
     .update(updates)
-    .eq('user_id', userId)
-    .eq('id', id)
+    .eq("user_id", userId)
+    .eq("id", id)
     .select()
     .single();
   if (error) handleDatabaseError(error);
@@ -78,24 +92,32 @@ export async function updateEmail(userId: string, id: string, updates: Partial<z
 
 export async function deleteEmail(userId: string, id: string) {
   const { error } = await supabase
-    .from('emails')
+    .from("emails")
     .delete()
-    .eq('user_id', userId)
-    .eq('id', id);
+    .eq("user_id", userId)
+    .eq("id", id);
   if (error) handleDatabaseError(error);
   return true;
 }
 
 // Real-time subscription for emails
-export function subscribeToEmails(userId: string, callback: (emails: Email[]) => void) {
+export function subscribeToEmails(
+  userId: string,
+  callback: (emails: Email[]) => void,
+) {
   return supabase
-    .channel('emails')
+    .channel("emails")
     .on(
-      'postgres_changes',
-      { event: '*', schema: 'public', table: 'emails', filter: `user_id=eq.${userId}` },
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "emails",
+        filter: `user_id=eq.${userId}`,
+      },
       (payload) => {
         callback(payload.new ? [payload.new as Email] : []);
-      }
+      },
     )
     .subscribe();
-} 
+}

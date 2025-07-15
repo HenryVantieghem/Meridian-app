@@ -4,14 +4,14 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { 
-  CreditCard, 
-  Loader2, 
-  CheckCircle, 
+import {
+  CreditCard,
+  Loader2,
+  CheckCircle,
   AlertCircle,
   ArrowRight,
   Shield,
-  Zap
+  Zap,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -19,8 +19,8 @@ interface CheckoutButtonProps {
   priceId: string;
   children: React.ReactNode;
   className?: string;
-  variant?: 'default' | 'outline' | 'ghost';
-  size?: 'default' | 'sm' | 'lg';
+  variant?: "default" | "outline" | "ghost";
+  size?: "default" | "sm" | "lg";
   disabled?: boolean;
   onSuccess?: (sessionId: string) => void;
   onError?: (error: string) => void;
@@ -30,8 +30,8 @@ export const CheckoutButton: React.FC<CheckoutButtonProps> = ({
   priceId,
   children,
   className,
-  variant = 'default',
-  size = 'default',
+  variant = "default",
+  size = "default",
   disabled = false,
   onSuccess: _onSuccess,
   onError,
@@ -47,10 +47,10 @@ export const CheckoutButton: React.FC<CheckoutButtonProps> = ({
     setError(null);
 
     try {
-      const response = await fetch('/api/stripe/checkout', {
-        method: 'POST',
+      const response = await fetch("/api/stripe/checkout", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           priceId,
@@ -62,18 +62,18 @@ export const CheckoutButton: React.FC<CheckoutButtonProps> = ({
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to create checkout session');
+        throw new Error(data.error || "Failed to create checkout session");
       }
 
       // Redirect to Stripe Checkout
       if (data.url) {
         window.location.href = data.url;
       } else {
-        throw new Error('No checkout URL received');
+        throw new Error("No checkout URL received");
       }
-
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred';
+      const errorMessage =
+        err instanceof Error ? err.message : "An unexpected error occurred";
       setError(errorMessage);
       onError?.(errorMessage);
     } finally {
@@ -90,7 +90,7 @@ export const CheckoutButton: React.FC<CheckoutButtonProps> = ({
         size={size}
         className={cn(
           "relative overflow-hidden transition-all duration-300",
-          className
+          className,
         )}
       >
         <AnimatePresence mode="wait">
@@ -151,7 +151,9 @@ export const CheckoutButton: React.FC<CheckoutButtonProps> = ({
             <Card className="p-3 bg-green-50 border-green-200">
               <div className="flex items-center gap-2">
                 <CheckCircle className="w-4 h-4 text-green-600" />
-                <span className="text-sm text-green-700">Checkout session created successfully!</span>
+                <span className="text-sm text-green-700">
+                  Checkout session created successfully!
+                </span>
               </div>
             </Card>
           </motion.div>
@@ -162,12 +164,11 @@ export const CheckoutButton: React.FC<CheckoutButtonProps> = ({
 };
 
 // Specialized checkout buttons for different use cases
-export const ProCheckoutButton: React.FC<Omit<CheckoutButtonProps, 'priceId'> & { isYearly?: boolean }> = ({
-  isYearly = false,
-  ...props
-}) => {
-  const priceId = isYearly ? 'price_pro_yearly' : 'price_pro_monthly';
-  
+export const ProCheckoutButton: React.FC<
+  Omit<CheckoutButtonProps, "priceId"> & { isYearly?: boolean }
+> = ({ isYearly = false, ...props }) => {
+  const priceId = isYearly ? "price_pro_yearly" : "price_pro_monthly";
+
   return (
     <CheckoutButton
       priceId={priceId}
@@ -181,12 +182,13 @@ export const ProCheckoutButton: React.FC<Omit<CheckoutButtonProps, 'priceId'> & 
   );
 };
 
-export const EnterpriseCheckoutButton: React.FC<Omit<CheckoutButtonProps, 'priceId'> & { isYearly?: boolean }> = ({
-  isYearly = false,
-  ...props
-}) => {
-  const priceId = isYearly ? 'price_enterprise_yearly' : 'price_enterprise_monthly';
-  
+export const EnterpriseCheckoutButton: React.FC<
+  Omit<CheckoutButtonProps, "priceId"> & { isYearly?: boolean }
+> = ({ isYearly = false, ...props }) => {
+  const priceId = isYearly
+    ? "price_enterprise_yearly"
+    : "price_enterprise_monthly";
+
   return (
     <CheckoutButton
       priceId={priceId}
@@ -201,8 +203,8 @@ export const EnterpriseCheckoutButton: React.FC<Omit<CheckoutButtonProps, 'price
 };
 
 // Loading state component for checkout process
-export const CheckoutLoadingState: React.FC<{ message?: string }> = ({ 
-  message = "Preparing your checkout session..." 
+export const CheckoutLoadingState: React.FC<{ message?: string }> = ({
+  message = "Preparing your checkout session...",
 }) => {
   return (
     <motion.div
@@ -216,14 +218,14 @@ export const CheckoutLoadingState: React.FC<{ message?: string }> = ({
       >
         <Loader2 className="w-8 h-8 text-[#D4AF37]" />
       </motion.div>
-      
+
       <div className="text-center">
         <h3 className="text-lg font-semibold text-gray-900 mb-2">
           Setting up your subscription
         </h3>
         <p className="text-gray-600">{message}</p>
       </div>
-      
+
       <div className="flex items-center gap-2 text-sm text-gray-500">
         <Shield className="w-4 h-4" />
         <span>Secure payment processing</span>
@@ -232,4 +234,4 @@ export const CheckoutLoadingState: React.FC<{ message?: string }> = ({
   );
 };
 
-export default CheckoutButton; 
+export default CheckoutButton;

@@ -1,13 +1,19 @@
-import crypto from 'crypto';
-import { createCipheriv, createDecipheriv, randomBytes, scrypt, timingSafeEqual } from 'crypto';
+import crypto from "crypto";
+import {
+  createCipheriv,
+  createDecipheriv,
+  randomBytes,
+  scrypt,
+  timingSafeEqual,
+} from "crypto";
 
 // Encryption configuration
-const ENCRYPTION_ALGORITHM = 'aes-256-gcm';
+const ENCRYPTION_ALGORITHM = "aes-256-gcm";
 const KEY_LENGTH = 32; // 256 bits
 const IV_LENGTH = 16; // 128 bits
 // const TAG_LENGTH = 16; // 128 bits
 const SALT_LENGTH = 64; // 512 bits
-const HASH_ALGORITHM = 'sha256';
+const HASH_ALGORITHM = "sha256";
 const HASH_ITERATIONS = 100000;
 
 export class EncryptionService {
@@ -15,19 +21,19 @@ export class EncryptionService {
 
   constructor() {
     const masterKeyString = process.env.ENCRYPTION_MASTER_KEY;
-    
+
     // Always use a default key during build/development/test
-    if (!masterKeyString || process.env.NODE_ENV !== 'production') {
-      console.warn('Using default encryption key for build/development/test');
+    if (!masterKeyString || process.env.NODE_ENV !== "production") {
+      console.warn("Using default encryption key for build/development/test");
       // Generate a proper 32-byte key
       this.masterKey = Buffer.alloc(32);
-      this.masterKey.write('napoleon-ai-test-encryption-key-32-bytes!', 0, 32);
+      this.masterKey.write("napoleon-ai-test-encryption-key-32-bytes!", 0, 32);
       return;
     }
-    
-    this.masterKey = Buffer.from(masterKeyString, 'hex');
+
+    this.masterKey = Buffer.from(masterKeyString, "hex");
     if (this.masterKey.length !== KEY_LENGTH) {
-      throw new Error('Master key must be 32 bytes (256 bits)');
+      throw new Error("Master key must be 32 bytes (256 bits)");
     }
   }
 
@@ -38,23 +44,26 @@ export class EncryptionService {
     try {
       // Generate random IV
       const iv = randomBytes(IV_LENGTH);
-      
+
       // Create cipher
       const cipher = createCipheriv(ENCRYPTION_ALGORITHM, this.masterKey, iv);
-      
+
       // Encrypt data
-      let encrypted = cipher.update(data, 'utf8', 'hex');
-      encrypted += cipher.final('hex');
-      
+      let encrypted = cipher.update(data, "utf8", "hex");
+      encrypted += cipher.final("hex");
+
       // Get authentication tag
       const tag = cipher.getAuthTag();
-      
+
       // Combine IV, encrypted data, and tag
-      const result = iv.toString('hex') + ':' + encrypted + ':' + tag.toString('hex');
-      
+      const result =
+        iv.toString("hex") + ":" + encrypted + ":" + tag.toString("hex");
+
       return result;
     } catch (error) {
-      throw new Error(`Encryption failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Encryption failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
     }
   }
 
@@ -64,28 +73,34 @@ export class EncryptionService {
   async decrypt(encryptedData: string): Promise<string> {
     try {
       // Split the encrypted data
-      const parts = encryptedData.split(':');
+      const parts = encryptedData.split(":");
       if (parts.length !== 3) {
-        throw new Error('Invalid encrypted data format');
+        throw new Error("Invalid encrypted data format");
       }
-      
+
       const [ivHex, encrypted, tagHex] = parts;
-      
+
       // Convert hex strings back to buffers
-      const iv = Buffer.from(ivHex, 'hex');
-      const tag = Buffer.from(tagHex, 'hex');
-      
+      const iv = Buffer.from(ivHex, "hex");
+      const tag = Buffer.from(tagHex, "hex");
+
       // Create decipher
-      const decipher = createDecipheriv(ENCRYPTION_ALGORITHM, this.masterKey, iv);
+      const decipher = createDecipheriv(
+        ENCRYPTION_ALGORITHM,
+        this.masterKey,
+        iv,
+      );
       decipher.setAuthTag(tag);
-      
+
       // Decrypt data
-      let decrypted = decipher.update(encrypted, 'hex', 'utf8');
-      decrypted += decipher.final('utf8');
-      
+      let decrypted = decipher.update(encrypted, "hex", "utf8");
+      decrypted += decipher.final("utf8");
+
       return decrypted;
     } catch (error) {
-      throw new Error(`Decryption failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Decryption failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
     }
   }
 
@@ -96,18 +111,25 @@ export class EncryptionService {
     return new Promise((resolve, reject) => {
       // Generate random salt
       const salt = randomBytes(SALT_LENGTH);
-      
+
       // Hash password with salt
-      scrypt(password, salt, KEY_LENGTH, { N: HASH_ITERATIONS }, (err, derivedKey) => {
-        if (err) {
-          reject(new Error(`Password hashing failed: ${err.message}`));
-          return;
-        }
-        
-        // Combine salt and hash
-        const result = salt.toString('hex') + ':' + derivedKey.toString('hex');
-        resolve(result);
-      });
+      scrypt(
+        password,
+        salt,
+        KEY_LENGTH,
+        { N: HASH_ITERATIONS },
+        (err, derivedKey) => {
+          if (err) {
+            reject(new Error(`Password hashing failed: ${err.message}`));
+            return;
+          }
+
+          // Combine salt and hash
+          const result =
+            salt.toString("hex") + ":" + derivedKey.toString("hex");
+          resolve(result);
+        },
+      );
     });
   }
 
@@ -118,29 +140,39 @@ export class EncryptionService {
     return new Promise((resolve, reject) => {
       try {
         // Split salt and hash
-        const parts = hash.split(':');
+        const parts = hash.split(":");
         if (parts.length !== 2) {
-          reject(new Error('Invalid hash format'));
+          reject(new Error("Invalid hash format"));
           return;
         }
-        
+
         const [saltHex, hashHex] = parts;
-        const salt = Buffer.from(saltHex, 'hex');
-        const storedHash = Buffer.from(hashHex, 'hex');
-        
+        const salt = Buffer.from(saltHex, "hex");
+        const storedHash = Buffer.from(hashHex, "hex");
+
         // Hash the provided password with the same salt
-        scrypt(password, salt, KEY_LENGTH, { N: HASH_ITERATIONS }, (err, derivedKey) => {
-          if (err) {
-            reject(new Error(`Password verification failed: ${err.message}`));
-            return;
-          }
-          
-          // Compare hashes using timing-safe comparison
-          const isValid = timingSafeEqual(storedHash, derivedKey);
-          resolve(isValid);
-        });
+        scrypt(
+          password,
+          salt,
+          KEY_LENGTH,
+          { N: HASH_ITERATIONS },
+          (err, derivedKey) => {
+            if (err) {
+              reject(new Error(`Password verification failed: ${err.message}`));
+              return;
+            }
+
+            // Compare hashes using timing-safe comparison
+            const isValid = timingSafeEqual(storedHash, derivedKey);
+            resolve(isValid);
+          },
+        );
       } catch (error) {
-        reject(new Error(`Password verification failed: ${error instanceof Error ? error.message : 'Unknown error'}`));
+        reject(
+          new Error(
+            `Password verification failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+          ),
+        );
       }
     });
   }
@@ -149,28 +181,28 @@ export class EncryptionService {
    * Generate secure random token
    */
   generateToken(length: number = 32): string {
-    return randomBytes(length).toString('hex');
+    return randomBytes(length).toString("hex");
   }
 
   /**
    * Generate secure random ID
    */
   generateId(): string {
-    return randomBytes(16).toString('hex');
+    return randomBytes(16).toString("hex");
   }
 
   /**
    * Hash data for integrity checking
    */
   hashData(data: string): string {
-    return crypto.createHash(HASH_ALGORITHM).update(data).digest('hex');
+    return crypto.createHash(HASH_ALGORITHM).update(data).digest("hex");
   }
 
   /**
    * Generate HMAC for data authentication
    */
   generateHMAC(data: string, key: string): string {
-    return crypto.createHmac(HASH_ALGORITHM, key).update(data).digest('hex');
+    return crypto.createHmac(HASH_ALGORITHM, key).update(data).digest("hex");
   }
 
   /**
@@ -178,7 +210,10 @@ export class EncryptionService {
    */
   verifyHMAC(data: string, key: string, hmac: string): boolean {
     const expectedHMAC = this.generateHMAC(data, key);
-    return timingSafeEqual(Buffer.from(hmac, 'hex'), Buffer.from(expectedHMAC, 'hex'));
+    return timingSafeEqual(
+      Buffer.from(hmac, "hex"),
+      Buffer.from(expectedHMAC, "hex"),
+    );
   }
 }
 
@@ -245,7 +280,10 @@ export class DataProtection {
   /**
    * Decrypt sensitive user data
    */
-  async decryptUserData(userId: string, encryptedData: string): Promise<unknown> {
+  async decryptUserData(
+    userId: string,
+    encryptedData: string,
+  ): Promise<unknown> {
     const decrypted = await this.encryptionService.decrypt(encryptedData);
     return JSON.parse(decrypted);
   }
@@ -268,10 +306,11 @@ export class DataProtection {
    * Hash sensitive identifiers
    */
   hashIdentifier(identifier: string, salt?: string): string {
-    const saltToUse = salt || randomBytes(16).toString('hex');
-    const hash = crypto.createHash(HASH_ALGORITHM)
+    const saltToUse = salt || randomBytes(16).toString("hex");
+    const hash = crypto
+      .createHash(HASH_ALGORITHM)
       .update(identifier + saltToUse)
-      .digest('hex');
+      .digest("hex");
     return `${saltToUse}:${hash}`;
   }
 
@@ -279,37 +318,46 @@ export class DataProtection {
    * Verify hashed identifier
    */
   verifyIdentifier(identifier: string, hashedIdentifier: string): boolean {
-    const [salt, hash] = hashedIdentifier.split(':');
-    const expectedHash = crypto.createHash(HASH_ALGORITHM)
+    const [salt, hash] = hashedIdentifier.split(":");
+    const expectedHash = crypto
+      .createHash(HASH_ALGORITHM)
       .update(identifier + salt)
-      .digest('hex');
-    return timingSafeEqual(Buffer.from(hash, 'hex'), Buffer.from(expectedHash, 'hex'));
+      .digest("hex");
+    return timingSafeEqual(
+      Buffer.from(hash, "hex"),
+      Buffer.from(expectedHash, "hex"),
+    );
   }
 
   /**
    * Sanitize sensitive data for logging
    */
   sanitizeForLogging(data: unknown): unknown {
-    if (typeof data === 'string') {
+    if (typeof data === "string") {
       // Mask email addresses
-      return data.replace(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g, '[EMAIL]');
+      return data.replace(
+        /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g,
+        "[EMAIL]",
+      );
     }
-    
-    if (typeof data === 'object' && data !== null) {
+
+    if (typeof data === "object" && data !== null) {
       const sanitized: unknown = {};
       for (const [key, value] of Object.entries(data)) {
-        if (key.toLowerCase().includes('password') || 
-            key.toLowerCase().includes('token') || 
-            key.toLowerCase().includes('key') ||
-            key.toLowerCase().includes('secret')) {
-          sanitized[key] = '[REDACTED]';
+        if (
+          key.toLowerCase().includes("password") ||
+          key.toLowerCase().includes("token") ||
+          key.toLowerCase().includes("key") ||
+          key.toLowerCase().includes("secret")
+        ) {
+          sanitized[key] = "[REDACTED]";
         } else {
           sanitized[key] = this.sanitizeForLogging(value);
         }
       }
       return sanitized;
     }
-    
+
     return data;
   }
 
@@ -326,7 +374,11 @@ export class DataProtection {
   /**
    * Validate session token
    */
-  validateSessionToken(token: string, userId: string, _maxAge: number = 24 * 60 * 60 * 1000): boolean {
+  validateSessionToken(
+    token: string,
+    userId: string,
+    _maxAge: number = 24 * 60 * 60 * 1000,
+  ): boolean {
     try {
       // This is a simplified validation - in practice, you'd store tokens in a database
       // and check against stored values with proper expiration handling
@@ -340,4 +392,4 @@ export class DataProtection {
 // Export singleton instances
 export const encryptionService = new EncryptionService();
 export const secureKeyManager = new SecureKeyManager();
-export const dataProtection = new DataProtection(); 
+export const dataProtection = new DataProtection();

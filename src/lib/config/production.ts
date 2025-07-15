@@ -1,14 +1,14 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 // Environment variable schema for production
 const envSchema = z.object({
   // Authentication
   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().min(1),
   CLERK_SECRET_KEY: z.string().min(1),
-  NEXT_PUBLIC_CLERK_SIGN_IN_URL: z.string().default('/sign-in'),
-  NEXT_PUBLIC_CLERK_SIGN_UP_URL: z.string().default('/sign-up'),
-  NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL: z.string().default('/onboarding'),
-  NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL: z.string().default('/onboarding'),
+  NEXT_PUBLIC_CLERK_SIGN_IN_URL: z.string().default("/sign-in"),
+  NEXT_PUBLIC_CLERK_SIGN_UP_URL: z.string().default("/sign-up"),
+  NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL: z.string().default("/onboarding"),
+  NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL: z.string().default("/onboarding"),
 
   // Database
   NEXT_PUBLIC_SUPABASE_URL: z.string().url(),
@@ -49,7 +49,7 @@ const envSchema = z.object({
 
   // App Configuration
   NEXT_PUBLIC_APP_URL: z.string().url(),
-  NEXT_PUBLIC_APP_NAME: z.string().default('Napoleon'),
+  NEXT_PUBLIC_APP_NAME: z.string().default("Napoleon"),
   NEXTAUTH_SECRET: z.string().min(1),
   NEXTAUTH_URL: z.string().url(),
 
@@ -71,46 +71,55 @@ export const productionConfig = {
     rateLimit: {
       windowMs: 15 * 60 * 1000, // 15 minutes
       max: 100, // limit each IP to 100 requests per windowMs
-      message: 'Too many requests from this IP, please try again later.',
+      message: "Too many requests from this IP, please try again later.",
     },
-    
+
     // CORS settings
     cors: {
       origin: process.env.NEXT_PUBLIC_APP_URL,
       credentials: true,
-      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-      allowedHeaders: ['Content-Type', 'Authorization'],
+      methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+      allowedHeaders: ["Content-Type", "Authorization"],
     },
 
     // Content Security Policy
     csp: {
-      'default-src': ["'self'"],
-      'script-src': ["'self'", "'unsafe-inline'", 'https://js.stripe.com', 'https://www.googletagmanager.com'],
-      'style-src': ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
-      'font-src': ["'self'", 'https://fonts.gstatic.com'],
-      'img-src': ["'self'", 'data:', 'https:', 'blob:'],
-      'connect-src': [
+      "default-src": ["'self'"],
+      "script-src": [
         "'self'",
-        'https://api.openai.com',
-        'https://api.stripe.com',
-        // 'https://api.resend.com', // Resend removed
-        'https://api.slack.com',
-        'https://www.googleapis.com',
-        'https://graph.microsoft.com',
-        'wss://localhost:3001', // WebSocket for development
+        "'unsafe-inline'",
+        "https://js.stripe.com",
+        "https://www.googletagmanager.com",
       ],
-      'frame-src': ["'self'", 'https://js.stripe.com'],
-      'object-src': ["'none'"],
-      'base-uri': ["'self'"],
-      'form-action': ["'self'"],
+      "style-src": [
+        "'self'",
+        "'unsafe-inline'",
+        "https://fonts.googleapis.com",
+      ],
+      "font-src": ["'self'", "https://fonts.gstatic.com"],
+      "img-src": ["'self'", "data:", "https:", "blob:"],
+      "connect-src": [
+        "'self'",
+        "https://api.openai.com",
+        "https://api.stripe.com",
+        // 'https://api.resend.com', // Resend removed
+        "https://api.slack.com",
+        "https://www.googleapis.com",
+        "https://graph.microsoft.com",
+        "wss://localhost:3001", // WebSocket for development
+      ],
+      "frame-src": ["'self'", "https://js.stripe.com"],
+      "object-src": ["'none'"],
+      "base-uri": ["'self'"],
+      "form-action": ["'self'"],
     },
 
     // Headers
     headers: {
-      'X-Frame-Options': 'DENY',
-      'X-Content-Type-Options': 'nosniff',
-      'Referrer-Policy': 'strict-origin-when-cross-origin',
-      'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
+      "X-Frame-Options": "DENY",
+      "X-Content-Type-Options": "nosniff",
+      "Referrer-Policy": "strict-origin-when-cross-origin",
+      "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
     },
   },
 
@@ -130,8 +139,8 @@ export const productionConfig = {
 
     // Image optimization
     images: {
-      domains: ['localhost', 'vercel.app', 'your-domain.com'],
-      formats: ['image/webp', 'image/avif'],
+      domains: ["localhost", "vercel.app", "your-domain.com"],
+      formats: ["image/webp", "image/avif"],
       sizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     },
   },
@@ -144,12 +153,12 @@ export const productionConfig = {
       idleTimeoutMillis: 30000,
       connectionTimeoutMillis: 2000,
     },
-    ssl: process.env.NODE_ENV === 'production',
+    ssl: process.env.NODE_ENV === "production",
   },
 
   // AI settings
   ai: {
-    model: 'gpt-4o',
+    model: "gpt-4o",
     maxTokens: 4000,
     temperature: 0.7,
     timeout: 30000,
@@ -158,8 +167,8 @@ export const productionConfig = {
 
   // Email settings
   email: {
-    from: 'noreply@napoleon.ai',
-    replyTo: 'support@napoleon.ai',
+    from: "noreply@napoleon.ai",
+    replyTo: "support@napoleon.ai",
     maxRetries: 3,
     batchSize: 100,
   },
@@ -184,14 +193,14 @@ export const productionConfig = {
     performance: {
       enabled: true,
       sampleRate: 0.01, // 1% of page loads
-      metrics: ['fcp', 'lcp', 'fid', 'cls', 'ttfb'],
+      metrics: ["fcp", "lcp", "fid", "cls", "ttfb"],
     },
 
     // User analytics
     analytics: {
       enabled: true,
       sampleRate: 0.1, // 10% of users
-      events: ['page_view', 'button_click', 'form_submit', 'error'],
+      events: ["page_view", "button_click", "form_submit", "error"],
     },
   },
 
@@ -216,13 +225,16 @@ export function validateEnvironment() {
     return { valid: true, errors: null };
   } catch (error) {
     if (error instanceof z.ZodError) {
-      const errors = error.errors.map(err => ({
-        path: err.path.join('.'),
+      const errors = error.errors.map((err) => ({
+        path: err.path.join("."),
         message: err.message,
       }));
       return { valid: false, errors };
     }
-    return { valid: false, errors: [{ path: 'unknown', message: 'Unknown validation error' }] };
+    return {
+      valid: false,
+      errors: [{ path: "unknown", message: "Unknown validation error" }],
+    };
   }
 }
 
@@ -230,7 +242,9 @@ export function validateEnvironment() {
 export function getValidatedEnv() {
   const result = validateEnvironment();
   if (!result.valid) {
-    throw new Error(`Environment validation failed: ${JSON.stringify(result.errors, null, 2)}`);
+    throw new Error(
+      `Environment validation failed: ${JSON.stringify(result.errors, null, 2)}`,
+    );
   }
   return envSchema.parse(process.env);
 }
@@ -239,26 +253,33 @@ export function getValidatedEnv() {
 export const productionUtils = {
   // Sanitize sensitive data for logging
   sanitizeForLogging: (data: unknown): unknown => {
-    if (!data || typeof data !== 'object') {
+    if (!data || typeof data !== "object") {
       return data;
     }
-    
-    const sensitiveKeys = ['password', 'token', 'secret', 'key', 'authorization'];
+
+    const sensitiveKeys = [
+      "password",
+      "token",
+      "secret",
+      "key",
+      "authorization",
+    ];
     const sanitized = { ...data } as Record<string, unknown>;
-    
+
     for (const key of sensitiveKeys) {
       if (sanitized[key]) {
-        sanitized[key] = '[REDACTED]';
+        sanitized[key] = "[REDACTED]";
       }
     }
-    
+
     return sanitized;
   },
 
   // Generate secure random string
   generateSecureToken: (length: number = 32): string => {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let result = '';
+    const chars =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let result = "";
     for (let i = 0; i < length; i++) {
       result += chars.charAt(Math.floor(Math.random() * chars.length));
     }
@@ -266,21 +287,25 @@ export const productionUtils = {
   },
 
   // Validate API key format
-  validateApiKey: (key: string, type: 'openai' | 'stripe' | 'slack' | 'google' | 'microsoft'): boolean => {
+  validateApiKey: (
+    key: string,
+    type: "openai" | "stripe" | "slack" | "google" | "microsoft",
+  ): boolean => {
     const patterns = {
       openai: /^sk-[a-zA-Z0-9]{48}$/,
       stripe: /^(pk_|sk_)[a-zA-Z0-9]{24}$/,
       slack: /^xox[abp]-[a-zA-Z0-9-]+$/,
       google: /^[a-zA-Z0-9-]+\.apps\.googleusercontent\.com$/,
-      microsoft: /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/,
+      microsoft:
+        /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/,
     };
-    
+
     return patterns[type].test(key);
   },
 
   // Check if running in production
   isProduction: (): boolean => {
-    return process.env.NODE_ENV === 'production';
+    return process.env.NODE_ENV === "production";
   },
 
   // Get environment-specific configuration
@@ -306,4 +331,4 @@ export const productionUtils = {
       },
     };
   },
-}; 
+};

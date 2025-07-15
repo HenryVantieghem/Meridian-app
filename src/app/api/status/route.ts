@@ -1,10 +1,10 @@
-import { NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
 
 export async function GET() {
   return NextResponse.json({
-    status: 'ok',
+    status: "ok",
     timestamp: new Date().toISOString(),
-    message: 'Napoleon AI is running',
-    version: '1.0.0'
+    message: "Napoleon AI is running",
+    version: "1.0.0",
   });
 }

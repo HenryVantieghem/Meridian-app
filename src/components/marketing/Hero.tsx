@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 
-import { motion } from 'framer-motion';
-import { ArrowRight, Play, Sparkles, Zap, Shield, Crown } from 'lucide-react';
+import { motion } from "framer-motion";
+import { ArrowRight, Play, Sparkles, Zap, Shield, Crown } from "lucide-react";
 
 export function Hero() {
   return (
@@ -24,13 +24,13 @@ export function Hero() {
             transition={{ duration: 0.8, delay: 0.1 }}
             className="mb-12"
           >
-            <img 
-              src="/macbook-desk.svg" 
-              alt="Luxury MacBook and desk setup" 
+            <img
+              src="/macbook-desk.svg"
+              alt="Luxury MacBook and desk setup"
               className="mx-auto w-full max-w-2xl h-auto"
             />
           </motion.div>
-          
+
           {/* Badge */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -52,7 +52,8 @@ export function Hero() {
             className="mb-8"
           >
             <h1 className="text-6xl text-black font-serif mb-6 leading-tight">
-              Transform <span className="text-brand-burgundy">Chaos</span> into <span className="text-brand-burgundy">Clarity</span>.
+              Transform <span className="text-brand-burgundy">Chaos</span> into{" "}
+              <span className="text-brand-burgundy">Clarity</span>.
             </h1>
           </motion.div>
 
@@ -64,8 +65,10 @@ export function Hero() {
             className="mb-12"
           >
             <p className="text-lg text-[#4A4A4A] max-w-4xl mx-auto leading-relaxed">
-              Transform communication chaos into strategic clarity through intelligent email management, 
-              AI-powered prioritization, and luxury UX design. Designed for C-level executives who demand excellence.
+              Transform communication chaos into strategic clarity through
+              intelligent email management, AI-powered prioritization, and
+              luxury UX design. Designed for C-level executives who demand
+              excellence.
             </p>
           </motion.div>
 
@@ -76,18 +79,24 @@ export function Hero() {
             transition={{ duration: 0.8, delay: 0.6 }}
             className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16"
           >
-            <Button 
+            <Button
               className="rounded-2xl px-4 py-2 bg-black text-white hover:bg-[#801B2B] text-lg transition-all duration-200"
               aria-label="Get Started with Napoleon AI"
+              onClick={() => (window.location.href = "/sign-up")}
             >
               Get Started
               <ArrowRight className="ml-3 w-5 h-5" aria-hidden="true" />
             </Button>
-            <Button 
-              variant="cartier-secondary" 
-              size="xl" 
+            <Button
+              variant="cartier-secondary"
+              size="xl"
               className="text-lg px-10 py-4"
               aria-label="Watch executive demo - View a demonstration of Napoleon AI features"
+              onClick={() =>
+                document
+                  .getElementById("features")
+                  ?.scrollIntoView({ behavior: "smooth" })
+              }
             >
               <Play className="mr-3 w-5 h-5" aria-hidden="true" />
               Executive Demo
@@ -104,16 +113,27 @@ export function Hero() {
             aria-label="Trust indicators and features"
           >
             <div className="flex items-center" role="listitem">
-              <Shield className="w-6 h-6 mr-3 text-brand-burgundy" aria-hidden="true" />
+              <Shield
+                className="w-6 h-6 mr-3 text-brand-burgundy"
+                aria-hidden="true"
+              />
               <span className="text-sm font-medium">Enterprise Security</span>
             </div>
             <div className="flex items-center" role="listitem">
-              <Zap className="w-6 h-6 mr-3 text-brand-burgundy" aria-hidden="true" />
+              <Zap
+                className="w-6 h-6 mr-3 text-brand-burgundy"
+                aria-hidden="true"
+              />
               <span className="text-sm font-medium">Lightning Performance</span>
             </div>
             <div className="flex items-center" role="listitem">
-              <Sparkles className="w-6 h-6 mr-3 text-brand-burgundy" aria-hidden="true" />
-              <span className="text-sm font-medium">AI-Powered Intelligence</span>
+              <Sparkles
+                className="w-6 h-6 mr-3 text-brand-burgundy"
+                aria-hidden="true"
+              />
+              <span className="text-sm font-medium">
+                AI-Powered Intelligence
+              </span>
             </div>
           </motion.div>
         </div>
@@ -128,10 +148,16 @@ export function Hero() {
       >
         <div className="flex space-x-3">
           <div className="w-3 h-3 bg-brand-burgundy rounded-full animate-bounce"></div>
-          <div className="w-3 h-3 bg-brand-burgundy rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-          <div className="w-3 h-3 bg-brand-burgundy rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+          <div
+            className="w-3 h-3 bg-brand-burgundy rounded-full animate-bounce"
+            style={{ animationDelay: "0.1s" }}
+          ></div>
+          <div
+            className="w-3 h-3 bg-brand-burgundy rounded-full animate-bounce"
+            style={{ animationDelay: "0.2s" }}
+          ></div>
         </div>
       </motion.div>
     </section>
   );
-} 
+}

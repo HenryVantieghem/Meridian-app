@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useAuth } from '@clerk/nextjs';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Loader2 } from 'lucide-react';
+import { useAuth } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { motion } from "framer-motion";
+import { Loader2 } from "lucide-react";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -12,10 +12,10 @@ interface ProtectedRouteProps {
   redirectTo?: string;
 }
 
-export function ProtectedRoute({ 
-  children, 
+export function ProtectedRoute({
+  children,
   fallback,
-  redirectTo = '/sign-in' 
+  redirectTo = "/sign-in",
 }: ProtectedRouteProps) {
   const { isLoaded, isSignedIn } = useAuth();
   const router = useRouter();
@@ -59,4 +59,4 @@ export function ProtectedRoute({
   }
 
   return <>{children}</>;
-} 
+}

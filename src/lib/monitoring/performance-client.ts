@@ -1,33 +1,33 @@
 "use client";
-import React, { useEffect } from 'react';
-import { logger } from '@/lib/monitoring/logging';
-import { performanceMonitor } from './performance';
+import React, { useEffect } from "react";
+import { logger } from "@/lib/monitoring/logging";
+import { performanceMonitor } from "./performance";
 
 export function withPerformanceMonitoring<P extends Record<string, unknown>>(
-  Component: React.ComponentType<P>
+  Component: React.ComponentType<P>,
 ) {
   return function PerformanceMonitoredComponent(props: P) {
-    const componentName = Component.displayName || Component.name || 'Unknown';
-    
+    const componentName = Component.displayName || Component.name || "Unknown";
+
     useEffect(() => {
       const startTime = performance.now();
-      
+
       return () => {
         const endTime = performance.now();
         const duration = endTime - startTime;
-        
+
         // Log performance metrics
-        logger.info('Component Performance', {
+        logger.info("Component Performance", {
           component: componentName,
           duration,
           timestamp: new Date().toISOString(),
         });
-        
+
         // Send to monitoring service if configured
         if (process.env.NEXT_PUBLIC_PERFORMANCE_MONITORING_URL) {
           fetch(process.env.NEXT_PUBLIC_PERFORMANCE_MONITORING_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               component: componentName,
               duration,
@@ -37,7 +37,7 @@ export function withPerformanceMonitoring<P extends Record<string, unknown>>(
         }
       };
     }, [componentName]);
-    
+
     return React.createElement(Component, props);
   };
 }
@@ -45,7 +45,7 @@ export function withPerformanceMonitoring<P extends Record<string, unknown>>(
 // Web Vitals tracking hook
 export const useWebVitals = () => {
   React.useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === "undefined") return;
 
     // Track LCP
     const trackLCP = () => {
@@ -55,7 +55,7 @@ export const useWebVitals = () => {
             lcp: entry.startTime,
           });
         }
-      }).observe({ entryTypes: ['largest-contentful-paint'] });
+      }).observe({ entryTypes: ["largest-contentful-paint"] });
     };
 
     // Track FID
@@ -63,14 +63,14 @@ export const useWebVitals = () => {
       new PerformanceObserver((list) => {
         for (const entry of list.getEntries()) {
           // FID is only available on PerformanceEventTiming
-          if ('processingStart' in entry) {
+          if ("processingStart" in entry) {
             const eventEntry = entry as PerformanceEventTiming;
             performanceMonitor.trackWebVitals({
               fid: eventEntry.processingStart - eventEntry.startTime,
             });
           }
         }
-      }).observe({ entryTypes: ['first-input'] });
+      }).observe({ entryTypes: ["first-input"] });
     };
 
     // Track CLS
@@ -85,7 +85,7 @@ export const useWebVitals = () => {
         performanceMonitor.trackWebVitals({
           cls: clsValue,
         });
-      }).observe({ entryTypes: ['layout-shift'] });
+      }).observe({ entryTypes: ["layout-shift"] });
     };
 
     trackLCP();
@@ -96,38 +96,41 @@ export const useWebVitals = () => {
 
 // Error boundary with monitoring
 export const withErrorMonitoring = <P extends Record<string, unknown>>(
-  Component: React.ComponentType<P>
+  Component: React.ComponentType<P>,
 ): React.ComponentType<P> => {
   const ErrorMonitoredComponent = (props: P) => {
     React.useEffect(() => {
       const handleError = (error: ErrorEvent) => {
         performanceMonitor.trackError({
           message: error.message,
-          severity: 'high',
-          context: { type: 'unhandled_error' },
+          severity: "high",
+          context: { type: "unhandled_error" },
         });
       };
 
       const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
         performanceMonitor.trackError({
-          message: event.reason?.message || 'Unhandled promise rejection',
-          severity: 'high',
-          context: { type: 'unhandled_rejection' },
+          message: event.reason?.message || "Unhandled promise rejection",
+          severity: "high",
+          context: { type: "unhandled_rejection" },
         });
       };
 
-      window.addEventListener('error', handleError);
-      window.addEventListener('unhandledrejection', handleUnhandledRejection);
+      window.addEventListener("error", handleError);
+      window.addEventListener("unhandledrejection", handleUnhandledRejection);
 
       return () => {
-        window.removeEventListener('error', handleError);
-        window.removeEventListener('unhandledrejection', handleUnhandledRejection);
+        window.removeEventListener("error", handleError);
+        window.removeEventListener(
+          "unhandledrejection",
+          handleUnhandledRejection,
+        );
       };
     }, []);
 
     return React.createElement(Component, props);
   };
-  
+
   ErrorMonitoredComponent.displayName = `withErrorMonitoring(${Component.displayName || Component.name})`;
   return ErrorMonitoredComponent;
-}; 
+};

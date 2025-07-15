@@ -1,4 +1,4 @@
-import { NextRequest } from 'next/server';
+import { NextRequest } from "next/server";
 
 export interface HealthMetrics {
   timestamp: string;
@@ -20,7 +20,7 @@ export interface ErrorReport {
   url: string;
   userAgent: string;
   ip: string;
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  severity: "low" | "medium" | "high" | "critical";
 }
 
 export interface PerformanceMetrics {
@@ -77,11 +77,11 @@ class ProductionMonitor {
     };
 
     this.healthMetrics.push(metrics);
-    
+
     // Keep only last 24 hours of metrics
-    const oneDayAgo = Date.now() - (24 * 60 * 60 * 1000);
+    const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
     this.healthMetrics = this.healthMetrics.filter(
-      m => new Date(m.timestamp).getTime() > oneDayAgo
+      (m) => new Date(m.timestamp).getTime() > oneDayAgo,
     );
 
     // Send to monitoring service if configured
@@ -89,34 +89,34 @@ class ProductionMonitor {
   }
 
   private calculateErrorRate(): number {
-    const lastHour = Date.now() - (60 * 60 * 1000);
+    const lastHour = Date.now() - 60 * 60 * 1000;
     const recentErrors = this.errorReports.filter(
-      e => new Date(e.timestamp).getTime() > lastHour
+      (e) => new Date(e.timestamp).getTime() > lastHour,
     );
     return recentErrors.length;
   }
 
   private setupErrorHandling(): void {
-    process.on('uncaughtException', (error) => {
+    process.on("uncaughtException", (error) => {
       this.reportError({
         timestamp: new Date().toISOString(),
         error: error.message,
         stack: error.stack,
-        url: 'server',
-        userAgent: 'server',
-        ip: 'server',
-        severity: 'critical',
+        url: "server",
+        userAgent: "server",
+        ip: "server",
+        severity: "critical",
       });
     });
 
-    process.on('unhandledRejection', (reason) => {
+    process.on("unhandledRejection", (reason) => {
       this.reportError({
         timestamp: new Date().toISOString(),
         error: String(reason),
-        url: 'server',
-        userAgent: 'server',
-        ip: 'server',
-        severity: 'high',
+        url: "server",
+        userAgent: "server",
+        ip: "server",
+        severity: "high",
       });
     });
   }
@@ -125,14 +125,15 @@ class ProductionMonitor {
     // Monitor memory usage
     setInterval(() => {
       const usage = process.memoryUsage();
-      if (usage.heapUsed > 1024 * 1024 * 1024) { // 1GB
+      if (usage.heapUsed > 1024 * 1024 * 1024) {
+        // 1GB
         this.reportError({
           timestamp: new Date().toISOString(),
-          error: 'High memory usage detected',
-          url: 'server',
-          userAgent: 'server',
-          ip: 'server',
-          severity: 'medium',
+          error: "High memory usage detected",
+          url: "server",
+          userAgent: "server",
+          ip: "server",
+          severity: "medium",
         });
       }
     }, 30000); // Every 30 seconds
@@ -140,15 +141,15 @@ class ProductionMonitor {
 
   public reportError(error: ErrorReport): void {
     this.errorReports.push(error);
-    
+
     // Keep only last 24 hours of errors
-    const oneDayAgo = Date.now() - (24 * 60 * 60 * 1000);
+    const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
     this.errorReports = this.errorReports.filter(
-      e => new Date(e.timestamp).getTime() > oneDayAgo
+      (e) => new Date(e.timestamp).getTime() > oneDayAgo,
     );
 
     // Send critical errors immediately
-    if (error.severity === 'critical') {
+    if (error.severity === "critical") {
       this.sendErrorAlert(error);
     }
 
@@ -158,41 +159,45 @@ class ProductionMonitor {
 
   public trackPerformance(metrics: PerformanceMetrics): void {
     this.performanceMetrics.push(metrics);
-    
+
     // Keep only last 24 hours of metrics
-    const oneDayAgo = Date.now() - (24 * 60 * 60 * 1000);
+    const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
     this.performanceMetrics = this.performanceMetrics.filter(
-      m => new Date(m.timestamp).getTime() > oneDayAgo
+      (m) => new Date(m.timestamp).getTime() > oneDayAgo,
     );
 
     // Alert on poor performance
-    if (metrics.pageLoadTime > 5000) { // 5 seconds
+    if (metrics.pageLoadTime > 5000) {
+      // 5 seconds
       this.reportError({
         timestamp: new Date().toISOString(),
         error: `Slow page load: ${metrics.pageLoadTime}ms`,
-        url: 'performance',
-        userAgent: 'monitor',
-        ip: 'monitor',
-        severity: 'medium',
+        url: "performance",
+        userAgent: "monitor",
+        ip: "monitor",
+        severity: "medium",
       });
     }
   }
 
   public getHealthStatus(): {
-    status: 'healthy' | 'warning' | 'critical';
+    status: "healthy" | "warning" | "critical";
     metrics: HealthMetrics;
     recentErrors: ErrorReport[];
   } {
     const latestMetrics = this.healthMetrics[this.healthMetrics.length - 1];
     const recentErrors = this.errorReports.slice(-10); // Last 10 errors
 
-    let status: 'healthy' | 'warning' | 'critical' = 'healthy';
+    let status: "healthy" | "warning" | "critical" = "healthy";
 
     if (latestMetrics) {
-      if (latestMetrics.errorRate > 10 || latestMetrics.memoryUsage.heapUsed > 1024 * 1024 * 1024) {
-        status = 'critical';
+      if (
+        latestMetrics.errorRate > 10 ||
+        latestMetrics.memoryUsage.heapUsed > 1024 * 1024 * 1024
+      ) {
+        status = "critical";
       } else if (latestMetrics.errorRate > 5) {
-        status = 'warning';
+        status = "warning";
       }
     }
 
@@ -221,9 +226,9 @@ class ProductionMonitor {
     const webhookUrl = process.env.MONITORING_WEBHOOK_URL;
     if (webhookUrl) {
       fetch(webhookUrl, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
       }).catch(console.error);
@@ -235,9 +240,9 @@ class ProductionMonitor {
     const alertWebhook = process.env.ALERT_WEBHOOK_URL;
     if (alertWebhook) {
       fetch(alertWebhook, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           text: `🚨 Critical Error: ${error.error}`,
@@ -269,15 +274,15 @@ export const productionMonitor = ProductionMonitor.getInstance();
 
 // Middleware for tracking requests
 export function trackRequest(req: NextRequest, responseTime: number): void {
-  const error = req.nextUrl.searchParams.get('error');
+  const error = req.nextUrl.searchParams.get("error");
   if (error) {
     productionMonitor.reportError({
       timestamp: new Date().toISOString(),
       error,
       url: req.url,
-      userAgent: req.headers.get('user-agent') || 'unknown',
-      ip: req.headers.get('x-forwarded-for') || 'unknown',
-      severity: 'medium',
+      userAgent: req.headers.get("user-agent") || "unknown",
+      ip: req.headers.get("x-forwarded-for") || "unknown",
+      severity: "medium",
     });
   }
 
@@ -291,4 +296,4 @@ export function trackRequest(req: NextRequest, responseTime: number): void {
     memoryUsage: process.memoryUsage().heapUsed,
     cpuUsage: process.cpuUsage().user,
   });
-} 
+}

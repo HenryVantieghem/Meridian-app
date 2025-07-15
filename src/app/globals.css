@@ -3,29 +3,29 @@
 @tailwind utilities;
 
 /* Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap");
 
 /* Base styles */
 @layer base {
   html {
-    font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+    font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
   }
-  
+
   body {
     @apply bg-white text-black antialiased;
   }
-  
+
   /* Cartier typography system */
   .font-playfair {
-    font-family: 'Playfair Display', Georgia, serif;
+    font-family: "Playfair Display", Georgia, serif;
   }
-  
+
   .font-inter {
-    font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+    font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
   }
-  
+
   .font-helvetica {
-    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-family: "Helvetica Neue", Arial, sans-serif;
   }
 }
 
@@ -35,274 +35,274 @@
   .dashboard-cartier {
     @apply min-h-screen bg-gradient-to-br from-cartier-50 to-gold-50 flex;
   }
-  
+
   .sidebar-left {
     @apply w-[280px] min-w-[280px] bg-white border-r border-cartier-200 shadow-cartier-sm 
            backdrop-blur-cartier transition-all duration-300 ease-in-out;
   }
-  
+
   .main-panel {
     @apply flex-1 bg-white/80 backdrop-blur-cartier 
            transition-all duration-300 ease-in-out flex flex-col;
   }
-  
+
   .sidebar-right {
     @apply w-[320px] min-w-[320px] bg-white border-l border-cartier-200 shadow-cartier-sm 
            backdrop-blur-cartier transition-all duration-300 ease-in-out;
   }
-  
+
   .header-cartier {
     @apply bg-white/90 backdrop-blur-cartier border-b border-cartier-200 
            shadow-cartier-sm transition-all duration-300 ease-in-out p-6;
   }
-  
+
   /* Daily Brief & Strategic Cards */
   .daily-brief-card {
     @apply bg-white rounded-2xl shadow-cartier-sm border border-cartier-200 
            p-6 mb-4 hover:shadow-cartier-md transition-all duration-200;
   }
-  
+
   .strategic-digest-card {
     @apply bg-gradient-to-r from-white to-cartier-50 rounded-2xl 
            border border-cartier-200 p-6 mb-4 hover:shadow-cartier-md 
            transition-all duration-200;
   }
-  
+
   .priority-indicator {
     @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium;
   }
-  
+
   .priority-critical {
     @apply bg-red-100 text-red-800 border border-red-200;
   }
-  
+
   .priority-high {
     @apply bg-yellow-100 text-yellow-800 border border-yellow-200;
   }
-  
+
   .priority-medium {
     @apply bg-blue-100 text-blue-800 border border-blue-200;
   }
-  
+
   .priority-low {
     @apply bg-gray-100 text-gray-800 border border-gray-200;
   }
-  
+
   .vip-indicator {
     @apply bg-brand-burgundy text-white border border-brand-burgundy;
   }
-  
+
   /* Navigation System */
   .nav-cartier {
     @apply flex items-center space-x-8 px-6 py-4;
   }
-  
+
   .nav-item-cartier {
     @apply text-cartier-700 hover:text-cartier-900 font-medium 
            transition-colors duration-200 ease-in-out;
   }
-  
+
   .nav-item-cartier.active {
     @apply text-cartier-900 border-b-2 border-cartier-500;
   }
-  
+
   /* Typography utilities */
   .text-display-1 {
     @apply font-playfair text-6xl font-bold leading-tight tracking-tight;
   }
-  
+
   .text-display-2 {
     @apply font-playfair text-5xl font-bold leading-tight tracking-tight;
   }
-  
+
   .text-display-3 {
     @apply font-playfair text-4xl font-bold leading-tight tracking-tight;
   }
-  
+
   .text-headline-1 {
     @apply font-inter text-3xl font-semibold leading-tight tracking-tight;
   }
-  
+
   .text-headline-2 {
     @apply font-inter text-2xl font-semibold leading-tight tracking-tight;
   }
-  
+
   .text-headline-3 {
     @apply font-inter text-xl font-semibold leading-tight tracking-tight;
   }
-  
+
   .text-title-1 {
     @apply font-inter text-lg font-medium leading-relaxed tracking-normal;
   }
-  
+
   .text-title-2 {
     @apply font-inter text-base font-medium leading-relaxed tracking-normal;
   }
-  
+
   .text-body-1 {
     @apply font-inter text-base font-normal leading-relaxed tracking-normal;
   }
-  
+
   .text-body-2 {
     @apply font-inter text-sm font-normal leading-relaxed tracking-normal;
   }
-  
+
   .text-caption {
     @apply font-inter text-xs font-normal leading-relaxed tracking-wide;
   }
-  
+
   .text-button {
     @apply font-inter text-sm font-medium leading-none tracking-wide uppercase;
   }
-  
+
   .text-overline {
     @apply font-inter text-xs font-medium leading-none tracking-widest uppercase;
   }
-  
+
   /* Cartier color utilities */
   .text-cartier-primary {
     @apply text-cartier-900;
   }
-  
+
   .text-cartier-secondary {
     @apply text-cartier-700;
   }
-  
+
   .text-cartier-muted {
     @apply text-cartier-500;
   }
-  
+
   .text-cartier-accent {
     @apply text-gold-600;
   }
-  
+
   .bg-cartier-primary {
     @apply bg-cartier-50;
   }
-  
+
   .bg-cartier-secondary {
     @apply bg-cartier-100;
   }
-  
+
   .bg-cartier-accent {
     @apply bg-gold-50;
   }
-  
+
   .border-cartier-primary {
     @apply border-cartier-200;
   }
-  
+
   .border-cartier-secondary {
     @apply border-cartier-300;
   }
-  
+
   .border-cartier-accent {
     @apply border-gold-200;
   }
-  
+
   /* Luxury spacing utilities */
   .space-cartier-xs {
     @apply space-y-1;
   }
-  
+
   .space-cartier-sm {
     @apply space-y-2;
   }
-  
+
   .space-cartier-md {
     @apply space-y-4;
   }
-  
+
   .space-cartier-lg {
     @apply space-y-6;
   }
-  
+
   .space-cartier-xl {
     @apply space-y-8;
   }
-  
+
   .space-cartier-2xl {
     @apply space-y-12;
   }
-  
+
   /* Luxury shadow utilities */
   .shadow-cartier-sm {
     @apply shadow-cartier;
   }
-  
+
   .shadow-cartier-md {
     @apply shadow-cartier-lg;
   }
-  
+
   .shadow-cartier-lg {
     @apply shadow-cartier-xl;
   }
-  
+
   /* Luxury animation utilities */
   .animate-cartier-fade-in {
     @apply animate-fade-in;
   }
-  
+
   .animate-cartier-slide-up {
     @apply animate-slide-up;
   }
-  
+
   .animate-cartier-scale-in {
     @apply animate-scale-in;
   }
-  
+
   .animate-cartier-bounce-gentle {
     @apply animate-bounce-gentle;
   }
-  
+
   /* Luxury component styles */
   .btn-cartier-primary {
     @apply bg-cartier-900 text-white font-medium px-6 py-3 rounded-lg 
            hover:bg-cartier-800 focus:ring-2 focus:ring-cartier-500 focus:ring-offset-2 
            transition-all duration-200 ease-in-out;
   }
-  
+
   .btn-cartier-secondary {
     @apply bg-white text-cartier-900 font-medium px-6 py-3 rounded-lg border border-cartier-200
            hover:bg-cartier-50 focus:ring-2 focus:ring-cartier-500 focus:ring-offset-2 
            transition-all duration-200 ease-in-out;
   }
-  
+
   .btn-cartier-accent {
     @apply bg-gold-500 text-white font-medium px-6 py-3 rounded-lg 
            hover:bg-gold-600 focus:ring-2 focus:ring-gold-400 focus:ring-offset-2 
            transition-all duration-200 ease-in-out;
   }
-  
+
   .btn-cartier {
     @apply bg-cartier-900 text-white font-medium px-6 py-3 rounded-lg 
            hover:bg-cartier-800 focus:ring-2 focus:ring-cartier-500 focus:ring-offset-2 
            transition-all duration-200 ease-in-out shadow-cartier-sm hover:shadow-cartier-md;
   }
-  
+
   .btn-cartier-subtle {
     @apply bg-white text-cartier-900 font-medium px-6 py-3 rounded-lg 
            border border-cartier-200 hover:bg-cartier-50 focus:ring-2 
            focus:ring-cartier-500 focus:ring-offset-2 transition-all duration-200 ease-in-out 
            shadow-cartier-sm hover:shadow-cartier-md;
   }
-  
+
   .card-cartier {
     @apply bg-white rounded-xl border border-cartier-200 shadow-cartier-sm 
            hover:shadow-cartier-md transition-all duration-200 ease-in-out 
            backdrop-blur-cartier;
   }
-  
+
   .input-cartier {
     @apply w-full px-4 py-3 border border-cartier-200 rounded-lg 
            focus:ring-2 focus:ring-cartier-500 focus:border-cartier-500 
            transition-all duration-200 ease-in-out;
   }
-  
+
   .modal-cartier {
     @apply bg-white rounded-2xl shadow-cartier-xl border border-cartier-100;
   }
-  
+
   .overlay-cartier {
     @apply bg-black bg-opacity-50 backdrop-blur-sm;
   }
@@ -314,54 +314,85 @@
   .text-gradient-cartier {
     @apply bg-gradient-to-r from-cartier-900 to-gold-600 bg-clip-text text-transparent;
   }
-  
+
   .text-gradient-gold {
     @apply bg-gradient-to-r from-gold-500 to-champagne-500 bg-clip-text text-transparent;
   }
-  
+
   /* Luxury backgrounds */
   .bg-gradient-cartier {
     @apply bg-gradient-to-br from-cartier-50 to-gold-50;
   }
-  
+
   .bg-gradient-gold {
     @apply bg-gradient-to-br from-gold-50 to-champagne-50;
   }
-  
+
   /* Luxury borders */
   .border-gradient-cartier {
     @apply border border-transparent bg-gradient-to-r from-cartier-200 to-gold-200 bg-clip-border;
   }
-  
+
   /* Luxury effects */
   .backdrop-blur-cartier {
     @apply backdrop-blur-md bg-white bg-opacity-80;
   }
-  
+
   .glass-cartier {
     @apply backdrop-blur-md bg-white bg-opacity-90 border border-white border-opacity-20;
   }
-  
+
   /* Luxury animations */
   .hover-lift {
     @apply hover:-translate-y-1 hover:shadow-cartier-lg transition-all duration-300 ease-out;
   }
-  
+
   .hover-glow {
     @apply hover:shadow-cartier-lg hover:shadow-gold-200/50 transition-all duration-300 ease-out;
   }
-  
+
   /* Luxury spacing */
   .section-cartier {
     @apply py-16 px-6 md:px-8 lg:px-12;
   }
-  
+
   .container-cartier {
     @apply max-w-7xl mx-auto;
   }
-  
+
   /* Luxury responsive */
   .responsive-cartier {
     @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 lg:gap-12;
+  }
+
+  /* Priority Classes */
+  .priority-critical {
+    @apply bg-red-50 border-red-500 text-red-900;
+  }
+
+  .priority-high {
+    @apply bg-orange-50 border-orange-500 text-orange-900;
+  }
+
+  .priority-medium {
+    @apply bg-yellow-50 border-yellow-500 text-yellow-900;
+  }
+
+  .priority-low {
+    @apply bg-gray-50 border-gray-300 text-gray-700;
+  }
+
+  /* Custom Typography */
+  .text-headline-cartier {
+    @apply text-3xl font-bold text-cartier-900 font-playfair;
+  }
+
+  /* Dashboard Components */
+  .strategic-digest-card {
+    @apply bg-white rounded-xl border border-cartier-200 shadow-cartier-sm p-6 hover:shadow-cartier-md transition-all duration-200;
+  }
+
+  .daily-brief-card {
+    @apply bg-gradient-to-r from-white to-cartier-50 rounded-xl border border-cartier-200 p-6 hover:shadow-cartier-md transition-all duration-200;
   }
 }

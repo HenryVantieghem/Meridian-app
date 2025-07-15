@@ -1,4 +1,4 @@
-import { Redis } from '@upstash/redis';
+import { Redis } from "@upstash/redis";
 
 // Initialize Redis client
 const redis = new Redis({
@@ -17,9 +17,10 @@ const CACHE_TTL = {
 
 // Cache keys
 const CACHE_KEYS = {
-  EMAILS: (userId: string, status?: string) => `emails:${userId}:${status || 'all'}`,
-  SLACK_MESSAGES: (workspaceId: string, channelId?: string) => 
-    `slack:${workspaceId}:${channelId || 'all'}`,
+  EMAILS: (userId: string, status?: string) =>
+    `emails:${userId}:${status || "all"}`,
+  SLACK_MESSAGES: (workspaceId: string, channelId?: string) =>
+    `slack:${workspaceId}:${channelId || "all"}`,
   AI_ANALYSIS: (emailId: string) => `ai:analysis:${emailId}`,
   USER_DATA: (userId: string) => `user:${userId}`,
   PERFORMANCE: (userId: string) => `performance:${userId}`,
@@ -32,7 +33,7 @@ export const cacheUtils = {
     try {
       await redis.setex(key, ttl, JSON.stringify(value));
     } catch (error) {
-      console.error('Cache set error:', error);
+      console.error("Cache set error:", error);
     }
   },
 
@@ -42,7 +43,7 @@ export const cacheUtils = {
       const value = await redis.get(key);
       return value ? JSON.parse(value as string) : null;
     } catch (error) {
-      console.error('Cache get error:', error);
+      console.error("Cache get error:", error);
       return null;
     }
   },
@@ -52,7 +53,7 @@ export const cacheUtils = {
     try {
       await redis.del(key);
     } catch (error) {
-      console.error('Cache delete error:', error);
+      console.error("Cache delete error:", error);
     }
   },
 
@@ -64,13 +65,15 @@ export const cacheUtils = {
         await redis.del(...keys);
       }
     } catch (error) {
-      console.error('Cache clear pattern error:', error);
+      console.error("Cache clear pattern error:", error);
     }
   },
 
   // Check if cache is available
   isAvailable(): boolean {
-    return !!(process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN);
+    return !!(
+      process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
+    );
   },
 };
 
@@ -163,7 +166,11 @@ export const performanceCache = {
 };
 
 // Cache middleware for API routes
-export const withCache = (handler: Function, cacheKey: string, ttl: number = 300) => {
+export const withCache = (
+  handler: Function,
+  cacheKey: string,
+  ttl: number = 300,
+) => {
   return async (req: any, res: any) => {
     if (!cacheUtils.isAvailable()) {
       return handler(req, res);
@@ -178,17 +185,17 @@ export const withCache = (handler: Function, cacheKey: string, ttl: number = 300
 
       // If not in cache, call handler and cache result
       const originalJson = res.json;
-      res.json = function(data: any) {
+      res.json = function (data: any) {
         cacheUtils.set(cacheKey, data, ttl);
         return originalJson.call(this, data);
       };
 
       return handler(req, res);
     } catch (error) {
-      console.error('Cache middleware error:', error);
+      console.error("Cache middleware error:", error);
       return handler(req, res);
     }
   };
 };
 
-export default cacheUtils; 
+export default cacheUtils;

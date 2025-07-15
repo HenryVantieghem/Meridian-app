@@ -8,17 +8,25 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-brand-burgundy text-white hover:bg-brand-burgundy/90 transition",
+        default:
+          "bg-brand-burgundy text-white hover:bg-brand-burgundy/90 transition",
         destructive: "bg-red-500 text-white hover:bg-red-600",
-        outline: "border border-brand-pearl bg-white hover:border-brand-burgundy hover:text-brand-burgundy hover:transform hover:translate-y-[-1px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.06)] text-black",
-        secondary: "bg-brand-cream text-black hover:bg-[rgba(128,27,43,0.1)] hover:text-brand-burgundy",
+        outline:
+          "border border-brand-pearl bg-white hover:border-brand-burgundy hover:text-brand-burgundy hover:transform hover:translate-y-[-1px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.06)] text-black",
+        secondary:
+          "bg-brand-cream text-black hover:bg-[rgba(128,27,43,0.1)] hover:text-brand-burgundy",
         ghost: "hover:bg-brand-cream text-black",
         link: "text-brand-burgundy underline-offset-4 hover:underline",
-        executive: "bg-brand-burgundy text-white font-medium text-base px-8 py-3 hover:bg-brand-burgundy/90 hover:transform hover:translate-y-[-1px] hover:shadow-[0_4px_16px_rgba(128,27,43,0.25)] active:transform active:translate-y-0 active:shadow-[0_2px_8px_rgba(128,27,43,0.2)] transition-all duration-200",
-        "executive-secondary": "bg-white text-black border border-brand-pearl font-medium text-base px-8 py-3 hover:border-brand-burgundy hover:text-brand-burgundy hover:transform hover:translate-y-[-1px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.06)] transition-all duration-200",
-        cartier: "bg-brand-burgundy text-white font-medium text-base px-8 py-3 hover:bg-brand-burgundy/90 hover:transform hover:translate-y-[-1px] hover:shadow-[0_4px_16px_rgba(128,27,43,0.25)] active:transform active:translate-y-0 active:shadow-[0_2px_8px_rgba(128,27,43,0.2)] transition-all duration-200 letter-spacing-[0.01em]",
-        "cartier-secondary": "bg-white text-black border border-brand-pearl font-medium text-base px-8 py-3 hover:border-brand-burgundy hover:text-brand-burgundy hover:transform hover:translate-y-[-1px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.06)] transition-all duration-200",
-        "cartier-subtle": "bg-brand-cream text-black font-medium text-base px-8 py-3 hover:bg-[rgba(128,27,43,0.1)] hover:text-brand-burgundy transition-all duration-200",
+        executive:
+          "bg-brand-burgundy text-white font-medium text-base px-8 py-3 hover:bg-brand-burgundy/90 hover:transform hover:translate-y-[-1px] hover:shadow-[0_4px_16px_rgba(128,27,43,0.25)] active:transform active:translate-y-0 active:shadow-[0_2px_8px_rgba(128,27,43,0.2)] transition-all duration-200",
+        "executive-secondary":
+          "bg-white text-black border border-brand-pearl font-medium text-base px-8 py-3 hover:border-brand-burgundy hover:text-brand-burgundy hover:transform hover:translate-y-[-1px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.06)] transition-all duration-200",
+        cartier:
+          "bg-brand-burgundy text-white font-medium text-base px-8 py-3 hover:bg-brand-burgundy/90 hover:transform hover:translate-y-[-1px] hover:shadow-[0_4px_16px_rgba(128,27,43,0.25)] active:transform active:translate-y-0 active:shadow-[0_2px_8px_rgba(128,27,43,0.2)] transition-all duration-200 letter-spacing-[0.01em]",
+        "cartier-secondary":
+          "bg-white text-black border border-brand-pearl font-medium text-base px-8 py-3 hover:border-brand-burgundy hover:text-brand-burgundy hover:transform hover:translate-y-[-1px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.06)] transition-all duration-200",
+        "cartier-subtle":
+          "bg-brand-cream text-black font-medium text-base px-8 py-3 hover:bg-[rgba(128,27,43,0.1)] hover:text-brand-burgundy transition-all duration-200",
       },
       size: {
         default: "h-10 px-4 py-2",
@@ -34,7 +42,7 @@ const buttonVariants = cva(
       variant: "default",
       size: "default",
     },
-  }
+  },
 );
 
 export interface ButtonProps
@@ -45,9 +53,21 @@ export interface ButtonProps
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, loading = false, disabled, children, ...props }, ref) => {
+  (
+    {
+      className,
+      variant,
+      size,
+      asChild = false,
+      loading = false,
+      disabled,
+      children,
+      ...props
+    },
+    ref,
+  ) => {
     const Comp = asChild ? Slot : "button";
-    
+
     return (
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
@@ -80,9 +100,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {children}
       </Comp>
     );
-  }
+  },
 );
 
 Button.displayName = "Button";
 
-export { Button, buttonVariants }; 
+export { Button, buttonVariants };

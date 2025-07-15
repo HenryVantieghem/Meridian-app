@@ -1,39 +1,39 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card } from '@/components/ui/card';
-import { Send, Sparkles, X } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card";
+import { Send, Sparkles, X } from "lucide-react";
 
 interface CommandBarProps {
   onCommand?: (command: string) => void;
   className?: string;
 }
 
-export function CommandBar({ onCommand, className = '' }: CommandBarProps) {
+export function CommandBar({ onCommand, className = "" }: CommandBarProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [command, setCommand] = useState('');
+  const [command, setCommand] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
 
   // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Cmd/Ctrl + K to open command bar
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
         e.preventDefault();
         setIsOpen(true);
       }
-      
+
       // Escape to close
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         setIsOpen(false);
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -41,29 +41,29 @@ export function CommandBar({ onCommand, className = '' }: CommandBarProps) {
     if (!command.trim()) return;
 
     setIsProcessing(true);
-    
+
     try {
       // Simulate AI processing
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       if (onCommand) {
         onCommand(command);
       }
-      
-      setCommand('');
+
+      setCommand("");
       setIsOpen(false);
     } catch (error) {
-      console.error('Command processing error:', error);
+      console.error("Command processing error:", error);
     } finally {
       setIsProcessing(false);
     }
   };
 
   const quickCommands = [
-    { label: 'Prioritize emails', command: 'Prioritize my inbox' },
-    { label: 'Generate reply', command: 'Draft a professional reply' },
-    { label: 'Schedule meeting', command: 'Find time for a meeting' },
-    { label: 'Summarize thread', command: 'Summarize this conversation' },
+    { label: "Prioritize emails", command: "Prioritize my inbox" },
+    { label: "Generate reply", command: "Draft a professional reply" },
+    { label: "Schedule meeting", command: "Find time for a meeting" },
+    { label: "Summarize thread", command: "Summarize this conversation" },
   ];
 
   return (
@@ -107,8 +107,12 @@ export function CommandBar({ onCommand, className = '' }: CommandBarProps) {
                       <Sparkles className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-cartier-900">Ask Napoleon</h3>
-                      <p className="text-sm text-cartier-600">AI-powered command center</p>
+                      <h3 className="font-semibold text-cartier-900">
+                        Ask Napoleon
+                      </h3>
+                      <p className="text-sm text-cartier-600">
+                        AI-powered command center
+                      </p>
                     </div>
                   </div>
                   <Button
@@ -123,7 +127,9 @@ export function CommandBar({ onCommand, className = '' }: CommandBarProps) {
 
                 {/* Quick Commands */}
                 <div className="space-y-2">
-                  <p className="text-sm font-medium text-cartier-700">Quick Commands</p>
+                  <p className="text-sm font-medium text-cartier-700">
+                    Quick Commands
+                  </p>
                   <div className="grid grid-cols-2 gap-2">
                     {quickCommands.map((quickCmd, index) => (
                       <motion.button
@@ -133,8 +139,12 @@ export function CommandBar({ onCommand, className = '' }: CommandBarProps) {
                         onClick={() => setCommand(quickCmd.command)}
                         className="p-3 text-left rounded-lg border border-cartier-200 hover:border-brand-burgundy hover:bg-brand-burgundy hover:bg-opacity-5 transition-all duration-200"
                       >
-                        <p className="text-sm font-medium text-cartier-900">{quickCmd.label}</p>
-                        <p className="text-xs text-cartier-600 truncate">{quickCmd.command}</p>
+                        <p className="text-sm font-medium text-cartier-900">
+                          {quickCmd.label}
+                        </p>
+                        <p className="text-xs text-cartier-600 truncate">
+                          {quickCmd.command}
+                        </p>
                       </motion.button>
                     ))}
                   </div>
@@ -163,7 +173,11 @@ export function CommandBar({ onCommand, className = '' }: CommandBarProps) {
                         {isProcessing ? (
                           <motion.div
                             animate={{ rotate: 360 }}
-                            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                            transition={{
+                              duration: 1,
+                              repeat: Infinity,
+                              ease: "linear",
+                            }}
                             className="w-4 h-4 border-2 border-white border-t-transparent rounded-full"
                           />
                         ) : (
@@ -176,8 +190,11 @@ export function CommandBar({ onCommand, className = '' }: CommandBarProps) {
 
                 {/* Tips */}
                 <div className="text-xs text-cartier-500 space-y-1">
-                                        <p>💡 Try: &quot;Summarize my unread emails&quot; or &quot;Find urgent messages&quot;</p>
-                      <p>⌨️ Use keyboard shortcuts: E=Done, R=Reply, S=Snooze</p>
+                  <p>
+                    💡 Try: &quot;Summarize my unread emails&quot; or &quot;Find
+                    urgent messages&quot;
+                  </p>
+                  <p>⌨️ Use keyboard shortcuts: E=Done, R=Reply, S=Snooze</p>
                 </div>
               </Card>
             </motion.div>
@@ -186,4 +203,4 @@ export function CommandBar({ onCommand, className = '' }: CommandBarProps) {
       </AnimatePresence>
     </>
   );
-} 
+}

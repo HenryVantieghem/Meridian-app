@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/nextjs';
+import * as Sentry from "@sentry/nextjs";
 
 // Initialize Sentry
 export function initializeSentry() {
@@ -9,8 +9,8 @@ export function initializeSentry() {
       profilesSampleRate: 0.1,
       replaysSessionSampleRate: 0.1,
       replaysOnErrorSampleRate: 1.0,
-      environment: process.env.NODE_ENV || 'development',
-      debug: process.env.NODE_ENV === 'development',
+      environment: process.env.NODE_ENV || "development",
+      debug: process.env.NODE_ENV === "development",
     });
   }
 }
@@ -25,7 +25,10 @@ export function captureError(error: Error, context?: Record<string, unknown>) {
 }
 
 // Capture messages
-export function captureMessage(message: string, level: Sentry.SeverityLevel = 'info') {
+export function captureMessage(
+  message: string,
+  level: Sentry.SeverityLevel = "info",
+) {
   if (process.env.SENTRY_DSN) {
     Sentry.captureMessage(message, {
       level,
@@ -58,4 +61,4 @@ export function setExtra(key: string, value: unknown) {
 }
 
 // Initialize on module load
-initializeSentry(); 
+initializeSentry();

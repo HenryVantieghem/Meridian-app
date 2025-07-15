@@ -1,22 +1,24 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { auth, currentUser } from '@clerk/nextjs/server';
-import { 
-  stripe, 
-  createOrRetrieveCustomer, 
-  PRICES, 
+import { NextRequest, NextResponse } from "next/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
+import {
+  stripe,
+  createOrRetrieveCustomer,
+  PRICES,
   PRODUCTS,
   STRIPE_PRICE_PRO,
   STRIPE_PRICE_ENTERPRISE,
-  StripeError 
-} from '@/lib/stripe/config';
-import { z } from 'zod';
+  StripeError,
+} from "@/lib/stripe/config";
+import { z } from "zod";
 
 // Validation schemas
 const checkoutSchema = z.object({
-  priceId: z.string().refine(
-    (id) => Object.values(PRICES).some(price => price.id === id),
-    'Invalid price ID'
-  ),
+  priceId: z
+    .string()
+    .refine(
+      (id) => Object.values(PRICES).some((price) => price.id === id),
+      "Invalid price ID",
+    ),
   successUrl: z.string().url().optional(),
   cancelUrl: z.string().url().optional(),
   metadata: z.record(z.string()).optional(),
@@ -36,47 +38,43 @@ export async function POST(request: NextRequest) {
     // Authenticate user
     const { userId } = await auth();
     const user = await currentUser();
-    
+
     if (!userId || !user) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     // Parse and validate request body
     const body = await request.json();
     const validatedData = checkoutSchema.parse(body);
-    
+
     const { priceId, successUrl, cancelUrl, metadata } = validatedData;
 
     // Get price details
-    const price = Object.values(PRICES).find(p => p.id === priceId);
+    const price = Object.values(PRICES).find((p) => p.id === priceId);
     if (!price) {
-      return NextResponse.json(
-        { error: 'Invalid price ID' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Invalid price ID" }, { status: 400 });
     }
 
     // Get product details
-    const product = Object.values(PRODUCTS).find(p => p.id === price.productId);
+    const product = Object.values(PRODUCTS).find(
+      (p) => p.id === price.productId,
+    );
     if (!product) {
       return NextResponse.json(
-        { error: 'Invalid product ID' },
-        { status: 400 }
+        { error: "Invalid product ID" },
+        { status: 400 },
       );
     }
 
     // Create or retrieve customer
     const customer = await createOrRetrieveCustomer(
       userId,
-      user.emailAddresses[0]?.emailAddress || '',
-      `${user.firstName || ''} ${user.lastName || ''}`.trim() || undefined
+      user.emailAddresses[0]?.emailAddress || "",
+      `${user.firstName || ""} ${user.lastName || ""}`.trim() || undefined,
     );
 
     // Build success and cancel URLs
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
     const defaultSuccessUrl = `${baseUrl}/dashboard?session_id={CHECKOUT_SESSION_ID}`;
     const defaultCancelUrl = `${baseUrl}/pricing?canceled=true`;
 
@@ -98,27 +96,26 @@ export async function POST(request: NextRequest) {
       sessionId: session.id,
       url: session.url,
     });
-
   } catch (error) {
-    console.error('Checkout error:', error);
-    
+    console.error("Checkout error:", error);
+
     if (error instanceof StripeError) {
       return NextResponse.json(
         { error: error.message },
-        { status: error.statusCode }
+        { status: error.statusCode },
       );
     }
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid request data', details: error.errors },
-        { status: 400 }
+        { error: "Invalid request data", details: error.errors },
+        { status: 400 },
       );
     }
 
     return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
+      { error: "Internal server error" },
+      { status: 500 },
     );
   }
 }
@@ -137,20 +134,22 @@ async function createCheckoutSession({
   metadata?: Record<string, string>;
 }) {
   // Map price IDs to actual Stripe price IDs
-  const stripePriceId = priceId === 'price_pro_monthly' || priceId === 'price_pro_yearly' 
-    ? STRIPE_PRICE_PRO 
-    : priceId === 'price_enterprise_monthly' || priceId === 'price_enterprise_yearly'
-    ? STRIPE_PRICE_ENTERPRISE
-    : priceId;
+  const stripePriceId =
+    priceId === "price_pro_monthly" || priceId === "price_pro_yearly"
+      ? STRIPE_PRICE_PRO
+      : priceId === "price_enterprise_monthly" ||
+          priceId === "price_enterprise_yearly"
+        ? STRIPE_PRICE_ENTERPRISE
+        : priceId;
 
-  const price = Object.values(PRICES).find(p => p.id === priceId);
+  const price = Object.values(PRICES).find((p) => p.id === priceId);
   if (!price) {
-    throw new StripeError('Invalid price ID', 'invalid_price', 400);
+    throw new StripeError("Invalid price ID", "invalid_price", 400);
   }
 
-  const product = Object.values(PRODUCTS).find(p => p.id === price.productId);
+  const product = Object.values(PRODUCTS).find((p) => p.id === price.productId);
   if (!product) {
-    throw new StripeError('Invalid product ID', 'invalid_product', 400);
+    throw new StripeError("Invalid product ID", "invalid_product", 400);
   }
 
   // Build line items
@@ -173,30 +172,30 @@ async function createCheckoutSession({
   };
 
   // Add billing cycle anchor for yearly plans
-  if (price.interval === 'year') {
+  if (price.interval === "year") {
     subscriptionData.billing_cycle_anchor = Math.floor(Date.now() / 1000);
   }
 
   // Add default payment method to subscriptionData
-  subscriptionData.default_payment_method = 'pm_card_visa';
+  subscriptionData.default_payment_method = "pm_card_visa";
 
   // Create checkout session
   const session = await stripe.checkout.sessions.create({
     customer: customerId,
-    payment_method_types: ['card'],
+    payment_method_types: ["card"],
     line_items: lineItems,
-    mode: 'subscription',
+    mode: "subscription",
     success_url: successUrl,
     cancel_url: cancelUrl,
     subscription_data: subscriptionData,
     allow_promotion_codes: true,
-    billing_address_collection: 'required',
+    billing_address_collection: "required",
     customer_update: {
-      address: 'auto',
-      name: 'auto',
+      address: "auto",
+      name: "auto",
     },
     metadata: {
-      userId: metadata?.userId || '',
+      userId: metadata?.userId || "",
       productId: product.id,
       productName: product.name,
       priceId,
@@ -207,12 +206,12 @@ async function createCheckoutSession({
     // Custom fields for better UX
     custom_fields: [
       {
-        key: 'company',
+        key: "company",
         label: {
-          type: 'custom',
-          custom: 'Company (Optional)',
+          type: "custom",
+          custom: "Company (Optional)",
         },
-        type: 'text',
+        type: "text",
         optional: true,
       },
     ],
@@ -225,35 +224,29 @@ async function createCheckoutSession({
 export async function GET(request: NextRequest) {
   try {
     const { userId } = await auth();
-    
+
     if (!userId) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const { searchParams } = new URL(request.url);
-    const sessionId = searchParams.get('session_id');
+    const sessionId = searchParams.get("session_id");
 
     if (!sessionId) {
       return NextResponse.json(
-        { error: 'Session ID required' },
-        { status: 400 }
+        { error: "Session ID required" },
+        { status: 400 },
       );
     }
 
     // Retrieve session
     const session = await stripe.checkout.sessions.retrieve(sessionId, {
-      expand: ['subscription', 'customer'],
+      expand: ["subscription", "customer"],
     });
 
     // Verify session belongs to user
     if (session.metadata?.userId !== userId) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     return NextResponse.json({
@@ -266,20 +259,19 @@ export async function GET(request: NextRequest) {
         metadata: session.metadata,
       },
     });
-
   } catch (error) {
-    console.error('Session retrieval error:', error);
-    
+    console.error("Session retrieval error:", error);
+
     if (error instanceof StripeError) {
       return NextResponse.json(
         { error: error.message },
-        { status: error.statusCode }
+        { status: error.statusCode },
       );
     }
 
     return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
+      { error: "Internal server error" },
+      { status: 500 },
     );
   }
-} 
+}

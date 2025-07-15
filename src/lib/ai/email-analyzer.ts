@@ -1,5 +1,5 @@
-import { openai } from './openai-client';
-import { EmailMessage } from '../email/fetcher';
+import { openai } from "./openai-client";
+import { EmailMessage } from "../email/fetcher";
 
 export interface EmailAnalysis {
   id: string;
@@ -22,19 +22,19 @@ export interface EmailAnalysis {
 }
 
 export interface PriorityLevel {
-  level: 'critical' | 'high' | 'medium' | 'low';
+  level: "critical" | "high" | "medium" | "low";
   score: number;
   reasoning: string;
 }
 
 export interface SentimentType {
-  type: 'positive' | 'negative' | 'neutral' | 'mixed';
+  type: "positive" | "negative" | "neutral" | "mixed";
   score: number;
   reasoning: string;
 }
 
 export interface UrgencyLevel {
-  level: 'immediate' | 'today' | 'this_week' | 'when_convenient';
+  level: "immediate" | "today" | "this_week" | "when_convenient";
   score: number;
   reasoning: string;
 }
@@ -61,10 +61,10 @@ export class EmailAnalysisError extends Error {
   constructor(
     message: string,
     public errorCode: string,
-    public retryable: boolean = false
+    public retryable: boolean = false,
   ) {
     super(message);
-    this.name = 'EmailAnalysisError';
+    this.name = "EmailAnalysisError";
   }
 }
 
@@ -78,43 +78,50 @@ export class EmailAnalyzer {
    */
   async analyzeEmail(request: AnalysisRequest): Promise<AnalysisResponse> {
     const startTime = Date.now();
-    
+
     try {
       // Check rate limits
       await this.checkRateLimit(request.email.id);
 
       // Prepare the analysis prompt
       const prompt = this.buildAnalysisPrompt(request);
-      
+
       // Call OpenAI API
       const response = await openai.chat.completions.create({
-        model: 'gpt-4o',
+        model: "gpt-4o",
         messages: [
           {
-            role: 'system',
-            content: this.getSystemPrompt()
+            role: "system",
+            content: this.getSystemPrompt(),
           },
           {
-            role: 'user',
-            content: prompt
-          }
+            role: "user",
+            content: prompt,
+          },
         ],
         temperature: 0.3,
         max_tokens: 2000,
-        response_format: { type: 'json_object' }
+        response_format: { type: "json_object" },
       });
 
       const content = response.choices[0]?.message?.content;
       if (!content) {
-        throw new EmailAnalysisError('No response from OpenAI', 'NO_RESPONSE', true);
+        throw new EmailAnalysisError(
+          "No response from OpenAI",
+          "NO_RESPONSE",
+          true,
+        );
       }
 
       // Parse the JSON response
       const analysisData = JSON.parse(content);
-      
+
       // Validate and enhance the analysis
-      const analysis = this.validateAndEnhanceAnalysis(analysisData, request.email);
-      
+      const analysis = this.validateAndEnhanceAnalysis(
+        analysisData,
+        request.email,
+      );
+
       // Calculate processing time
       const processingTime = Date.now() - startTime;
 
@@ -122,20 +129,19 @@ export class EmailAnalyzer {
         analysis: {
           ...analysis,
           processingTime,
-          modelUsed: 'gpt-4o',
-          timestamp: new Date()
+          modelUsed: "gpt-4o",
+          timestamp: new Date(),
         },
         success: true,
-        retryable: true
+        retryable: true,
       };
-
     } catch (error: unknown) {
       const isRetryable = this.isRetryableError(error as Error);
       return {
         analysis: this.createFallbackAnalysis(request.email),
         success: false,
         error: (error as Error).message,
-        retryable: isRetryable
+        retryable: isRetryable,
       };
     }
   }
@@ -150,19 +156,19 @@ export class EmailAnalyzer {
     for (let i = 0; i < requests.length; i += batchSize) {
       const batch = requests.slice(i, i + batchSize);
       const batchResults = await Promise.allSettled(
-        batch.map(request => this.analyzeEmail(request))
+        batch.map((request) => this.analyzeEmail(request)),
       );
 
       batchResults.forEach((result, index) => {
-        if (result.status === 'fulfilled') {
+        if (result.status === "fulfilled") {
           results.push(result.value);
         } else {
           const request = batch[index];
           results.push({
             analysis: this.createFallbackAnalysis(request.email),
             success: false,
-            error: (result.reason as Error)?.message || 'Unknown error',
-            retryable: true
+            error: (result.reason as Error)?.message || "Unknown error",
+            retryable: true,
           });
         }
       });
@@ -186,23 +192,24 @@ export class EmailAnalyzer {
   }> {
     try {
       const response = await openai.chat.completions.create({
-        model: 'gpt-4o',
+        model: "gpt-4o",
         messages: [
           {
-            role: 'system',
-            content: 'You are an expert email summarizer. Create concise, actionable summaries that capture the key points and required actions.'
+            role: "system",
+            content:
+              "You are an expert email summarizer. Create concise, actionable summaries that capture the key points and required actions.",
           },
           {
-            role: 'user',
-            content: `Summarize this email in 2-3 sentences:\n\nSubject: ${email.subject}\nFrom: ${email.fromName} (${email.from})\n\n${email.bodyPlain}`
-          }
+            role: "user",
+            content: `Summarize this email in 2-3 sentences:\n\nSubject: ${email.subject}\nFrom: ${email.fromName} (${email.from})\n\n${email.bodyPlain}`,
+          },
         ],
         temperature: 0.2,
-        max_tokens: 300
+        max_tokens: 300,
       });
 
-      const summary = response.choices[0]?.message?.content || '';
-      
+      const summary = response.choices[0]?.message?.content || "";
+
       // Calculate confidence based on content length and clarity
       const confidence = this.calculateSummaryConfidence(email, summary);
 
@@ -212,14 +219,13 @@ export class EmailAnalyzer {
       return {
         summary,
         confidence,
-        keyPoints
+        keyPoints,
       };
-
     } catch (error: unknown) {
       return {
         summary: this.createBasicSummary(email),
         confidence: 0.5,
-        keyPoints: []
+        keyPoints: [],
       };
     }
   }
@@ -247,12 +253,13 @@ export class EmailAnalyzer {
     }
 
     // Sentiment factor (negative emails might be more urgent)
-    if (analysis.sentiment.type === 'negative') {
+    if (analysis.sentiment.type === "negative") {
       score += 0.1;
     }
 
     // Time sensitivity (recent emails get higher priority)
-    const hoursSinceReceived = (Date.now() - email.receivedAt.getTime()) / (1000 * 60 * 60);
+    const hoursSinceReceived =
+      (Date.now() - email.receivedAt.getTime()) / (1000 * 60 * 60);
     if (hoursSinceReceived < 1) score += 0.1;
     else if (hoursSinceReceived < 24) score += 0.05;
 
@@ -262,7 +269,9 @@ export class EmailAnalyzer {
   /**
    * Identify VIP contacts based on email patterns
    */
-  async identifyVIPContacts(emails: EmailMessage[]): Promise<Map<string, number>> {
+  async identifyVIPContacts(
+    emails: EmailMessage[],
+  ): Promise<Map<string, number>> {
     const contactScores = new Map<string, number>();
 
     for (const email of emails) {
@@ -280,12 +289,16 @@ export class EmailAnalyzer {
 
       // Subject line indicators
       const subject = email.subject.toLowerCase();
-      if (subject.includes('urgent') || subject.includes('important') || subject.includes('meeting')) {
+      if (
+        subject.includes("urgent") ||
+        subject.includes("important") ||
+        subject.includes("meeting")
+      ) {
         score += 0.1;
       }
 
       // Domain-based scoring (executive domains, company domains)
-      const domain = sender.split('@')[1];
+      const domain = sender.split("@")[1];
       if (domain && this.isExecutiveDomain(domain)) {
         score += 0.2;
       }
@@ -301,7 +314,7 @@ export class EmailAnalyzer {
    */
   private buildAnalysisPrompt(request: AnalysisRequest): string {
     const { email, userContext } = request;
-    
+
     return `Analyze this email and provide a comprehensive analysis in JSON format:
 
 Email Details:
@@ -311,9 +324,9 @@ Email Details:
 - Body: ${email.bodyPlain.substring(0, 2000)}
 
 User Context:
-- Role: ${userContext?.role || 'Professional'}
-- Industry: ${userContext?.industry || 'General'}
-- VIP Contacts: ${userContext?.vipContacts?.join(', ') || 'None'}
+- Role: ${userContext?.role || "Professional"}
+- Industry: ${userContext?.industry || "General"}
+- VIP Contacts: ${userContext?.vipContacts?.join(", ") || "None"}
 
 Please provide analysis in this exact JSON format:
 {
@@ -361,38 +374,106 @@ Always respond with valid JSON matching the exact format requested.`;
   /**
    * Validate and enhance AI analysis
    */
-  private validateAndEnhanceAnalysis(data: unknown, email: EmailMessage): EmailAnalysis {
+  private validateAndEnhanceAnalysis(
+    data: unknown,
+    email: EmailMessage,
+  ): EmailAnalysis {
     // Validate required fields
     const analysis: EmailAnalysis = {
       id: email.id,
-      summary: (data as { summary?: string }).summary || this.createBasicSummary(email),
+      summary:
+        (data as { summary?: string }).summary ||
+        this.createBasicSummary(email),
       priority: {
-        level: this.validatePriorityLevel((data as { priority?: { level?: unknown } }).priority?.level),
-        score: Math.max(0, Math.min(1, (data as { priority?: { score?: number } }).priority?.score || 0.5)),
-        reasoning: (data as { priority?: { reasoning?: string } }).priority?.reasoning || 'No reasoning provided'
+        level: this.validatePriorityLevel(
+          (data as { priority?: { level?: unknown } }).priority?.level,
+        ),
+        score: Math.max(
+          0,
+          Math.min(
+            1,
+            (data as { priority?: { score?: number } }).priority?.score || 0.5,
+          ),
+        ),
+        reasoning:
+          (data as { priority?: { reasoning?: string } }).priority?.reasoning ||
+          "No reasoning provided",
       },
-      priorityScore: Math.max(0, Math.min(1, (data as { priority?: { score?: number } }).priority?.score ?? 0.5)),
+      priorityScore: Math.max(
+        0,
+        Math.min(
+          1,
+          (data as { priority?: { score?: number } }).priority?.score ?? 0.5,
+        ),
+      ),
       sentiment: {
-        type: this.validateSentimentType((data as { sentiment?: { type?: unknown } }).sentiment?.type),
-        score: Math.max(0, Math.min(1, (data as { sentiment?: { score?: number } }).sentiment?.score || 0.5)),
-        reasoning: (data as { sentiment?: { reasoning?: string } }).sentiment?.reasoning || 'No reasoning provided'
+        type: this.validateSentimentType(
+          (data as { sentiment?: { type?: unknown } }).sentiment?.type,
+        ),
+        score: Math.max(
+          0,
+          Math.min(
+            1,
+            (data as { sentiment?: { score?: number } }).sentiment?.score ||
+              0.5,
+          ),
+        ),
+        reasoning:
+          (data as { sentiment?: { reasoning?: string } }).sentiment
+            ?.reasoning || "No reasoning provided",
       },
-      sentimentScore: Math.max(0, Math.min(1, (data as { sentiment?: { score?: number } }).sentiment?.score ?? 0.5)),
+      sentimentScore: Math.max(
+        0,
+        Math.min(
+          1,
+          (data as { sentiment?: { score?: number } }).sentiment?.score ?? 0.5,
+        ),
+      ),
       urgency: {
-        level: this.validateUrgencyLevel((data as { urgency?: { level?: unknown } }).urgency?.level),
-        score: Math.max(0, Math.min(1, (data as { urgency?: { score?: number } }).urgency?.score || 0.5)),
-        reasoning: (data as { urgency?: { reasoning?: string } }).urgency?.reasoning || 'No reasoning provided'
+        level: this.validateUrgencyLevel(
+          (data as { urgency?: { level?: unknown } }).urgency?.level,
+        ),
+        score: Math.max(
+          0,
+          Math.min(
+            1,
+            (data as { urgency?: { score?: number } }).urgency?.score || 0.5,
+          ),
+        ),
+        reasoning:
+          (data as { urgency?: { reasoning?: string } }).urgency?.reasoning ||
+          "No reasoning provided",
       },
-      urgencyScore: Math.max(0, Math.min(1, (data as { urgency?: { score?: number } }).urgency?.score ?? 0.5)),
-      actionRequired: Boolean((data as { actionRequired?: boolean }).actionRequired),
-      suggestedActions: Array.isArray((data as { suggestedActions?: unknown[] }).suggestedActions) ? (data as { suggestedActions: string[] }).suggestedActions : [],
-      keyTopics: Array.isArray((data as { keyTopics?: unknown[] }).keyTopics) ? (data as { keyTopics: string[] }).keyTopics : [],
+      urgencyScore: Math.max(
+        0,
+        Math.min(
+          1,
+          (data as { urgency?: { score?: number } }).urgency?.score ?? 0.5,
+        ),
+      ),
+      actionRequired: Boolean(
+        (data as { actionRequired?: boolean }).actionRequired,
+      ),
+      suggestedActions: Array.isArray(
+        (data as { suggestedActions?: unknown[] }).suggestedActions,
+      )
+        ? (data as { suggestedActions: string[] }).suggestedActions
+        : [],
+      keyTopics: Array.isArray((data as { keyTopics?: unknown[] }).keyTopics)
+        ? (data as { keyTopics: string[] }).keyTopics
+        : [],
       vipContact: Boolean((data as { vipContact?: boolean }).vipContact),
-      vipScore: Math.max(0, Math.min(1, (data as { vipScore?: number }).vipScore || 0)),
-      confidence: Math.max(0, Math.min(1, (data as { confidence?: number }).confidence || 0.7)),
+      vipScore: Math.max(
+        0,
+        Math.min(1, (data as { vipScore?: number }).vipScore || 0),
+      ),
+      confidence: Math.max(
+        0,
+        Math.min(1, (data as { confidence?: number }).confidence || 0.7),
+      ),
       processingTime: 0,
-      modelUsed: 'gpt-4o',
-      timestamp: new Date()
+      modelUsed: "gpt-4o",
+      timestamp: new Date(),
     };
 
     return analysis;
@@ -406,21 +487,21 @@ Always respond with valid JSON matching the exact format requested.`;
       id: email.id,
       summary: this.createBasicSummary(email),
       priority: {
-        level: 'medium',
+        level: "medium",
         score: 0.5,
-        reasoning: 'Fallback analysis - unable to determine priority'
+        reasoning: "Fallback analysis - unable to determine priority",
       },
       priorityScore: 0.5,
       sentiment: {
-        type: 'neutral',
+        type: "neutral",
         score: 0.5,
-        reasoning: 'Fallback analysis - unable to determine sentiment'
+        reasoning: "Fallback analysis - unable to determine sentiment",
       },
       sentimentScore: 0.5,
       urgency: {
-        level: 'when_convenient',
+        level: "when_convenient",
         score: 0.5,
-        reasoning: 'Fallback analysis - unable to determine urgency'
+        reasoning: "Fallback analysis - unable to determine urgency",
       },
       urgencyScore: 0.5,
       actionRequired: false,
@@ -430,8 +511,8 @@ Always respond with valid JSON matching the exact format requested.`;
       vipScore: 0,
       confidence: 0.3,
       processingTime: 0,
-      modelUsed: 'fallback',
-      timestamp: new Date()
+      modelUsed: "fallback",
+      timestamp: new Date(),
     };
   }
 
@@ -439,8 +520,8 @@ Always respond with valid JSON matching the exact format requested.`;
    * Create basic summary when AI analysis fails
    */
   private createBasicSummary(email: EmailMessage): string {
-    const words = email.bodyPlain.split(' ').slice(0, 20);
-    return `Email from ${email.fromName} regarding "${email.subject}". ${words.join(' ')}...`;
+    const words = email.bodyPlain.split(" ").slice(0, 20);
+    return `Email from ${email.fromName} regarding "${email.subject}". ${words.join(" ")}...`;
   }
 
   /**
@@ -449,20 +530,21 @@ Always respond with valid JSON matching the exact format requested.`;
   private async extractKeyPoints(email: EmailMessage): Promise<string[]> {
     try {
       const response = await openai.chat.completions.create({
-        model: 'gpt-4o',
+        model: "gpt-4o",
         messages: [
           {
-            role: 'system',
-            content: 'Extract 3-5 key points from this email as a JSON array of strings.'
+            role: "system",
+            content:
+              "Extract 3-5 key points from this email as a JSON array of strings.",
           },
           {
-            role: 'user',
-            content: `Subject: ${email.subject}\n\n${email.bodyPlain}`
-          }
+            role: "user",
+            content: `Subject: ${email.subject}\n\n${email.bodyPlain}`,
+          },
         ],
         temperature: 0.2,
         max_tokens: 200,
-        response_format: { type: 'json_object' }
+        response_format: { type: "json_object" },
       });
 
       const content = response.choices[0]?.message?.content;
@@ -471,7 +553,7 @@ Always respond with valid JSON matching the exact format requested.`;
         return Array.isArray(data.keyPoints) ? data.keyPoints : [];
       }
     } catch (error: unknown) {
-      console.error('Error extracting key points:', error);
+      console.error("Error extracting key points:", error);
     }
 
     return [];
@@ -480,7 +562,10 @@ Always respond with valid JSON matching the exact format requested.`;
   /**
    * Calculate summary confidence
    */
-  private calculateSummaryConfidence(email: EmailMessage, summary: string): number {
+  private calculateSummaryConfidence(
+    email: EmailMessage,
+    summary: string,
+  ): number {
     let confidence = 0.7; // Base confidence
 
     // Factor in email length
@@ -489,7 +574,8 @@ Always respond with valid JSON matching the exact format requested.`;
 
     // Factor in summary quality
     if (summary.length > 50 && summary.length < 200) confidence += 0.1;
-    if (summary.includes('urgent') || summary.includes('important')) confidence += 0.05;
+    if (summary.includes("urgent") || summary.includes("important"))
+      confidence += 0.05;
 
     // Factor in subject clarity
     if (email.subject.length > 10) confidence += 0.05;
@@ -503,7 +589,7 @@ Always respond with valid JSON matching the exact format requested.`;
   private async checkRateLimit(emailId: string): Promise<void> {
     const now = Date.now();
     const windowStart = now - this.RATE_LIMIT_WINDOW;
-    
+
     // Clean old entries
     for (const [key, timestamp] of this.rateLimiter.entries()) {
       if (timestamp < windowStart) {
@@ -512,14 +598,15 @@ Always respond with valid JSON matching the exact format requested.`;
     }
 
     // Check current rate
-    const currentRequests = Array.from(this.rateLimiter.values())
-      .filter(timestamp => timestamp > windowStart).length;
+    const currentRequests = Array.from(this.rateLimiter.values()).filter(
+      (timestamp) => timestamp > windowStart,
+    ).length;
 
     if (currentRequests >= this.MAX_REQUESTS_PER_MINUTE) {
       throw new EmailAnalysisError(
-        'Rate limit exceeded',
-        'RATE_LIMIT_EXCEEDED',
-        true
+        "Rate limit exceeded",
+        "RATE_LIMIT_EXCEEDED",
+        true,
       );
     }
 
@@ -531,47 +618,71 @@ Always respond with valid JSON matching the exact format requested.`;
    */
   private isRetryableError(error: Error): boolean {
     const retryableCodes = [
-      'rate_limit_exceeded',
-      'quota_exceeded',
-      'internal_error',
-      'timeout',
-      'network_error'
+      "rate_limit_exceeded",
+      "quota_exceeded",
+      "internal_error",
+      "timeout",
+      "network_error",
     ];
 
-    return retryableCodes.includes(error.message) || 
-           error.message?.includes('timeout');
+    return (
+      retryableCodes.includes(error.message) ||
+      error.message?.includes("timeout")
+    );
   }
 
   /**
    * Validation helpers
    */
-  private validatePriorityLevel(level: unknown): 'critical' | 'high' | 'medium' | 'low' {
-    const validLevels = ['critical', 'high', 'medium', 'low'];
-    return validLevels.includes(level as string) ? level as 'critical' | 'high' | 'medium' | 'low' : 'medium';
+  private validatePriorityLevel(
+    level: unknown,
+  ): "critical" | "high" | "medium" | "low" {
+    const validLevels = ["critical", "high", "medium", "low"];
+    return validLevels.includes(level as string)
+      ? (level as "critical" | "high" | "medium" | "low")
+      : "medium";
   }
 
-  private validateSentimentType(type: unknown): 'positive' | 'negative' | 'neutral' | 'mixed' {
-    const validTypes = ['positive', 'negative', 'neutral', 'mixed'];
-    return validTypes.includes(type as string) ? type as 'positive' | 'negative' | 'neutral' | 'mixed' : 'neutral';
+  private validateSentimentType(
+    type: unknown,
+  ): "positive" | "negative" | "neutral" | "mixed" {
+    const validTypes = ["positive", "negative", "neutral", "mixed"];
+    return validTypes.includes(type as string)
+      ? (type as "positive" | "negative" | "neutral" | "mixed")
+      : "neutral";
   }
 
-  private validateUrgencyLevel(level: unknown): 'immediate' | 'today' | 'this_week' | 'when_convenient' {
-    const validLevels = ['immediate', 'today', 'this_week', 'when_convenient'];
-    return validLevels.includes(level as string) ? level as 'immediate' | 'today' | 'this_week' | 'when_convenient' : 'when_convenient';
+  private validateUrgencyLevel(
+    level: unknown,
+  ): "immediate" | "today" | "this_week" | "when_convenient" {
+    const validLevels = ["immediate", "today", "this_week", "when_convenient"];
+    return validLevels.includes(level as string)
+      ? (level as "immediate" | "today" | "this_week" | "when_convenient")
+      : "when_convenient";
   }
 
   /**
    * Check if domain is executive-level
    */
   private isExecutiveDomain(domain: string): boolean {
-    const executiveKeywords = ['ceo', 'cfo', 'cto', 'president', 'vp', 'director', 'executive'];
-    return executiveKeywords.some(keyword => domain.toLowerCase().includes(keyword));
+    const executiveKeywords = [
+      "ceo",
+      "cfo",
+      "cto",
+      "president",
+      "vp",
+      "director",
+      "executive",
+    ];
+    return executiveKeywords.some((keyword) =>
+      domain.toLowerCase().includes(keyword),
+    );
   }
 
   /**
    * Utility delay function
    */
   private delay(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
-} 
+}

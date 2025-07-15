@@ -1,12 +1,23 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Typography } from '@/components/ui/typography';
-import { Badge } from '@/components/ui/badge';
-import { Clock, Calendar, Sun, Moon, Coffee, Briefcase, Home, Star, Filter, SortDesc } from 'lucide-react';
-import { Email, SlackMessage } from '@/types';
+import { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Typography } from "@/components/ui/typography";
+import { Badge } from "@/components/ui/badge";
+import {
+  Clock,
+  Calendar,
+  Sun,
+  Moon,
+  Coffee,
+  Briefcase,
+  Home,
+  Star,
+  Filter,
+  SortDesc,
+} from "lucide-react";
+import { Email, SlackMessage } from "@/types";
 
 interface ScheduleAwareInboxProps {
   emails: Email[];
@@ -33,33 +44,38 @@ interface BehaviorFilter {
   active: boolean;
 }
 
-export default function ScheduleAwareInbox({ emails, messages, onItemClick, className = '' }: ScheduleAwareInboxProps) {
+export default function ScheduleAwareInbox({
+  emails,
+  messages,
+  onItemClick,
+  className = "",
+}: ScheduleAwareInboxProps) {
   const [timeGroups, setTimeGroups] = useState<TimeGroup[]>([]);
-  const [selectedGroup, setSelectedGroup] = useState<string>('all');
+  const [selectedGroup, setSelectedGroup] = useState<string>("all");
   const [behaviorFilters, setBehaviorFilters] = useState<BehaviorFilter[]>([
     {
-      id: 'vip',
-      label: 'VIP Only',
-      description: 'Show only VIP communications',
+      id: "vip",
+      label: "VIP Only",
+      description: "Show only VIP communications",
       icon: <Star className="w-4 h-4" />,
-      active: false
+      active: false,
     },
     {
-      id: 'urgent',
-      label: 'Urgent',
-      description: 'Time-sensitive items',
+      id: "urgent",
+      label: "Urgent",
+      description: "Time-sensitive items",
       icon: <Clock className="w-4 h-4" />,
-      active: false
+      active: false,
     },
     {
-      id: 'unread',
-      label: 'Unread',
-      description: 'Unread items only',
+      id: "unread",
+      label: "Unread",
+      description: "Unread items only",
       icon: <Filter className="w-4 h-4" />,
-      active: true
-    }
+      active: true,
+    },
   ]);
-  const [sortBy, setSortBy] = useState<'time' | 'priority' | 'sender'>('time');
+  const [sortBy, setSortBy] = useState<"time" | "priority" | "sender">("time");
 
   useEffect(() => {
     organizeByTimeGroups();
@@ -72,186 +88,219 @@ export default function ScheduleAwareInbox({ emails, messages, onItemClick, clas
     const thisWeek = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
 
     // Combine and filter items
-    const allItems = [...emails, ...messages].filter(item => {
-      const matchesFilters = behaviorFilters.every(filter => {
+    const allItems = [...emails, ...messages].filter((item) => {
+      const matchesFilters = behaviorFilters.every((filter) => {
         if (!filter.active) return true;
-        
+
         switch (filter.id) {
-          case 'vip':
+          case "vip":
             return isVIPItem(item);
-          case 'urgent':
+          case "urgent":
             return isUrgentItem(item);
-          case 'unread':
+          case "unread":
             return !item.read;
           default:
             return true;
         }
       });
-      
+
       return matchesFilters;
     });
 
     // Sort items
     const sortedItems = [...allItems].sort((a, b) => {
       switch (sortBy) {
-        case 'priority':
+        case "priority":
           return getPriorityWeight(b.priority) - getPriorityWeight(a.priority);
-        case 'sender':
-          const senderA = (a as Email).from || (a as SlackMessage).user || '';
-          const senderB = (b as Email).from || (b as SlackMessage).user || '';
+        case "sender":
+          const senderA = (a as Email).from || (a as SlackMessage).user || "";
+          const senderB = (b as Email).from || (b as SlackMessage).user || "";
           return senderA.localeCompare(senderB);
-        case 'time':
+        case "time":
         default:
-          return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
+          return (
+            new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+          );
       }
     });
 
     // Group by time periods
     const groups: TimeGroup[] = [
       {
-        id: 'morning',
-        label: 'Morning Focus',
+        id: "morning",
+        label: "Morning Focus",
         icon: <Sun className="w-4 h-4" />,
-        period: '6:00 AM - 12:00 PM',
+        period: "6:00 AM - 12:00 PM",
         items: [],
-        color: 'text-orange-600',
-        bgColor: 'bg-orange-50'
+        color: "text-orange-600",
+        bgColor: "bg-orange-50",
       },
       {
-        id: 'afternoon',
-        label: 'Afternoon Execution',
+        id: "afternoon",
+        label: "Afternoon Execution",
         icon: <Briefcase className="w-4 h-4" />,
-        period: '12:00 PM - 6:00 PM',
+        period: "12:00 PM - 6:00 PM",
         items: [],
-        color: 'text-blue-600',
-        bgColor: 'bg-blue-50'
+        color: "text-blue-600",
+        bgColor: "bg-blue-50",
       },
       {
-        id: 'evening',
-        label: 'Evening Review',
+        id: "evening",
+        label: "Evening Review",
         icon: <Moon className="w-4 h-4" />,
-        period: '6:00 PM - 11:00 PM',
+        period: "6:00 PM - 11:00 PM",
         items: [],
-        color: 'text-purple-600',
-        bgColor: 'bg-purple-50'
+        color: "text-purple-600",
+        bgColor: "bg-purple-50",
       },
       {
-        id: 'today',
-        label: 'Today',
+        id: "today",
+        label: "Today",
         icon: <Calendar className="w-4 h-4" />,
-        period: 'All day',
+        period: "All day",
         items: [],
-        color: 'text-green-600',
-        bgColor: 'bg-green-50'
+        color: "text-green-600",
+        bgColor: "bg-green-50",
       },
       {
-        id: 'yesterday',
-        label: 'Yesterday',
+        id: "yesterday",
+        label: "Yesterday",
         icon: <Clock className="w-4 h-4" />,
-        period: 'Previous day',
+        period: "Previous day",
         items: [],
-        color: 'text-gray-600',
-        bgColor: 'bg-gray-50'
+        color: "text-gray-600",
+        bgColor: "bg-gray-50",
       },
       {
-        id: 'week',
-        label: 'This Week',
+        id: "week",
+        label: "This Week",
         icon: <Calendar className="w-4 h-4" />,
-        period: 'Last 7 days',
+        period: "Last 7 days",
         items: [],
-        color: 'text-indigo-600',
-        bgColor: 'bg-indigo-50'
-      }
+        color: "text-indigo-600",
+        bgColor: "bg-indigo-50",
+      },
     ];
 
     // Categorize items by time
-    sortedItems.forEach(item => {
+    sortedItems.forEach((item) => {
       const itemDate = new Date(item.timestamp);
       const itemHour = itemDate.getHours();
-      
+
       // Time of day grouping
       if (itemDate >= today) {
-        groups.find(g => g.id === 'today')?.items.push(item);
-        
+        groups.find((g) => g.id === "today")?.items.push(item);
+
         if (itemHour >= 6 && itemHour < 12) {
-          groups.find(g => g.id === 'morning')?.items.push(item);
+          groups.find((g) => g.id === "morning")?.items.push(item);
         } else if (itemHour >= 12 && itemHour < 18) {
-          groups.find(g => g.id === 'afternoon')?.items.push(item);
+          groups.find((g) => g.id === "afternoon")?.items.push(item);
         } else {
-          groups.find(g => g.id === 'evening')?.items.push(item);
+          groups.find((g) => g.id === "evening")?.items.push(item);
         }
       } else if (itemDate >= yesterday) {
-        groups.find(g => g.id === 'yesterday')?.items.push(item);
+        groups.find((g) => g.id === "yesterday")?.items.push(item);
       } else if (itemDate >= thisWeek) {
-        groups.find(g => g.id === 'week')?.items.push(item);
+        groups.find((g) => g.id === "week")?.items.push(item);
       }
     });
 
     // Filter out empty groups
-    const nonEmptyGroups = groups.filter(group => group.items.length > 0);
+    const nonEmptyGroups = groups.filter((group) => group.items.length > 0);
     setTimeGroups(nonEmptyGroups);
   };
 
   const isVIPItem = (item: Email | SlackMessage): boolean => {
-    const sender = (item as Email).from || (item as SlackMessage).user || '';
-    const vipPatterns = ['ceo', 'founder', 'board', 'investor', 'president', 'director'];
-    return vipPatterns.some(pattern => sender.toLowerCase().includes(pattern));
+    const sender = (item as Email).from || (item as SlackMessage).user || "";
+    const vipPatterns = [
+      "ceo",
+      "founder",
+      "board",
+      "investor",
+      "president",
+      "director",
+    ];
+    return vipPatterns.some((pattern) =>
+      sender.toLowerCase().includes(pattern),
+    );
   };
 
   const isUrgentItem = (item: Email | SlackMessage): boolean => {
-    const content = (item as Email).subject || (item as SlackMessage).text || '';
-    const urgentKeywords = ['urgent', 'asap', 'emergency', 'critical', 'deadline'];
-    return urgentKeywords.some(keyword => content.toLowerCase().includes(keyword));
+    const content =
+      (item as Email).subject || (item as SlackMessage).text || "";
+    const urgentKeywords = [
+      "urgent",
+      "asap",
+      "emergency",
+      "critical",
+      "deadline",
+    ];
+    return urgentKeywords.some((keyword) =>
+      content.toLowerCase().includes(keyword),
+    );
   };
 
   const getPriorityWeight = (priority: string): number => {
     switch (priority) {
-      case 'critical': return 4;
-      case 'high': return 3;
-      case 'medium': return 2;
-      case 'low': return 1;
-      default: return 0;
+      case "critical":
+        return 4;
+      case "high":
+        return 3;
+      case "medium":
+        return 2;
+      case "low":
+        return 1;
+      default:
+        return 0;
     }
   };
 
   const toggleFilter = (filterId: string) => {
-    setBehaviorFilters(prev => 
-      prev.map(filter => 
-        filter.id === filterId 
-          ? { ...filter, active: !filter.active }
-          : filter
-      )
+    setBehaviorFilters((prev) =>
+      prev.map((filter) =>
+        filter.id === filterId ? { ...filter, active: !filter.active } : filter,
+      ),
     );
   };
 
   const getItemSender = (item: Email | SlackMessage): string => {
-    return (item as Email).from || (item as SlackMessage).user || 'Unknown';
+    return (item as Email).from || (item as SlackMessage).user || "Unknown";
   };
 
   const getItemSubject = (item: Email | SlackMessage): string => {
-    return (item as Email).subject || (item as SlackMessage).text?.substring(0, 50) + '...' || 'No subject';
+    return (
+      (item as Email).subject ||
+      (item as SlackMessage).text?.substring(0, 50) + "..." ||
+      "No subject"
+    );
   };
 
   const getItemTime = (item: Email | SlackMessage): string => {
-    return new Date(item.timestamp).toLocaleTimeString([], { 
-      hour: '2-digit', 
-      minute: '2-digit' 
+    return new Date(item.timestamp).toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
   const getPriorityColor = (priority: string): string => {
     switch (priority) {
-      case 'critical': return 'bg-red-100 text-red-800';
-      case 'high': return 'bg-orange-100 text-orange-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      case 'low': return 'bg-green-100 text-green-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case "critical":
+        return "bg-red-100 text-red-800";
+      case "high":
+        return "bg-orange-100 text-orange-800";
+      case "medium":
+        return "bg-yellow-100 text-yellow-800";
+      case "low":
+        return "bg-green-100 text-green-800";
+      default:
+        return "bg-gray-100 text-gray-800";
     }
   };
 
-  const filteredGroups = selectedGroup === 'all' 
-    ? timeGroups 
-    : timeGroups.filter(group => group.id === selectedGroup);
+  const filteredGroups =
+    selectedGroup === "all"
+      ? timeGroups
+      : timeGroups.filter((group) => group.id === selectedGroup);
 
   return (
     <div className={`space-y-6 ${className}`}>
@@ -270,13 +319,13 @@ export default function ScheduleAwareInbox({ emails, messages, onItemClick, clas
               <Typography variant="body2" className="text-gray-600">
                 Time Period:
               </Typography>
-              <select 
+              <select
                 value={selectedGroup}
                 onChange={(e) => setSelectedGroup(e.target.value)}
                 className="px-3 py-1 border border-gray-300 rounded-md text-sm"
               >
                 <option value="all">All Periods</option>
-                {timeGroups.map(group => (
+                {timeGroups.map((group) => (
                   <option key={group.id} value={group.id}>
                     {group.label} ({group.items.length})
                   </option>
@@ -289,9 +338,11 @@ export default function ScheduleAwareInbox({ emails, messages, onItemClick, clas
               <Typography variant="body2" className="text-gray-600">
                 Sort by:
               </Typography>
-              <select 
+              <select
                 value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as 'time' | 'priority' | 'sender')}
+                onChange={(e) =>
+                  setSortBy(e.target.value as "time" | "priority" | "sender")
+                }
                 className="px-3 py-1 border border-gray-300 rounded-md text-sm"
               >
                 <option value="time">Time</option>
@@ -303,7 +354,7 @@ export default function ScheduleAwareInbox({ emails, messages, onItemClick, clas
 
           {/* Behavior Filters */}
           <div className="flex flex-wrap gap-2">
-            {behaviorFilters.map(filter => (
+            {behaviorFilters.map((filter) => (
               <Button
                 key={filter.id}
                 variant={filter.active ? "default" : "outline"}
@@ -321,16 +372,24 @@ export default function ScheduleAwareInbox({ emails, messages, onItemClick, clas
 
       {/* Time Groups */}
       <div className="space-y-4">
-        {filteredGroups.map(group => (
-          <Card key={group.id} className={`${group.bgColor} border-l-4 border-l-brand-burgundy`}>
+        {filteredGroups.map((group) => (
+          <Card
+            key={group.id}
+            className={`${group.bgColor} border-l-4 border-l-brand-burgundy`}
+          >
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className={`p-2 rounded-lg ${group.bgColor} ${group.color}`}>
+                  <div
+                    className={`p-2 rounded-lg ${group.bgColor} ${group.color}`}
+                  >
                     {group.icon}
                   </div>
                   <div>
-                    <Typography variant="h6" className="font-semibold text-black">
+                    <Typography
+                      variant="h6"
+                      className="font-semibold text-black"
+                    >
                       {group.label}
                     </Typography>
                     <Typography variant="body2" className="text-gray-600">
@@ -353,7 +412,7 @@ export default function ScheduleAwareInbox({ emails, messages, onItemClick, clas
                   >
                     <div className="flex items-center gap-3 flex-1">
                       <div className="flex items-center gap-2">
-                        {'subject' in item ? (
+                        {"subject" in item ? (
                           <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                         ) : (
                           <div className="w-2 h-2 bg-green-500 rounded-full"></div>
@@ -362,10 +421,13 @@ export default function ScheduleAwareInbox({ emails, messages, onItemClick, clas
                           <Star className="w-4 h-4 text-yellow-500 fill-current" />
                         )}
                       </div>
-                      
+
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
-                          <Typography variant="body1" className="font-medium text-black">
+                          <Typography
+                            variant="body1"
+                            className="font-medium text-black"
+                          >
                             {getItemSender(item)}
                           </Typography>
                           <Typography variant="body2" className="text-gray-500">
@@ -377,10 +439,12 @@ export default function ScheduleAwareInbox({ emails, messages, onItemClick, clas
                         </Typography>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center gap-2">
-                      <Badge className={getPriorityColor(item.priority || 'medium')}>
-                        {item.priority || 'medium'}
+                      <Badge
+                        className={getPriorityColor(item.priority || "medium")}
+                      >
+                        {item.priority || "medium"}
                       </Badge>
                       {!item.read && (
                         <div className="w-2 h-2 bg-brand-burgundy rounded-full"></div>
@@ -388,7 +452,7 @@ export default function ScheduleAwareInbox({ emails, messages, onItemClick, clas
                     </div>
                   </div>
                 ))}
-                
+
                 {group.items.length > 10 && (
                   <Button
                     variant="ghost"

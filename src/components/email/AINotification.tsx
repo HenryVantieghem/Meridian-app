@@ -1,8 +1,12 @@
-import React from 'react';
+import React from "react";
 
 interface AINotificationProps {
   userName: string;
-  notificationType: 'email_analyzed' | 'reply_generated' | 'priority_alert' | 'summary_ready';
+  notificationType:
+    | "email_analyzed"
+    | "reply_generated"
+    | "priority_alert"
+    | "summary_ready";
   emailSubject: string;
   emailFrom: string;
   aiSummary: string;
@@ -25,35 +29,36 @@ export const AINotification: React.FC<AINotificationProps> = ({
 }) => {
   const getNotificationTitle = () => {
     switch (notificationType) {
-      case 'email_analyzed':
-        return '📧 Email Analyzed';
-      case 'reply_generated':
-        return '✍️ Reply Generated';
-      case 'priority_alert':
-        return '🚨 Priority Alert';
-      case 'summary_ready':
-        return '📋 Summary Ready';
+      case "email_analyzed":
+        return "📧 Email Analyzed";
+      case "reply_generated":
+        return "✍️ Reply Generated";
+      case "priority_alert":
+        return "🚨 Priority Alert";
+      case "summary_ready":
+        return "📋 Summary Ready";
       default:
-        return '🤖 AI Update';
+        return "🤖 AI Update";
     }
   };
 
   const getNotificationMessage = () => {
     switch (notificationType) {
-      case 'email_analyzed':
-        return 'Your AI assistant has analyzed a new email and identified key insights.';
-      case 'reply_generated':
-        return 'Your AI assistant has generated a thoughtful reply based on the email context.';
-      case 'priority_alert':
-        return 'An urgent email has been detected that requires your immediate attention.';
-      case 'summary_ready':
-        return 'A summary of your recent emails is ready for your review.';
+      case "email_analyzed":
+        return "Your AI assistant has analyzed a new email and identified key insights.";
+      case "reply_generated":
+        return "Your AI assistant has generated a thoughtful reply based on the email context.";
+      case "priority_alert":
+        return "An urgent email has been detected that requires your immediate attention.";
+      case "summary_ready":
+        return "A summary of your recent emails is ready for your review.";
       default:
-        return 'Your AI assistant has an update for you.';
+        return "Your AI assistant has an update for you.";
     }
   };
 
-  const confidenceColor = confidence >= 0.8 ? '#10B981' : confidence >= 0.6 ? '#F59E0B' : '#DC2626';
+  const confidenceColor =
+    confidence >= 0.8 ? "#10B981" : confidence >= 0.6 ? "#F59E0B" : "#DC2626";
 
   return (
     <div className="email-container">
@@ -61,17 +66,15 @@ export const AINotification: React.FC<AINotificationProps> = ({
         <div className="logo">Napoleon</div>
         <div className="tagline">AI-Powered Productivity</div>
       </div>
-      
+
       <div className="content">
         <div className="notification-header">
           <div className="notification-icon">{getNotificationTitle()}</div>
           <h1 className="greeting">Hello, {userName}!</h1>
         </div>
-        
-        <p className="message">
-          {getNotificationMessage()}
-        </p>
-        
+
+        <p className="message">{getNotificationMessage()}</p>
+
         <div className="email-details">
           <div className="email-info">
             <div className="email-from">
@@ -82,7 +85,7 @@ export const AINotification: React.FC<AINotificationProps> = ({
             </div>
           </div>
         </div>
-        
+
         <div className="ai-analysis">
           <h3>🤖 AI Analysis</h3>
           <div className="analysis-content">
@@ -92,38 +95,44 @@ export const AINotification: React.FC<AINotificationProps> = ({
             </div>
           </div>
         </div>
-        
+
         <div className="confidence-meter">
           <div className="confidence-header">
             <span>AI Confidence</span>
-            <span className="confidence-score" style={{ color: confidenceColor }}>
+            <span
+              className="confidence-score"
+              style={{ color: confidenceColor }}
+            >
               {Math.round(confidence * 100)}%
             </span>
           </div>
           <div className="confidence-bar">
-            <div 
+            <div
               className="confidence-fill"
-              style={{ 
+              style={{
                 width: `${confidence * 100}%`,
-                backgroundColor: confidenceColor
+                backgroundColor: confidenceColor,
               }}
             />
           </div>
         </div>
-        
+
         <div className="cta-section">
           <a href={dashboardUrl} className="cta-button">
             View in Dashboard
           </a>
         </div>
-        
+
         <div className="quick-actions">
           <h3>Quick Actions</h3>
           <div className="action-buttons">
             <a href={`${dashboardUrl}?action=reply`} className="action-button">
               ✍️ Generate Reply
             </a>
-            <a href={`${dashboardUrl}?action=delegate`} className="action-button">
+            <a
+              href={`${dashboardUrl}?action=delegate`}
+              className="action-button"
+            >
               👥 Delegate
             </a>
             <a href={`${dashboardUrl}?action=snooze`} className="action-button">
@@ -132,17 +141,23 @@ export const AINotification: React.FC<AINotificationProps> = ({
           </div>
         </div>
       </div>
-      
+
       <div className="footer">
         <p className="footer-text">
-          This notification was generated by your AI assistant. 
+          This notification was generated by your AI assistant.
           <a href={dashboardUrl}> View in Dashboard</a>
         </p>
-        
+
         <div className="footer-links">
-          <a href="/settings" className="footer-link">Settings</a>
-          <a href="/help" className="footer-link">Help</a>
-          <a href={unsubscribeUrl} className="footer-link">Unsubscribe</a>
+          <a href="/settings" className="footer-link">
+            Settings
+          </a>
+          <a href="/help" className="footer-link">
+            Help
+          </a>
+          <a href={unsubscribeUrl} className="footer-link">
+            Unsubscribe
+          </a>
         </div>
       </div>
     </div>
@@ -403,4 +418,4 @@ export const aiNotificationStyles = `
   }
 `;
 
-export default AINotification; 
+export default AINotification;

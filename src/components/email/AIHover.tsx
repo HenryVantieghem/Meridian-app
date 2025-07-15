@@ -4,13 +4,13 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { 
-  User, 
-  Clock, 
-  MessageSquare, 
-  TrendingUp, 
+import {
+  User,
+  Clock,
+  MessageSquare,
+  TrendingUp,
   Star,
-  MapPin
+  MapPin,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -21,13 +21,13 @@ interface SenderContext {
   role?: string;
   location?: string;
   timezone?: string;
-  relationship: 'colleague' | 'client' | 'vendor' | 'friend' | 'unknown';
+  relationship: "colleague" | "client" | "vendor" | "friend" | "unknown";
   communicationHistory: {
     totalEmails: number;
     lastContact: string;
     averageResponseTime: string;
-    tone: 'positive' | 'neutral' | 'negative';
-    urgency: 'low' | 'medium' | 'high';
+    tone: "positive" | "neutral" | "negative";
+    urgency: "low" | "medium" | "high";
   };
   recentTopics: string[];
   priority: number; // 0-1
@@ -62,27 +62,38 @@ export const AIHover: React.FC<AIHoverProps> = ({
 
   const getToneColor = (tone: string) => {
     switch (tone) {
-      case 'positive': return 'bg-green-100 text-green-800';
-      case 'negative': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case "positive":
+        return "bg-green-100 text-green-800";
+      case "negative":
+        return "bg-red-100 text-red-800";
+      default:
+        return "bg-gray-100 text-gray-800";
     }
   };
 
   const getUrgencyColor = (urgency: string) => {
     switch (urgency) {
-      case 'high': return 'bg-red-100 text-red-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      default: return 'bg-green-100 text-green-800';
+      case "high":
+        return "bg-red-100 text-red-800";
+      case "medium":
+        return "bg-yellow-100 text-yellow-800";
+      default:
+        return "bg-green-100 text-green-800";
     }
   };
 
   const getRelationshipIcon = (relationship: string) => {
     switch (relationship) {
-      case 'colleague': return <User className="w-4 h-4" />;
-      case 'client': return <Star className="w-4 h-4" />;
-      case 'vendor': return <TrendingUp className="w-4 h-4" />;
-      case 'friend': return <MessageSquare className="w-4 h-4" />;
-      default: return <User className="w-4 h-4" />;
+      case "colleague":
+        return <User className="w-4 h-4" />;
+      case "client":
+        return <Star className="w-4 h-4" />;
+      case "vendor":
+        return <TrendingUp className="w-4 h-4" />;
+      case "friend":
+        return <MessageSquare className="w-4 h-4" />;
+      default:
+        return <User className="w-4 h-4" />;
     }
   };
 
@@ -93,14 +104,14 @@ export const AIHover: React.FC<AIHoverProps> = ({
       onMouseLeave={handleMouseLeave}
     >
       {children}
-      
+
       <AnimatePresence>
         {isHovered && (
           <motion.div
             initial={{ opacity: 0, scale: 0.8, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 10 }}
-            transition={{ 
+            transition={{
               duration: 0.3,
               ease: "easeOut",
             }}
@@ -120,8 +131,12 @@ export const AIHover: React.FC<AIHoverProps> = ({
                     </span>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-900">{senderContext.name}</h4>
-                    <p className="text-sm text-gray-600">{senderContext.email}</p>
+                    <h4 className="font-semibold text-gray-900">
+                      {senderContext.name}
+                    </h4>
+                    <p className="text-sm text-gray-600">
+                      {senderContext.email}
+                    </p>
                   </div>
                 </div>
                 <Badge className="flex items-center gap-1 text-xs">
@@ -166,10 +181,18 @@ export const AIHover: React.FC<AIHoverProps> = ({
 
               {/* Tone & Urgency */}
               <div className="flex gap-2 mb-3">
-                <Badge className={getToneColor(senderContext.communicationHistory.tone)}>
+                <Badge
+                  className={getToneColor(
+                    senderContext.communicationHistory.tone,
+                  )}
+                >
                   {senderContext.communicationHistory.tone} tone
                 </Badge>
-                <Badge className={getUrgencyColor(senderContext.communicationHistory.urgency)}>
+                <Badge
+                  className={getUrgencyColor(
+                    senderContext.communicationHistory.urgency,
+                  )}
+                >
                   {senderContext.communicationHistory.urgency} urgency
                 </Badge>
               </div>
@@ -177,13 +200,17 @@ export const AIHover: React.FC<AIHoverProps> = ({
               {/* Recent Topics */}
               {senderContext.recentTopics.length > 0 && (
                 <div className="mb-3">
-                  <h5 className="text-sm font-medium text-gray-700 mb-2">Recent Topics</h5>
+                  <h5 className="text-sm font-medium text-gray-700 mb-2">
+                    Recent Topics
+                  </h5>
                   <div className="flex flex-wrap gap-1">
-                    {senderContext.recentTopics.slice(0, 3).map((topic, index) => (
-                      <Badge key={index} className="text-xs">
-                        {topic}
-                      </Badge>
-                    ))}
+                    {senderContext.recentTopics
+                      .slice(0, 3)
+                      .map((topic, index) => (
+                        <Badge key={index} className="text-xs">
+                          {topic}
+                        </Badge>
+                      ))}
                   </div>
                 </div>
               )}
@@ -218,4 +245,4 @@ export const AIHover: React.FC<AIHoverProps> = ({
   );
 };
 
-export default AIHover; 
+export default AIHover;

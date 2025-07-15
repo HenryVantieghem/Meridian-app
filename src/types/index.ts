@@ -1,5 +1,5 @@
 // Export database types
-export type { Database } from './database';
+export type { Database } from "./database";
 
 // User Types
 export interface User {
@@ -15,7 +15,7 @@ export interface User {
 }
 
 export interface UserPreferences {
-  theme: 'light' | 'dark' | 'system';
+  theme: "light" | "dark" | "system";
   emailNotifications: boolean;
   pushNotifications: boolean;
   timezone: string;
@@ -26,14 +26,14 @@ export interface UserPreferences {
 export interface UserPersona {
   role: string;
   industry: string;
-  communicationStyle: 'formal' | 'casual' | 'professional';
+  communicationStyle: "formal" | "casual" | "professional";
   priorities: string[];
 }
 
 export interface Subscription {
   id: string;
-  status: 'active' | 'canceled' | 'past_due' | 'unpaid';
-  plan: 'free' | 'pro' | 'enterprise';
+  status: "active" | "canceled" | "past_due" | "unpaid";
+  plan: "free" | "pro" | "enterprise";
   currentPeriodEnd: Date;
   cancelAtPeriodEnd: boolean;
 }
@@ -80,8 +80,8 @@ export interface EmailAnalysis {
   summary: string;
   keyPoints: string[];
   actionItems: ActionItem[];
-  sentiment: 'positive' | 'negative' | 'neutral';
-  urgency: 'high' | 'medium' | 'low';
+  sentiment: "positive" | "negative" | "neutral";
+  urgency: "high" | "medium" | "low";
   category: string;
   confidence: number;
   aiModel: string;
@@ -92,12 +92,12 @@ export interface ActionItem {
   id: string;
   description: string;
   dueDate?: Date;
-  priority: 'high' | 'medium' | 'low';
+  priority: "high" | "medium" | "low";
   completed: boolean;
   assignedTo?: string;
 }
 
-export type EmailPriority = 'critical' | 'high' | 'medium' | 'low' | 'none';
+export type EmailPriority = "critical" | "high" | "medium" | "low" | "none";
 
 // AI Types
 export interface AIResponse<T = unknown> {
@@ -120,8 +120,8 @@ export interface EmailAnalysisRequest {
 
 export interface ReplyGenerationRequest {
   emailId: string;
-  tone: 'formal' | 'casual' | 'professional';
-  length: 'short' | 'medium' | 'long';
+  tone: "formal" | "casual" | "professional";
+  length: "short" | "medium" | "long";
   includeActionItems: boolean;
 }
 
@@ -159,15 +159,21 @@ export interface SignInForm {
 export interface OnboardingForm {
   role: string;
   industry: string;
-  communicationStyle: 'formal' | 'casual' | 'professional';
+  communicationStyle: "formal" | "casual" | "professional";
   priorities: string[];
-  emailIntegration: 'gmail' | 'outlook' | 'other';
+  emailIntegration: "gmail" | "outlook" | "other";
 }
 
 // Component Props Types
 export interface ButtonProps {
-  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
-  size?: 'default' | 'sm' | 'lg' | 'icon';
+  variant?:
+    | "default"
+    | "destructive"
+    | "outline"
+    | "secondary"
+    | "ghost"
+    | "link";
+  size?: "default" | "sm" | "lg" | "icon";
   disabled?: boolean;
   loading?: boolean;
   children: React.ReactNode;
@@ -176,7 +182,7 @@ export interface ButtonProps {
 }
 
 export interface InputProps {
-  type?: 'text' | 'email' | 'password' | 'number' | 'tel' | 'url';
+  type?: "text" | "email" | "password" | "number" | "tel" | "url";
   placeholder?: string;
   value?: string;
   onChange?: (value: string) => void;
@@ -226,19 +232,19 @@ export interface ClerkWebhookEvent {
 }
 
 // Utility Types
-export type Result<T, E = Error> = 
+export type Result<T, E = Error> =
   | { success: true; data: T }
   | { success: false; error: E };
 
 export type AsyncResult<T, E = Error> = Promise<Result<T, E>>;
 
 // Theme Types
-export type Theme = 'light' | 'dark' | 'system';
+export type Theme = "light" | "dark" | "system";
 
 // Notification Types
 export interface Notification {
   id: string;
-  type: 'info' | 'success' | 'warning' | 'error';
+  type: "info" | "success" | "warning" | "error";
   title: string;
   message: string;
   duration?: number;
@@ -246,7 +252,7 @@ export interface Notification {
     label: string;
     onClick: () => void;
   };
-} 
+}
 
 // Slack Types
 export interface SlackMessage {
@@ -268,8 +274,8 @@ export interface SlackMessage {
     users?: string[];
   }>;
   threadCount?: number;
-  priority: 'low' | 'medium' | 'high';
+  priority: "low" | "medium" | "high";
   read: boolean;
   archived: boolean;
-  type?: 'message' | 'file' | 'event';
-} 
+  type?: "message" | "file" | "event";
+}

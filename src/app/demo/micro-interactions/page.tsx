@@ -5,18 +5,14 @@ import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { 
-  SwipeToDelegate, 
-  AIHover, 
-  CompletionRitual, 
+import {
+  SwipeToDelegate,
+  AIHover,
+  CompletionRitual,
   TimeZoneIndicator,
-  CompactTimeZoneIndicator 
+  CompactTimeZoneIndicator,
 } from "@/components/micro-interactions";
-import { 
-  Mail, 
-  User, 
-  Clock
-} from "lucide-react";
+import { Mail, User, Clock } from "lucide-react";
 
 export default function MicroInteractionsDemo() {
   const [showCompletionRitual, setShowCompletionRitual] = useState(false);
@@ -68,32 +64,41 @@ export default function MicroInteractionsDemo() {
             Micro-Interactions Demo
           </h1>
           <p className="text-lg text-gray-600 mb-8">
-            Napoleon&apos;s AI-powered micro-interactions create a seamless, delightful user experience.
+            Napoleon&apos;s AI-powered micro-interactions create a seamless,
+            delightful user experience.
           </p>
         </motion.div>
 
         <div className="grid gap-8">
           {/* Swipe-to-Delegate Demo */}
           <section className="space-y-4">
-            <h2 className="text-2xl font-semibold text-gray-900">Swipe-to-Delegate</h2>
+            <h2 className="text-2xl font-semibold text-gray-900">
+              Swipe-to-Delegate
+            </h2>
             <p className="text-gray-600">
-              Physics-based swipe gestures with contextual delegate options and paper plane animations.
+              Physics-based swipe gestures with contextual delegate options and
+              paper plane animations.
             </p>
-            
+
             <div className="max-w-md">
               <SwipeToDelegate onDelegate={handleDelegate}>
                 <div className="p-4">
                   <div className="flex items-center gap-3 mb-2">
                     <div className="w-8 h-8 bg-gradient-to-br from-[#D4AF37] to-[#FFD700] rounded-full flex items-center justify-center">
-                      <span className="text-white font-semibold text-sm">S</span>
+                      <span className="text-white font-semibold text-sm">
+                        S
+                      </span>
                     </div>
                     <div>
                       <h3 className="font-medium text-gray-900">Sarah Chen</h3>
-                      <p className="text-sm text-gray-600">Q4 Planning Discussion</p>
+                      <p className="text-sm text-gray-600">
+                        Q4 Planning Discussion
+                      </p>
                     </div>
                   </div>
                   <p className="text-sm text-gray-700">
-                    Hi! I wanted to discuss the Q4 planning session we have scheduled for next week...
+                    Hi! I wanted to discuss the Q4 planning session we have
+                    scheduled for next week...
                   </p>
                   <div className="flex items-center gap-2 mt-3">
                     <Badge className="text-xs">Planning</Badge>
@@ -106,11 +111,14 @@ export default function MicroInteractionsDemo() {
 
           {/* AI Hover Demo */}
           <section className="space-y-4">
-            <h2 className="text-2xl font-semibold text-gray-900">AI Hover (Context Reveal)</h2>
+            <h2 className="text-2xl font-semibold text-gray-900">
+              AI Hover (Context Reveal)
+            </h2>
             <p className="text-gray-600">
-              Tooltip with sender context, relationship info, communication history, and tone analysis.
+              Tooltip with sender context, relationship info, communication
+              history, and tone analysis.
             </p>
-            
+
             <div className="max-w-md">
               <AIHover senderContext={sampleSenderContext}>
                 <Card className="p-4 cursor-pointer hover:shadow-md transition-shadow">
@@ -120,7 +128,9 @@ export default function MicroInteractionsDemo() {
                     </div>
                     <div className="flex-1">
                       <h3 className="font-medium text-gray-900">Sarah Chen</h3>
-                      <p className="text-sm text-gray-600">Product Launch Timeline</p>
+                      <p className="text-sm text-gray-600">
+                        Product Launch Timeline
+                      </p>
                     </div>
                     <Clock className="w-4 h-4 text-gray-400" />
                   </div>
@@ -131,14 +141,19 @@ export default function MicroInteractionsDemo() {
 
           {/* Time Zone Indicator Demo */}
           <section className="space-y-4">
-            <h2 className="text-2xl font-semibold text-gray-900">Time Zone Awareness</h2>
+            <h2 className="text-2xl font-semibold text-gray-900">
+              Time Zone Awareness
+            </h2>
             <p className="text-gray-600">
-              Subtle visual cues for sender&apos;s local time with color-coded freshness indicators.
+              Subtle visual cues for sender&apos;s local time with color-coded
+              freshness indicators.
             </p>
-            
+
             <div className="space-y-4">
               <div className="flex items-center gap-4">
-                <span className="text-sm font-medium text-gray-700">Full Indicator:</span>
+                <span className="text-sm font-medium text-gray-700">
+                  Full Indicator:
+                </span>
                 <TimeZoneIndicator
                   senderTimezone="America/Los_Angeles"
                   userTimezone="America/New_York"
@@ -146,9 +161,11 @@ export default function MicroInteractionsDemo() {
                   showDetails
                 />
               </div>
-              
+
               <div className="flex items-center gap-4">
-                <span className="text-sm font-medium text-gray-700">Compact (Peripheral):</span>
+                <span className="text-sm font-medium text-gray-700">
+                  Compact (Peripheral):
+                </span>
                 <CompactTimeZoneIndicator
                   senderTimezone="Europe/London"
                   userTimezone="America/New_York"
@@ -160,11 +177,14 @@ export default function MicroInteractionsDemo() {
 
           {/* Completion Ritual Demo */}
           <section className="space-y-4">
-            <h2 className="text-2xl font-semibold text-gray-900">Completion Ritual</h2>
+            <h2 className="text-2xl font-semibold text-gray-900">
+              Completion Ritual
+            </h2>
             <p className="text-gray-600">
-              Celebration animation for completed tasks with constellation view and inspirational messaging.
+              Celebration animation for completed tasks with constellation view
+              and inspirational messaging.
             </p>
-            
+
             <div className="flex gap-4">
               <Button
                 onClick={() => setShowCompletionRitual(true)}
@@ -172,11 +192,13 @@ export default function MicroInteractionsDemo() {
               >
                 Show Completion Ritual
               </Button>
-              
+
               <div className="flex items-center gap-4">
                 <span className="text-sm text-gray-600">Progress:</span>
                 <div className="flex items-center gap-2">
-                  <span className="text-lg font-bold text-[#D4AF37]">{completedTasks}</span>
+                  <span className="text-lg font-bold text-[#D4AF37]">
+                    {completedTasks}
+                  </span>
                   <span className="text-gray-400">/</span>
                   <span className="text-lg font-bold text-gray-900">10</span>
                 </div>
@@ -185,7 +207,7 @@ export default function MicroInteractionsDemo() {
                   size="sm"
                   onClick={() => {
                     if (completedTasks < 10) {
-                      setCompletedTasks(prev => prev + 1);
+                      setCompletedTasks((prev) => prev + 1);
                     }
                   }}
                 >
@@ -197,10 +219,14 @@ export default function MicroInteractionsDemo() {
 
           {/* Usage Examples */}
           <section className="space-y-4">
-            <h2 className="text-2xl font-semibold text-gray-900">Usage Examples</h2>
+            <h2 className="text-2xl font-semibold text-gray-900">
+              Usage Examples
+            </h2>
             <div className="grid md:grid-cols-2 gap-6">
               <Card className="p-6">
-                <h3 className="font-semibold text-gray-900 mb-3">Email List Integration</h3>
+                <h3 className="font-semibold text-gray-900 mb-3">
+                  Email List Integration
+                </h3>
                 <div className="space-y-3">
                   <SwipeToDelegate onDelegate={handleDelegate}>
                     <div className="p-3 border rounded-lg">
@@ -220,7 +246,9 @@ export default function MicroInteractionsDemo() {
               </Card>
 
               <Card className="p-6">
-                <h3 className="font-semibold text-gray-900 mb-3">Dashboard Integration</h3>
+                <h3 className="font-semibold text-gray-900 mb-3">
+                  Dashboard Integration
+                </h3>
                 <div className="space-y-3">
                   <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <div className="flex items-center gap-2">
@@ -250,4 +278,4 @@ export default function MicroInteractionsDemo() {
       </div>
     </div>
   );
-} 
+}

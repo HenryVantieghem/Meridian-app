@@ -1,7 +1,13 @@
 "use client";
 import * as React from "react";
 import { useState, useRef } from "react";
-import { motion, AnimatePresence, PanInfo, useMotionValue, useTransform } from "framer-motion";
+import {
+  motion,
+  AnimatePresence,
+  PanInfo,
+  useMotionValue,
+  useTransform,
+} from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Send, Archive, Users, Calendar, MessageSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -66,7 +72,7 @@ export const SwipeToDelegate: React.FC<SwipeToDelegateProps> = ({
   const [showOptions, setShowOptions] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  
+
   const x = useMotionValue(0);
   const rotate = useTransform(x, [-200, 200], [-15, 15]);
   const scale = useTransform(x, [-200, 200], [0.95, 1.05]);
@@ -79,7 +85,7 @@ export const SwipeToDelegate: React.FC<SwipeToDelegateProps> = ({
 
   const handleDragEnd = (_event: unknown, info: PanInfo) => {
     setIsDragging(false);
-    
+
     if (Math.abs(info.offset.x) > 150) {
       setShowOptions(true);
       // Add haptic feedback if available
@@ -92,7 +98,7 @@ export const SwipeToDelegate: React.FC<SwipeToDelegateProps> = ({
   const handleOptionSelect = (optionId: string) => {
     setSelectedOption(optionId);
     onDelegate(optionId);
-    
+
     // Animate paper plane
     setTimeout(() => {
       setShowOptions(false);
@@ -121,11 +127,11 @@ export const SwipeToDelegate: React.FC<SwipeToDelegateProps> = ({
               <motion.div
                 key={option.id}
                 initial={{ scale: 0, rotate: -180 }}
-                animate={{ 
+                animate={{
                   scale: selectedOption === option.id ? 1.2 : 1,
                   rotate: selectedOption === option.id ? 360 : 0,
                 }}
-                transition={{ 
+                transition={{
                   type: "spring",
                   stiffness: 300,
                   damping: 20,
@@ -139,7 +145,7 @@ export const SwipeToDelegate: React.FC<SwipeToDelegateProps> = ({
                   className={cn(
                     "w-12 h-12 rounded-full flex items-center justify-center cursor-pointer shadow-lg",
                     option.color,
-                    selectedOption === option.id ? "ring-4 ring-[#D4AF37]" : ""
+                    selectedOption === option.id ? "ring-4 ring-[#D4AF37]" : "",
                   )}
                   onClick={() => handleOptionSelect(option.id)}
                 >
@@ -166,12 +172,12 @@ export const SwipeToDelegate: React.FC<SwipeToDelegateProps> = ({
           >
             <motion.div
               initial={{ x: 0, y: 0, rotate: 0 }}
-              animate={{ 
+              animate={{
                 x: [0, 100, 200],
                 y: [0, -50, -100],
                 rotate: [0, 45, 90],
               }}
-              transition={{ 
+              transition={{
                 duration: 1.5,
                 ease: "easeOut",
               }}
@@ -193,7 +199,7 @@ export const SwipeToDelegate: React.FC<SwipeToDelegateProps> = ({
         style={{ x, rotate, scale, opacity }}
         className={cn(
           "relative z-20 cursor-grab active:cursor-grabbing",
-          disabled && "cursor-default"
+          disabled && "cursor-default",
         )}
         whileHover={{ scale: disabled ? 1 : 1.02 }}
         transition={{ type: "spring", stiffness: 400, damping: 30 }}
@@ -230,7 +236,7 @@ export const SwipeToDelegate: React.FC<SwipeToDelegateProps> = ({
         {/* Content */}
         <Card className="relative overflow-hidden">
           {children}
-          
+
           {/* Swipe Progress Bar */}
           <motion.div
             style={{
@@ -260,4 +266,4 @@ export const SwipeToDelegate: React.FC<SwipeToDelegateProps> = ({
   );
 };
 
-export default SwipeToDelegate; 
+export default SwipeToDelegate;

@@ -1,63 +1,70 @@
 // Email automation system - Resend removed
-import { Email } from './index';
+import { Email } from "./index";
 
 // Email types and priorities
 export const EMAIL_TYPES = {
-  WELCOME: 'welcome',
-  DAILY_DIGEST: 'daily_digest',
-  WEEKLY_SUMMARY: 'weekly_summary',
-  NOTIFICATION: 'notification',
-  ALERT: 'alert',
-  REMINDER: 'reminder',
-  CONFIRMATION: 'confirmation',
-  RESET_PASSWORD: 'reset_password',
-  VERIFICATION: 'verification',
-  BILLING: 'billing',
-  SUPPORT: 'support',
-  MARKETING: 'marketing',
-  RE_ENGAGEMENT: 're_engagement',
-  AI_NOTIFICATION: 'ai_notification',
-  BILLING_CONFIRMATION: 'billing_confirmation',
+  WELCOME: "welcome",
+  DAILY_DIGEST: "daily_digest",
+  WEEKLY_SUMMARY: "weekly_summary",
+  NOTIFICATION: "notification",
+  ALERT: "alert",
+  REMINDER: "reminder",
+  CONFIRMATION: "confirmation",
+  RESET_PASSWORD: "reset_password",
+  VERIFICATION: "verification",
+  BILLING: "billing",
+  SUPPORT: "support",
+  MARKETING: "marketing",
+  RE_ENGAGEMENT: "re_engagement",
+  AI_NOTIFICATION: "ai_notification",
+  BILLING_CONFIRMATION: "billing_confirmation",
 } as const;
 
 export const EMAIL_PRIORITY = {
-  HIGH: 'high',
-  NORMAL: 'normal',
-  LOW: 'low',
+  HIGH: "high",
+  NORMAL: "normal",
+  LOW: "low",
 } as const;
 
 // Stub email sending function
 export const sendEmail = async (emailData: Partial<Email>): Promise<void> => {
-  console.log('Email sending disabled - Resend removed:', emailData);
+  console.log("Email sending disabled - Resend removed:", emailData);
   // Email sending is disabled since Resend was removed
 };
 
 // Stub email template rendering
-export const renderEmailTemplate = async (template: string, data: unknown): Promise<string> => {
-  console.log('Email template rendering disabled - Resend removed:', template, data);
+export const renderEmailTemplate = async (
+  template: string,
+  data: unknown,
+): Promise<string> => {
+  console.log(
+    "Email template rendering disabled - Resend removed:",
+    template,
+    data,
+  );
   return `<p>Email template rendering disabled - Resend removed</p>`;
 };
 
 // Email automation types
 export const AUTOMATION_TRIGGERS = {
-  USER_SIGNUP: 'user_signup',
-  USER_ONBOARDING_COMPLETE: 'user_onboarding_complete',
-  EMAIL_PROCESSED: 'email_processed',
-  AI_ACTION_COMPLETED: 'ai_action_completed',
-  SUBSCRIPTION_CREATED: 'subscription_created',
-  SUBSCRIPTION_CANCELED: 'subscription_canceled',
-  PAYMENT_FAILED: 'payment_failed',
-  TRIAL_ENDING: 'trial_ending',
-  INACTIVE_USER: 'inactive_user',
-  FEATURE_USAGE: 'feature_usage',
+  USER_SIGNUP: "user_signup",
+  USER_ONBOARDING_COMPLETE: "user_onboarding_complete",
+  EMAIL_PROCESSED: "email_processed",
+  AI_ACTION_COMPLETED: "ai_action_completed",
+  SUBSCRIPTION_CREATED: "subscription_created",
+  SUBSCRIPTION_CANCELED: "subscription_canceled",
+  PAYMENT_FAILED: "payment_failed",
+  TRIAL_ENDING: "trial_ending",
+  INACTIVE_USER: "inactive_user",
+  FEATURE_USAGE: "feature_usage",
 } as const;
 
 export const AUTOMATION_SCHEDULES = {
-  DAILY_DIGEST: 'daily_digest',
-  WEEKLY_SUMMARY: 'weekly_summary',
-  MONTHLY_REPORT: 'monthly_report',
-  TRIAL_REMINDER: 'trial_reminder',
-  RE_ENGAGEMENT: 're_engagement',
+  DAILY_DIGEST: "daily_digest",
+  WEEKLY_SUMMARY: "weekly_summary",
+  MONTHLY_REPORT: "monthly_report",
+  TRIAL_REMINDER: "trial_reminder",
+  RE_ENGAGEMENT: "re_engagement",
 } as const;
 
 // Email automation interfaces
@@ -72,7 +79,7 @@ export interface AutomationSchedule {
   userId: string;
   schedule: keyof typeof AUTOMATION_SCHEDULES;
   nextRun: Date;
-  frequency: 'daily' | 'weekly' | 'monthly';
+  frequency: "daily" | "weekly" | "monthly";
   enabled: boolean;
   data?: Record<string, unknown>;
 }
@@ -80,7 +87,7 @@ export interface AutomationSchedule {
 export interface UserPreferences {
   userId: string;
   emailTypes: (keyof typeof EMAIL_TYPES)[];
-  frequency: 'immediate' | 'daily' | 'weekly' | 'monthly' | 'never';
+  frequency: "immediate" | "daily" | "weekly" | "monthly" | "never";
   digestEnabled: boolean;
   aiNotifications: boolean;
   billingNotifications: boolean;
@@ -92,7 +99,7 @@ export interface UserPreferences {
 export interface EmailAutomation {
   id: string;
   userId: string;
-  type: 'trigger' | 'schedule';
+  type: "trigger" | "schedule";
   emailType: keyof typeof EMAIL_TYPES;
   subject: string;
   template: string;
@@ -136,14 +143,14 @@ export class EmailAutomationService {
         if (!userPrefs.emailTypes.includes(automation.emailType)) continue;
 
         // Check conditions
-        if (!this.evaluateConditions(automation.conditions, trigger.data)) continue;
+        if (!this.evaluateConditions(automation.conditions, trigger.data))
+          continue;
 
         // Send email
         await this.sendAutomatedEmail(automation, trigger);
       }
-
     } catch (error) {
-      console.error('Failed to handle automation trigger:', error);
+      console.error("Failed to handle automation trigger:", error);
       throw error;
     }
   }
@@ -159,16 +166,16 @@ export class EmailAutomationService {
         if (!userPrefs) continue;
 
         // Check if user wants this type of email
-        if (!this.shouldSendScheduledEmail(schedule.schedule, userPrefs)) continue;
+        if (!this.shouldSendScheduledEmail(schedule.schedule, userPrefs))
+          continue;
 
         await this.sendScheduledEmail(schedule);
 
         // Update next run time
         await this.updateScheduleNextRun(schedule);
       }
-
     } catch (error) {
-      console.error('Failed to process scheduled emails:', error);
+      console.error("Failed to process scheduled emails:", error);
       throw error;
     }
   }
@@ -195,9 +202,8 @@ export class EmailAutomationService {
           },
         });
       }
-
     } catch (error) {
-      console.error('Failed to send re-engagement sequence:', error);
+      console.error("Failed to send re-engagement sequence:", error);
       throw error;
     }
   }
@@ -227,9 +233,8 @@ export class EmailAutomationService {
           campaignId: `daily_digest_${userId}_${digestData.date}`,
         },
       });
-
     } catch (error) {
-      console.error('Failed to send daily digest:', error);
+      console.error("Failed to send daily digest:", error);
       throw error;
     }
   }
@@ -242,7 +247,10 @@ export class EmailAutomationService {
         return;
       }
 
-      const notificationData = await this.getAINotificationData(userId, actions);
+      const notificationData = await this.getAINotificationData(
+        userId,
+        actions,
+      );
       if (!notificationData) {
         return;
       }
@@ -251,7 +259,7 @@ export class EmailAutomationService {
 
       await sendEmail({
         to: notificationData.userEmail,
-        subject: 'AI Analysis Complete - New Insights Available',
+        subject: "AI Analysis Complete - New Insights Available",
         html: html,
         priority: EMAIL_PRIORITY.NORMAL,
         metadata: {
@@ -259,9 +267,8 @@ export class EmailAutomationService {
           campaignId: `ai_notification_${userId}_${Date.now()}`,
         },
       });
-
     } catch (error) {
-      console.error('Failed to send AI notification:', error);
+      console.error("Failed to send AI notification:", error);
       throw error;
     }
   }
@@ -269,8 +276,13 @@ export class EmailAutomationService {
   // Billing notification automation
   async sendBillingNotification(
     userId: string,
-    emailType: 'confirmation' | 'failed' | 'trial_ending' | 'subscription_canceled' | 'payment_reminder',
-    billingData: unknown
+    emailType:
+      | "confirmation"
+      | "failed"
+      | "trial_ending"
+      | "subscription_canceled"
+      | "payment_reminder",
+    billingData: unknown,
   ): Promise<void> {
     try {
       const userPrefs = await this.getUserPreferences(userId);
@@ -278,7 +290,10 @@ export class EmailAutomationService {
         return;
       }
 
-      const html = await this.renderBillingEmailTemplate(emailType, billingData);
+      const html = await this.renderBillingEmailTemplate(
+        emailType,
+        billingData,
+      );
 
       await sendEmail({
         to: billingData.userEmail,
@@ -290,9 +305,8 @@ export class EmailAutomationService {
           campaignId: `billing_${emailType}_${userId}_${Date.now()}`,
         },
       });
-
     } catch (error) {
-      console.error('Failed to send billing notification:', error);
+      console.error("Failed to send billing notification:", error);
       throw error;
     }
   }
@@ -304,9 +318,8 @@ export class EmailAutomationService {
 
       // Update user preferences in database
       console.log(`Updated preferences for user: ${preferences.userId}`);
-
     } catch (error) {
-      console.error('Failed to update user preferences:', error);
+      console.error("Failed to update user preferences:", error);
       throw error;
     }
   }
@@ -317,23 +330,25 @@ export class EmailAutomationService {
       // This is a placeholder implementation
       return {
         userId,
-        emailTypes: ['WELCOME', 'DAILY_DIGEST', 'AI_NOTIFICATION'],
-        frequency: 'daily',
+        emailTypes: ["WELCOME", "DAILY_DIGEST", "AI_NOTIFICATION"],
+        frequency: "daily",
         digestEnabled: true,
         aiNotifications: true,
         billingNotifications: true,
         marketingEmails: false,
-        timezone: 'UTC',
-        preferredTime: '09:00',
+        timezone: "UTC",
+        preferredTime: "09:00",
       };
     } catch (error) {
-      console.error('Failed to get user preferences:', error);
+      console.error("Failed to get user preferences:", error);
       return null;
     }
   }
 
   // Automation management
-  async createAutomation(automation: Omit<EmailAutomation, 'id' | 'createdAt' | 'updatedAt'>): Promise<EmailAutomation> {
+  async createAutomation(
+    automation: Omit<EmailAutomation, "id" | "createdAt" | "updatedAt">,
+  ): Promise<EmailAutomation> {
     try {
       // Create automation in database
       const newAutomation: EmailAutomation = {
@@ -345,20 +360,22 @@ export class EmailAutomationService {
 
       console.log(`Created automation: ${newAutomation.id}`);
       return newAutomation;
-
     } catch (error) {
-      console.error('Failed to create automation:', error);
+      console.error("Failed to create automation:", error);
       throw error;
     }
   }
 
-  async updateAutomation(id: string, _updates: Partial<EmailAutomation>): Promise<EmailAutomation> {
+  async updateAutomation(
+    id: string,
+    _updates: Partial<EmailAutomation>,
+  ): Promise<EmailAutomation> {
     try {
       // Update automation in database
       console.log(`Updated automation: ${id}`);
       return {} as EmailAutomation; // Placeholder
     } catch (error) {
-      console.error('Failed to update automation:', error);
+      console.error("Failed to update automation:", error);
       throw error;
     }
   }
@@ -368,13 +385,15 @@ export class EmailAutomationService {
       // Delete automation from database
       console.log(`Deleted automation: ${id}`);
     } catch (error) {
-      console.error('Failed to delete automation:', error);
+      console.error("Failed to delete automation:", error);
       throw error;
     }
   }
 
   // Private helper methods
-  private async getAutomationsForTrigger(_trigger: string): Promise<EmailAutomation[]> {
+  private async getAutomationsForTrigger(
+    _trigger: string,
+  ): Promise<EmailAutomation[]> {
     // Fetch automations from database
     return []; // Placeholder
   }
@@ -384,12 +403,18 @@ export class EmailAutomationService {
     return []; // Placeholder
   }
 
-  private evaluateConditions(_conditions: Record<string, unknown>, _data: Record<string, unknown> = {}): boolean {
+  private evaluateConditions(
+    _conditions: Record<string, unknown>,
+    _data: Record<string, unknown> = {},
+  ): boolean {
     // Simple condition evaluation - in production, use a proper rule engine
     return true;
   }
 
-  private async sendAutomatedEmail(automation: EmailAutomation, _trigger: AutomationTrigger): Promise<void> {
+  private async sendAutomatedEmail(
+    automation: EmailAutomation,
+    _trigger: AutomationTrigger,
+  ): Promise<void> {
     const html = await renderEmailTemplate(automation.template, {
       ..._trigger.data,
       userId: _trigger.userId,
@@ -397,7 +422,7 @@ export class EmailAutomationService {
     });
 
     await sendEmail({
-      to: _trigger.data?.userEmail || 'user@example.com',
+      to: _trigger.data?.userEmail || "user@example.com",
       subject: automation.subject,
       html: html,
       priority: EMAIL_PRIORITY.NORMAL,
@@ -409,37 +434,47 @@ export class EmailAutomationService {
     });
   }
 
-  private async sendScheduledEmail(_schedule: AutomationSchedule): Promise<void> {
+  private async sendScheduledEmail(
+    _schedule: AutomationSchedule,
+  ): Promise<void> {
     // Send scheduled email
-    console.log('Sending scheduled email disabled - Resend removed:', _schedule);
+    console.log(
+      "Sending scheduled email disabled - Resend removed:",
+      _schedule,
+    );
   }
 
-  private shouldSendScheduledEmail(schedule: string, prefs: UserPreferences): boolean {
+  private shouldSendScheduledEmail(
+    schedule: string,
+    prefs: UserPreferences,
+  ): boolean {
     switch (schedule) {
       case AUTOMATION_SCHEDULES.DAILY_DIGEST:
-        return prefs.digestEnabled && prefs.frequency === 'daily';
+        return prefs.digestEnabled && prefs.frequency === "daily";
       case AUTOMATION_SCHEDULES.WEEKLY_SUMMARY:
-        return prefs.frequency === 'weekly';
+        return prefs.frequency === "weekly";
       case AUTOMATION_SCHEDULES.MONTHLY_REPORT:
-        return prefs.frequency === 'monthly';
+        return prefs.frequency === "monthly";
       default:
         return true;
     }
   }
 
-  private async updateScheduleNextRun(_schedule: AutomationSchedule): Promise<void> {
+  private async updateScheduleNextRun(
+    _schedule: AutomationSchedule,
+  ): Promise<void> {
     // Update next run time based on frequency
     const now = new Date();
     let nextRun: Date;
 
     switch (_schedule.frequency) {
-      case 'daily':
+      case "daily":
         nextRun = new Date(now.getTime() + 24 * 60 * 60 * 1000);
         break;
-      case 'weekly':
+      case "weekly":
         nextRun = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
         break;
-      case 'monthly':
+      case "monthly":
         nextRun = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
         break;
       default:
@@ -447,7 +482,9 @@ export class EmailAutomationService {
     }
 
     // Update in database
-    console.log(`Updated next run for schedule: ${_schedule.schedule} to ${nextRun}`);
+    console.log(
+      `Updated next run for schedule: ${_schedule.schedule} to ${nextRun}`,
+    );
   }
 
   private async getReEngagementSequence(_userId: string): Promise<unknown[]> {
@@ -460,34 +497,46 @@ export class EmailAutomationService {
     return null;
   }
 
-  private async getAINotificationData(_userId: string, _actions: unknown[]): Promise<unknown> {
+  private async getAINotificationData(
+    _userId: string,
+    _actions: unknown[],
+  ): Promise<unknown> {
     // Mock implementation
     return null;
   }
 
   private async renderDailyDigestTemplate(_data: unknown): Promise<string> {
     // Mock implementation
-    return '<p>Daily digest template</p>';
+    return "<p>Daily digest template</p>";
   }
 
   private async renderAINotificationTemplate(_data: unknown): Promise<string> {
     // Mock implementation
-    return '<p>AI notification template</p>';
+    return "<p>AI notification template</p>";
   }
 
-  private async renderBillingEmailTemplate(_type: string, _data: unknown): Promise<string> {
+  private async renderBillingEmailTemplate(
+    _type: string,
+    _data: unknown,
+  ): Promise<string> {
     // Mock implementation
-    return '<p>Billing email template</p>';
+    return "<p>Billing email template</p>";
   }
 
   private getBillingSubject(type: string): string {
     switch (type) {
-      case 'confirmation': return 'Payment Confirmed';
-      case 'failed': return 'Payment Failed';
-      case 'trial_ending': return 'Trial Ending Soon';
-      case 'subscription_canceled': return 'Subscription Canceled';
-      case 'payment_reminder': return 'Payment Due';
-      default: return 'Billing Update';
+      case "confirmation":
+        return "Payment Confirmed";
+      case "failed":
+        return "Payment Failed";
+      case "trial_ending":
+        return "Trial Ending Soon";
+      case "subscription_canceled":
+        return "Subscription Canceled";
+      case "payment_reminder":
+        return "Payment Due";
+      default:
+        return "Billing Update";
     }
   }
 }
@@ -497,4 +546,4 @@ export const emailAutomationService = EmailAutomationService.getInstance();
 
 // Type exports
 export type AutomationTriggerType = keyof typeof AUTOMATION_TRIGGERS;
-export type AutomationScheduleType = keyof typeof AUTOMATION_SCHEDULES; 
+export type AutomationScheduleType = keyof typeof AUTOMATION_SCHEDULES;

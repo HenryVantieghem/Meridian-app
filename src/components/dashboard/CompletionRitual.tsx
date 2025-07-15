@@ -4,12 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence, useAnimation } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { 
-  Sparkles, 
-  Trophy, 
-  Zap,
-  Award
-} from "lucide-react";
+import { Sparkles, Trophy, Zap, Award } from "lucide-react";
 
 interface CompletionRitualProps {
   isVisible: boolean;
@@ -49,13 +44,14 @@ export const CompletionRitual: React.FC<CompletionRitualProps> = ({
   const [showConstellation, setShowConstellation] = useState(false);
   const controls = useAnimation();
 
-  const completionRate = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
+  const completionRate =
+    totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
 
   useEffect(() => {
     if (isVisible) {
       controls.start("visible");
       setShowConstellation(true);
-      
+
       // Cycle through inspirational messages
       const messageInterval = setInterval(() => {
         setCurrentMessage((prev) => (prev + 1) % inspirationalMessages.length);
@@ -146,10 +142,7 @@ export const CompletionRitual: React.FC<CompletionRitualProps> = ({
           {/* Content */}
           <div className="relative z-10 text-center">
             {/* Celebration Animation */}
-            <motion.div
-              variants={itemVariants}
-              className="mb-6"
-            >
+            <motion.div variants={itemVariants} className="mb-6">
               <motion.div
                 animate={{
                   scale: [1, 1.2, 1],
@@ -175,10 +168,7 @@ export const CompletionRitual: React.FC<CompletionRitualProps> = ({
             </motion.h2>
 
             {/* Completion Stats */}
-            <motion.div
-              variants={itemVariants}
-              className="mb-6"
-            >
+            <motion.div variants={itemVariants} className="mb-6">
               <div className="flex items-center justify-center gap-4 mb-4">
                 <div className="text-center">
                   <div className="text-3xl font-bold text-[#D4AF37]">
@@ -194,7 +184,7 @@ export const CompletionRitual: React.FC<CompletionRitualProps> = ({
                   <div className="text-sm text-gray-600">Total</div>
                 </div>
               </div>
-              
+
               {/* Progress Bar */}
               <div className="w-full bg-gray-200 rounded-full h-3 mb-4">
                 <motion.div
@@ -204,17 +194,14 @@ export const CompletionRitual: React.FC<CompletionRitualProps> = ({
                   className="h-3 bg-gradient-to-r from-[#D4AF37] to-[#FFD700] rounded-full"
                 />
               </div>
-              
+
               <div className="text-lg font-semibold text-gray-700">
                 {Math.round(completionRate)}% Complete
               </div>
             </motion.div>
 
             {/* Inspirational Message */}
-            <motion.div
-              variants={itemVariants}
-              className="mb-6"
-            >
+            <motion.div variants={itemVariants} className="mb-6">
               <AnimatePresence mode="wait">
                 <motion.p
                   key={currentMessage}
@@ -294,4 +281,4 @@ export const CompletionRitual: React.FC<CompletionRitualProps> = ({
   );
 };
 
-export default CompletionRitual; 
+export default CompletionRitual;

@@ -1,24 +1,24 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from "@supabase/supabase-js";
 
 // Data retention policies
 export enum RetentionPolicy {
-  IMMEDIATE = 'immediate',
-  DAYS_7 = '7_days',
-  DAYS_30 = '30_days',
-  DAYS_90 = '90_days',
-  DAYS_365 = '365_days',
-  PERMANENT = 'permanent'
+  IMMEDIATE = "immediate",
+  DAYS_7 = "7_days",
+  DAYS_30 = "30_days",
+  DAYS_90 = "90_days",
+  DAYS_365 = "365_days",
+  PERMANENT = "permanent",
 }
 
 export enum DataCategory {
-  USER_PROFILE = 'user_profile',
-  EMAIL_DATA = 'email_data',
-  AI_ANALYSIS = 'ai_analysis',
-  PAYMENT_DATA = 'payment_data',
-  AUDIT_LOGS = 'audit_logs',
-  ERROR_LOGS = 'error_logs',
-  ANALYTICS = 'analytics',
-  BACKUP_DATA = 'backup_data'
+  USER_PROFILE = "user_profile",
+  EMAIL_DATA = "email_data",
+  AI_ANALYSIS = "ai_analysis",
+  PAYMENT_DATA = "payment_data",
+  AUDIT_LOGS = "audit_logs",
+  ERROR_LOGS = "error_logs",
+  ANALYTICS = "analytics",
+  BACKUP_DATA = "backup_data",
 }
 
 // Data retention rule interface
@@ -41,7 +41,7 @@ export class DataRetentionService {
   constructor() {
     this.supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
     );
     this.initializeDefaultRules();
   }
@@ -52,80 +52,80 @@ export class DataRetentionService {
   private initializeDefaultRules(): void {
     const defaultRules: RetentionRule[] = [
       {
-        id: 'user-profile-default',
+        id: "user-profile-default",
         category: DataCategory.USER_PROFILE,
         policy: RetentionPolicy.PERMANENT,
-        description: 'User profiles are retained until account deletion',
+        description: "User profiles are retained until account deletion",
         createdAt: new Date(),
         updatedAt: new Date(),
-        isActive: true
+        isActive: true,
       },
       {
-        id: 'email-data-default',
+        id: "email-data-default",
         category: DataCategory.EMAIL_DATA,
         policy: RetentionPolicy.DAYS_365,
-        description: 'Email data retained for 1 year',
+        description: "Email data retained for 1 year",
         createdAt: new Date(),
         updatedAt: new Date(),
-        isActive: true
+        isActive: true,
       },
       {
-        id: 'ai-analysis-default',
+        id: "ai-analysis-default",
         category: DataCategory.AI_ANALYSIS,
         policy: RetentionPolicy.DAYS_90,
-        description: 'AI analysis data retained for 90 days',
+        description: "AI analysis data retained for 90 days",
         createdAt: new Date(),
         updatedAt: new Date(),
-        isActive: true
+        isActive: true,
       },
       {
-        id: 'payment-data-default',
+        id: "payment-data-default",
         category: DataCategory.PAYMENT_DATA,
         policy: RetentionPolicy.DAYS_365,
-        description: 'Payment data retained for 1 year for compliance',
+        description: "Payment data retained for 1 year for compliance",
         createdAt: new Date(),
         updatedAt: new Date(),
-        isActive: true
+        isActive: true,
       },
       {
-        id: 'audit-logs-default',
+        id: "audit-logs-default",
         category: DataCategory.AUDIT_LOGS,
         policy: RetentionPolicy.DAYS_90,
-        description: 'Audit logs retained for 90 days',
+        description: "Audit logs retained for 90 days",
         createdAt: new Date(),
         updatedAt: new Date(),
-        isActive: true
+        isActive: true,
       },
       {
-        id: 'error-logs-default',
+        id: "error-logs-default",
         category: DataCategory.ERROR_LOGS,
         policy: RetentionPolicy.DAYS_30,
-        description: 'Error logs retained for 30 days',
+        description: "Error logs retained for 30 days",
         createdAt: new Date(),
         updatedAt: new Date(),
-        isActive: true
+        isActive: true,
       },
       {
-        id: 'analytics-default',
+        id: "analytics-default",
         category: DataCategory.ANALYTICS,
         policy: RetentionPolicy.DAYS_365,
-        description: 'Analytics data retained for 1 year',
+        description: "Analytics data retained for 1 year",
         createdAt: new Date(),
         updatedAt: new Date(),
-        isActive: true
+        isActive: true,
       },
       {
-        id: 'backup-data-default',
+        id: "backup-data-default",
         category: DataCategory.BACKUP_DATA,
         policy: RetentionPolicy.DAYS_90,
-        description: 'Backup data retained for 90 days',
+        description: "Backup data retained for 90 days",
         createdAt: new Date(),
         updatedAt: new Date(),
-        isActive: true
-      }
+        isActive: true,
+      },
     ];
 
-    defaultRules.forEach(rule => {
+    defaultRules.forEach((rule) => {
       this.rules.set(rule.category, rule);
     });
   }
@@ -141,7 +141,11 @@ export class DataRetentionService {
   /**
    * Set retention policy for data category
    */
-  setRetentionPolicy(category: DataCategory, policy: RetentionPolicy, description?: string): void {
+  setRetentionPolicy(
+    category: DataCategory,
+    policy: RetentionPolicy,
+    description?: string,
+  ): void {
     const rule: RetentionRule = {
       id: `${category}-${Date.now()}`,
       category,
@@ -149,7 +153,7 @@ export class DataRetentionService {
       description: description || `Custom retention policy for ${category}`,
       createdAt: new Date(),
       updatedAt: new Date(),
-      isActive: true
+      isActive: true,
     };
 
     this.rules.set(category, rule);
@@ -162,7 +166,8 @@ export class DataRetentionService {
   shouldRetainData(category: DataCategory, createdAt: Date): boolean {
     const policy = this.getRetentionPolicy(category);
     const now = new Date();
-    const ageInDays = (now.getTime() - createdAt.getTime()) / (1000 * 60 * 60 * 24);
+    const ageInDays =
+      (now.getTime() - createdAt.getTime()) / (1000 * 60 * 60 * 24);
 
     switch (policy) {
       case RetentionPolicy.IMMEDIATE:
@@ -185,12 +190,14 @@ export class DataRetentionService {
   /**
    * Get data that should be deleted
    */
-  async getDataForDeletion(): Promise<{
-    category: DataCategory;
-    count: number;
-    oldestRecord: Date;
-    newestRecord: Date;
-  }[]> {
+  async getDataForDeletion(): Promise<
+    {
+      category: DataCategory;
+      count: number;
+      oldestRecord: Date;
+      newestRecord: Date;
+    }[]
+  > {
     const results: Array<{
       category: DataCategory;
       count: number;
@@ -202,16 +209,20 @@ export class DataRetentionService {
       if (!rule.isActive) continue;
 
       const expiredData = await this.getExpiredData(category, rule.policy);
-      
+
       if (expiredData.length > 0) {
-        const oldestRecord = new Date(Math.min(...expiredData.map(d => d.created_at)));
-        const newestRecord = new Date(Math.max(...expiredData.map(d => d.created_at)));
+        const oldestRecord = new Date(
+          Math.min(...expiredData.map((d) => d.created_at)),
+        );
+        const newestRecord = new Date(
+          Math.max(...expiredData.map((d) => d.created_at)),
+        );
 
         results.push({
           category,
           count: expiredData.length,
           oldestRecord,
-          newestRecord
+          newestRecord,
         });
       }
     }
@@ -222,11 +233,13 @@ export class DataRetentionService {
   /**
    * Delete expired data
    */
-  async deleteExpiredData(): Promise<{
-    category: DataCategory;
-    deletedCount: number;
-    errors: string[];
-  }[]> {
+  async deleteExpiredData(): Promise<
+    {
+      category: DataCategory;
+      deletedCount: number;
+      errors: string[];
+    }[]
+  > {
     const results: Array<{
       category: DataCategory;
       deletedCount: number;
@@ -241,7 +254,7 @@ export class DataRetentionService {
 
       try {
         const expiredData = await this.getExpiredData(category, rule.policy);
-        
+
         if (expiredData.length > 0) {
           // Delete data based on category
           switch (category) {
@@ -268,13 +281,13 @@ export class DataRetentionService {
           }
         }
       } catch (error) {
-        errors.push(error instanceof Error ? error.message : 'Unknown error');
+        errors.push(error instanceof Error ? error.message : "Unknown error");
       }
 
       results.push({
         category,
         deletedCount,
-        errors
+        errors,
       });
     }
 
@@ -284,28 +297,31 @@ export class DataRetentionService {
   /**
    * Get expired data for a category
    */
-  private async getExpiredData(category: DataCategory, policy: RetentionPolicy): Promise<Record<string, unknown>[]> {
+  private async getExpiredData(
+    category: DataCategory,
+    policy: RetentionPolicy,
+  ): Promise<Record<string, unknown>[]> {
     const cutoffDate = this.getCutoffDate(policy);
-    
+
     let tableName: string;
     switch (category) {
       case DataCategory.EMAIL_DATA:
-        tableName = 'emails';
+        tableName = "emails";
         break;
       case DataCategory.AI_ANALYSIS:
-        tableName = 'email_analyses';
+        tableName = "email_analyses";
         break;
       case DataCategory.AUDIT_LOGS:
-        tableName = 'audit_logs';
+        tableName = "audit_logs";
         break;
       case DataCategory.ERROR_LOGS:
-        tableName = 'error_logs';
+        tableName = "error_logs";
         break;
       case DataCategory.ANALYTICS:
-        tableName = 'analytics_events';
+        tableName = "analytics_events";
         break;
       case DataCategory.BACKUP_DATA:
-        tableName = 'backups';
+        tableName = "backups";
         break;
       default:
         return [];
@@ -314,8 +330,8 @@ export class DataRetentionService {
     try {
       const { data, error } = await this.supabase
         .from(tableName)
-        .select('*')
-        .lt('created_at', cutoffDate.toISOString());
+        .select("*")
+        .lt("created_at", cutoffDate.toISOString());
 
       if (error) {
         throw error;
@@ -333,7 +349,7 @@ export class DataRetentionService {
    */
   private getCutoffDate(policy: RetentionPolicy): Date {
     const now = new Date();
-    
+
     switch (policy) {
       case RetentionPolicy.IMMEDIATE:
         return new Date(0);
@@ -355,13 +371,15 @@ export class DataRetentionService {
   /**
    * Delete expired emails
    */
-  private async deleteExpiredEmails(expiredData: Record<string, unknown>[]): Promise<number> {
-    const emailIds = expiredData.map(d => d.id);
-    
+  private async deleteExpiredEmails(
+    expiredData: Record<string, unknown>[],
+  ): Promise<number> {
+    const emailIds = expiredData.map((d) => d.id);
+
     const { error } = await this.supabase
-      .from('emails')
+      .from("emails")
       .delete()
-      .in('id', emailIds);
+      .in("id", emailIds);
 
     if (error) {
       throw error;
@@ -373,13 +391,15 @@ export class DataRetentionService {
   /**
    * Delete expired AI analysis
    */
-  private async deleteExpiredAIAnalysis(expiredData: Record<string, unknown>[]): Promise<number> {
-    const analysisIds = expiredData.map(d => d.id);
-    
+  private async deleteExpiredAIAnalysis(
+    expiredData: Record<string, unknown>[],
+  ): Promise<number> {
+    const analysisIds = expiredData.map((d) => d.id);
+
     const { error } = await this.supabase
-      .from('email_analyses')
+      .from("email_analyses")
       .delete()
-      .in('id', analysisIds);
+      .in("id", analysisIds);
 
     if (error) {
       throw error;
@@ -391,13 +411,15 @@ export class DataRetentionService {
   /**
    * Delete expired audit logs
    */
-  private async deleteExpiredAuditLogs(expiredData: Record<string, unknown>[]): Promise<number> {
-    const logIds = expiredData.map(d => d.id);
-    
+  private async deleteExpiredAuditLogs(
+    expiredData: Record<string, unknown>[],
+  ): Promise<number> {
+    const logIds = expiredData.map((d) => d.id);
+
     const { error } = await this.supabase
-      .from('audit_logs')
+      .from("audit_logs")
       .delete()
-      .in('id', logIds);
+      .in("id", logIds);
 
     if (error) {
       throw error;
@@ -409,13 +431,15 @@ export class DataRetentionService {
   /**
    * Delete expired error logs
    */
-  private async deleteExpiredErrorLogs(expiredData: Record<string, unknown>[]): Promise<number> {
-    const logIds = expiredData.map(d => d.id);
-    
+  private async deleteExpiredErrorLogs(
+    expiredData: Record<string, unknown>[],
+  ): Promise<number> {
+    const logIds = expiredData.map((d) => d.id);
+
     const { error } = await this.supabase
-      .from('error_logs')
+      .from("error_logs")
       .delete()
-      .in('id', logIds);
+      .in("id", logIds);
 
     if (error) {
       throw error;
@@ -427,13 +451,15 @@ export class DataRetentionService {
   /**
    * Delete expired analytics
    */
-  private async deleteExpiredAnalytics(expiredData: Record<string, unknown>[]): Promise<number> {
-    const eventIds = expiredData.map(d => d.id);
-    
+  private async deleteExpiredAnalytics(
+    expiredData: Record<string, unknown>[],
+  ): Promise<number> {
+    const eventIds = expiredData.map((d) => d.id);
+
     const { error } = await this.supabase
-      .from('analytics_events')
+      .from("analytics_events")
       .delete()
-      .in('id', eventIds);
+      .in("id", eventIds);
 
     if (error) {
       throw error;
@@ -445,13 +471,15 @@ export class DataRetentionService {
   /**
    * Delete expired backups
    */
-  private async deleteExpiredBackups(expiredData: Record<string, unknown>[]): Promise<number> {
-    const backupIds = expiredData.map(d => d.id);
-    
+  private async deleteExpiredBackups(
+    expiredData: Record<string, unknown>[],
+  ): Promise<number> {
+    const backupIds = expiredData.map((d) => d.id);
+
     const { error } = await this.supabase
-      .from('backups')
+      .from("backups")
       .delete()
-      .in('id', backupIds);
+      .in("id", backupIds);
 
     if (error) {
       throw error;
@@ -465,24 +493,22 @@ export class DataRetentionService {
    */
   private async saveRetentionRule(rule: RetentionRule): Promise<void> {
     try {
-      const { error } = await this.supabase
-        .from('retention_rules')
-        .upsert({
-          id: rule.id,
-          category: rule.category,
-          policy: rule.policy,
-          description: rule.description,
-          created_at: rule.createdAt.toISOString(),
-          updated_at: rule.updatedAt.toISOString(),
-          is_active: rule.isActive,
-          conditions: rule.conditions
-        });
+      const { error } = await this.supabase.from("retention_rules").upsert({
+        id: rule.id,
+        category: rule.category,
+        policy: rule.policy,
+        description: rule.description,
+        created_at: rule.createdAt.toISOString(),
+        updated_at: rule.updatedAt.toISOString(),
+        is_active: rule.isActive,
+        conditions: rule.conditions,
+      });
 
       if (error) {
         throw error;
       }
     } catch (error) {
-      console.error('Failed to save retention rule:', error);
+      console.error("Failed to save retention rule:", error);
       throw error;
     }
   }
@@ -493,37 +519,39 @@ export class DataRetentionService {
   async loadRetentionRules(): Promise<void> {
     try {
       const { data, error } = await this.supabase
-        .from('retention_rules')
-        .select('*')
-        .eq('is_active', true);
+        .from("retention_rules")
+        .select("*")
+        .eq("is_active", true);
 
       if (error) {
         throw error;
       }
 
-      data?.forEach((rule: {
-        id: string;
-        category: DataCategory;
-        policy: RetentionPolicy;
-        description: string;
-        created_at: string;
-        updated_at: string;
-        is_active: boolean;
-        conditions: Record<string, unknown>;
-      }) => {
-        this.rules.set(rule.category, {
-          id: rule.id,
-          category: rule.category,
-          policy: rule.policy,
-          description: rule.description,
-          createdAt: new Date(rule.created_at),
-          updatedAt: new Date(rule.updated_at),
-          isActive: rule.is_active,
-          conditions: rule.conditions
-        });
-      });
+      data?.forEach(
+        (rule: {
+          id: string;
+          category: DataCategory;
+          policy: RetentionPolicy;
+          description: string;
+          created_at: string;
+          updated_at: string;
+          is_active: boolean;
+          conditions: Record<string, unknown>;
+        }) => {
+          this.rules.set(rule.category, {
+            id: rule.id,
+            category: rule.category,
+            policy: rule.policy,
+            description: rule.description,
+            createdAt: new Date(rule.created_at),
+            updatedAt: new Date(rule.updated_at),
+            isActive: rule.is_active,
+            conditions: rule.conditions,
+          });
+        },
+      );
     } catch (error) {
-      console.error('Failed to load retention rules:', error);
+      console.error("Failed to load retention rules:", error);
     }
   }
 
@@ -539,16 +567,18 @@ export class DataRetentionService {
     }>;
   }> {
     const totalRules = this.rules.size;
-    const activeRules = Array.from(this.rules.values()).filter(r => r.isActive).length;
+    const activeRules = Array.from(this.rules.values()).filter(
+      (r) => r.isActive,
+    ).length;
     const dataForDeletion = await this.getDataForDeletion();
 
     return {
       totalRules,
       activeRules,
-      dataForDeletion: dataForDeletion.map(d => ({
+      dataForDeletion: dataForDeletion.map((d) => ({
         category: d.category,
-        count: d.count
-      }))
+        count: d.count,
+      })),
     };
   }
 
@@ -563,23 +593,30 @@ export class DataRetentionService {
     analytics: Record<string, unknown>[];
   }> {
     try {
-      const [userProfile, emails, aiAnalysis, auditLogs, analytics] = await Promise.all([
-        this.supabase.from('users').select('*').eq('id', userId).single(),
-        this.supabase.from('emails').select('*').eq('user_id', userId),
-        this.supabase.from('email_analyses').select('*').eq('user_id', userId),
-        this.supabase.from('audit_logs').select('*').eq('user_id', userId),
-        this.supabase.from('analytics_events').select('*').eq('user_id', userId)
-      ]);
+      const [userProfile, emails, aiAnalysis, auditLogs, analytics] =
+        await Promise.all([
+          this.supabase.from("users").select("*").eq("id", userId).single(),
+          this.supabase.from("emails").select("*").eq("user_id", userId),
+          this.supabase
+            .from("email_analyses")
+            .select("*")
+            .eq("user_id", userId),
+          this.supabase.from("audit_logs").select("*").eq("user_id", userId),
+          this.supabase
+            .from("analytics_events")
+            .select("*")
+            .eq("user_id", userId),
+        ]);
 
       return {
         userProfile: userProfile.data,
         emails: emails.data || [],
         aiAnalysis: aiAnalysis.data || [],
         auditLogs: auditLogs.data || [],
-        analytics: analytics.data || []
+        analytics: analytics.data || [],
       };
     } catch (error) {
-      console.error('Failed to export user data:', error);
+      console.error("Failed to export user data:", error);
       throw error;
     }
   }
@@ -596,15 +633,20 @@ export class DataRetentionService {
     const errors: string[] = [];
     let totalDeletedRecords = 0;
 
-    const tables = ['emails', 'email_analyses', 'audit_logs', 'analytics_events'];
+    const tables = [
+      "emails",
+      "email_analyses",
+      "audit_logs",
+      "analytics_events",
+    ];
 
     for (const table of tables) {
       try {
         const { count, error } = await this.supabase
           .from(table)
           .delete()
-          .eq('user_id', userId)
-          .select('count');
+          .eq("user_id", userId)
+          .select("count");
 
         if (error) {
           errors.push(`Failed to delete from ${table}: ${error.message}`);
@@ -613,17 +655,19 @@ export class DataRetentionService {
           totalDeletedRecords += count || 0;
         }
       } catch (error) {
-        errors.push(`Error deleting from ${table}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        errors.push(
+          `Error deleting from ${table}: ${error instanceof Error ? error.message : "Unknown error"}`,
+        );
       }
     }
 
     return {
       deletedTables,
       deletedRecords: totalDeletedRecords,
-      errors
+      errors,
     };
   }
 }
 
 // Export singleton
-export const dataRetentionService = new DataRetentionService(); 
+export const dataRetentionService = new DataRetentionService();

@@ -36,7 +36,9 @@ export const ConfidenceMeter: React.FC<ConfidenceMeterProps> = ({
   onToneChange,
 }) => {
   // Map slider value to label
-  const label = confidenceLabels.find(l => value >= l.min && value < l.max)?.text || "Confident";
+  const label =
+    confidenceLabels.find((l) => value >= l.min && value < l.max)?.text ||
+    "Confident";
 
   // Tone analog control
   const [toneValue, setToneValue] = React.useState(0.5);
@@ -46,12 +48,12 @@ export const ConfidenceMeter: React.FC<ConfidenceMeterProps> = ({
         toneValue < 0.15
           ? "concise"
           : toneValue < 0.4
-          ? "formal"
-          : toneValue < 0.65
-          ? "neutral"
-          : toneValue < 0.9
-          ? "friendly"
-          : "custom";
+            ? "formal"
+            : toneValue < 0.65
+              ? "neutral"
+              : toneValue < 0.9
+                ? "friendly"
+                : "custom";
       onToneChange(tone);
     }
   }, [toneValue, showTone, onToneChange]);
@@ -67,7 +69,10 @@ export const ConfidenceMeter: React.FC<ConfidenceMeterProps> = ({
           exit={{ opacity: 0, y: 8 }}
           transition={{ duration: 0.3 }}
           className="ml-2 px-2 py-1 rounded-full text-xs font-semibold"
-          style={{ background: "linear-gradient(90deg, #D4AF37 0%, #FFD700 100%)", color: "#000" }}
+          style={{
+            background: "linear-gradient(90deg, #D4AF37 0%, #FFD700 100%)",
+            color: "#000",
+          }}
         >
           {label}
         </motion.div>
@@ -91,7 +96,9 @@ export const ConfidenceMeter: React.FC<ConfidenceMeterProps> = ({
             transition={{ duration: 0.3 }}
             className="w-full flex flex-col items-center mt-2"
           >
-            <span className="text-xs font-medium text-gray-500 mb-1">AI Tone</span>
+            <span className="text-xs font-medium text-gray-500 mb-1">
+              AI Tone
+            </span>
             <Slider
               min={0}
               max={1}
@@ -102,8 +109,18 @@ export const ConfidenceMeter: React.FC<ConfidenceMeterProps> = ({
               aria-label="AI Tone"
             />
             <div className="flex justify-between w-full mt-1 text-xs text-gray-500">
-              {toneLabels.map(t => (
-                <span key={t.value} className={cn("", Math.abs(toneValue - t.value) < 0.13 ? "font-bold text-[#D4AF37]" : "")}>{t.label}</span>
+              {toneLabels.map((t) => (
+                <span
+                  key={t.value}
+                  className={cn(
+                    "",
+                    Math.abs(toneValue - t.value) < 0.13
+                      ? "font-bold text-[#D4AF37]"
+                      : "",
+                  )}
+                >
+                  {t.label}
+                </span>
               ))}
             </div>
           </motion.div>
@@ -113,4 +130,4 @@ export const ConfidenceMeter: React.FC<ConfidenceMeterProps> = ({
   );
 };
 
-export default ConfidenceMeter; 
+export default ConfidenceMeter;

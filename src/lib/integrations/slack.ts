@@ -1,10 +1,10 @@
-import { WebClient } from '@slack/web-api';
-import { SocketModeClient } from '@slack/socket-mode';
-import { LogLevel } from '@slack/logger';
-import { createClient } from '@supabase/supabase-js';
-import { logger } from '@/lib/monitoring/logging';
+import { WebClient } from "@slack/web-api";
+import { SocketModeClient } from "@slack/socket-mode";
+import { LogLevel } from "@slack/logger";
+import { createClient } from "@supabase/supabase-js";
+import { logger } from "@/lib/monitoring/logging";
 // import { performanceMonitor } from '@/lib/monitoring/logging';
-import crypto from 'crypto';
+import crypto from "crypto";
 
 // Slack integration types
 export interface SlackWorkspace {
@@ -45,8 +45,8 @@ export interface SlackMessage {
     title?: string;
     text?: string;
   }>;
-  priority?: 'high' | 'medium' | 'low';
-  category?: 'work' | 'personal' | 'project' | 'meeting';
+  priority?: "high" | "medium" | "low";
+  category?: "work" | "personal" | "project" | "meeting";
 }
 
 export interface SlackUser {
@@ -79,7 +79,7 @@ export class SlackClientManager {
   private socketClients = new Map<string, SocketModeClient>();
   private supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
   );
 
   async getClient(workspaceId: string): Promise<WebClient> {
@@ -89,14 +89,14 @@ export class SlackClientManager {
 
     // Get integration from database
     const { data: integration, error } = await this.supabase
-      .from('slack_integrations')
-      .select('*')
-      .eq('workspace_id', workspaceId)
-      .eq('is_active', true)
+      .from("slack_integrations")
+      .select("*")
+      .eq("workspace_id", workspaceId)
+      .eq("is_active", true)
       .single();
 
     if (error || !integration) {
-      throw new Error('Slack integration not found or inactive');
+      throw new Error("Slack integration not found or inactive");
     }
 
     const client = new WebClient(integration.accessToken);
@@ -110,14 +110,14 @@ export class SlackClientManager {
     }
 
     const { data: integration } = await this.supabase
-      .from('slack_integrations')
-      .select('bot_token')
-      .eq('workspace_id', workspaceId)
-      .eq('is_active', true)
+      .from("slack_integrations")
+      .select("bot_token")
+      .eq("workspace_id", workspaceId)
+      .eq("is_active", true)
       .single();
 
     if (!integration?.bot_token) {
-      throw new Error('Bot token not available for Socket Mode');
+      throw new Error("Bot token not available for Socket Mode");
     }
 
     const socketClient = new SocketModeClient({
@@ -148,7 +148,7 @@ export class SlackIntegrationManager {
   private clientManager = new SlackClientManager();
   private supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
   );
 
   // OAuth2 authentication flow
@@ -156,57 +156,58 @@ export class SlackIntegrationManager {
     const clientId = process.env.SLACK_CLIENT_ID;
     const redirectUri = process.env.SLACK_REDIRECT_URI;
     const scope = [
-      'channels:read',
-      'channels:history',
-      'chat:write',
-      'users:read',
-      'users:read.email',
-      'reactions:read',
-      'reactions:write',
-      'groups:read',
-      'groups:history',
-      'im:read',
-      'im:history',
-      'mpim:read',
-      'mpim:history',
-    ].join(',');
+      "channels:read",
+      "channels:history",
+      "chat:write",
+      "users:read",
+      "users:read.email",
+      "reactions:read",
+      "reactions:write",
+      "groups:read",
+      "groups:history",
+      "im:read",
+      "im:history",
+      "mpim:read",
+      "mpim:history",
+    ].join(",");
 
     const state = Math.random().toString(36).substring(2);
-    
+
     // Store state for verification
-    await this.supabase
-      .from('oauth_states')
-      .insert({
-        state,
-        userId,
-        provider: 'slack',
-        expiresAt: new Date(Date.now() + 10 * 60 * 1000).toISOString(), // 10 minutes
-      });
+    await this.supabase.from("oauth_states").insert({
+      state,
+      userId,
+      provider: "slack",
+      expiresAt: new Date(Date.now() + 10 * 60 * 1000).toISOString(), // 10 minutes
+    });
 
     const authUrl = `https://slack.com/oauth/v2/authorize?client_id=${clientId}&scope=${scope}&redirect_uri=${redirectUri}&state=${state}`;
-    
+
     return authUrl;
   }
 
-  async handleOAuthCallback(code: string, state: string): Promise<SlackIntegration> {
+  async handleOAuthCallback(
+    code: string,
+    state: string,
+  ): Promise<SlackIntegration> {
     // Verify state
     const { data: stateRecord, error: stateError } = await this.supabase
-      .from('oauth_states')
-      .select('*')
-      .eq('state', state)
-      .eq('provider', 'slack')
-      .gt('expiresAt', new Date().toISOString())
+      .from("oauth_states")
+      .select("*")
+      .eq("state", state)
+      .eq("provider", "slack")
+      .gt("expiresAt", new Date().toISOString())
       .single();
 
     if (stateError || !stateRecord) {
-      throw new Error('Invalid or expired OAuth state');
+      throw new Error("Invalid or expired OAuth state");
     }
 
     // Exchange code for tokens
-    const tokenResponse = await fetch('https://slack.com/api/oauth.v2.access', {
-      method: 'POST',
+    const tokenResponse = await fetch("https://slack.com/api/oauth.v2.access", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        "Content-Type": "application/x-www-form-urlencoded",
       },
       body: new URLSearchParams({
         client_id: process.env.SLACK_CLIENT_ID!,
@@ -228,11 +229,11 @@ export class SlackIntegrationManager {
 
     // Store integration
     const { data: integration, error } = await this.supabase
-      .from('slack_integrations')
+      .from("slack_integrations")
       .insert({
         user_id: stateRecord.userId,
         workspace_id: tokenData.team.id,
-        workspace_name: teamInfo.team?.name || 'Unknown Workspace',
+        workspace_name: teamInfo.team?.name || "Unknown Workspace",
         access_token: tokenData.access_token,
         bot_token: tokenData.access_token,
         user_token: tokenData.access_token,
@@ -246,29 +247,26 @@ export class SlackIntegrationManager {
     }
 
     // Clean up state
-    await this.supabase
-      .from('oauth_states')
-      .delete()
-      .eq('state', state);
+    await this.supabase.from("oauth_states").delete().eq("state", state);
 
     return integration;
   }
 
   async getWorkspaces(userId: string): Promise<SlackWorkspace[]> {
     const { data: integrations, error } = await this.supabase
-      .from('slack_integrations')
-      .select('*')
-      .eq('user_id', userId)
-      .eq('is_active', true);
+      .from("slack_integrations")
+      .select("*")
+      .eq("user_id", userId)
+      .eq("is_active", true);
 
     if (error) {
       throw new Error(`Failed to get Slack workspaces: ${error.message}`);
     }
 
-    return integrations.map(integration => ({
+    return integrations.map((integration) => ({
       id: integration.workspace_id,
       name: integration.workspace_name,
-      domain: integration.workspace_name.toLowerCase().replace(/\s+/g, '-'),
+      domain: integration.workspace_name.toLowerCase().replace(/\s+/g, "-"),
       isEnterprise: false, // Could be enhanced with actual workspace info
     }));
   }
@@ -277,19 +275,21 @@ export class SlackIntegrationManager {
     const client = await this.clientManager.getClient(workspaceId);
 
     try {
-      const [channelsResponse, groupsResponse, imsResponse] = await Promise.all([
-        client.conversations.list({ types: 'public_channel' }),
-        client.conversations.list({ types: 'private_channel' }),
-        client.conversations.list({ types: 'im,mpim' }),
-      ]);
+      const [channelsResponse, groupsResponse, imsResponse] = await Promise.all(
+        [
+          client.conversations.list({ types: "public_channel" }),
+          client.conversations.list({ types: "private_channel" }),
+          client.conversations.list({ types: "im,mpim" }),
+        ],
+      );
 
       const channels = [
         ...(channelsResponse.channels || []),
         ...(groupsResponse.channels || []),
         ...(imsResponse.channels || []),
-      ].map(channel => ({
+      ].map((channel) => ({
         id: channel.id!,
-        name: channel.name || channel.user || 'Unknown',
+        name: channel.name || channel.user || "Unknown",
         isPrivate: channel.is_private || false,
         isMember: channel.is_member || false,
         memberCount: channel.num_members || 0,
@@ -303,7 +303,11 @@ export class SlackIntegrationManager {
     }
   }
 
-  async getMessages(workspaceId: string, channelId: string, limit = 50): Promise<SlackMessage[]> {
+  async getMessages(
+    workspaceId: string,
+    channelId: string,
+    limit = 50,
+  ): Promise<SlackMessage[]> {
     const client = await this.clientManager.getClient(workspaceId);
 
     try {
@@ -316,41 +320,54 @@ export class SlackIntegrationManager {
       const messages = await Promise.all(
         (response.messages || []).map(async (message) => {
           // Get user info if available
-          let userName = 'Unknown User';
+          let userName = "Unknown User";
           if (message.user) {
             try {
-              const userResponse = await client.users.info({ user: message.user });
-              userName = userResponse.user?.real_name || userResponse.user?.name || 'Unknown User';
+              const userResponse = await client.users.info({
+                user: message.user,
+              });
+              userName =
+                userResponse.user?.real_name ||
+                userResponse.user?.name ||
+                "Unknown User";
             } catch (error) {
-              console.error(`Failed to get user info for ${message.user}:`, error);
+              console.error(
+                `Failed to get user info for ${message.user}:`,
+                error,
+              );
             }
           }
 
           // Get channel info
-          let channelName = 'Unknown Channel';
+          let channelName = "Unknown Channel";
           try {
-            const channelResponse = await client.conversations.info({ channel: channelId });
-            channelName = channelResponse.channel?.name || 'Unknown Channel';
+            const channelResponse = await client.conversations.info({
+              channel: channelId,
+            });
+            channelName = channelResponse.channel?.name || "Unknown Channel";
           } catch (error) {
-            console.error(`Failed to get channel info for ${channelId}:`, error);
+            console.error(
+              `Failed to get channel info for ${channelId}:`,
+              error,
+            );
           }
 
           return {
             id: message.ts!,
             channel: channelId,
             channelName,
-            text: message.text || '',
-            user: message.user || 'system',
+            text: message.text || "",
+            user: message.user || "system",
             userName,
             timestamp: message.ts!,
             threadTs: message.thread_ts,
-            reactions: message.reactions?.map(reaction => ({
-              name: reaction.name ?? '',
+            reactions: message.reactions?.map((reaction) => ({
+              name: reaction.name ?? "",
               count: reaction.count ?? 0,
               users: reaction.users || [],
             })),
-            attachments: message.attachments?.map(attachment => ({
-              type: 'unknown',
+            attachments: message.attachments?.map((attachment) => ({
+              type: "unknown",
               url: attachment.url,
               title: attachment.title,
               text: attachment.text,
@@ -358,7 +375,7 @@ export class SlackIntegrationManager {
             priority: this.determineMessagePriority(message),
             category: this.determineMessageCategory(message),
           };
-        })
+        }),
       );
 
       return messages;
@@ -367,7 +384,12 @@ export class SlackIntegrationManager {
     }
   }
 
-  async sendMessage(workspaceId: string, channelId: string, text: string, threadTs?: string): Promise<string> {
+  async sendMessage(
+    workspaceId: string,
+    channelId: string,
+    text: string,
+    threadTs?: string,
+  ): Promise<string> {
     const client = await this.clientManager.getClient(workspaceId);
 
     try {
@@ -387,7 +409,12 @@ export class SlackIntegrationManager {
     }
   }
 
-  async addReaction(workspaceId: string, channelId: string, timestamp: string, reaction: string): Promise<void> {
+  async addReaction(
+    workspaceId: string,
+    channelId: string,
+    timestamp: string,
+    reaction: string,
+  ): Promise<void> {
     const client = await this.clientManager.getClient(workspaceId);
 
     try {
@@ -405,43 +432,59 @@ export class SlackIntegrationManager {
     }
   }
 
-  async startRealTimeConnection(workspaceId: string, onMessage: (message: SlackMessage) => void): Promise<void> {
+  async startRealTimeConnection(
+    workspaceId: string,
+    onMessage: (message: SlackMessage) => void,
+  ): Promise<void> {
     const socketClient = await this.clientManager.getSocketClient(workspaceId);
 
-    socketClient.on('message', async (event) => {
-      if (event.type === 'events_api') {
+    socketClient.on("message", async (event) => {
+      if (event.type === "events_api") {
         const { event: slackEvent } = event.payload;
-        
-        if (slackEvent.type === 'message') {
+
+        if (slackEvent.type === "message") {
           try {
             const client = await this.clientManager.getClient(workspaceId);
-            
+
             // Get user info
-            let userName = 'Unknown User';
+            let userName = "Unknown User";
             if (slackEvent.user) {
               try {
-                const userResponse = await client.users.info({ user: slackEvent.user });
-                userName = userResponse.user?.real_name || userResponse.user?.name || 'Unknown User';
+                const userResponse = await client.users.info({
+                  user: slackEvent.user,
+                });
+                userName =
+                  userResponse.user?.real_name ||
+                  userResponse.user?.name ||
+                  "Unknown User";
               } catch (error) {
-                console.error(`Failed to get user info for ${slackEvent.user}:`, error);
+                console.error(
+                  `Failed to get user info for ${slackEvent.user}:`,
+                  error,
+                );
               }
             }
 
             // Get channel info
-            let channelName = 'Unknown Channel';
+            let channelName = "Unknown Channel";
             try {
-              const channelResponse = await client.conversations.info({ channel: slackEvent.channel });
-              channelName = channelResponse.channel?.name || 'Unknown Channel';
+              const channelResponse = await client.conversations.info({
+                channel: slackEvent.channel,
+              });
+              channelName = channelResponse.channel?.name || "Unknown Channel";
             } catch (error) {
-              console.error(`Failed to get channel info for ${slackEvent.channel}:`, error);
+              console.error(
+                `Failed to get channel info for ${slackEvent.channel}:`,
+                error,
+              );
             }
 
             const message: SlackMessage = {
               id: slackEvent.ts!,
               channel: slackEvent.channel!,
               channelName,
-              text: slackEvent.text || '',
-              user: slackEvent.user || 'system',
+              text: slackEvent.text || "",
+              user: slackEvent.user || "system",
               userName,
               timestamp: slackEvent.ts!,
               threadTs: slackEvent.thread_ts,
@@ -451,7 +494,7 @@ export class SlackIntegrationManager {
 
             onMessage(message);
           } catch (error) {
-            console.error('Error processing real-time message:', error);
+            console.error("Error processing real-time message:", error);
           }
         }
       }
@@ -465,38 +508,47 @@ export class SlackIntegrationManager {
   }
 
   // Webhook verification
-  verifyWebhookSignature(signature: string, timestamp: string, body: string): boolean {
+  verifyWebhookSignature(
+    signature: string,
+    timestamp: string,
+    body: string,
+  ): boolean {
     const signingSecret = process.env.SLACK_SIGNING_SECRET!;
     const baseString = `v0:${timestamp}:${body}`;
     const expectedSignature = `v0=${crypto
-      .createHmac('sha256', signingSecret)
+      .createHmac("sha256", signingSecret)
       .update(baseString)
-      .digest('hex')}`;
+      .digest("hex")}`;
 
     return crypto.timingSafeEqual(
       Buffer.from(signature),
-      Buffer.from(expectedSignature)
+      Buffer.from(expectedSignature),
     );
   }
 
-  async handleWebhookEvent(event: unknown, signature: string, timestamp: string, body: string): Promise<void> {
+  async handleWebhookEvent(
+    event: unknown,
+    signature: string,
+    timestamp: string,
+    body: string,
+  ): Promise<void> {
     // Verify webhook signature
     if (!this.verifyWebhookSignature(signature, timestamp, body)) {
-      throw new Error('Invalid webhook signature');
+      throw new Error("Invalid webhook signature");
     }
 
     const eventData = event as { type: string };
     // Handle different event types
     switch (eventData.type) {
-      case 'message':
+      case "message":
         await this.handleMessageEvent(event);
         break;
-      case 'reaction_added':
-      case 'reaction_removed':
+      case "reaction_added":
+      case "reaction_removed":
         await this.handleReactionEvent(event);
         break;
-      case 'channel_created':
-      case 'channel_deleted':
+      case "channel_created":
+      case "channel_deleted":
         await this.handleChannelEvent(event);
         break;
       default:
@@ -505,111 +557,134 @@ export class SlackIntegrationManager {
   }
 
   private async handleMessageEvent(event: unknown): Promise<void> {
-    const eventData = event as { ts: string; channel: string; user: string; text: string; team: string };
+    const eventData = event as {
+      ts: string;
+      channel: string;
+      user: string;
+      text: string;
+      team: string;
+    };
     // Store message in database for processing
-    await this.supabase
-      .from('slack_messages')
-      .insert({
-        message_id: eventData.ts,
-        channel_id: eventData.channel,
-        user_id: eventData.user,
-        text: eventData.text,
-        timestamp: new Date(parseFloat(eventData.ts) * 1000).toISOString(),
-        workspace_id: eventData.team,
-      });
+    await this.supabase.from("slack_messages").insert({
+      message_id: eventData.ts,
+      channel_id: eventData.channel,
+      user_id: eventData.user,
+      text: eventData.text,
+      timestamp: new Date(parseFloat(eventData.ts) * 1000).toISOString(),
+      workspace_id: eventData.team,
+    });
   }
 
   private async handleReactionEvent(event: unknown): Promise<void> {
-    const eventData = event as { item: { ts: string; channel: string }; reaction: string; user: string };
+    const eventData = event as {
+      item: { ts: string; channel: string };
+      reaction: string;
+      user: string;
+    };
     // Update message reactions in database
-    await this.supabase
-      .from('slack_reactions')
-      .upsert({
-        message_id: eventData.item.ts,
-        channel_id: eventData.item.channel,
-        reaction: eventData.reaction,
-        user_id: eventData.user,
-        timestamp: new Date().toISOString(),
-      });
+    await this.supabase.from("slack_reactions").upsert({
+      message_id: eventData.item.ts,
+      channel_id: eventData.item.channel,
+      reaction: eventData.reaction,
+      user_id: eventData.user,
+      timestamp: new Date().toISOString(),
+    });
   }
 
   private async handleChannelEvent(event: unknown): Promise<void> {
-    const eventData = event as { channel: { id: string; name: string; is_private: boolean }; team_id: string };
+    const eventData = event as {
+      channel: { id: string; name: string; is_private: boolean };
+      team_id: string;
+    };
     // Update channel information in database
-    await this.supabase
-      .from('slack_channels')
-      .upsert({
-        channel_id: eventData.channel.id,
-        name: eventData.channel.name,
-        workspace_id: eventData.team_id,
-        is_private: eventData.channel.is_private,
-        updated_at: new Date().toISOString(),
-      });
+    await this.supabase.from("slack_channels").upsert({
+      channel_id: eventData.channel.id,
+      name: eventData.channel.name,
+      workspace_id: eventData.team_id,
+      is_private: eventData.channel.is_private,
+      updated_at: new Date().toISOString(),
+    });
   }
 
   async deactivateIntegration(workspaceId: string): Promise<void> {
     await this.supabase
-      .from('slack_integrations')
+      .from("slack_integrations")
       .update({ is_active: false })
-      .eq('workspace_id', workspaceId);
+      .eq("workspace_id", workspaceId);
 
     await this.clientManager.disconnectClient(workspaceId);
   }
 
   async deleteIntegration(workspaceId: string): Promise<void> {
     await this.supabase
-      .from('slack_integrations')
+      .from("slack_integrations")
       .delete()
-      .eq('workspace_id', workspaceId);
+      .eq("workspace_id", workspaceId);
 
     await this.clientManager.disconnectClient(workspaceId);
   }
 
   // Message analysis helpers
-  private determineMessagePriority(message: unknown): 'high' | 'medium' | 'low' {
+  private determineMessagePriority(
+    message: unknown,
+  ): "high" | "medium" | "low" {
     const messageData = message as { text?: string };
-    const text = messageData.text?.toLowerCase() || '';
-    
+    const text = messageData.text?.toLowerCase() || "";
+
     // High priority indicators
-    if (text.includes('urgent') || 
-        text.includes('asap') || 
-        text.includes('important') ||
-        text.includes('emergency') ||
-        text.includes('critical')) {
-      return 'high';
+    if (
+      text.includes("urgent") ||
+      text.includes("asap") ||
+      text.includes("important") ||
+      text.includes("emergency") ||
+      text.includes("critical")
+    ) {
+      return "high";
     }
 
     // Low priority indicators
-    if (text.includes('fun') ||
-        text.includes('joke') ||
-        text.includes('random') ||
-        text.includes('off-topic')) {
-      return 'low';
+    if (
+      text.includes("fun") ||
+      text.includes("joke") ||
+      text.includes("random") ||
+      text.includes("off-topic")
+    ) {
+      return "low";
     }
 
-    return 'medium';
+    return "medium";
   }
 
-  private determineMessageCategory(message: unknown): 'work' | 'personal' | 'project' | 'meeting' {
+  private determineMessageCategory(
+    message: unknown,
+  ): "work" | "personal" | "project" | "meeting" {
     const messageData = message as { text?: string };
-    const text = messageData.text?.toLowerCase() || '';
-    
-    if (text.includes('meeting') || text.includes('call') || text.includes('zoom')) {
-      return 'meeting';
+    const text = messageData.text?.toLowerCase() || "";
+
+    if (
+      text.includes("meeting") ||
+      text.includes("call") ||
+      text.includes("zoom")
+    ) {
+      return "meeting";
     }
-    
-    if (text.includes('project') || text.includes('task') || text.includes('deadline')) {
-      return 'project';
+
+    if (
+      text.includes("project") ||
+      text.includes("task") ||
+      text.includes("deadline")
+    ) {
+      return "project";
     }
-    
-    if (text.includes('personal') || text.includes('private')) {
-      return 'personal';
+
+    if (text.includes("personal") || text.includes("private")) {
+      return "personal";
     }
-    
-    return 'work';
+
+    return "work";
   }
 }
 
 // Export singleton instances for use in API routes
 export const slackManager = new SlackIntegrationManager();
-export const slackIntegrationManager = new SlackIntegrationManager(); 
+export const slackIntegrationManager = new SlackIntegrationManager();

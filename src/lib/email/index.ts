@@ -1,20 +1,20 @@
 // Explicit exports from each module to avoid conflicts
+export type { EmailMessage, EmailProvider, FetchOptions } from "./fetcher";
+export { EmailFetchError, EmailFetcher } from "./fetcher";
+
+export type { GmailEmail, GmailAttachment } from "./gmail-sync";
+export { GmailClient } from "./gmail-sync";
+
+export { EmailProcessor } from "./processor";
 export type {
-  EmailMessage,
-  EmailProvider,
-  FetchOptions
-} from './fetcher';
-export { EmailFetchError, EmailFetcher } from './fetcher';
+  ProcessingJob,
+  ProcessingResult,
+  ProcessingOptions,
+} from "./processor";
+export { ProcessingError } from "./processor";
 
-export type { GmailEmail, GmailAttachment } from './gmail-sync';
-export { GmailClient } from './gmail-sync';
-
-export { EmailProcessor } from './processor';
-export type { ProcessingJob, ProcessingResult, ProcessingOptions } from './processor';
-export { ProcessingError } from './processor';
-
-export { EmailSyncService, emailSyncService } from './sync-service';
-export type { SyncOptions, SyncResult } from './sync-service';
+export { EmailSyncService, emailSyncService } from "./sync-service";
+export type { SyncOptions, SyncResult } from "./sync-service";
 
 export {
   EMAIL_TYPES,
@@ -23,22 +23,19 @@ export {
   renderEmailTemplate,
   AUTOMATION_TRIGGERS,
   AUTOMATION_SCHEDULES,
-  EmailAutomationService
-} from './automation';
-export type { EmailAutomation } from './automation';
+  EmailAutomationService,
+} from "./automation";
+export type { EmailAutomation } from "./automation";
 
 export {
   getEmailStats,
   getEmailAnalytics,
-  exportEmailData
-} from './management';
-export type { EmailStats, EmailAnalytics } from './management';
+  exportEmailData,
+} from "./management";
+export type { EmailStats, EmailAnalytics } from "./management";
 
-export {
-  testEmailConnection,
-  validateEmailConfig
-} from './test';
-export type { EmailTestResult } from './test';
+export { testEmailConnection, validateEmailConfig } from "./test";
+export type { EmailTestResult } from "./test";
 
 // Email types and interfaces
 export interface Email {
@@ -61,10 +58,10 @@ export interface Email {
   messageId: string;
   inReplyTo?: string;
   references?: string[];
-  priority: 'high' | 'normal' | 'low';
+  priority: "high" | "normal" | "low";
   size: number;
   snippet: string;
-  provider: 'gmail' | 'outlook' | 'slack';
+  provider: "gmail" | "outlook" | "slack";
   metadata?: Record<string, unknown>;
 }
 
@@ -75,4 +72,4 @@ export interface EmailAttachment {
   size: number;
   data?: Buffer;
   url?: string;
-} 
+}

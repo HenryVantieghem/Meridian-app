@@ -1,12 +1,20 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card } from '@/components/ui/card';
-import { CheckCircle, User, Users, Building, Zap, Target, Heart } from 'lucide-react';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card";
+import {
+  CheckCircle,
+  User,
+  Users,
+  Building,
+  Zap,
+  Target,
+  Heart,
+} from "lucide-react";
 
 interface ProfileData {
   role: string;
@@ -19,61 +27,88 @@ interface ProfileData {
 }
 
 const roles = [
-  { id: 'executive', label: 'Executive', icon: Building, description: 'C-Suite, VP, Director' },
-  { id: 'manager', label: 'Manager', icon: Users, description: 'Team Lead, Project Manager' },
-  { id: 'individual', label: 'Individual Contributor', icon: User, description: 'Specialist, Analyst' },
-  { id: 'entrepreneur', label: 'Entrepreneur', icon: Zap, description: 'Founder, Consultant' },
+  {
+    id: "executive",
+    label: "Executive",
+    icon: Building,
+    description: "C-Suite, VP, Director",
+  },
+  {
+    id: "manager",
+    label: "Manager",
+    icon: Users,
+    description: "Team Lead, Project Manager",
+  },
+  {
+    id: "individual",
+    label: "Individual Contributor",
+    icon: User,
+    description: "Specialist, Analyst",
+  },
+  {
+    id: "entrepreneur",
+    label: "Entrepreneur",
+    icon: Zap,
+    description: "Founder, Consultant",
+  },
 ];
 
 const painPoints = [
-  { id: 'overwhelm', label: 'Email Overwhelm', icon: Target },
-  { id: 'prioritization', label: 'Poor Prioritization', icon: Zap },
-  { id: 'response-time', label: 'Slow Response Times', icon: Heart },
-  { id: 'context-switching', label: 'Context Switching', icon: Target },
-  { id: 'meeting-coordination', label: 'Meeting Coordination', icon: Users },
-  { id: 'follow-ups', label: 'Follow-up Management', icon: CheckCircle },
+  { id: "overwhelm", label: "Email Overwhelm", icon: Target },
+  { id: "prioritization", label: "Poor Prioritization", icon: Zap },
+  { id: "response-time", label: "Slow Response Times", icon: Heart },
+  { id: "context-switching", label: "Context Switching", icon: Target },
+  { id: "meeting-coordination", label: "Meeting Coordination", icon: Users },
+  { id: "follow-ups", label: "Follow-up Management", icon: CheckCircle },
 ];
 
 export default function OnboardingProfile() {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [profileData, setProfileData] = useState<ProfileData>({
-    role: '',
+    role: "",
     painPoints: [],
-    vipContacts: [{ name: '', email: '', relationship: '' }],
+    vipContacts: [{ name: "", email: "", relationship: "" }],
   });
 
   const handleRoleSelect = (roleId: string) => {
-    setProfileData(prev => ({ ...prev, role: roleId }));
+    setProfileData((prev) => ({ ...prev, role: roleId }));
   };
 
   const handlePainPointToggle = (painPointId: string) => {
-    setProfileData(prev => ({
+    setProfileData((prev) => ({
       ...prev,
       painPoints: prev.painPoints.includes(painPointId)
-        ? prev.painPoints.filter(id => id !== painPointId)
+        ? prev.painPoints.filter((id) => id !== painPointId)
         : [...prev.painPoints, painPointId],
     }));
   };
 
-  const handleVipContactChange = (index: number, field: string, value: string) => {
-    setProfileData(prev => ({
+  const handleVipContactChange = (
+    index: number,
+    field: string,
+    value: string,
+  ) => {
+    setProfileData((prev) => ({
       ...prev,
       vipContacts: prev.vipContacts.map((contact, i) =>
-        i === index ? { ...contact, [field]: value } : contact
+        i === index ? { ...contact, [field]: value } : contact,
       ),
     }));
   };
 
   const addVipContact = () => {
-    setProfileData(prev => ({
+    setProfileData((prev) => ({
       ...prev,
-      vipContacts: [...prev.vipContacts, { name: '', email: '', relationship: '' }],
+      vipContacts: [
+        ...prev.vipContacts,
+        { name: "", email: "", relationship: "" },
+      ],
     }));
   };
 
   const removeVipContact = (index: number) => {
-    setProfileData(prev => ({
+    setProfileData((prev) => ({
       ...prev,
       vipContacts: prev.vipContacts.filter((_, i) => i !== index),
     }));
@@ -84,13 +119,13 @@ export default function OnboardingProfile() {
       setStep(2);
     } else if (step === 2) {
       // Save profile data and proceed to dashboard
-      localStorage.setItem('napoleon-profile', JSON.stringify(profileData));
-      router.push('/dashboard');
+      localStorage.setItem("napoleon-profile", JSON.stringify(profileData));
+      router.push("/dashboard");
     }
   };
 
   const handleSkip = () => {
-    router.push('/dashboard');
+    router.push("/dashboard");
   };
 
   return (
@@ -111,13 +146,12 @@ export default function OnboardingProfile() {
               <User className="w-8 h-8 text-white" />
             </motion.div>
             <h1 className="text-3xl font-bold text-cartier-900">
-              {step === 1 ? 'Tell us about yourself' : 'VIP Contacts'}
+              {step === 1 ? "Tell us about yourself" : "VIP Contacts"}
             </h1>
             <p className="text-cartier-600">
-              {step === 1 
-                ? 'Help Napoleon understand your role and challenges'
-                : 'Add your most important contacts for priority handling'
-              }
+              {step === 1
+                ? "Help Napoleon understand your role and challenges"
+                : "Add your most important contacts for priority handling"}
             </p>
           </div>
 
@@ -125,8 +159,8 @@ export default function OnboardingProfile() {
           <div className="w-full bg-cartier-200 rounded-full h-2">
             <motion.div
               className="bg-brand-burgundy h-2 rounded-full"
-              initial={{ width: step === 1 ? '50%' : '100%' }}
-              animate={{ width: step === 1 ? '50%' : '100%' }}
+              initial={{ width: step === 1 ? "50%" : "100%" }}
+              animate={{ width: step === 1 ? "50%" : "100%" }}
               transition={{ duration: 0.3 }}
             />
           </div>
@@ -142,7 +176,9 @@ export default function OnboardingProfile() {
               >
                 {/* Role Selection */}
                 <div className="space-y-4">
-                  <h2 className="text-xl font-semibold text-cartier-900">What&apos;s your role?</h2>
+                  <h2 className="text-xl font-semibold text-cartier-900">
+                    What&apos;s your role?
+                  </h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {roles.map((role) => {
                       const Icon = role.icon;
@@ -154,15 +190,19 @@ export default function OnboardingProfile() {
                           onClick={() => handleRoleSelect(role.id)}
                           className={`p-4 rounded-xl border-2 transition-all duration-200 ${
                             profileData.role === role.id
-                              ? 'border-brand-burgundy bg-brand-burgundy bg-opacity-10'
-                              : 'border-cartier-200 hover:border-cartier-300'
+                              ? "border-brand-burgundy bg-brand-burgundy bg-opacity-10"
+                              : "border-cartier-200 hover:border-cartier-300"
                           }`}
                         >
                           <div className="flex items-center space-x-3">
                             <Icon className="w-6 h-6 text-brand-burgundy" />
                             <div className="text-left">
-                              <h3 className="font-semibold text-cartier-900">{role.label}</h3>
-                              <p className="text-sm text-cartier-600">{role.description}</p>
+                              <h3 className="font-semibold text-cartier-900">
+                                {role.label}
+                              </h3>
+                              <p className="text-sm text-cartier-600">
+                                {role.description}
+                              </p>
                             </div>
                           </div>
                         </motion.button>
@@ -187,8 +227,8 @@ export default function OnboardingProfile() {
                           onClick={() => handlePainPointToggle(painPoint.id)}
                           className={`p-3 rounded-lg border-2 transition-all duration-200 flex items-center space-x-3 ${
                             profileData.painPoints.includes(painPoint.id)
-                              ? 'border-brand-burgundy bg-brand-burgundy bg-opacity-10'
-                              : 'border-cartier-200 hover:border-cartier-300'
+                              ? "border-brand-burgundy bg-brand-burgundy bg-opacity-10"
+                              : "border-cartier-200 hover:border-cartier-300"
                           }`}
                         >
                           <Icon className="w-5 h-5 text-brand-burgundy" />
@@ -211,11 +251,14 @@ export default function OnboardingProfile() {
               >
                 {/* VIP Contacts */}
                 <div className="space-y-4">
-                  <h2 className="text-xl font-semibold text-cartier-900">VIP Contacts</h2>
+                  <h2 className="text-xl font-semibold text-cartier-900">
+                    VIP Contacts
+                  </h2>
                   <p className="text-cartier-600">
-                    Add your most important contacts. Napoleon will prioritize their messages.
+                    Add your most important contacts. Napoleon will prioritize
+                    their messages.
                   </p>
-                  
+
                   {profileData.vipContacts.map((contact, index) => (
                     <motion.div
                       key={index}
@@ -227,20 +270,38 @@ export default function OnboardingProfile() {
                         <Input
                           placeholder="Name"
                           value={contact.name}
-                          onChange={(e) => handleVipContactChange(index, 'name', e.target.value)}
+                          onChange={(e) =>
+                            handleVipContactChange(
+                              index,
+                              "name",
+                              e.target.value,
+                            )
+                          }
                           className="focus:ring-brand-burgundy"
                         />
                         <Input
                           placeholder="Email"
                           type="email"
                           value={contact.email}
-                          onChange={(e) => handleVipContactChange(index, 'email', e.target.value)}
+                          onChange={(e) =>
+                            handleVipContactChange(
+                              index,
+                              "email",
+                              e.target.value,
+                            )
+                          }
                           className="focus:ring-brand-burgundy"
                         />
                         <Input
                           placeholder="Relationship"
                           value={contact.relationship}
-                          onChange={(e) => handleVipContactChange(index, 'relationship', e.target.value)}
+                          onChange={(e) =>
+                            handleVipContactChange(
+                              index,
+                              "relationship",
+                              e.target.value,
+                            )
+                          }
                           className="focus:ring-brand-burgundy"
                         />
                       </div>
@@ -256,7 +317,7 @@ export default function OnboardingProfile() {
                       )}
                     </motion.div>
                   ))}
-                  
+
                   <Button
                     variant="outline"
                     onClick={addVipContact}
@@ -278,7 +339,7 @@ export default function OnboardingProfile() {
             >
               Skip for now
             </Button>
-            
+
             <div className="flex space-x-3">
               {step === 2 && (
                 <Button
@@ -289,15 +350,16 @@ export default function OnboardingProfile() {
                   Back
                 </Button>
               )}
-              
+
               <Button
                 onClick={handleNext}
                 disabled={
-                  (step === 1 && (!profileData.role || profileData.painPoints.length === 0))
+                  step === 1 &&
+                  (!profileData.role || profileData.painPoints.length === 0)
                 }
                 className="px-6 py-2 rounded-2xl bg-black text-white hover:bg-brand-burgundy"
               >
-                {step === 1 ? 'Next' : 'Complete Setup'}
+                {step === 1 ? "Next" : "Complete Setup"}
               </Button>
             </div>
           </div>
@@ -305,4 +367,4 @@ export default function OnboardingProfile() {
       </motion.div>
     </div>
   );
-} 
+}

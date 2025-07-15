@@ -9,6 +9,7 @@ Delightful animations and interactions following Dieter Rams principles and calm
 Physics-based swipe gestures with contextual delegate options and paper plane animations.
 
 **Features:**
+
 - Spring physics for natural movement
 - Haptic feedback (when available)
 - Orbit effect during drag
@@ -16,17 +17,17 @@ Physics-based swipe gestures with contextual delegate options and paper plane an
 - Contextual delegate options (Team, AI Assistant, Schedule, Archive)
 
 **Usage:**
+
 ```tsx
-import { SwipeToDelegate } from '@/components/micro-interactions';
+import { SwipeToDelegate } from "@/components/micro-interactions";
 
 <SwipeToDelegate onDelegate={(option) => console.log(option)}>
-  <div className="p-4">
-    {/* Email content */}
-  </div>
-</SwipeToDelegate>
+  <div className="p-4">{/* Email content */}</div>
+</SwipeToDelegate>;
 ```
 
 **Props:**
+
 - `children`: React.ReactNode - Content to be swiped
 - `onDelegate`: (option: string) => void - Callback when delegation occurs
 - `disabled?: boolean` - Disable swipe functionality
@@ -37,6 +38,7 @@ import { SwipeToDelegate } from '@/components/micro-interactions';
 Tooltip with sender context, relationship info, communication history, and tone analysis.
 
 **Features:**
+
 - Smooth fade-in/out animations
 - Comprehensive sender context display
 - Communication history and statistics
@@ -44,8 +46,9 @@ Tooltip with sender context, relationship info, communication history, and tone 
 - Priority scoring visualization
 
 **Usage:**
+
 ```tsx
-import { AIHover } from '@/components/micro-interactions';
+import { AIHover } from "@/components/micro-interactions";
 
 const senderContext = {
   name: "Sarah Chen",
@@ -64,13 +67,12 @@ const senderContext = {
 };
 
 <AIHover senderContext={senderContext} showDetails>
-  <div className="email-item">
-    {/* Email content */}
-  </div>
-</AIHover>
+  <div className="email-item">{/* Email content */}</div>
+</AIHover>;
 ```
 
 **Props:**
+
 - `children`: React.ReactNode - Trigger element
 - `senderContext`: SenderContext - Complete sender information
 - `showDetails?: boolean` - Show detailed tooltip on hover
@@ -81,6 +83,7 @@ const senderContext = {
 Celebration animation for completed tasks with constellation view and inspirational messaging.
 
 **Features:**
+
 - Constellation background animation
 - Rotating trophy celebration
 - Cycling inspirational messages
@@ -88,19 +91,21 @@ Celebration animation for completed tasks with constellation view and inspiratio
 - Floating sparkle effects
 
 **Usage:**
+
 ```tsx
-import { CompletionRitual } from '@/components/micro-interactions';
+import { CompletionRitual } from "@/components/micro-interactions";
 
 <CompletionRitual
   isVisible={showRitual}
   completedTasks={8}
   totalTasks={10}
-  onViewArchive={() => console.log('View archive')}
-  onContinue={() => console.log('Continue')}
-/>
+  onViewArchive={() => console.log("View archive")}
+  onContinue={() => console.log("Continue")}
+/>;
 ```
 
 **Props:**
+
 - `isVisible`: boolean - Show/hide the ritual
 - `completedTasks`: number - Number of completed tasks
 - `totalTasks`: number - Total number of tasks
@@ -112,6 +117,7 @@ import { CompletionRitual } from '@/components/micro-interactions';
 Subtle visual cues for sender's local time with color-coded freshness indicators.
 
 **Features:**
+
 - Day/night status with sun/moon icons
 - Color-coded freshness indicators
 - Real-time timezone calculations
@@ -119,6 +125,7 @@ Subtle visual cues for sender's local time with color-coded freshness indicators
 - Compact peripheral vision version
 
 **Usage:**
+
 ```tsx
 import { TimeZoneIndicator, CompactTimeZoneIndicator } from '@/components/micro-interactions';
 
@@ -139,6 +146,7 @@ import { TimeZoneIndicator, CompactTimeZoneIndicator } from '@/components/micro-
 ```
 
 **Props:**
+
 - `senderTimezone`: string - Sender's timezone
 - `userTimezone`: string - User's timezone
 - `emailTime`: Date - When the email was sent
@@ -150,22 +158,26 @@ import { TimeZoneIndicator, CompactTimeZoneIndicator } from '@/components/micro-
 All components follow these animation principles:
 
 ### Duration
+
 - **Quick interactions**: 200-300ms
 - **Standard transitions**: 300-500ms
 - **Complex animations**: 500-800ms
 
 ### Easing
+
 - **Spring physics**: Natural, bouncy movement
 - **Ease-out**: Smooth deceleration
 - **Linear**: Consistent motion (for continuous animations)
 
 ### Accessibility
+
 - **Reduced motion**: Respects `prefers-reduced-motion`
 - **Keyboard navigation**: Full keyboard support
 - **Screen readers**: Proper ARIA labels and roles
 - **Focus management**: Clear focus indicators
 
 ### Performance
+
 - **GPU acceleration**: Uses `transform` and `opacity`
 - **Debounced updates**: Prevents excessive re-renders
 - **Efficient animations**: Minimal layout thrashing
@@ -173,16 +185,19 @@ All components follow these animation principles:
 ## Design Principles
 
 ### Calm Technology
+
 - Inform without demanding attention
 - Stay in periphery until needed
 - Smooth, non-jarring transitions
 
 ### Dieter Rams Principles
+
 - **Less, but better**: Every animation serves a purpose
 - **Good design is unobtrusive**: Subtle, not distracting
 - **Good design is honest**: Clear, predictable behavior
 
 ### Swiss Design Minimalism
+
 - Clean, precise, functional
 - Luxury touches with gold accents
 - Consistent spacing and typography
@@ -190,37 +205,44 @@ All components follow these animation principles:
 ## Integration Examples
 
 ### Email List
+
 ```tsx
-{emails.map((email) => (
-  <SwipeToDelegate key={email.id} onDelegate={handleDelegate}>
-    <AIHover senderContext={email.senderContext}>
-      <div className="email-item">
-        <TimeZoneIndicator
-          senderTimezone={email.senderTimezone}
-          userTimezone={userTimezone}
-          emailTime={email.timestamp}
-        />
-        {/* Email content */}
-      </div>
-    </AIHover>
-  </SwipeToDelegate>
-))}
+{
+  emails.map((email) => (
+    <SwipeToDelegate key={email.id} onDelegate={handleDelegate}>
+      <AIHover senderContext={email.senderContext}>
+        <div className="email-item">
+          <TimeZoneIndicator
+            senderTimezone={email.senderTimezone}
+            userTimezone={userTimezone}
+            emailTime={email.timestamp}
+          />
+          {/* Email content */}
+        </div>
+      </AIHover>
+    </SwipeToDelegate>
+  ));
+}
 ```
 
 ### Dashboard
+
 ```tsx
-{showCompletionRitual && (
-  <CompletionRitual
-    isVisible={true}
-    completedTasks={completedTasks}
-    totalTasks={totalTasks}
-    onViewArchive={handleViewArchive}
-    onContinue={handleContinue}
-  />
-)}
+{
+  showCompletionRitual && (
+    <CompletionRitual
+      isVisible={true}
+      completedTasks={completedTasks}
+      totalTasks={totalTasks}
+      onViewArchive={handleViewArchive}
+      onContinue={handleContinue}
+    />
+  );
+}
 ```
 
 ### Peripheral Indicators
+
 ```tsx
 <div className="dashboard-stats">
   <CompactTimeZoneIndicator
@@ -234,17 +256,20 @@ All components follow these animation principles:
 ## Testing
 
 ### Animation Testing
+
 - Verify smooth transitions on different devices
 - Test with reduced motion preferences
 - Ensure no layout shifts during animations
 
 ### Accessibility Testing
+
 - Screen reader compatibility
 - Keyboard navigation
 - Focus management
 - Color contrast compliance
 
 ### Performance Testing
+
 - Monitor frame rates during animations
 - Test on lower-end devices
 - Verify memory usage with multiple instances
@@ -273,4 +298,4 @@ When adding new micro-interactions:
 3. Add proper TypeScript types
 4. Include usage examples
 5. Test across different devices and browsers
-6. Document any new props or behaviors 
+6. Document any new props or behaviors

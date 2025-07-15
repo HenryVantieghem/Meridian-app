@@ -1,6 +1,6 @@
-import React from 'react';
-import Image from 'next/image';
-import { useIntersectionObserver } from '@/lib/performance/code-splitting';
+import React from "react";
+import Image from "next/image";
+import { useIntersectionObserver } from "@/lib/performance/code-splitting";
 
 interface OptimizedImageProps {
   src: string;
@@ -9,7 +9,7 @@ interface OptimizedImageProps {
   height: number;
   priority?: boolean;
   quality?: number;
-  placeholder?: 'blur' | 'empty';
+  placeholder?: "blur" | "empty";
   blurDataURL?: string;
   sizes?: string;
   className?: string;
@@ -25,9 +25,9 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
   height,
   priority = false,
   quality = 75,
-  placeholder = 'empty',
+  placeholder = "empty",
   blurDataURL,
-  sizes = '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw',
+  sizes = "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw",
   className,
   style,
   onLoad,
@@ -36,7 +36,7 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
   const imageRef = React.useRef<HTMLDivElement>(null);
   const isIntersecting = useIntersectionObserver(imageRef, {
     threshold: 0.1,
-    rootMargin: '50px',
+    rootMargin: "50px",
   });
 
   const [isLoaded, setIsLoaded] = React.useState(false);
@@ -45,10 +45,14 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
   const handleLoad = () => {
     setIsLoaded(true);
     onLoad?.();
-    
+
     // Track image load performance
-    if (typeof window !== 'undefined' && 'gtag' in window && typeof window.gtag === 'function') {
-      window.gtag('event', 'image_load', {
+    if (
+      typeof window !== "undefined" &&
+      "gtag" in window &&
+      typeof window.gtag === "function"
+    ) {
+      window.gtag("event", "image_load", {
         image_src: src,
         load_time: performance.now(),
       });
@@ -58,10 +62,14 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
   const handleError = () => {
     setHasError(true);
     onError?.();
-    
+
     // Track image error
-    if (typeof window !== 'undefined' && 'gtag' in window && typeof window.gtag === 'function') {
-      window.gtag('event', 'image_error', {
+    if (
+      typeof window !== "undefined" &&
+      "gtag" in window &&
+      typeof window.gtag === "function"
+    ) {
+      window.gtag("event", "image_error", {
         image_src: src,
       });
     }
@@ -72,7 +80,7 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
     return (
       <div
         ref={imageRef}
-        className={`bg-gray-200 animate-pulse ${className || ''}`}
+        className={`bg-gray-200 animate-pulse ${className || ""}`}
         style={{
           width,
           height,
@@ -95,15 +103,15 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
         blurDataURL={blurDataURL}
         sizes={sizes}
         className={`transition-opacity duration-300 ${
-          isLoaded ? 'opacity-100' : 'opacity-0'
+          isLoaded ? "opacity-100" : "opacity-0"
         }`}
         onLoad={handleLoad}
         onError={handleError}
         style={{
-          objectFit: 'cover',
+          objectFit: "cover",
         }}
       />
-      
+
       {/* Loading placeholder */}
       {!isLoaded && !hasError && (
         <div
@@ -111,7 +119,7 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
           style={{ width, height }}
         />
       )}
-      
+
       {/* Error placeholder */}
       {hasError && (
         <div
@@ -126,14 +134,12 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
 };
 
 // Responsive image component
-export const ResponsiveImage: React.FC<Omit<OptimizedImageProps, 'width' | 'height'> & {
-  aspectRatio?: number;
-  maxWidth?: number;
-}> = ({
-  aspectRatio = 16 / 9,
-  maxWidth = 1200,
-  ...props
-}) => {
+export const ResponsiveImage: React.FC<
+  Omit<OptimizedImageProps, "width" | "height"> & {
+    aspectRatio?: number;
+    maxWidth?: number;
+  }
+> = ({ aspectRatio = 16 / 9, maxWidth = 1200, ...props }) => {
   const [containerWidth, setContainerWidth] = React.useState(0);
   const containerRef = React.useRef<HTMLDivElement>(null);
 
@@ -146,8 +152,8 @@ export const ResponsiveImage: React.FC<Omit<OptimizedImageProps, 'width' | 'heig
     };
 
     updateWidth();
-    window.addEventListener('resize', updateWidth);
-    return () => window.removeEventListener('resize', updateWidth);
+    window.addEventListener("resize", updateWidth);
+    return () => window.removeEventListener("resize", updateWidth);
   }, [maxWidth]);
 
   const height = containerWidth / aspectRatio;
@@ -155,11 +161,7 @@ export const ResponsiveImage: React.FC<Omit<OptimizedImageProps, 'width' | 'heig
   return (
     <div ref={containerRef} className="w-full">
       {containerWidth > 0 && (
-        <OptimizedImage
-          {...props}
-          width={containerWidth}
-          height={height}
-        />
+        <OptimizedImage {...props} width={containerWidth} height={height} />
       )}
     </div>
   );
@@ -180,12 +182,7 @@ export const LazyImage: React.FC<OptimizedImageProps> = (props) => {
 // Hero image with high priority
 export const HeroImage: React.FC<OptimizedImageProps> = (props) => {
   return (
-    <OptimizedImage
-      {...props}
-      priority={true}
-      quality={90}
-      sizes="100vw"
-    />
+    <OptimizedImage {...props} priority={true} quality={90} sizes="100vw" />
   );
 };
 
@@ -200,4 +197,4 @@ export const ThumbnailImage: React.FC<OptimizedImageProps> = (props) => {
   );
 };
 
-export default OptimizedImage; 
+export default OptimizedImage;

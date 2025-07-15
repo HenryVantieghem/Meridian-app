@@ -1,4 +1,22 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(curl:*)",
+      "Bash(vercel env:*)",
+      "Bash(npm run build:*)",
+      "Bash(vercel deploy:*)",
+      "Bash(mkdir:*)",
+      "mcp__github-repo-mcp__getRepoAllDirectories",
+      "mcp__mcp-git__git_status",
+      "Bash(git fetch:*)",
+      "mcp__mcp-git__git_diff",
+      "Bash(npm run test:run:*)",
+      "Bash(npm run lint:*)",
+      "Bash(npm run format:*)",
+      "Bash(git add:*)"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "github-repo-mcp",
     "mcp-text-editor",
@@ -49,6 +67,5 @@
     "filesystem-mcp",
     "everything-mcp",
     "mcp-sdk"
-  ],
-  "enableAllProjectMcpServers": true
+  ]
 }

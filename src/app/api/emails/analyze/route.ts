@@ -1,40 +1,44 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
-import { EmailAnalyzer, AnalysisRequest } from '@/lib/ai/email-analyzer';
-import { z } from 'zod';
+import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs/server";
+import { EmailAnalyzer, AnalysisRequest } from "@/lib/ai/email-analyzer";
+import { z } from "zod";
 
 // Validation schemas
 const analyzeEmailSchema = z.object({
   emailId: z.string().optional(),
-  email: z.object({
-    id: z.string(),
-    threadId: z.string(),
-    from: z.string().email(),
-    fromName: z.string(),
-    to: z.array(z.string().email()),
-    cc: z.array(z.string().email()),
-    bcc: z.array(z.string().email()),
-    subject: z.string(),
-    body: z.string(),
-    bodyPlain: z.string(),
-    bodyHtml: z.string(),
-    receivedAt: z.string().datetime(),
-    sentAt: z.string().datetime(),
-    labels: z.array(z.string()),
-    isRead: z.boolean(),
-    isStarred: z.boolean(),
-    hasAttachments: z.boolean(),
-    attachmentCount: z.number(),
-    size: z.number(),
-    provider: z.enum(['gmail', 'outlook']),
-    rawData: z.any()
-  }).optional(),
-  userContext: z.object({
-    role: z.string().optional(),
-    industry: z.string().optional(),
-    preferences: z.array(z.string()).optional(),
-    vipContacts: z.array(z.string()).optional()
-  }).optional()
+  email: z
+    .object({
+      id: z.string(),
+      threadId: z.string(),
+      from: z.string().email(),
+      fromName: z.string(),
+      to: z.array(z.string().email()),
+      cc: z.array(z.string().email()),
+      bcc: z.array(z.string().email()),
+      subject: z.string(),
+      body: z.string(),
+      bodyPlain: z.string(),
+      bodyHtml: z.string(),
+      receivedAt: z.string().datetime(),
+      sentAt: z.string().datetime(),
+      labels: z.array(z.string()),
+      isRead: z.boolean(),
+      isStarred: z.boolean(),
+      hasAttachments: z.boolean(),
+      attachmentCount: z.number(),
+      size: z.number(),
+      provider: z.enum(["gmail", "outlook"]),
+      rawData: z.any(),
+    })
+    .optional(),
+  userContext: z
+    .object({
+      role: z.string().optional(),
+      industry: z.string().optional(),
+      preferences: z.array(z.string()).optional(),
+      vipContacts: z.array(z.string()).optional(),
+    })
+    .optional(),
 });
 
 // Unused schemas - kept for future implementation
@@ -122,18 +126,15 @@ export async function POST(request: NextRequest) {
     // Authentication check
     const { userId } = await auth();
     if (!userId) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     // Rate limiting
     const rateLimitKey = `analyze_${userId}`;
-    if (!await checkRateLimit(rateLimitKey)) {
+    if (!(await checkRateLimit(rateLimitKey))) {
       return NextResponse.json(
-        { error: 'Rate limit exceeded' },
-        { status: 429 }
+        { error: "Rate limit exceeded" },
+        { status: 429 },
       );
     }
 
@@ -148,8 +149,8 @@ export async function POST(request: NextRequest) {
       // This would fetch the email from your database
       // For now, we'll return an error
       return NextResponse.json(
-        { error: 'Email fetching by ID not implemented yet' },
-        { status: 501 }
+        { error: "Email fetching by ID not implemented yet" },
+        { status: 501 },
       );
     }
 
@@ -163,43 +164,42 @@ export async function POST(request: NextRequest) {
       };
 
       const userContext = {
-        role: validatedData.userContext?.role ?? 'Professional',
-        industry: validatedData.userContext?.industry ?? 'General',
+        role: validatedData.userContext?.role ?? "Professional",
+        industry: validatedData.userContext?.industry ?? "General",
         preferences: validatedData.userContext?.preferences ?? [],
         vipContacts: validatedData.userContext?.vipContacts ?? [],
       };
 
       const analysisRequest: AnalysisRequest = {
         email,
-        userContext
+        userContext,
       };
 
       const response = await analyzer.analyzeEmail(analysisRequest);
 
       return NextResponse.json({
         success: true,
-        data: response
+        data: response,
       });
     }
 
     return NextResponse.json(
-      { error: 'Either emailId or email data must be provided' },
-      { status: 400 }
+      { error: "Either emailId or email data must be provided" },
+      { status: 400 },
     );
-
   } catch (error: unknown) {
-    console.error('Error in email analysis:', error);
-    
+    console.error("Error in email analysis:", error);
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid request data', details: error.errors },
-        { status: 400 }
+        { error: "Invalid request data", details: error.errors },
+        { status: 400 },
       );
     }
 
     return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
+      { error: "Internal server error" },
+      { status: 500 },
     );
   }
 }
@@ -235,7 +235,7 @@ export async function POST(request: NextRequest) {
 async function checkRateLimit(key: string): Promise<boolean> {
   const now = Date.now();
   const windowStart = now - RATE_LIMIT_WINDOW;
-  
+
   // Clean old entries
   for (const [k, v] of rateLimitMap.entries()) {
     if (v.resetTime < windowStart) {
@@ -256,4 +256,4 @@ async function checkRateLimit(key: string): Promise<boolean> {
 
   current.count++;
   return true;
-} 
+}

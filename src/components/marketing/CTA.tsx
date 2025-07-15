@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import { Typography } from '@/components/ui/typography';
-import { motion } from 'framer-motion';
-import { ArrowRight, Sparkles, Clock, Shield } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Typography } from "@/components/ui/typography";
+import { motion } from "framer-motion";
+import { ArrowRight, Sparkles, Clock, Shield } from "lucide-react";
 
 export function CTA() {
   return (
@@ -18,11 +18,18 @@ export function CTA() {
             viewport={{ once: true }}
             className="mb-12"
           >
-            <Typography variant="h2" className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
+            <Typography
+              variant="h2"
+              className="text-4xl md:text-6xl font-bold text-gray-900 mb-6"
+            >
               Ready to Transform Your Email Workflow?
             </Typography>
-            <Typography variant="body" className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto mb-8">
-              Join thousands of professionals who have already discovered the power of AI-driven email management.
+            <Typography
+              variant="body"
+              className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto mb-8"
+            >
+              Join thousands of professionals who have already discovered the
+              power of AI-driven email management.
             </Typography>
           </motion.div>
 
@@ -34,7 +41,10 @@ export function CTA() {
             viewport={{ once: true }}
             className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12"
           >
-            <Button size="lg" className="text-lg px-8 py-4 bg-primary-600 hover:bg-primary-700">
+            <Button
+              size="lg"
+              className="text-lg px-8 py-4 bg-primary-600 hover:bg-primary-700"
+            >
               Start Your Free Trial
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
@@ -54,7 +64,10 @@ export function CTA() {
             <div className="flex items-center justify-center space-x-3">
               <Clock className="w-6 h-6 text-primary-600" />
               <div className="text-left">
-                <Typography variant="body" className="font-semibold text-gray-900">
+                <Typography
+                  variant="body"
+                  className="font-semibold text-gray-900"
+                >
                   Setup in 2 minutes
                 </Typography>
                 <Typography variant="body" className="text-sm text-gray-600">
@@ -62,11 +75,14 @@ export function CTA() {
                 </Typography>
               </div>
             </div>
-            
+
             <div className="flex items-center justify-center space-x-3">
               <Shield className="w-6 h-6 text-primary-600" />
               <div className="text-left">
-                <Typography variant="body" className="font-semibold text-gray-900">
+                <Typography
+                  variant="body"
+                  className="font-semibold text-gray-900"
+                >
                   Enterprise Security
                 </Typography>
                 <Typography variant="body" className="text-sm text-gray-600">
@@ -74,11 +90,14 @@ export function CTA() {
                 </Typography>
               </div>
             </div>
-            
+
             <div className="flex items-center justify-center space-x-3">
               <Sparkles className="w-6 h-6 text-primary-600" />
               <div className="text-left">
-                <Typography variant="body" className="font-semibold text-gray-900">
+                <Typography
+                  variant="body"
+                  className="font-semibold text-gray-900"
+                >
                   AI-Powered
                 </Typography>
                 <Typography variant="body" className="text-sm text-gray-600">
@@ -115,13 +134,20 @@ export function CTA() {
             viewport={{ once: true }}
             className="mt-12 p-8 bg-white rounded-2xl shadow-lg max-w-2xl mx-auto"
           >
-            <Typography variant="h3" className="text-2xl font-bold text-gray-900 mb-4">
+            <Typography
+              variant="h3"
+              className="text-2xl font-bold text-gray-900 mb-4"
+            >
               Limited Time Offer
             </Typography>
             <Typography variant="body" className="text-gray-600 mb-6">
-              Get 50% off your first 3 months when you start today. No commitment, cancel anytime.
+              Get 50% off your first 3 months when you start today. No
+              commitment, cancel anytime.
             </Typography>
-            <Button size="lg" className="w-full bg-primary-600 hover:bg-primary-700">
+            <Button
+              size="lg"
+              className="w-full bg-primary-600 hover:bg-primary-700"
+            >
               Claim Your Discount
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
@@ -130,4 +156,4 @@ export function CTA() {
       </div>
     </section>
   );
-} 
+}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 interface BillingEmailProps {
   userName: string;
@@ -8,7 +8,7 @@ interface BillingEmailProps {
   billingDate: string;
   dueDate: string;
   planName: string;
-  status: 'paid' | 'pending' | 'overdue';
+  status: "paid" | "pending" | "overdue";
   invoiceUrl: string;
   billingPortalUrl: string;
   supportEmail: string;
@@ -29,27 +29,27 @@ export const BillingEmail: React.FC<BillingEmailProps> = ({
 }) => {
   const getStatusColor = () => {
     switch (status) {
-      case 'paid':
-        return '#10B981';
-      case 'pending':
-        return '#F59E0B';
-      case 'overdue':
-        return '#DC2626';
+      case "paid":
+        return "#10B981";
+      case "pending":
+        return "#F59E0B";
+      case "overdue":
+        return "#DC2626";
       default:
-        return '#666666';
+        return "#666666";
     }
   };
 
   const getStatusText = () => {
     switch (status) {
-      case 'paid':
-        return '✅ Paid';
-      case 'pending':
-        return '⏳ Pending';
-      case 'overdue':
-        return '⚠️ Overdue';
+      case "paid":
+        return "✅ Paid";
+      case "pending":
+        return "⏳ Pending";
+      case "overdue":
+        return "⚠️ Overdue";
       default:
-        return 'Unknown';
+        return "Unknown";
     }
   };
 
@@ -59,21 +59,21 @@ export const BillingEmail: React.FC<BillingEmailProps> = ({
         <div className="logo">Napoleon</div>
         <div className="tagline">Billing & Subscription</div>
       </div>
-      
+
       <div className="content">
         <h1 className="greeting">Hello, {userName}!</h1>
-        
+
         <div className="billing-card">
           <div className="billing-header">
             <h2>Invoice #{invoiceNumber}</h2>
-            <div 
+            <div
               className="status-badge"
               style={{ backgroundColor: getStatusColor() }}
             >
               {getStatusText()}
             </div>
           </div>
-          
+
           <div className="billing-details">
             <div className="detail-row">
               <span className="label">Plan:</span>
@@ -81,7 +81,10 @@ export const BillingEmail: React.FC<BillingEmailProps> = ({
             </div>
             <div className="detail-row">
               <span className="label">Amount:</span>
-              <span className="value amount">{currency}{amount}</span>
+              <span className="value amount">
+                {currency}
+                {amount}
+              </span>
             </div>
             <div className="detail-row">
               <span className="label">Billing Date:</span>
@@ -93,7 +96,7 @@ export const BillingEmail: React.FC<BillingEmailProps> = ({
             </div>
           </div>
         </div>
-        
+
         <div className="action-buttons">
           <a href={invoiceUrl} className="primary-button">
             View Invoice
@@ -102,7 +105,7 @@ export const BillingEmail: React.FC<BillingEmailProps> = ({
             Manage Billing
           </a>
         </div>
-        
+
         <div className="info-section">
           <h3>📋 What&apos;s included in your plan:</h3>
           <ul className="features-list">
@@ -114,42 +117,48 @@ export const BillingEmail: React.FC<BillingEmailProps> = ({
             <li>✅ Advanced analytics</li>
           </ul>
         </div>
-        
-        {status === 'overdue' && (
+
+        {status === "overdue" && (
           <div className="alert-section">
             <h3>⚠️ Payment Overdue</h3>
             <p>
-              Your payment is overdue. Please update your payment method to continue 
-              enjoying Napoleon&apos;s features without interruption.
+              Your payment is overdue. Please update your payment method to
+              continue enjoying Napoleon&apos;s features without interruption.
             </p>
             <a href={billingPortalUrl} className="alert-button">
               Update Payment Method
             </a>
           </div>
         )}
-        
+
         <div className="support-section">
           <h3>Need help?</h3>
           <p>
-            If you have any questions about your billing or subscription, 
-            our support team is here to help.
+            If you have any questions about your billing or subscription, our
+            support team is here to help.
           </p>
           <a href={`mailto:${supportEmail}`} className="support-link">
             Contact Support
           </a>
         </div>
       </div>
-      
+
       <div className="footer">
         <p className="footer-text">
-          Thank you for choosing Napoleon. We&apos;re committed to helping you 
+          Thank you for choosing Napoleon. We&apos;re committed to helping you
           transform your productivity with AI-powered email management.
         </p>
-        
+
         <div className="footer-links">
-          <a href="/billing" className="footer-link">Billing</a>
-          <a href="/privacy" className="footer-link">Privacy</a>
-          <a href="/terms" className="footer-link">Terms</a>
+          <a href="/billing" className="footer-link">
+            Billing
+          </a>
+          <a href="/privacy" className="footer-link">
+            Privacy
+          </a>
+          <a href="/terms" className="footer-link">
+            Terms
+          </a>
         </div>
       </div>
     </div>
@@ -473,4 +482,4 @@ export const billingEmailStyles = `
   }
 `;
 
-export default BillingEmail; 
+export default BillingEmail;

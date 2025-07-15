@@ -1,16 +1,29 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { SignInButton, SignUpButton } from '@clerk/nextjs';
-import { Button } from '@/components/ui/button';
-import { Typography } from '@/components/ui/typography';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { ArrowRight, Crown, Shield, Zap, Target, Users, TrendingUp, Mail, MessageSquare, Clock, Star, Check } from 'lucide-react';
+import { useState } from "react";
+import { SignInButton, SignUpButton } from "@clerk/nextjs";
+import { Button } from "@/components/ui/button";
+import { Typography } from "@/components/ui/typography";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  ArrowRight,
+  Crown,
+  Shield,
+  Zap,
+  Target,
+  Users,
+  TrendingUp,
+  Mail,
+  MessageSquare,
+  Clock,
+  Star,
+  Check,
+} from "lucide-react";
 
 export default function LandingPage() {
   const [showWaitlist, setShowWaitlist] = useState(false);
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
 
   const handleWaitlistSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,12 +40,16 @@ export default function LandingPage() {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <Crown className="h-8 w-8 text-brand-burgundy mr-2" />
-              <Typography variant="h6" className="font-playfair font-bold text-black">
+              <Typography
+                variant="h6"
+                className="font-playfair font-bold text-black"
+              >
                 Napoleon AI
               </Typography>
             </div>
             <div className="flex items-center space-x-4">
-              {typeof window !== 'undefined' && process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY ? (
+              {typeof window !== "undefined" &&
+              process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY ? (
                 <>
                   <SignInButton mode="modal">
                     <Button variant="outline" className="rounded-full">
@@ -47,10 +64,17 @@ export default function LandingPage() {
                 </>
               ) : (
                 <>
-                  <Button variant="outline" className="rounded-full" onClick={() => alert('Authentication coming soon!')}>
+                  <Button
+                    variant="outline"
+                    className="rounded-full"
+                    onClick={() => alert("Authentication coming soon!")}
+                  >
                     Sign In
                   </Button>
-                  <Button className="bg-brand-burgundy text-white hover:bg-brand-burgundy/90 rounded-full" onClick={() => alert('Get started coming soon!')}>
+                  <Button
+                    className="bg-brand-burgundy text-white hover:bg-brand-burgundy/90 rounded-full"
+                    onClick={() => alert("Get started coming soon!")}
+                  >
                     Get Started
                   </Button>
                 </>
@@ -68,34 +92,47 @@ export default function LandingPage() {
               <Crown className="w-3 h-3 mr-1" />
               Executive-Grade AI
             </Badge>
-            
-            <Typography variant="h1" className="text-6xl lg:text-7xl font-playfair font-bold text-black leading-tight mb-6">
+
+            <Typography
+              variant="h1"
+              className="text-6xl lg:text-7xl font-playfair font-bold text-black leading-tight mb-6"
+            >
               Transform Your Communication
               <br />
-              <span className="text-brand-burgundy">Chaos into Strategic Clarity</span>
+              <span className="text-brand-burgundy">
+                Chaos into Strategic Clarity
+              </span>
             </Typography>
-            
-            <Typography variant="h4" className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-              Napoleon AI is the strategic command center for C-suite executives and high-performing professionals. 
-              Reclaim two full days per week with AI-powered email and Slack management.
+
+            <Typography
+              variant="h4"
+              className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed"
+            >
+              Napoleon AI is the strategic command center for C-suite executives
+              and high-performing professionals. Reclaim two full days per week
+              with AI-powered email and Slack management.
             </Typography>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
               <SignUpButton mode="modal">
-                <Button 
-                  size="lg" 
+                <Button
+                  size="lg"
                   className="bg-brand-burgundy text-white hover:bg-brand-burgundy/90 rounded-full px-8 py-4 text-lg"
                 >
                   Request Access
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </SignUpButton>
-              
-              <Button 
-                size="lg" 
-                variant="outline" 
+
+              <Button
+                size="lg"
+                variant="outline"
                 className="rounded-full px-8 py-4 text-lg"
-                onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
+                onClick={() =>
+                  document
+                    .getElementById("features")
+                    ?.scrollIntoView({ behavior: "smooth" })
+                }
               >
                 See How It Works
               </Button>
@@ -124,11 +161,18 @@ export default function LandingPage() {
       <section id="features" className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <Typography variant="h2" className="text-4xl font-playfair font-bold text-black mb-4">
+            <Typography
+              variant="h2"
+              className="text-4xl font-playfair font-bold text-black mb-4"
+            >
               Your Strategic Communication Command Center
             </Typography>
-            <Typography variant="h6" className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Unified dashboard. AI-powered prioritization. Executive-grade security.
+            <Typography
+              variant="h6"
+              className="text-xl text-gray-600 max-w-3xl mx-auto"
+            >
+              Unified dashboard. AI-powered prioritization. Executive-grade
+              security.
             </Typography>
           </div>
 
@@ -142,7 +186,8 @@ export default function LandingPage() {
                   Strategic Daily Brief
                 </Typography>
                 <Typography variant="body1" className="text-gray-600">
-                  Single-screen digest of critical communications across Gmail and Slack with AI-driven priority scoring.
+                  Single-screen digest of critical communications across Gmail
+                  and Slack with AI-driven priority scoring.
                 </Typography>
               </CardContent>
             </Card>
@@ -156,7 +201,9 @@ export default function LandingPage() {
                   VIP Intelligence
                 </Typography>
                 <Typography variant="body1" className="text-gray-600">
-                  Automatic detection and prioritization of high-stakes communications from board members, investors, and key stakeholders.
+                  Automatic detection and prioritization of high-stakes
+                  communications from board members, investors, and key
+                  stakeholders.
                 </Typography>
               </CardContent>
             </Card>
@@ -170,7 +217,8 @@ export default function LandingPage() {
                   AI-Powered Responses
                 </Typography>
                 <Typography variant="body1" className="text-gray-600">
-                  Context-aware drafts with executive tone control. One-click replies that maintain your strategic voice.
+                  Context-aware drafts with executive tone control. One-click
+                  replies that maintain your strategic voice.
                 </Typography>
               </CardContent>
             </Card>
@@ -182,7 +230,10 @@ export default function LandingPage() {
       <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-cartier-50 to-gold-50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <Typography variant="h2" className="text-4xl font-playfair font-bold text-black mb-4">
+            <Typography
+              variant="h2"
+              className="text-4xl font-playfair font-bold text-black mb-4"
+            >
               From Chaos to Clarity in 3 Steps
             </Typography>
           </div>
@@ -198,7 +249,8 @@ export default function LandingPage() {
                   Connect Your Accounts
                 </Typography>
                 <Typography variant="body2" className="text-gray-600">
-                  Seamless OAuth integration with Gmail and Slack. Setup in 60 seconds.
+                  Seamless OAuth integration with Gmail and Slack. Setup in 60
+                  seconds.
                 </Typography>
               </div>
             </div>
@@ -213,7 +265,8 @@ export default function LandingPage() {
                   Define Your VIPs
                 </Typography>
                 <Typography variant="body2" className="text-gray-600">
-                  Identify key stakeholders and relationships. AI learns your communication patterns.
+                  Identify key stakeholders and relationships. AI learns your
+                  communication patterns.
                 </Typography>
               </div>
             </div>
@@ -228,7 +281,8 @@ export default function LandingPage() {
                   Execute with Precision
                 </Typography>
                 <Typography variant="body2" className="text-gray-600">
-                  Strategic daily briefings, AI-powered responses, and inbox zero celebrations.
+                  Strategic daily briefings, AI-powered responses, and inbox
+                  zero celebrations.
                 </Typography>
               </div>
             </div>
@@ -240,7 +294,10 @@ export default function LandingPage() {
       <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <Typography variant="h2" className="text-4xl font-playfair font-bold text-black mb-4">
+            <Typography
+              variant="h2"
+              className="text-4xl font-playfair font-bold text-black mb-4"
+            >
               Trusted by Strategic Leaders
             </Typography>
           </div>
@@ -250,11 +307,18 @@ export default function LandingPage() {
               <CardContent>
                 <div className="flex items-center mb-4">
                   {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
+                    <Star
+                      key={i}
+                      className="h-5 w-5 text-yellow-400 fill-current"
+                    />
                   ))}
                 </div>
-                <Typography variant="body1" className="text-gray-700 mb-6 italic">
-                  "Napoleon AI transformed how I handle board communications. What used to take hours now takes minutes."
+                <Typography
+                  variant="body1"
+                  className="text-gray-700 mb-6 italic"
+                >
+                  "Napoleon AI transformed how I handle board communications.
+                  What used to take hours now takes minutes."
                 </Typography>
                 <div className="flex items-center">
                   <div className="w-12 h-12 bg-brand-burgundy rounded-full flex items-center justify-center text-white font-bold mr-4">
@@ -276,11 +340,18 @@ export default function LandingPage() {
               <CardContent>
                 <div className="flex items-center mb-4">
                   {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
+                    <Star
+                      key={i}
+                      className="h-5 w-5 text-yellow-400 fill-current"
+                    />
                   ))}
                 </div>
-                <Typography variant="body1" className="text-gray-700 mb-6 italic">
-                  "The VIP detection is incredible. I never miss important investor communications anymore."
+                <Typography
+                  variant="body1"
+                  className="text-gray-700 mb-6 italic"
+                >
+                  "The VIP detection is incredible. I never miss important
+                  investor communications anymore."
                 </Typography>
                 <div className="flex items-center">
                   <div className="w-12 h-12 bg-brand-burgundy rounded-full flex items-center justify-center text-white font-bold mr-4">
@@ -302,11 +373,18 @@ export default function LandingPage() {
               <CardContent>
                 <div className="flex items-center mb-4">
                   {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
+                    <Star
+                      key={i}
+                      className="h-5 w-5 text-yellow-400 fill-current"
+                    />
                   ))}
                 </div>
-                <Typography variant="body1" className="text-gray-700 mb-6 italic">
-                  "Finally, an AI tool that understands executive communication. The ROI is immediate."
+                <Typography
+                  variant="body1"
+                  className="text-gray-700 mb-6 italic"
+                >
+                  "Finally, an AI tool that understands executive communication.
+                  The ROI is immediate."
                 </Typography>
                 <div className="flex items-center">
                   <div className="w-12 h-12 bg-brand-burgundy rounded-full flex items-center justify-center text-white font-bold mr-4">
@@ -330,17 +408,20 @@ export default function LandingPage() {
       {/* CTA Section */}
       <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-brand-burgundy to-brand-burgundy/90">
         <div className="max-w-4xl mx-auto text-center">
-          <Typography variant="h2" className="text-4xl font-playfair font-bold text-white mb-6">
+          <Typography
+            variant="h2"
+            className="text-4xl font-playfair font-bold text-white mb-6"
+          >
             Ready to Transform Your Communication Strategy?
           </Typography>
           <Typography variant="h6" className="text-xl text-white/90 mb-8">
             Join 500+ executives who've reclaimed their time with Napoleon AI.
           </Typography>
-          
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <SignUpButton mode="modal">
-              <Button 
-                size="lg" 
+              <Button
+                size="lg"
                 className="bg-white text-brand-burgundy hover:bg-gray-100 rounded-full px-8 py-4 text-lg"
               >
                 Start Your Strategic Command Center
@@ -373,7 +454,10 @@ export default function LandingPage() {
             <div>
               <div className="flex items-center mb-4">
                 <Crown className="h-6 w-6 text-brand-burgundy mr-2" />
-                <Typography variant="h6" className="font-playfair font-bold text-white">
+                <Typography
+                  variant="h6"
+                  className="font-playfair font-bold text-white"
+                >
                   Napoleon AI
                 </Typography>
               </div>
@@ -381,41 +465,77 @@ export default function LandingPage() {
                 The Strategic Command Center for Executive Communication
               </Typography>
             </div>
-            
+
             <div>
               <Typography variant="h6" className="font-bold text-white mb-4">
                 Product
               </Typography>
               <ul className="space-y-2 text-gray-400">
-                <li><a href="#features" className="hover:text-white">Features</a></li>
-                <li><a href="#pricing" className="hover:text-white">Pricing</a></li>
-                <li><a href="#security" className="hover:text-white">Security</a></li>
+                <li>
+                  <a href="#features" className="hover:text-white">
+                    Features
+                  </a>
+                </li>
+                <li>
+                  <a href="#pricing" className="hover:text-white">
+                    Pricing
+                  </a>
+                </li>
+                <li>
+                  <a href="#security" className="hover:text-white">
+                    Security
+                  </a>
+                </li>
               </ul>
             </div>
-            
+
             <div>
               <Typography variant="h6" className="font-bold text-white mb-4">
                 Company
               </Typography>
               <ul className="space-y-2 text-gray-400">
-                <li><a href="#about" className="hover:text-white">About</a></li>
-                <li><a href="#careers" className="hover:text-white">Careers</a></li>
-                <li><a href="#blog" className="hover:text-white">Blog</a></li>
+                <li>
+                  <a href="#about" className="hover:text-white">
+                    About
+                  </a>
+                </li>
+                <li>
+                  <a href="#careers" className="hover:text-white">
+                    Careers
+                  </a>
+                </li>
+                <li>
+                  <a href="#blog" className="hover:text-white">
+                    Blog
+                  </a>
+                </li>
               </ul>
             </div>
-            
+
             <div>
               <Typography variant="h6" className="font-bold text-white mb-4">
                 Support
               </Typography>
               <ul className="space-y-2 text-gray-400">
-                <li><a href="#help" className="hover:text-white">Help Center</a></li>
-                <li><a href="#contact" className="hover:text-white">Contact</a></li>
-                <li><a href="#status" className="hover:text-white">Status</a></li>
+                <li>
+                  <a href="#help" className="hover:text-white">
+                    Help Center
+                  </a>
+                </li>
+                <li>
+                  <a href="#contact" className="hover:text-white">
+                    Contact
+                  </a>
+                </li>
+                <li>
+                  <a href="#status" className="hover:text-white">
+                    Status
+                  </a>
+                </li>
               </ul>
             </div>
           </div>
-          
+
           <div className="border-t border-gray-800 mt-8 pt-8 text-center">
             <Typography variant="body2" className="text-gray-400">
               © 2024 Napoleon AI. All rights reserved.

@@ -1,30 +1,33 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useSignIn } from '@clerk/nextjs';
-import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card } from '@/components/ui/card';
-import { Typography } from '@/components/ui/typography';
-import { cn } from '@/lib/utils';
-import { motion } from 'framer-motion';
-import { Mail, Lock, Eye, EyeOff, AlertCircle } from 'lucide-react';
+import { useState } from "react";
+import { useSignIn } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card";
+import { Typography } from "@/components/ui/typography";
+import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
+import { Mail, Lock, Eye, EyeOff, AlertCircle } from "lucide-react";
 
 interface SignInFormProps {
   redirectUrl?: string;
   className?: string;
 }
 
-export function SignInForm({ redirectUrl = '/dashboard', className }: SignInFormProps) {
+export function SignInForm({
+  redirectUrl = "/dashboard",
+  className,
+}: SignInFormProps) {
   const { isLoaded, signIn, setActive } = useSignIn();
   const router = useRouter();
-  
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [isOAuthLoading, setIsOAuthLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -32,7 +35,7 @@ export function SignInForm({ redirectUrl = '/dashboard', className }: SignInForm
     if (!isLoaded) return;
 
     setIsLoading(true);
-    setError('');
+    setError("");
 
     try {
       const result = await signIn.create({
@@ -40,38 +43,46 @@ export function SignInForm({ redirectUrl = '/dashboard', className }: SignInForm
         password,
       });
 
-      if (result.status === 'complete') {
+      if (result.status === "complete") {
         await setActive({ session: result.createdSessionId });
         router.push(redirectUrl);
       } else {
-        setError('Sign in failed. Please try again.');
+        setError("Sign in failed. Please try again.");
       }
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error && 'errors' in err && Array.isArray((err as { errors: Array<{ message: string }> }).errors) 
-        ? (err as { errors: Array<{ message: string }> }).errors[0]?.message 
-        : 'An error occurred during sign in.';
+      const errorMessage =
+        err instanceof Error &&
+        "errors" in err &&
+        Array.isArray((err as { errors: Array<{ message: string }> }).errors)
+          ? (err as { errors: Array<{ message: string }> }).errors[0]?.message
+          : "An error occurred during sign in.";
       setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleOAuthSignIn = async (provider: 'oauth_google' | 'oauth_microsoft') => {
+  const handleOAuthSignIn = async (
+    provider: "oauth_google" | "oauth_microsoft",
+  ) => {
     if (!isLoaded) return;
 
     setIsOAuthLoading(true);
-    setError('');
+    setError("");
 
     try {
       await signIn.authenticateWithRedirect({
         strategy: provider,
-        redirectUrl: '/sso-callback',
+        redirectUrl: "/sso-callback",
         redirectUrlComplete: redirectUrl,
       });
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error && 'errors' in err && Array.isArray((err as { errors: Array<{ message: string }> }).errors) 
-        ? (err as { errors: Array<{ message: string }> }).errors[0]?.message 
-        : 'OAuth sign in failed.';
+      const errorMessage =
+        err instanceof Error &&
+        "errors" in err &&
+        Array.isArray((err as { errors: Array<{ message: string }> }).errors)
+          ? (err as { errors: Array<{ message: string }> }).errors[0]?.message
+          : "OAuth sign in failed.";
       setError(errorMessage);
       setIsOAuthLoading(false);
     }
@@ -90,7 +101,7 @@ export function SignInForm({ redirectUrl = '/dashboard', className }: SignInForm
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className={cn('w-full max-w-md mx-auto', className)}
+      className={cn("w-full max-w-md mx-auto", className)}
     >
       <Card className="p-8 space-y-6">
         <div className="text-center space-y-2">
@@ -104,7 +115,10 @@ export function SignInForm({ redirectUrl = '/dashboard', className }: SignInForm
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700"
+            >
               Email address
             </label>
             <div className="relative">
@@ -123,14 +137,17 @@ export function SignInForm({ redirectUrl = '/dashboard', className }: SignInForm
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700"
+            >
               Password
             </label>
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
               <Input
                 id="password"
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your password"
@@ -144,7 +161,11 @@ export function SignInForm({ redirectUrl = '/dashboard', className }: SignInForm
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                 disabled={isLoading}
               >
-                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                {showPassword ? (
+                  <EyeOff className="h-4 w-4" />
+                ) : (
+                  <Eye className="h-4 w-4" />
+                )}
               </button>
             </div>
           </div>
@@ -168,7 +189,7 @@ export function SignInForm({ redirectUrl = '/dashboard', className }: SignInForm
             disabled={isLoading}
             loading={isLoading}
           >
-            {isLoading ? 'Signing in...' : 'Sign in'}
+            {isLoading ? "Signing in..." : "Sign in"}
           </Button>
         </form>
 
@@ -177,14 +198,16 @@ export function SignInForm({ redirectUrl = '/dashboard', className }: SignInForm
             <div className="w-full border-t border-gray-300" />
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-white text-gray-500">Or continue with</span>
+            <span className="px-2 bg-white text-gray-500">
+              Or continue with
+            </span>
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-3">
           <Button
             variant="outline"
-            onClick={() => handleOAuthSignIn('oauth_google')}
+            onClick={() => handleOAuthSignIn("oauth_google")}
             disabled={isOAuthLoading}
             className="flex items-center justify-center space-x-2"
           >
@@ -211,12 +234,15 @@ export function SignInForm({ redirectUrl = '/dashboard', className }: SignInForm
 
           <Button
             variant="outline"
-            onClick={() => handleOAuthSignIn('oauth_microsoft')}
+            onClick={() => handleOAuthSignIn("oauth_microsoft")}
             disabled={isOAuthLoading}
             className="flex items-center justify-center space-x-2"
           >
             <svg className="h-4 w-4" viewBox="0 0 24 24">
-              <path fill="currentColor" d="M11.5 2.75h-8v8h8v-8zM11.5 13.25h-8v8h8v-8zM21.5 2.75h-8v8h8v-8zM21.5 13.25h-8v8h8v-8z"/>
+              <path
+                fill="currentColor"
+                d="M11.5 2.75h-8v8h8v-8zM11.5 13.25h-8v8h8v-8zM21.5 2.75h-8v8h8v-8zM21.5 13.25h-8v8h8v-8z"
+              />
             </svg>
             <span>Microsoft</span>
           </Button>
@@ -224,10 +250,10 @@ export function SignInForm({ redirectUrl = '/dashboard', className }: SignInForm
 
         <div className="text-center">
           <Typography variant="body" className="text-gray-600">
-              Don&apos;t have an account?{' '}
+            Don&apos;t have an account?{" "}
             <a
               href="/sign-up"
-                              className="text-brand-burgundy hover:text-brand-burgundy-dark font-medium transition-colors"
+              className="text-brand-burgundy hover:text-brand-burgundy-dark font-medium transition-colors"
             >
               Sign up
             </a>
@@ -236,4 +262,4 @@ export function SignInForm({ redirectUrl = '/dashboard', className }: SignInForm
       </Card>
     </motion.div>
   );
-} 
+}

@@ -1,19 +1,19 @@
-import { openai } from './openai-client';
-import { Email, SlackMessage } from '@/types';
+import { openai } from "./openai-client";
+import { Email, SlackMessage } from "@/types";
 
 export interface AIAnalysis {
   id: string;
   contentId: string;
-  contentType: 'email' | 'slack';
-  sentiment: 'positive' | 'negative' | 'neutral';
-  priority: 'low' | 'medium' | 'high' | 'urgent';
+  contentType: "email" | "slack";
+  sentiment: "positive" | "negative" | "neutral";
+  priority: "low" | "medium" | "high" | "urgent";
   confidence: number;
   summary: string;
   keyPoints: string[];
   suggestedActions: string[];
   replySuggestion?: string;
-  tone: 'formal' | 'casual' | 'friendly' | 'professional';
-  urgency: 'low' | 'medium' | 'high';
+  tone: "formal" | "casual" | "friendly" | "professional";
+  urgency: "low" | "medium" | "high";
   estimatedResponseTime: number; // in minutes
   tags: string[];
   createdAt: Date;
@@ -21,7 +21,7 @@ export interface AIAnalysis {
 
 export interface AnalysisRequest {
   content: string;
-  contentType: 'email' | 'slack';
+  contentType: "email" | "slack";
   context?: {
     userRole?: string;
     industry?: string;
@@ -54,10 +54,10 @@ export class AIAnalysisService {
       const userPrompt = this.buildUserPrompt(content, contentType);
 
       const response = await openai.chat.completions.create({
-        model: 'gpt-4o',
+        model: "gpt-4o",
         messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userPrompt }
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userPrompt },
         ],
         temperature: 0.3,
         max_tokens: 2000,
@@ -65,21 +65,23 @@ export class AIAnalysisService {
 
       const analysisText = response.choices[0]?.message?.content;
       if (!analysisText) {
-        throw new Error('No analysis response from AI');
+        throw new Error("No analysis response from AI");
       }
 
       return this.parseAnalysisResponse(analysisText, content, contentType);
     } catch (error) {
-      console.error('AI Analysis error:', error);
-      throw new Error(`Failed to analyze content: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      console.error("AI Analysis error:", error);
+      throw new Error(
+        `Failed to analyze content: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
     }
   }
 
   async generateReply(
     originalContent: string,
     context: string,
-    tone: 'formal' | 'casual' | 'professional' = 'professional',
-    length: 'short' | 'medium' | 'long' = 'medium'
+    tone: "formal" | "casual" | "professional" = "professional",
+    length: "short" | "medium" | "long" = "medium",
   ): Promise<string> {
     try {
       const systemPrompt = `You are an AI assistant helping to generate professional email replies. 
@@ -93,25 +95,32 @@ export class AIAnalysisService {
       Please generate a ${tone} reply that is ${length} in length.`;
 
       const response = await openai.chat.completions.create({
-        model: 'gpt-4o',
+        model: "gpt-4o",
         messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userPrompt }
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userPrompt },
         ],
         temperature: 0.7,
         max_tokens: 500,
       });
 
-      return response.choices[0]?.message?.content || 'Unable to generate reply';
+      return (
+        response.choices[0]?.message?.content || "Unable to generate reply"
+      );
     } catch (error) {
-      console.error('Reply generation error:', error);
-      throw new Error(`Failed to generate reply: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      console.error("Reply generation error:", error);
+      throw new Error(
+        `Failed to generate reply: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
     }
   }
 
-  private buildSystemPrompt(contentType: 'email' | 'slack', context?: { userRole?: string; industry?: string }): string {
-    const role = context?.userRole || 'professional';
-    const industry = context?.industry || 'general';
+  private buildSystemPrompt(
+    contentType: "email" | "slack",
+    context?: { userRole?: string; industry?: string },
+  ): string {
+    const role = context?.userRole || "professional";
+    const industry = context?.industry || "general";
 
     return `You are an AI assistant specialized in analyzing ${contentType} messages for busy professionals.
     
@@ -146,7 +155,10 @@ export class AIAnalysisService {
     }`;
   }
 
-  private buildUserPrompt(content: string, contentType: 'email' | 'slack'): string {
+  private buildUserPrompt(
+    content: string,
+    contentType: "email" | "slack",
+  ): string {
     return `Please analyze this ${contentType} message:
 
 "${content}"
@@ -154,12 +166,16 @@ export class AIAnalysisService {
 Provide a comprehensive analysis in the specified JSON format.`;
   }
 
-  private parseAnalysisResponse(responseText: string, content: string, contentType: 'email' | 'slack'): AIAnalysis {
+  private parseAnalysisResponse(
+    responseText: string,
+    content: string,
+    contentType: "email" | "slack",
+  ): AIAnalysis {
     try {
       // Extract JSON from response
       const jsonMatch = responseText.match(/\{[\s\S]*\}/);
       if (!jsonMatch) {
-        throw new Error('No JSON found in response');
+        throw new Error("No JSON found in response");
       }
 
       const analysis = JSON.parse(jsonMatch[0]);
@@ -168,76 +184,87 @@ Provide a comprehensive analysis in the specified JSON format.`;
         id: Math.random().toString(36).substr(2, 9),
         contentId: content.substring(0, 50), // Use content hash in production
         contentType,
-        sentiment: analysis.sentiment || 'neutral',
-        priority: analysis.priority || 'medium',
+        sentiment: analysis.sentiment || "neutral",
+        priority: analysis.priority || "medium",
         confidence: analysis.confidence || 50,
-        summary: analysis.summary || 'No summary available',
+        summary: analysis.summary || "No summary available",
         keyPoints: analysis.keyPoints || [],
         suggestedActions: analysis.suggestedActions || [],
-        tone: analysis.tone || 'professional',
-        urgency: analysis.urgency || 'medium',
+        tone: analysis.tone || "professional",
+        urgency: analysis.urgency || "medium",
         estimatedResponseTime: analysis.estimatedResponseTime || 30,
-        tags: analysis.tags ? analysis.tags.split(',').map((tag: string) => tag.trim()) : [],
+        tags: analysis.tags
+          ? analysis.tags.split(",").map((tag: string) => tag.trim())
+          : [],
         createdAt: new Date(),
       };
     } catch (error) {
-      console.error('Failed to parse AI response:', error);
-      
+      console.error("Failed to parse AI response:", error);
+
       // Return fallback analysis
       return {
         id: Math.random().toString(36).substr(2, 9),
         contentId: content.substring(0, 50),
         contentType,
-        sentiment: 'neutral',
-        priority: 'medium',
+        sentiment: "neutral",
+        priority: "medium",
         confidence: 50,
-        summary: 'Analysis failed - please review manually',
-        keyPoints: ['Content requires manual review'],
-        suggestedActions: ['Review the content manually'],
-        tone: 'professional',
-        urgency: 'medium',
+        summary: "Analysis failed - please review manually",
+        keyPoints: ["Content requires manual review"],
+        suggestedActions: ["Review the content manually"],
+        tone: "professional",
+        urgency: "medium",
         estimatedResponseTime: 30,
-        tags: ['needs-review'],
+        tags: ["needs-review"],
         createdAt: new Date(),
       };
     }
   }
 
-  async analyzeEmail(email: Email, context?: { senderInfo?: { name: string; email?: string } }): Promise<AIAnalysis> {
+  async analyzeEmail(
+    email: Email,
+    context?: { senderInfo?: { name: string; email?: string } },
+  ): Promise<AIAnalysis> {
     const content = `${email.subject}\n\n${email.body}`;
-    
+
     return this.analyzeContent({
       content,
-      contentType: 'email',
+      contentType: "email",
       context: {
         ...context,
         senderInfo: {
-          name: email.from.name || 'Unknown',
+          name: email.from.name || "Unknown",
           email: email.from.email,
-        }
-      }
+        },
+      },
     });
   }
 
-  async analyzeSlackMessage(message: SlackMessage, context?: { senderInfo?: { name: string } }): Promise<AIAnalysis> {
+  async analyzeSlackMessage(
+    message: SlackMessage,
+    context?: { senderInfo?: { name: string } },
+  ): Promise<AIAnalysis> {
     return this.analyzeContent({
       content: message.content,
-      contentType: 'slack',
+      contentType: "slack",
       context: {
         ...context,
         senderInfo: {
           name: message.sender.name,
-        }
-      }
+        },
+      },
     });
   }
 
-  async batchAnalyze(items: (Email | SlackMessage)[], context?: { senderInfo?: { name: string } }): Promise<AIAnalysis[]> {
+  async batchAnalyze(
+    items: (Email | SlackMessage)[],
+    context?: { senderInfo?: { name: string } },
+  ): Promise<AIAnalysis[]> {
     const analyses: AIAnalysis[] = [];
-    
+
     for (const item of items) {
       try {
-        if ('from' in item) {
+        if ("from" in item) {
           // Email
           const analysis = await this.analyzeEmail(item, context);
           analyses.push(analysis);
@@ -247,13 +274,13 @@ Provide a comprehensive analysis in the specified JSON format.`;
           analyses.push(analysis);
         }
       } catch (error) {
-        console.error('Failed to analyze item:', error);
+        console.error("Failed to analyze item:", error);
         // Continue with next item
       }
     }
-    
+
     return analyses;
   }
 }
 
-export const aiAnalysisService = AIAnalysisService.getInstance(); 
+export const aiAnalysisService = AIAnalysisService.getInstance();

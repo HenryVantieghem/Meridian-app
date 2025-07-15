@@ -9,7 +9,7 @@ interface TimeZoneData {
   timezone: string;
   currentTime: Date;
   isDaytime: boolean;
-  freshness: 'fresh' | 'recent' | 'stale';
+  freshness: "fresh" | "recent" | "stale";
   timeDifference: number; // hours from user's timezone
 }
 
@@ -34,22 +34,28 @@ export const TimeZoneIndicator: React.FC<TimeZoneIndicatorProps> = ({
   useEffect(() => {
     const calculateTimeZoneData = (): TimeZoneData => {
       const now = new Date();
-      const senderTime = new Date(now.toLocaleString("en-US", { timeZone: senderTimezone }));
-      const userTime = new Date(now.toLocaleString("en-US", { timeZone: userTimezone }));
-      
-      const timeDifference = (senderTime.getTime() - userTime.getTime()) / (1000 * 60 * 60);
-      
+      const senderTime = new Date(
+        now.toLocaleString("en-US", { timeZone: senderTimezone }),
+      );
+      const userTime = new Date(
+        now.toLocaleString("en-US", { timeZone: userTimezone }),
+      );
+
+      const timeDifference =
+        (senderTime.getTime() - userTime.getTime()) / (1000 * 60 * 60);
+
       // Determine if it's daytime in sender's timezone
       const senderHour = senderTime.getHours();
       const isDaytime = senderHour >= 6 && senderHour < 18;
-      
+
       // Calculate freshness based on email time
-      const hoursSinceEmail = (now.getTime() - emailTime.getTime()) / (1000 * 60 * 60);
-      let freshness: 'fresh' | 'recent' | 'stale';
-      if (hoursSinceEmail < 2) freshness = 'fresh';
-      else if (hoursSinceEmail < 24) freshness = 'recent';
-      else freshness = 'stale';
-      
+      const hoursSinceEmail =
+        (now.getTime() - emailTime.getTime()) / (1000 * 60 * 60);
+      let freshness: "fresh" | "recent" | "stale";
+      if (hoursSinceEmail < 2) freshness = "fresh";
+      else if (hoursSinceEmail < 24) freshness = "recent";
+      else freshness = "stale";
+
       return {
         timezone: senderTimezone,
         currentTime: senderTime,
@@ -60,7 +66,7 @@ export const TimeZoneIndicator: React.FC<TimeZoneIndicatorProps> = ({
     };
 
     setTimeZoneData(calculateTimeZoneData());
-    
+
     // Update every minute
     const interval = setInterval(() => {
       setTimeZoneData(calculateTimeZoneData());
@@ -73,10 +79,14 @@ export const TimeZoneIndicator: React.FC<TimeZoneIndicatorProps> = ({
 
   const getFreshnessColor = (freshness: string) => {
     switch (freshness) {
-      case 'fresh': return 'bg-green-100 text-green-800';
-      case 'recent': return 'bg-yellow-100 text-yellow-800';
-      case 'stale': return 'bg-gray-100 text-gray-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case "fresh":
+        return "bg-green-100 text-green-800";
+      case "recent":
+        return "bg-yellow-100 text-yellow-800";
+      case "stale":
+        return "bg-gray-100 text-gray-800";
+      default:
+        return "bg-gray-100 text-gray-800";
     }
   };
 
@@ -87,9 +97,9 @@ export const TimeZoneIndicator: React.FC<TimeZoneIndicatorProps> = ({
   };
 
   const formatTime = (date: Date) => {
-    return date.toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
+    return date.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
       hour12: true,
     });
   };
@@ -107,9 +117,9 @@ export const TimeZoneIndicator: React.FC<TimeZoneIndicatorProps> = ({
         transition={{ duration: 0.3 }}
         className={cn(
           "flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium transition-all duration-300",
-          timeZoneData.isDaytime 
-            ? "bg-yellow-50 text-yellow-700 border border-yellow-200" 
-            : "bg-blue-50 text-blue-700 border border-blue-200"
+          timeZoneData.isDaytime
+            ? "bg-yellow-50 text-yellow-700 border border-yellow-200"
+            : "bg-blue-50 text-blue-700 border border-blue-200",
         )}
       >
         <motion.div
@@ -128,7 +138,7 @@ export const TimeZoneIndicator: React.FC<TimeZoneIndicatorProps> = ({
             <Moon className="w-3 h-3" />
           )}
         </motion.div>
-        
+
         <span className="hidden sm:inline">
           {formatTime(timeZoneData.currentTime)}
         </span>
@@ -141,9 +151,9 @@ export const TimeZoneIndicator: React.FC<TimeZoneIndicatorProps> = ({
         transition={{ duration: 0.3, delay: 0.1 }}
         className={cn(
           "w-2 h-2 rounded-full",
-          timeZoneData.freshness === 'fresh' && "bg-green-400",
-          timeZoneData.freshness === 'recent' && "bg-yellow-400",
-          timeZoneData.freshness === 'stale' && "bg-gray-400",
+          timeZoneData.freshness === "fresh" && "bg-green-400",
+          timeZoneData.freshness === "recent" && "bg-yellow-400",
+          timeZoneData.freshness === "stale" && "bg-gray-400",
         )}
       />
 
@@ -162,7 +172,7 @@ export const TimeZoneIndicator: React.FC<TimeZoneIndicatorProps> = ({
               <div className="flex items-center gap-2 mb-2">
                 <Globe className="w-4 h-4 text-gray-600" />
                 <span className="font-medium text-gray-900">
-                  {timeZoneData.timezone.split('/').pop()?.replace('_', ' ')}
+                  {timeZoneData.timezone.split("/").pop()?.replace("_", " ")}
                 </span>
               </div>
 
@@ -195,10 +205,12 @@ export const TimeZoneIndicator: React.FC<TimeZoneIndicatorProps> = ({
 
               {/* Freshness */}
               <div className="flex items-center gap-2">
-                <div className={cn(
-                  "px-2 py-1 rounded-full text-xs font-medium",
-                  getFreshnessColor(timeZoneData.freshness)
-                )}>
+                <div
+                  className={cn(
+                    "px-2 py-1 rounded-full text-xs font-medium",
+                    getFreshnessColor(timeZoneData.freshness),
+                  )}
+                >
                   {timeZoneData.freshness} email
                 </div>
               </div>
@@ -216,9 +228,7 @@ export const TimeZoneIndicator: React.FC<TimeZoneIndicatorProps> = ({
             exit={{ opacity: 0 }}
             className={cn(
               "absolute inset-0 rounded-full blur-sm transition-colors duration-300",
-              timeZoneData.isDaytime 
-                ? "bg-yellow-200/30" 
-                : "bg-blue-200/30"
+              timeZoneData.isDaytime ? "bg-yellow-200/30" : "bg-blue-200/30",
             )}
           />
         )}
@@ -239,19 +249,25 @@ export const CompactTimeZoneIndicator: React.FC<TimeZoneIndicatorProps> = ({
   useEffect(() => {
     const calculateTimeZoneData = (): TimeZoneData => {
       const now = new Date();
-      const senderTime = new Date(now.toLocaleString("en-US", { timeZone: senderTimezone }));
-      const userTime = new Date(now.toLocaleString("en-US", { timeZone: userTimezone }));
-      
-      const timeDifference = (senderTime.getTime() - userTime.getTime()) / (1000 * 60 * 60);
+      const senderTime = new Date(
+        now.toLocaleString("en-US", { timeZone: senderTimezone }),
+      );
+      const userTime = new Date(
+        now.toLocaleString("en-US", { timeZone: userTimezone }),
+      );
+
+      const timeDifference =
+        (senderTime.getTime() - userTime.getTime()) / (1000 * 60 * 60);
       const senderHour = senderTime.getHours();
       const isDaytime = senderHour >= 6 && senderHour < 18;
-      
-      const hoursSinceEmail = (now.getTime() - emailTime.getTime()) / (1000 * 60 * 60);
-      let freshness: 'fresh' | 'recent' | 'stale';
-      if (hoursSinceEmail < 2) freshness = 'fresh';
-      else if (hoursSinceEmail < 24) freshness = 'recent';
-      else freshness = 'stale';
-      
+
+      const hoursSinceEmail =
+        (now.getTime() - emailTime.getTime()) / (1000 * 60 * 60);
+      let freshness: "fresh" | "recent" | "stale";
+      if (hoursSinceEmail < 2) freshness = "fresh";
+      else if (hoursSinceEmail < 24) freshness = "recent";
+      else freshness = "stale";
+
       return {
         timezone: senderTimezone,
         currentTime: senderTime,
@@ -262,7 +278,7 @@ export const CompactTimeZoneIndicator: React.FC<TimeZoneIndicatorProps> = ({
     };
 
     setTimeZoneData(calculateTimeZoneData());
-    
+
     const interval = setInterval(() => {
       setTimeZoneData(calculateTimeZoneData());
     }, 60000);
@@ -291,29 +307,29 @@ export const CompactTimeZoneIndicator: React.FC<TimeZoneIndicatorProps> = ({
         }}
         className={cn(
           "w-2 h-2 rounded-full",
-          timeZoneData.isDaytime ? "bg-yellow-400" : "bg-blue-400"
+          timeZoneData.isDaytime ? "bg-yellow-400" : "bg-blue-400",
         )}
       />
-      
+
       {/* Freshness Pulse */}
       <motion.div
         animate={{
-          scale: timeZoneData.freshness === 'fresh' ? [1, 1.2, 1] : 1,
+          scale: timeZoneData.freshness === "fresh" ? [1, 1.2, 1] : 1,
         }}
         transition={{
           duration: 2,
-          repeat: timeZoneData.freshness === 'fresh' ? Infinity : 0,
+          repeat: timeZoneData.freshness === "fresh" ? Infinity : 0,
           ease: "easeInOut",
         }}
         className={cn(
           "w-1 h-1 rounded-full",
-          timeZoneData.freshness === 'fresh' && "bg-green-400",
-          timeZoneData.freshness === 'recent' && "bg-yellow-400",
-          timeZoneData.freshness === 'stale' && "bg-gray-400",
+          timeZoneData.freshness === "fresh" && "bg-green-400",
+          timeZoneData.freshness === "recent" && "bg-yellow-400",
+          timeZoneData.freshness === "stale" && "bg-gray-400",
         )}
       />
     </motion.div>
   );
 };
 
-export default TimeZoneIndicator; 
+export default TimeZoneIndicator;

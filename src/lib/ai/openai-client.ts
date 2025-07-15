@@ -5,7 +5,7 @@ const openaiApiKey = process.env.OPENAI_API_KEY;
 const openaiOrgId = process.env.OPENAI_ORGANIZATION_ID;
 
 if (!openaiApiKey) {
-  throw new Error('Missing required environment variable: OPENAI_API_KEY');
+  throw new Error("Missing required environment variable: OPENAI_API_KEY");
 }
 
 // Initialize OpenAI client with proper configuration
@@ -24,9 +24,9 @@ export function isOpenAIConfigured(): boolean {
 // Export a function to get the current model configuration
 export function getOpenAIConfig() {
   return {
-    apiKey: openaiApiKey ? '***' : undefined, // Don't expose the actual key
+    apiKey: openaiApiKey ? "***" : undefined, // Don't expose the actual key
     organization: openaiOrgId,
     maxRetries: 3,
     timeout: 30000,
   };
-} 
+}

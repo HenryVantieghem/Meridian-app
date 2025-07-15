@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Sidebar } from '@/components/dashboard/Sidebar';
-import { Button } from '@/components/ui/button';
-import { Menu, X } from 'lucide-react';
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Sidebar } from "@/components/dashboard/Sidebar";
+import { Button } from "@/components/ui/button";
+import { Menu, X } from "lucide-react";
 
 export default function DashboardLayout({
   children,
@@ -35,10 +35,10 @@ export default function DashboardLayout({
             initial={{ x: -320 }}
             animate={{ x: 0 }}
             exit={{ x: -320 }}
-            transition={{ type: 'spring', damping: 20, stiffness: 300 }}
+            transition={{ type: "spring", damping: 20, stiffness: 300 }}
             className="fixed lg:relative z-50 w-80 lg:w-1/5 h-full bg-white border-r border-gray-200 shadow-lg lg:shadow-none"
           >
-            <Sidebar 
+            <Sidebar
               activeTab="emails"
               onTabChange={() => {}}
               selectedWorkspace=""
@@ -47,7 +47,7 @@ export default function DashboardLayout({
               syncStatus={{
                 lastSync: null,
                 emailsCount: 0,
-                isActive: false
+                isActive: false,
               }}
               onSyncEmails={() => {}}
             />
@@ -89,9 +89,7 @@ export default function DashboardLayout({
       </AnimatePresence>
 
       {/* Main content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {children}
-      </div>
+      <div className="flex-1 flex flex-col overflow-hidden">{children}</div>
     </div>
   );
-} 
+}

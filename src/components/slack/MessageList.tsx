@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { MessageCard } from './MessageCard';
-import { Button } from '@/components/ui/button';
-import { Typography } from '@/components/ui/typography';
-import { Badge } from '@/components/ui/badge';
-import { SlackMessage } from '@/types';
-import { RefreshCw, AlertCircle, MessageSquare } from 'lucide-react';
+import { useState } from "react";
+import { MessageCard } from "./MessageCard";
+import { Button } from "@/components/ui/button";
+import { Typography } from "@/components/ui/typography";
+import { Badge } from "@/components/ui/badge";
+import { SlackMessage } from "@/types";
+import { RefreshCw, AlertCircle, MessageSquare } from "lucide-react";
 
 interface MessageListProps {
   messages: SlackMessage[];
@@ -31,11 +31,12 @@ export function MessageList({
   channels,
   onRefresh,
 }: MessageListProps) {
-  const [selectedChannel, setSelectedChannel] = useState<string>('all');
+  const [selectedChannel, setSelectedChannel] = useState<string>("all");
 
-  const filteredMessages = selectedChannel === 'all' 
-    ? messages 
-    : messages.filter(message => message.channelId === selectedChannel);
+  const filteredMessages =
+    selectedChannel === "all"
+      ? messages
+      : messages.filter((message) => message.channelId === selectedChannel);
 
   const handleChannelChange = (channelId: string) => {
     setSelectedChannel(channelId);
@@ -96,30 +97,28 @@ export function MessageList({
             Refresh
           </Button>
         </div>
-        
+
         <div className="flex flex-wrap gap-2">
           <Button
-            variant={selectedChannel === 'all' ? 'default' : 'outline'}
+            variant={selectedChannel === "all" ? "default" : "outline"}
             size="sm"
-            onClick={() => handleChannelChange('all')}
+            onClick={() => handleChannelChange("all")}
           >
             All Channels
-            <Badge className="ml-2">
-              {messages.length}
-            </Badge>
+            <Badge className="ml-2">{messages.length}</Badge>
           </Button>
-          
+
           {channels.map((channel) => (
             <Button
               key={channel.id}
-              variant={selectedChannel === channel.id ? 'default' : 'outline'}
+              variant={selectedChannel === channel.id ? "default" : "outline"}
               size="sm"
               onClick={() => handleChannelChange(channel.id)}
               disabled={!channel.isMember}
             >
               #{channel.name}
               <Badge className="ml-2">
-                {messages.filter(m => m.channelId === channel.id).length}
+                {messages.filter((m) => m.channelId === channel.id).length}
               </Badge>
             </Button>
           ))}
@@ -145,9 +144,16 @@ export function MessageList({
                 text: message.content,
                 user: message.sender?.id,
                 userName: message.sender?.name,
-                timestamp: typeof message.timestamp === 'string' ? message.timestamp : message.timestamp.toISOString(),
+                timestamp:
+                  typeof message.timestamp === "string"
+                    ? message.timestamp
+                    : message.timestamp.toISOString(),
                 reactions: Array.isArray(message.reactions)
-                  ? message.reactions.map(r => ({ name: r.emoji, count: r.count, users: r.users || [] }))
+                  ? message.reactions.map((r) => ({
+                      name: r.emoji,
+                      count: r.count,
+                      users: r.users || [],
+                    }))
                   : [],
                 priority: message.priority,
               };
@@ -165,4 +171,4 @@ export function MessageList({
       </div>
     </div>
   );
-} 
+}

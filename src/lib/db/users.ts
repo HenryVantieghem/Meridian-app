@@ -1,5 +1,5 @@
-import { supabase, supabaseAdmin } from './supabase';
-import { User, UserPreferences, Subscription } from '@/types';
+import { supabase, supabaseAdmin } from "./supabase";
+import { User, UserPreferences, Subscription } from "@/types";
 
 /**
  * Get user by Clerk ID
@@ -7,17 +7,19 @@ import { User, UserPreferences, Subscription } from '@/types';
 export async function getUserByClerkId(clerkId: string): Promise<User | null> {
   try {
     const { data, error } = await supabase
-      .from('users')
-      .select(`
+      .from("users")
+      .select(
+        `
         *,
         user_preferences (*),
         subscriptions (*)
-      `)
-      .eq('clerk_id', clerkId)
+      `,
+      )
+      .eq("clerk_id", clerkId)
       .single();
 
     if (error) {
-      if (error.code === 'PGRST116') {
+      if (error.code === "PGRST116") {
         return null; // User not found
       }
       throw error;
@@ -25,8 +27,8 @@ export async function getUserByClerkId(clerkId: string): Promise<User | null> {
 
     return data as User;
   } catch (error) {
-    console.error('Database error:', error);
-    throw new Error('Failed to get user');
+    console.error("Database error:", error);
+    throw new Error("Failed to get user");
   }
 }
 
@@ -42,7 +44,7 @@ export async function createUser(userData: {
 }): Promise<User> {
   try {
     const { data, error } = await supabaseAdmin
-      .from('users')
+      .from("users")
       .insert({
         clerk_id: userData.clerkId,
         email: userData.email,
@@ -50,11 +52,13 @@ export async function createUser(userData: {
         last_name: userData.lastName,
         avatar_url: userData.avatarUrl,
       })
-      .select(`
+      .select(
+        `
         *,
         user_preferences (*),
         subscriptions (*)
-      `)
+      `,
+      )
       .single();
 
     if (error) {
@@ -63,8 +67,8 @@ export async function createUser(userData: {
 
     return data as User;
   } catch (error) {
-    console.error('Database error:', error);
-    throw new Error('Failed to create user');
+    console.error("Database error:", error);
+    throw new Error("Failed to create user");
   }
 }
 
@@ -73,22 +77,24 @@ export async function createUser(userData: {
  */
 export async function updateUser(
   clerkId: string,
-  updates: Partial<Pick<User, 'firstName' | 'lastName' | 'avatarUrl'>>
+  updates: Partial<Pick<User, "firstName" | "lastName" | "avatarUrl">>,
 ): Promise<User> {
   try {
     const { data, error } = await supabase
-      .from('users')
+      .from("users")
       .update({
         first_name: updates.firstName,
         last_name: updates.lastName,
         avatar_url: updates.avatarUrl,
       })
-      .eq('clerk_id', clerkId)
-      .select(`
+      .eq("clerk_id", clerkId)
+      .select(
+        `
         *,
         user_preferences (*),
         subscriptions (*)
-      `)
+      `,
+      )
       .single();
 
     if (error) {
@@ -97,30 +103,29 @@ export async function updateUser(
 
     return data as User;
   } catch (error) {
-    console.error('Database error:', error);
-    throw new Error('Failed to update user');
+    console.error("Database error:", error);
+    throw new Error("Failed to update user");
   }
 }
 
 /**
  * Get user preferences
  */
-export async function getUserPreferences(clerkId: string): Promise<UserPreferences | null> {
+export async function getUserPreferences(
+  clerkId: string,
+): Promise<UserPreferences | null> {
   try {
     const { data, error } = await supabase
-      .from('user_preferences')
-      .select('*')
-      .eq('user_id', (
-        supabase
-          .from('users')
-          .select('id')
-          .eq('clerk_id', clerkId)
-          .single()
-      ))
+      .from("user_preferences")
+      .select("*")
+      .eq(
+        "user_id",
+        supabase.from("users").select("id").eq("clerk_id", clerkId).single(),
+      )
       .single();
 
     if (error) {
-      if (error.code === 'PGRST116') {
+      if (error.code === "PGRST116") {
         return null;
       }
       throw error;
@@ -128,8 +133,8 @@ export async function getUserPreferences(clerkId: string): Promise<UserPreferenc
 
     return data as UserPreferences;
   } catch (error) {
-    console.error('Database error:', error);
-    throw new Error('Failed to get user preferences');
+    console.error("Database error:", error);
+    throw new Error("Failed to get user preferences");
   }
 }
 
@@ -138,20 +143,17 @@ export async function getUserPreferences(clerkId: string): Promise<UserPreferenc
  */
 export async function updateUserPreferences(
   clerkId: string,
-  updates: Partial<UserPreferences>
+  updates: Partial<UserPreferences>,
 ): Promise<UserPreferences> {
   try {
     const { data, error } = await supabase
-      .from('user_preferences')
+      .from("user_preferences")
       .update(updates)
-      .eq('user_id', (
-        supabase
-          .from('users')
-          .select('id')
-          .eq('clerk_id', clerkId)
-          .single()
-      ))
-      .select('*')
+      .eq(
+        "user_id",
+        supabase.from("users").select("id").eq("clerk_id", clerkId).single(),
+      )
+      .select("*")
       .single();
 
     if (error) {
@@ -160,30 +162,29 @@ export async function updateUserPreferences(
 
     return data as UserPreferences;
   } catch (error) {
-    console.error('Database error:', error);
-    throw new Error('Failed to update user preferences');
+    console.error("Database error:", error);
+    throw new Error("Failed to update user preferences");
   }
 }
 
 /**
  * Get user subscription
  */
-export async function getUserSubscription(clerkId: string): Promise<Subscription | null> {
+export async function getUserSubscription(
+  clerkId: string,
+): Promise<Subscription | null> {
   try {
     const { data, error } = await supabase
-      .from('subscriptions')
-      .select('*')
-      .eq('user_id', (
-        supabase
-          .from('users')
-          .select('id')
-          .eq('clerk_id', clerkId)
-          .single()
-      ))
+      .from("subscriptions")
+      .select("*")
+      .eq(
+        "user_id",
+        supabase.from("users").select("id").eq("clerk_id", clerkId).single(),
+      )
       .single();
 
     if (error) {
-      if (error.code === 'PGRST116') {
+      if (error.code === "PGRST116") {
         return null;
       }
       throw error;
@@ -191,8 +192,8 @@ export async function getUserSubscription(clerkId: string): Promise<Subscription
 
     return data as Subscription;
   } catch (error) {
-    console.error('Database error:', error);
-    throw new Error('Failed to get user subscription');
+    console.error("Database error:", error);
+    throw new Error("Failed to get user subscription");
   }
 }
 
@@ -201,20 +202,17 @@ export async function getUserSubscription(clerkId: string): Promise<Subscription
  */
 export async function updateUserSubscription(
   clerkId: string,
-  updates: Partial<Subscription>
+  updates: Partial<Subscription>,
 ): Promise<Subscription> {
   try {
     const { data, error } = await supabase
-      .from('subscriptions')
+      .from("subscriptions")
       .update(updates)
-      .eq('user_id', (
-        supabase
-          .from('users')
-          .select('id')
-          .eq('clerk_id', clerkId)
-          .single()
-      ))
-      .select('*')
+      .eq(
+        "user_id",
+        supabase.from("users").select("id").eq("clerk_id", clerkId).single(),
+      )
+      .select("*")
       .single();
 
     if (error) {
@@ -223,8 +221,8 @@ export async function updateUserSubscription(
 
     return data as Subscription;
   } catch (error) {
-    console.error('Database error:', error);
-    throw new Error('Failed to update user subscription');
+    console.error("Database error:", error);
+    throw new Error("Failed to update user subscription");
   }
 }
 
@@ -234,16 +232,16 @@ export async function updateUserSubscription(
 export async function deleteUser(clerkId: string): Promise<void> {
   try {
     const { error } = await supabaseAdmin
-      .from('users')
+      .from("users")
       .delete()
-      .eq('clerk_id', clerkId);
+      .eq("clerk_id", clerkId);
 
     if (error) {
       throw error;
     }
   } catch (error) {
-    console.error('Database error:', error);
-    throw new Error('Failed to delete user');
+    console.error("Database error:", error);
+    throw new Error("Failed to delete user");
   }
 }
 
@@ -253,13 +251,13 @@ export async function deleteUser(clerkId: string): Promise<void> {
 export async function userExists(clerkId: string): Promise<boolean> {
   try {
     const { data, error } = await supabase
-      .from('users')
-      .select('id')
-      .eq('clerk_id', clerkId)
+      .from("users")
+      .select("id")
+      .eq("clerk_id", clerkId)
       .single();
 
     if (error) {
-      if (error.code === 'PGRST116') {
+      if (error.code === "PGRST116") {
         return false;
       }
       throw error;
@@ -267,7 +265,7 @@ export async function userExists(clerkId: string): Promise<boolean> {
 
     return !!data;
   } catch (error) {
-    console.error('Database error:', error);
-    throw new Error('Failed to check if user exists');
+    console.error("Database error:", error);
+    throw new Error("Failed to check if user exists");
   }
-} 
+}

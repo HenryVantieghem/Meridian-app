@@ -1,10 +1,17 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Badge } from '@/components/ui/badge';
-import { Card } from '@/components/ui/card';
-import { MapPin, Clock, TrendingUp, TrendingDown, Users, Mail } from 'lucide-react';
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
+import {
+  MapPin,
+  Clock,
+  TrendingUp,
+  TrendingDown,
+  Users,
+  Mail,
+} from "lucide-react";
 
 interface SenderContext {
   name: string;
@@ -13,13 +20,13 @@ interface SenderContext {
   role: string;
   location: string;
   timezone: string;
-  relationship: 'colleague' | 'client' | 'vendor' | 'internal';
+  relationship: "colleague" | "client" | "vendor" | "internal";
   communicationHistory: {
     totalEmails: number;
     lastContact: string;
     averageResponseTime: string;
-    tone: 'positive' | 'neutral' | 'negative';
-    urgency: 'low' | 'medium' | 'high';
+    tone: "positive" | "neutral" | "negative";
+    urgency: "low" | "medium" | "high";
   };
   recentTopics: string[];
   priority: number;
@@ -31,7 +38,11 @@ interface AIHoverProps {
   className?: string;
 }
 
-export function AIHover({ children, senderContext, className = '' }: AIHoverProps) {
+export function AIHover({
+  children,
+  senderContext,
+  className = "",
+}: AIHoverProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
@@ -52,26 +63,36 @@ export function AIHover({ children, senderContext, className = '' }: AIHoverProp
 
   const getToneColor = (tone: string) => {
     switch (tone) {
-      case 'positive': return 'text-green-600 bg-green-100';
-      case 'negative': return 'text-red-600 bg-red-100';
-      default: return 'text-gray-600 bg-gray-100';
+      case "positive":
+        return "text-green-600 bg-green-100";
+      case "negative":
+        return "text-red-600 bg-red-100";
+      default:
+        return "text-gray-600 bg-gray-100";
     }
   };
 
   const getUrgencyColor = (urgency: string) => {
     switch (urgency) {
-      case 'high': return 'text-red-600 bg-red-100';
-      case 'medium': return 'text-yellow-600 bg-yellow-100';
-      default: return 'text-green-600 bg-green-100';
+      case "high":
+        return "text-red-600 bg-red-100";
+      case "medium":
+        return "text-yellow-600 bg-yellow-100";
+      default:
+        return "text-green-600 bg-green-100";
     }
   };
 
   const getRelationshipColor = (relationship: string) => {
     switch (relationship) {
-      case 'client': return 'text-blue-600 bg-blue-100';
-      case 'vendor': return 'text-purple-600 bg-purple-100';
-      case 'internal': return 'text-green-600 bg-green-100';
-      default: return 'text-gray-600 bg-gray-100';
+      case "client":
+        return "text-blue-600 bg-blue-100";
+      case "vendor":
+        return "text-purple-600 bg-purple-100";
+      case "internal":
+        return "text-green-600 bg-green-100";
+      default:
+        return "text-gray-600 bg-gray-100";
     }
   };
 
@@ -97,7 +118,7 @@ export function AIHover({ children, senderContext, className = '' }: AIHoverProp
             style={{
               left: mousePosition.x + 10,
               top: mousePosition.y - 100,
-              transform: 'translate(0, -50%)',
+              transform: "translate(0, -50%)",
             }}
           >
             <Card className="w-80 p-4 bg-white shadow-lg border border-gray-200">
@@ -109,12 +130,18 @@ export function AIHover({ children, senderContext, className = '' }: AIHoverProp
                   </span>
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-semibold text-gray-900">{senderContext.name}</h3>
+                  <h3 className="font-semibold text-gray-900">
+                    {senderContext.name}
+                  </h3>
                   <p className="text-sm text-gray-600">{senderContext.role}</p>
-                  <p className="text-xs text-gray-500">{senderContext.company}</p>
+                  <p className="text-xs text-gray-500">
+                    {senderContext.company}
+                  </p>
                 </div>
                 <div className="text-right">
-                  <Badge className={getRelationshipColor(senderContext.relationship)}>
+                  <Badge
+                    className={getRelationshipColor(senderContext.relationship)}
+                  >
                     {senderContext.relationship}
                   </Badge>
                 </div>
@@ -136,27 +163,41 @@ export function AIHover({ children, senderContext, className = '' }: AIHoverProp
               <div className="grid grid-cols-2 gap-3 mb-3 text-sm">
                 <div className="flex items-center gap-2">
                   <Mail className="w-4 h-4 text-gray-500" />
-                  <span className="text-gray-600">{senderContext.communicationHistory.totalEmails} emails</span>
+                  <span className="text-gray-600">
+                    {senderContext.communicationHistory.totalEmails} emails
+                  </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Clock className="w-4 h-4 text-gray-500" />
-                  <span className="text-gray-600">{senderContext.communicationHistory.averageResponseTime} avg</span>
+                  <span className="text-gray-600">
+                    {senderContext.communicationHistory.averageResponseTime} avg
+                  </span>
                 </div>
               </div>
 
               {/* Tone & Urgency */}
               <div className="flex gap-2 mb-3">
-                <Badge className={getToneColor(senderContext.communicationHistory.tone)}>
+                <Badge
+                  className={getToneColor(
+                    senderContext.communicationHistory.tone,
+                  )}
+                >
                   {senderContext.communicationHistory.tone} tone
                 </Badge>
-                <Badge className={getUrgencyColor(senderContext.communicationHistory.urgency)}>
+                <Badge
+                  className={getUrgencyColor(
+                    senderContext.communicationHistory.urgency,
+                  )}
+                >
                   {senderContext.communicationHistory.urgency} urgency
                 </Badge>
               </div>
 
               {/* Recent Topics */}
               <div className="mb-3">
-                <h4 className="text-xs font-medium text-gray-700 mb-2">Recent Topics</h4>
+                <h4 className="text-xs font-medium text-gray-700 mb-2">
+                  Recent Topics
+                </h4>
                 <div className="flex flex-wrap gap-1">
                   {senderContext.recentTopics.map((topic, index) => (
                     <Badge key={index} variant="outline" className="text-xs">
@@ -171,7 +212,7 @@ export function AIHover({ children, senderContext, className = '' }: AIHoverProp
                 <span className="text-sm text-gray-600">Priority Score</span>
                 <div className="flex items-center gap-2">
                   <div className="w-20 h-2 bg-gray-200 rounded-full">
-                    <div 
+                    <div
                       className="h-2 bg-gradient-to-r from-brand-burgundy to-[#D4AF37] rounded-full"
                       style={{ width: `${senderContext.priority * 100}%` }}
                     />

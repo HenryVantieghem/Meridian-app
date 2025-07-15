@@ -1,43 +1,51 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Typography } from '@/components/ui/typography';
-import { motion } from 'framer-motion';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { useState } from "react";
+import { Typography } from "@/components/ui/typography";
+import { motion } from "framer-motion";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 const faqs = [
   {
     question: "How does Napoleon's AI analyze my emails?",
-          answer: "Napoleon uses advanced GPT-4 technology to analyze your emails in real-time. It extracts key insights, identifies sentiment, detects urgency, and generates actionable summaries. The AI learns your communication patterns and adapts to your preferences over time."
+    answer:
+      "Napoleon uses advanced GPT-4 technology to analyze your emails in real-time. It extracts key insights, identifies sentiment, detects urgency, and generates actionable summaries. The AI learns your communication patterns and adapts to your preferences over time.",
   },
   {
     question: "Is my email data secure?",
-    answer: "Absolutely. We use bank-level encryption, SOC 2 compliance, and zero-knowledge architecture. Your data never leaves our secure infrastructure, and we never access your email content without your explicit permission."
+    answer:
+      "Absolutely. We use bank-level encryption, SOC 2 compliance, and zero-knowledge architecture. Your data never leaves our secure infrastructure, and we never access your email content without your explicit permission.",
   },
   {
     question: "Can I cancel my subscription anytime?",
-    answer: "Yes, you can cancel your subscription at any time with no penalties. Your account will remain active until the end of your current billing period, and you can reactivate anytime."
+    answer:
+      "Yes, you can cancel your subscription at any time with no penalties. Your account will remain active until the end of your current billing period, and you can reactivate anytime.",
   },
   {
     question: "What email providers do you support?",
-    answer: "We currently support Gmail and Outlook, with more providers coming soon. Our integration is seamless and takes just a few minutes to set up."
+    answer:
+      "We currently support Gmail and Outlook, with more providers coming soon. Our integration is seamless and takes just a few minutes to set up.",
   },
   {
     question: "Do you offer a free trial?",
-    answer: "Yes! All plans include a 14-day free trial with full access to all features. No credit card required to start your trial."
+    answer:
+      "Yes! All plans include a 14-day free trial with full access to all features. No credit card required to start your trial.",
   },
   {
     question: "Can I upgrade or downgrade my plan?",
-    answer: "You can change your plan at any time. Upgrades take effect immediately, while downgrades take effect at the end of your current billing period."
+    answer:
+      "You can change your plan at any time. Upgrades take effect immediately, while downgrades take effect at the end of your current billing period.",
   },
   {
     question: "What kind of support do you provide?",
-    answer: "Free users get email support, Pro users get priority support with faster response times, and Enterprise users get dedicated support with SLA guarantees."
+    answer:
+      "Free users get email support, Pro users get priority support with faster response times, and Enterprise users get dedicated support with SLA guarantees.",
   },
   {
     question: "Is Napoleon available on mobile?",
-    answer: "Yes! Napoleon is fully responsive and works great on all devices. We also offer native mobile apps for iOS and Android for the best experience."
-  }
+    answer:
+      "Yes! Napoleon is fully responsive and works great on all devices. We also offer native mobile apps for iOS and Android for the best experience.",
+  },
 ];
 
 export function FAQ() {
@@ -54,7 +62,10 @@ export function FAQ() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <Typography variant="h2" className="text-4xl font-bold text-gray-900 mb-6">
+          <Typography
+            variant="h2"
+            className="text-4xl font-bold text-gray-900 mb-6"
+          >
             Frequently Asked Questions
           </Typography>
           <Typography variant="body" className="text-xl text-gray-600">
@@ -77,7 +88,10 @@ export function FAQ() {
                 onClick={() => setOpenIndex(openIndex === index ? null : index)}
                 className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 transition-colors"
               >
-                <Typography variant="h3" className="text-lg font-semibold text-gray-900">
+                <Typography
+                  variant="h3"
+                  className="text-lg font-semibold text-gray-900"
+                >
                   {faq.question}
                 </Typography>
                 {openIndex === index ? (
@@ -86,16 +100,19 @@ export function FAQ() {
                   <ChevronDown className="w-5 h-5 text-gray-500" />
                 )}
               </button>
-              
+
               {openIndex === index && (
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
+                  animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.3 }}
                   className="px-6 pb-4"
                 >
-                  <Typography variant="body" className="text-gray-600 leading-relaxed">
+                  <Typography
+                    variant="body"
+                    className="text-gray-600 leading-relaxed"
+                  >
                     {faq.answer}
                   </Typography>
                 </motion.div>
@@ -112,7 +129,10 @@ export function FAQ() {
           viewport={{ once: true }}
           className="mt-16 text-center"
         >
-          <Typography variant="h3" className="text-2xl font-bold text-gray-900 mb-4">
+          <Typography
+            variant="h3"
+            className="text-2xl font-bold text-gray-900 mb-4"
+          >
             Still have questions?
           </Typography>
           <Typography variant="body" className="text-gray-600 mb-6">
@@ -136,4 +156,4 @@ export function FAQ() {
       </div>
     </section>
   );
-} 
+}

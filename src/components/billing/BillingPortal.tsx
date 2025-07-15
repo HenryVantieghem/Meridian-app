@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { 
-  CreditCard, 
-  Settings, 
-  Users, 
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  CreditCard,
+  Settings,
+  Users,
   Zap,
   CheckCircle,
-  AlertCircle
-} from 'lucide-react';
+  AlertCircle,
+} from "lucide-react";
 
 interface BillingPortalProps {
   className?: string;
@@ -19,23 +19,23 @@ interface BillingPortalProps {
 
 const FEATURES = [
   {
-    title: 'Unlimited Email Analysis',
-    description: 'AI-powered email prioritization and insights',
+    title: "Unlimited Email Analysis",
+    description: "AI-powered email prioritization and insights",
     icon: Zap,
   },
   {
-    title: 'Team Collaboration',
-    description: 'Share insights and delegate tasks seamlessly',
+    title: "Team Collaboration",
+    description: "Share insights and delegate tasks seamlessly",
     icon: Users,
   },
   {
-    title: 'Advanced Integrations',
-    description: 'Connect with Gmail, Outlook, and Slack',
+    title: "Advanced Integrations",
+    description: "Connect with Gmail, Outlook, and Slack",
     icon: Settings,
   },
   {
-    title: 'Priority Support',
-    description: 'Get help when you need it most',
+    title: "Priority Support",
+    description: "Get help when you need it most",
     icon: CheckCircle,
   },
 ];
@@ -49,21 +49,21 @@ export function BillingPortal({ className }: BillingPortalProps) {
     setError(null);
 
     try {
-      const response = await fetch('/api/stripe/portal', {
-        method: 'POST',
+      const response = await fetch("/api/stripe/portal", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       });
 
       if (!response.ok) {
-        throw new Error('Failed to access billing portal');
+        throw new Error("Failed to access billing portal");
       }
 
       const { url } = await response.json();
       window.location.href = url;
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setIsLoading(false);
     }
@@ -113,12 +113,12 @@ export function BillingPortal({ className }: BillingPortalProps) {
 
           {/* Actions */}
           <div className="flex gap-3">
-            <Button 
+            <Button
               onClick={handlePortalAccess}
               disabled={isLoading}
               className="flex-1"
             >
-              {isLoading ? 'Loading...' : 'Manage Billing'}
+              {isLoading ? "Loading..." : "Manage Billing"}
             </Button>
           </div>
 
@@ -132,6 +132,6 @@ export function BillingPortal({ className }: BillingPortalProps) {
       </Card>
     </div>
   );
-} 
+}
 
-export default BillingPortal; 
+export default BillingPortal;

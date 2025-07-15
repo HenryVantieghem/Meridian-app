@@ -1,63 +1,67 @@
-import { rateLimiters, createRateLimitMiddleware, DDoSProtection, RequestSizeLimiter, securityHeaders } from './rate-limiter';
-import { encryptionService } from './encryption';
-import { schemas, sanitizers, createValidationMiddleware } from './input-validation';
-import { dataRetentionService } from './data-retention';
-import { backupRecoveryService } from './backup-recovery';
+import {
+  rateLimiters,
+  createRateLimitMiddleware,
+  DDoSProtection,
+  RequestSizeLimiter,
+  securityHeaders,
+} from "./rate-limiter";
+import { encryptionService } from "./encryption";
+import {
+  schemas,
+  sanitizers,
+  createValidationMiddleware,
+} from "./input-validation";
+import { dataRetentionService } from "./data-retention";
+import { backupRecoveryService } from "./backup-recovery";
 
 // Security System
 // Central export for all security utilities
 
 // Rate Limiting
-export { 
+export {
   createRateLimitMiddleware,
   DDoSProtection,
   RequestSizeLimiter,
   securityHeaders,
-  validateInput
-} from './rate-limiter';
+  validateInput,
+} from "./rate-limiter";
 
 // Input Validation
-export { 
+export {
   schemas,
   createValidationMiddleware,
   createQueryValidationMiddleware,
   createPathValidationMiddleware,
   sanitizers,
-  formatValidationError 
-} from './input-validation';
+  formatValidationError,
+} from "./input-validation";
 
 // Encryption and Data Protection
-export { 
+export {
   EncryptionService,
   SecureKeyManager,
   DataProtection,
   encryptionService,
   secureKeyManager,
-  dataProtection 
-} from './encryption';
+  dataProtection,
+} from "./encryption";
 
 // Backup and Recovery
-export { 
+export {
   BackupRecoveryService,
-  backupRecoveryService 
-} from './backup-recovery';
+  backupRecoveryService,
+} from "./backup-recovery";
 
-export type { 
-  Backup,
-  Recovery
-} from './backup-recovery';
+export type { Backup, Recovery } from "./backup-recovery";
 
 // Data Retention
-export { 
-  DataRetentionService,
-  dataRetentionService 
-} from './data-retention';
+export { DataRetentionService, dataRetentionService } from "./data-retention";
 
-export type { 
+export type {
   RetentionPolicy,
   DataCategory,
-  RetentionRule
-} from './data-retention';
+  RetentionRule,
+} from "./data-retention";
 
 // Security Utilities
 export const securityUtils = {
@@ -101,7 +105,7 @@ export const securityUtils = {
 
   generateId: () => {
     return encryptionService.generateId();
-  }
+  },
 };
 
 // Security Middleware
@@ -129,7 +133,7 @@ export const securityMiddleware = {
   // Request size limiting
   sizeLimit: (maxSize: number = 10 * 1024 * 1024) => {
     return new RequestSizeLimiter(maxSize);
-  }
+  },
 };
 
 // Security Configuration
@@ -141,40 +145,41 @@ export const securityConfig = {
     ai: { windowMs: 60000, maxRequests: 10 },
     email: { windowMs: 300000, maxRequests: 50 },
     webhook: { windowMs: 60000, maxRequests: 1000 },
-    general: { windowMs: 60000, maxRequests: 200 }
+    general: { windowMs: 60000, maxRequests: 200 },
   },
 
   // Encryption
   encryption: {
-    algorithm: 'aes-256-gcm',
+    algorithm: "aes-256-gcm",
     keyLength: 32,
     ivLength: 16,
     tagLength: 16,
     saltLength: 64,
-    hashAlgorithm: 'sha256',
-    hashIterations: 100000
+    hashAlgorithm: "sha256",
+    hashIterations: 100000,
   },
 
   // Data retention
   retention: {
-    userProfile: 'permanent',
-    emailData: '365_days',
-    aiAnalysis: '90_days',
-    paymentData: '365_days',
-    auditLogs: '90_days',
-    errorLogs: '30_days',
-    analytics: '365_days',
-    backupData: '90_days'
+    userProfile: "permanent",
+    emailData: "365_days",
+    aiAnalysis: "90_days",
+    paymentData: "365_days",
+    auditLogs: "90_days",
+    errorLogs: "30_days",
+    analytics: "365_days",
+    backupData: "90_days",
   },
 
   // Security headers
   headers: {
-    'X-Frame-Options': 'DENY',
-    'X-Content-Type-Options': 'nosniff',
-    'X-XSS-Protection': '1; mode=block',
-    'Referrer-Policy': 'strict-origin-when-cross-origin',
-    'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), interest-cohort=()',
-    'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload'
+    "X-Frame-Options": "DENY",
+    "X-Content-Type-Options": "nosniff",
+    "X-XSS-Protection": "1; mode=block",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "Permissions-Policy":
+      "camera=(), microphone=(), geolocation=(), interest-cohort=()",
+    "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
   },
 
   // Content Security Policy
@@ -188,8 +193,8 @@ export const securityConfig = {
     "frame-src https://js.stripe.com https://checkout.stripe.com",
     "object-src 'none'",
     "base-uri 'self'",
-    "form-action 'self'"
-  ].join('; ')
+    "form-action 'self'",
+  ].join("; "),
 };
 
 // Security Validation Schemas
@@ -199,7 +204,7 @@ export const securitySchemas = {
     email: schemas.base.email,
     password: schemas.base.password,
     name: schemas.base.name,
-    phone: schemas.base.phone
+    phone: schemas.base.phone,
   },
 
   // API input validation
@@ -207,19 +212,19 @@ export const securitySchemas = {
     emailData: schemas.email.emailData,
     aiRequest: schemas.ai.generateReply,
     paymentData: schemas.billing.checkout,
-    userProfile: schemas.user.userProfile
+    userProfile: schemas.user.userProfile,
   },
 
   // File upload validation
   file: {
     image: schemas.base.url.refine((url) => {
       return /\.(jpg|jpeg|png|gif|webp)$/i.test(url);
-    }, 'Must be a valid image URL'),
-    
+    }, "Must be a valid image URL"),
+
     document: schemas.base.url.refine((url) => {
       return /\.(pdf|doc|docx|txt)$/i.test(url);
-    }, 'Must be a valid document URL')
-  }
+    }, "Must be a valid document URL"),
+  },
 };
 
 // Security Audit Utilities
@@ -237,7 +242,7 @@ export const securityAudit = {
       xss: true, // Would check for proper sanitization
       csrf: true, // Would check for CSRF tokens
       rateLimit: true, // Would check rate limiting implementation
-      encryption: true // Would check encryption usage
+      encryption: true, // Would check encryption usage
     };
   },
 
@@ -250,10 +255,10 @@ export const securityAudit = {
   }> {
     // Implementation would check user permissions
     return {
-      permissions: ['read', 'write'],
-      roles: ['user'],
+      permissions: ["read", "write"],
+      roles: ["user"],
       lastAccess: new Date(),
-      suspiciousActivity: false
+      suspiciousActivity: false,
     };
   },
 
@@ -266,12 +271,12 @@ export const securityAudit = {
   }> {
     // Implementation would analyze data access patterns
     return {
-      tables: ['emails', 'analyses'],
-      operations: ['SELECT', 'INSERT'],
+      tables: ["emails", "analyses"],
+      operations: ["SELECT", "INSERT"],
       frequency: 10,
-      anomalies: []
+      anomalies: [],
     };
-  }
+  },
 };
 
 // Security Monitoring
@@ -284,14 +289,18 @@ export const securityMonitoring = {
     userAgent?: string;
     details: unknown;
   }) => {
-    console.log('Security event:', event);
+    console.log("Security event:", event);
     // Implementation would log to security monitoring service
   },
 
-  async logSecurityEvent(_userId: string, _ip: string, _action: string): Promise<void> {
-    console.log('Security event logged');
+  async logSecurityEvent(
+    _userId: string,
+    _ip: string,
+    _action: string,
+  ): Promise<void> {
+    console.log("Security event logged");
     // Implementation would log to security monitoring service
-  }
+  },
 };
 
 // Export default security instance
@@ -305,5 +314,5 @@ export default {
   securityConfig,
   securitySchemas,
   securityAudit,
-  securityMonitoring
-}; 
+  securityMonitoring,
+};

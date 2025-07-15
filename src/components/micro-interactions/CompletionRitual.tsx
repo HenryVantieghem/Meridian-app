@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Star, Sparkles, Trophy, Target } from 'lucide-react';
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Star, Sparkles, Trophy, Target } from "lucide-react";
 
 interface CompletionRitualProps {
   isVisible: boolean;
@@ -31,13 +31,13 @@ const constellationStars = Array.from({ length: 12 }, (_, i) => ({
   duration: 2 + Math.random() * 3,
 }));
 
-export function CompletionRitual({ 
-  isVisible, 
-  completedTasks, 
-  totalTasks, 
-  onViewArchive, 
+export function CompletionRitual({
+  isVisible,
+  completedTasks,
+  totalTasks,
+  onViewArchive,
   onContinue,
-  className = ''
+  className = "",
 }: CompletionRitualProps) {
   const [currentMessage, setCurrentMessage] = useState(0);
   const [showCelebration, setShowCelebration] = useState(false);
@@ -79,17 +79,17 @@ export function CompletionRitual({
                 key={star.id}
                 initial={{ opacity: 0, scale: 0 }}
                 animate={{ opacity: [0, 1, 0], scale: [0, 1, 0] }}
-                transition={{ 
-                  duration: star.duration, 
+                transition={{
+                  duration: star.duration,
                   delay: star.delay,
                   repeat: Infinity,
-                  repeatDelay: 1
+                  repeatDelay: 1,
                 }}
                 className="absolute w-1 h-1 bg-[#D4AF37] rounded-full"
-                style={{ 
-                  left: `${star.x}%`, 
+                style={{
+                  left: `${star.x}%`,
                   top: `${star.y}%`,
-                  filter: 'blur(0.5px)'
+                  filter: "blur(0.5px)",
                 }}
               />
             ))}
@@ -138,9 +138,7 @@ export function CompletionRitual({
                       {totalTasks}
                     </span>
                   </div>
-                  <div className="text-sm text-gray-600">
-                    tasks completed
-                  </div>
+                  <div className="text-sm text-gray-600">tasks completed</div>
                 </div>
 
                 {/* Progress Bar */}
@@ -152,7 +150,7 @@ export function CompletionRitual({
                     className="bg-gradient-to-r from-brand-burgundy to-[#D4AF37] h-3 rounded-full relative overflow-hidden"
                   >
                     <motion.div
-                      animate={{ x: ['-100%', '100%'] }}
+                      animate={{ x: ["-100%", "100%"] }}
                       transition={{ duration: 2, repeat: Infinity }}
                       className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
                     />
@@ -169,21 +167,21 @@ export function CompletionRitual({
                   <motion.div
                     key={i}
                     initial={{ opacity: 0, scale: 0 }}
-                    animate={{ 
+                    animate={{
                       opacity: [0, 1, 0],
                       scale: [0, 1, 0],
-                      rotate: 360
+                      rotate: 360,
                     }}
-                    transition={{ 
+                    transition={{
                       duration: 2,
                       delay: i * 0.2,
                       repeat: Infinity,
-                      repeatDelay: 3
+                      repeatDelay: 3,
                     }}
                     className="absolute"
                     style={{
-                      left: `${20 + (i * 10)}%`,
-                      top: `${20 + (i * 8)}%`,
+                      left: `${20 + i * 10}%`,
+                      top: `${20 + i * 8}%`,
                     }}
                   >
                     <Sparkles className="w-4 h-4 text-[#D4AF37]" />

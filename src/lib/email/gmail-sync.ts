@@ -1,4 +1,4 @@
-import { google } from 'googleapis';
+import { google } from "googleapis";
 
 export interface GmailEmail {
   id: string;
@@ -17,8 +17,8 @@ export interface GmailEmail {
   isStarred: boolean;
   labels: string[];
   attachments: GmailAttachment[];
-  priority: 'high' | 'medium' | 'low';
-  category: 'primary' | 'social' | 'promotions' | 'updates' | 'forums';
+  priority: "high" | "medium" | "low";
+  category: "primary" | "social" | "promotions" | "updates" | "forums";
 }
 
 export interface GmailAttachment {
@@ -37,7 +37,7 @@ export class GmailClient {
     this.oauth2Client = new google.auth.OAuth2(
       process.env.GOOGLE_CLIENT_ID,
       process.env.GOOGLE_CLIENT_SECRET,
-      process.env.GOOGLE_REDIRECT_URI
+      process.env.GOOGLE_REDIRECT_URI,
     );
 
     this.oauth2Client.setCredentials({
@@ -45,28 +45,30 @@ export class GmailClient {
       refresh_token: refreshToken,
     });
 
-    this.gmail = google.gmail({ version: 'v1', auth: this.oauth2Client });
+    this.gmail = google.gmail({ version: "v1", auth: this.oauth2Client });
   }
 
   /**
    * Get messages with optional filtering
    */
-  async getMessages(options: {
-    maxResults?: number;
-    q?: string;
-    labelIds?: string[];
-    includeSpamTrash?: boolean;
-  } = {}): Promise<GmailEmail[]> {
+  async getMessages(
+    options: {
+      maxResults?: number;
+      q?: string;
+      labelIds?: string[];
+      includeSpamTrash?: boolean;
+    } = {},
+  ): Promise<GmailEmail[]> {
     try {
       const {
         maxResults = 50,
-        q = '',
+        q = "",
         labelIds = [],
         includeSpamTrash = false,
       } = options;
 
       const response = await this.gmail.users.messages.list({
-        userId: 'me',
+        userId: "me",
         maxResults,
         q,
         labelIds,
@@ -75,7 +77,7 @@ export class GmailClient {
 
       const messages = response.data.messages || [];
       const detailedMessages = await Promise.all(
-        messages.map((message: { id: string }) => this.getMessage(message.id))
+        messages.map((message: { id: string }) => this.getMessage(message.id)),
       );
 
       return detailedMessages.filter(Boolean) as GmailEmail[];
@@ -90,9 +92,9 @@ export class GmailClient {
   async getMessage(messageId: string): Promise<GmailEmail | null> {
     try {
       const response = await this.gmail.users.messages.get({
-        userId: 'me',
+        userId: "me",
         id: messageId,
-        format: 'full',
+        format: "full",
       });
 
       return this.parseMessage(response.data);
@@ -108,15 +110,17 @@ export class GmailClient {
   private parseMessage(messageData: unknown): GmailEmail {
     const data = messageData as { [key: string]: unknown };
     const headers = (data.payload as { headers?: unknown[] })?.headers || [];
-    const getHeader = (name: string) => 
-      (headers as Array<{ name: string; value: string }>).find((h) => h.name.toLowerCase() === name.toLowerCase())?.value || '';
+    const getHeader = (name: string) =>
+      (headers as Array<{ name: string; value: string }>).find(
+        (h) => h.name.toLowerCase() === name.toLowerCase(),
+      )?.value || "";
 
-    const from = getHeader('From');
-    const to = getHeader('To');
-    const cc = getHeader('Cc');
-    const bcc = getHeader('Bcc');
-    const subject = getHeader('Subject');
-    const date = getHeader('Date');
+    const from = getHeader("From");
+    const to = getHeader("To");
+    const cc = getHeader("Cc");
+    const bcc = getHeader("Bcc");
+    const subject = getHeader("Subject");
+    const date = getHeader("Date");
 
     const { text, html } = this.extractBody(data.payload);
     const attachments = this.extractAttachments(data.payload);
@@ -129,13 +133,13 @@ export class GmailClient {
       to: this.extractEmails(to),
       cc: this.extractEmails(cc),
       bcc: this.extractEmails(bcc),
-      subject: subject || '(No Subject)',
-      snippet: data.snippet || '',
+      subject: subject || "(No Subject)",
+      snippet: data.snippet || "",
       body: text,
       bodyHtml: html,
       date: new Date(date || Date.now()),
-      isRead: !data.labelIds?.includes('UNREAD'),
-      isStarred: data.labelIds?.includes('STARRED') || false,
+      isRead: !data.labelIds?.includes("UNREAD"),
+      isStarred: data.labelIds?.includes("STARRED") || false,
       labels: data.labelIds || [],
       attachments,
       priority: this.determinePriority(data),
@@ -147,14 +151,14 @@ export class GmailClient {
    * Extract body content from message payload
    */
   private extractBody(payload: unknown): { text: string; html: string } {
-    let text = '';
-    let html = '';
+    let text = "";
+    let html = "";
 
     const extractPart = (part: Record<string, unknown>) => {
-      if (part.mimeType === 'text/plain') {
-        text = Buffer.from(part.body.data as string, 'base64').toString();
-      } else if (part.mimeType === 'text/html') {
-        html = Buffer.from(part.body.data as string, 'base64').toString();
+      if (part.mimeType === "text/plain") {
+        text = Buffer.from(part.body.data as string, "base64").toString();
+      } else if (part.mimeType === "text/html") {
+        html = Buffer.from(part.body.data as string, "base64").toString();
       }
 
       if (part.parts) {
@@ -204,7 +208,7 @@ export class GmailClient {
    */
   private extractName(header: string): string {
     const match = header.match(/^(.+?)\s*</);
-    return match ? match[1].trim() : '';
+    return match ? match[1].trim() : "";
   }
 
   /**
@@ -212,37 +216,50 @@ export class GmailClient {
    */
   private extractEmails(header: string): string[] {
     if (!header) return [];
-    return header.split(',').map((email) => this.extractEmail(email.trim()));
+    return header.split(",").map((email) => this.extractEmail(email.trim()));
   }
 
   /**
    * Determine message priority based on content and sender
    */
-  private determinePriority(_messageData: unknown): 'high' | 'medium' | 'low' {
+  private determinePriority(_messageData: unknown): "high" | "medium" | "low" {
     // Placeholder: implement real priority logic
-    return 'medium';
+    return "medium";
   }
 
   /**
    * Determine message category
    */
-  private determineCategory(_messageData: unknown): 'primary' | 'social' | 'promotions' | 'updates' | 'forums' {
+  private determineCategory(
+    _messageData: unknown,
+  ): "primary" | "social" | "promotions" | "updates" | "forums" {
     // Placeholder: implement real category logic
-    return 'primary';
+    return "primary";
   }
 
   /**
    * Refresh access token
    */
-  async refreshToken(): Promise<{ access_token: string; refresh_token?: string }> {
+  async refreshToken(): Promise<{
+    access_token: string;
+    refresh_token?: string;
+  }> {
     try {
-      const { credentials } = (this.oauth2Client as unknown as { refreshAccessToken: () => { credentials: { access_token: string; refresh_token?: string } } }).refreshAccessToken();
+      const { credentials } = (
+        this.oauth2Client as unknown as {
+          refreshAccessToken: () => {
+            credentials: { access_token: string; refresh_token?: string };
+          };
+        }
+      ).refreshAccessToken();
       return {
         access_token: credentials.access_token!,
-        refresh_token: credentials.refresh_token ?? undefined
+        refresh_token: credentials.refresh_token ?? undefined,
       };
     } catch (error) {
-      throw new Error(`Failed to refresh token: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to refresh token: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
     }
   }
-} 
+}

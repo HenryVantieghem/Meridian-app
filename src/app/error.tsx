@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Typography } from '@/components/ui/typography';
+import { useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Typography } from "@/components/ui/typography";
 
 export default function Error({
   error,
@@ -40,10 +40,11 @@ export default function Error({
             Something went wrong
           </Typography>
           <Typography variant="body" className="text-gray-600 mb-6">
-            We&apos;re experiencing technical difficulties. Please try again or contact support if the problem persists.
+            We&apos;re experiencing technical difficulties. Please try again or
+            contact support if the problem persists.
           </Typography>
         </div>
-        
+
         <div className="space-y-3">
           <Button
             onClick={reset}
@@ -53,14 +54,14 @@ export default function Error({
           </Button>
           <Button
             variant="outline"
-            onClick={() => window.location.href = '/'}
+            onClick={() => (window.location.href = "/")}
             className="w-full border-brand-burgundy/20 text-brand-burgundy hover:bg-brand-burgundy/5"
           >
             Return home
           </Button>
         </div>
-        
-        {process.env.NODE_ENV === 'development' && (
+
+        {process.env.NODE_ENV === "development" && (
           <details className="mt-6 text-left">
             <summary className="cursor-pointer text-sm text-gray-500 hover:text-gray-700">
               Error details
@@ -73,4 +74,4 @@ export default function Error({
       </Card>
     </div>
   );
-} 
+}

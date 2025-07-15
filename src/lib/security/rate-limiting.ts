@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { z } from 'zod';
+import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 
 // Rate limiting configuration
 export const RATE_LIMIT_CONFIG = {
@@ -8,19 +8,19 @@ export const RATE_LIMIT_CONFIG = {
     WINDOW_MS: 15 * 60 * 1000, // 15 minutes
     MAX_REQUESTS: 100, // 100 requests per window
   },
-  
+
   // Authentication rate limits
   AUTH: {
     WINDOW_MS: 5 * 60 * 1000, // 5 minutes
     MAX_REQUESTS: 5, // 5 attempts per window
   },
-  
+
   // AI operation rate limits
   AI: {
     WINDOW_MS: 60 * 1000, // 1 minute
     MAX_REQUESTS: 10, // 10 requests per minute
   },
-  
+
   // Email sending rate limits
   EMAIL: {
     WINDOW_MS: 60 * 1000, // 1 minute
@@ -34,7 +34,7 @@ export class RateLimiter {
 
   constructor(
     private windowMs: number,
-    private maxRequests: number
+    private maxRequests: number,
   ) {}
 
   isAllowed(identifier: string): boolean {
@@ -82,10 +82,22 @@ export class RateLimiter {
 
 // Rate limiters for different endpoints
 export const rateLimiters = {
-  api: new RateLimiter(RATE_LIMIT_CONFIG.API.WINDOW_MS, RATE_LIMIT_CONFIG.API.MAX_REQUESTS),
-  auth: new RateLimiter(RATE_LIMIT_CONFIG.AUTH.WINDOW_MS, RATE_LIMIT_CONFIG.AUTH.MAX_REQUESTS),
-  ai: new RateLimiter(RATE_LIMIT_CONFIG.AI.WINDOW_MS, RATE_LIMIT_CONFIG.AI.MAX_REQUESTS),
-  email: new RateLimiter(RATE_LIMIT_CONFIG.EMAIL.WINDOW_MS, RATE_LIMIT_CONFIG.EMAIL.MAX_REQUESTS),
+  api: new RateLimiter(
+    RATE_LIMIT_CONFIG.API.WINDOW_MS,
+    RATE_LIMIT_CONFIG.API.MAX_REQUESTS,
+  ),
+  auth: new RateLimiter(
+    RATE_LIMIT_CONFIG.AUTH.WINDOW_MS,
+    RATE_LIMIT_CONFIG.AUTH.MAX_REQUESTS,
+  ),
+  ai: new RateLimiter(
+    RATE_LIMIT_CONFIG.AI.WINDOW_MS,
+    RATE_LIMIT_CONFIG.AI.MAX_REQUESTS,
+  ),
+  email: new RateLimiter(
+    RATE_LIMIT_CONFIG.EMAIL.WINDOW_MS,
+    RATE_LIMIT_CONFIG.EMAIL.MAX_REQUESTS,
+  ),
 };
 
 // Rate limiting middleware
@@ -94,36 +106,51 @@ export const withRateLimiting = (
   options: {
     type: keyof typeof rateLimiters;
     getIdentifier?: (req: NextRequest) => string;
-  }
+  },
 ) => {
   return async (req: NextRequest): Promise<NextResponse> => {
     const limiter = rateLimiters[options.type];
-    const identifier = options.getIdentifier?.(req) || req.headers.get('x-forwarded-for') || 'unknown';
+    const identifier =
+      options.getIdentifier?.(req) ||
+      req.headers.get("x-forwarded-for") ||
+      "unknown";
 
     if (!limiter.isAllowed(identifier)) {
       return NextResponse.json(
         {
-          error: 'Rate limit exceeded',
-          retryAfter: Math.ceil((limiter.getResetTime(identifier) - Date.now()) / 1000),
+          error: "Rate limit exceeded",
+          retryAfter: Math.ceil(
+            (limiter.getResetTime(identifier) - Date.now()) / 1000,
+          ),
         },
         {
           status: 429,
           headers: {
-            'Retry-After': Math.ceil((limiter.getResetTime(identifier) - Date.now()) / 1000).toString(),
-            'X-RateLimit-Limit': '100', // Use default value
-            'X-RateLimit-Remaining': limiter.getRemainingRequests(identifier).toString(),
-            'X-RateLimit-Reset': limiter.getResetTime(identifier).toString(),
+            "Retry-After": Math.ceil(
+              (limiter.getResetTime(identifier) - Date.now()) / 1000,
+            ).toString(),
+            "X-RateLimit-Limit": "100", // Use default value
+            "X-RateLimit-Remaining": limiter
+              .getRemainingRequests(identifier)
+              .toString(),
+            "X-RateLimit-Reset": limiter.getResetTime(identifier).toString(),
           },
-        }
+        },
       );
     }
 
     const response = await handler(req);
 
     // Add rate limit headers
-    response.headers.set('X-RateLimit-Limit', '100'); // Use default value
-    response.headers.set('X-RateLimit-Remaining', limiter.getRemainingRequests(identifier).toString());
-    response.headers.set('X-RateLimit-Reset', limiter.getResetTime(identifier).toString());
+    response.headers.set("X-RateLimit-Limit", "100"); // Use default value
+    response.headers.set(
+      "X-RateLimit-Remaining",
+      limiter.getRemainingRequests(identifier).toString(),
+    );
+    response.headers.set(
+      "X-RateLimit-Reset",
+      limiter.getResetTime(identifier).toString(),
+    );
 
     return response;
   };
@@ -144,7 +171,7 @@ export const validationSchemas = {
     email: z.string().email(),
     avatar: z.string().url().optional(),
     preferences: z.object({
-      theme: z.enum(['light', 'dark']),
+      theme: z.enum(["light", "dark"]),
       notifications: z.boolean(),
     }),
   }),
@@ -152,7 +179,7 @@ export const validationSchemas = {
   // AI request validation
   aiRequest: z.object({
     prompt: z.string().min(1).max(5000),
-    model: z.enum(['gpt-4o', 'gpt-4o-mini']).optional(),
+    model: z.enum(["gpt-4o", "gpt-4o-mini"]).optional(),
     maxTokens: z.number().min(1).max(4000).optional(),
     temperature: z.number().min(0).max(2).optional(),
   }),
@@ -160,7 +187,7 @@ export const validationSchemas = {
   // Payment validation
   payment: z.object({
     amount: z.number().positive(),
-    currency: z.enum(['usd', 'eur', 'gbp']),
+    currency: z.enum(["usd", "eur", "gbp"]),
     description: z.string().min(1).max(200),
   }),
 
@@ -175,13 +202,13 @@ export const validationSchemas = {
 // Input validation middleware
 export const withInputValidation = <T extends z.ZodSchema>(
   handler: (req: NextRequest, data: z.infer<T>) => Promise<NextResponse>,
-  schema: T
+  schema: T,
 ) => {
   return async (req: NextRequest): Promise<NextResponse> => {
     try {
       let data: z.infer<T>;
 
-      if (req.method === 'GET') {
+      if (req.method === "GET") {
         const url = new URL(req.url);
         data = schema.parse(Object.fromEntries(url.searchParams));
       } else {
@@ -194,10 +221,10 @@ export const withInputValidation = <T extends z.ZodSchema>(
       if (error instanceof z.ZodError) {
         return NextResponse.json(
           {
-            error: 'Validation failed',
+            error: "Validation failed",
             details: error.errors,
           },
-          { status: 400 }
+          { status: 400 },
         );
       }
       throw error;
@@ -207,22 +234,25 @@ export const withInputValidation = <T extends z.ZodSchema>(
 
 // Security headers middleware
 export const withSecurityHeaders = (
-  handler: (req: NextRequest) => Promise<NextResponse>
+  handler: (req: NextRequest) => Promise<NextResponse>,
 ) => {
   return async (req: NextRequest): Promise<NextResponse> => {
     const response = await handler(req);
 
     // Security headers
-    response.headers.set('X-Content-Type-Options', 'nosniff');
-    response.headers.set('X-Frame-Options', 'DENY');
-    response.headers.set('X-XSS-Protection', '1; mode=block');
-    response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
-    response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+    response.headers.set("X-Content-Type-Options", "nosniff");
+    response.headers.set("X-Frame-Options", "DENY");
+    response.headers.set("X-XSS-Protection", "1; mode=block");
+    response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+    response.headers.set(
+      "Permissions-Policy",
+      "camera=(), microphone=(), geolocation=()",
+    );
 
     // Content Security Policy
     response.headers.set(
-      'Content-Security-Policy',
-      "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.stripe.com https://checkout.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.openai.com https://api.stripe.com https://api.slack.com https://www.googleapis.com https://graph.microsoft.com; frame-src https://js.stripe.com https://checkout.stripe.com;"
+      "Content-Security-Policy",
+      "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.stripe.com https://checkout.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.openai.com https://api.stripe.com https://api.slack.com https://www.googleapis.com https://graph.microsoft.com; frame-src https://js.stripe.com https://checkout.stripe.com;",
     );
 
     return response;
@@ -231,15 +261,21 @@ export const withSecurityHeaders = (
 
 // CORS middleware
 export const withCORS = (
-  handler: (req: NextRequest) => Promise<NextResponse>
+  handler: (req: NextRequest) => Promise<NextResponse>,
 ) => {
   return async (req: NextRequest): Promise<NextResponse> => {
     const response = await handler(req);
 
     // CORS headers
-    response.headers.set('Access-Control-Allow-Origin', '*');
-    response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    response.headers.set("Access-Control-Allow-Origin", "*");
+    response.headers.set(
+      "Access-Control-Allow-Methods",
+      "GET, POST, PUT, DELETE, OPTIONS",
+    );
+    response.headers.set(
+      "Access-Control-Allow-Headers",
+      "Content-Type, Authorization",
+    );
 
     return response;
   };
@@ -247,34 +283,26 @@ export const withCORS = (
 
 // DDoS protection middleware
 export const withDDoSProtection = (
-  handler: (req: NextRequest) => Promise<NextResponse>
+  handler: (req: NextRequest) => Promise<NextResponse>,
 ) => {
   return async (req: NextRequest): Promise<NextResponse> => {
     // Check for suspicious patterns
-    const userAgent = req.headers.get('user-agent') || '';
-    const suspiciousPatterns = [
-      /bot/i,
-      /crawler/i,
-      /spider/i,
-      /scraper/i,
-    ];
+    const userAgent = req.headers.get("user-agent") || "";
+    const suspiciousPatterns = [/bot/i, /crawler/i, /spider/i, /scraper/i];
 
-    const isSuspicious = suspiciousPatterns.some(pattern => pattern.test(userAgent));
+    const isSuspicious = suspiciousPatterns.some((pattern) =>
+      pattern.test(userAgent),
+    );
 
     if (isSuspicious) {
-      return NextResponse.json(
-        { error: 'Access denied' },
-        { status: 403 }
-      );
+      return NextResponse.json({ error: "Access denied" }, { status: 403 });
     }
 
     // Check request size
-    const contentLength = parseInt(req.headers.get('content-length') || '0');
-    if (contentLength > 10 * 1024 * 1024) { // 10MB limit
-      return NextResponse.json(
-        { error: 'Request too large' },
-        { status: 413 }
-      );
+    const contentLength = parseInt(req.headers.get("content-length") || "0");
+    if (contentLength > 10 * 1024 * 1024) {
+      // 10MB limit
+      return NextResponse.json({ error: "Request too large" }, { status: 413 });
     }
 
     return await handler(req);
@@ -283,15 +311,15 @@ export const withDDoSProtection = (
 
 // Authentication middleware
 export const withAuthentication = (
-  handler: (req: NextRequest) => Promise<NextResponse>
+  handler: (req: NextRequest) => Promise<NextResponse>,
 ) => {
   return async (req: NextRequest): Promise<NextResponse> => {
-    const authHeader = req.headers.get('authorization');
+    const authHeader = req.headers.get("authorization");
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return NextResponse.json(
-        { error: 'Authentication required' },
-        { status: 401 }
+        { error: "Authentication required" },
+        { status: 401 },
       );
     }
 
@@ -302,10 +330,7 @@ export const withAuthentication = (
       // Token validation logic here
       return await handler(req);
     } catch (error) {
-      return NextResponse.json(
-        { error: 'Invalid token' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
     }
   };
 };
@@ -317,7 +342,7 @@ export const withSecurity = (
     rateLimit?: keyof typeof rateLimiters;
     validateInput?: z.ZodSchema;
     requireAuth?: boolean;
-  } = {}
+  } = {},
 ) => {
   let securedHandler = handler;
 
@@ -352,5 +377,5 @@ export const withSecurity = (
 
 // Cleanup expired rate limit records periodically
 setInterval(() => {
-  Object.values(rateLimiters).forEach(limiter => limiter.cleanup());
-}, 60000); // Every minute 
+  Object.values(rateLimiters).forEach((limiter) => limiter.cleanup());
+}, 60000); // Every minute

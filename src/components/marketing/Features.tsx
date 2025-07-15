@@ -1,71 +1,77 @@
-'use client';
+"use client";
 
-import { Typography } from '@/components/ui/typography';
-import { Card } from '@/components/ui/card';
-import { motion } from 'framer-motion';
-import { 
-  Brain, 
-  Target, 
-  Clock, 
-  Shield, 
-  Zap, 
+import { Typography } from "@/components/ui/typography";
+import { Card } from "@/components/ui/card";
+import { motion } from "framer-motion";
+import {
+  Brain,
+  Target,
+  Clock,
+  Shield,
+  Zap,
   Sparkles,
   Mail,
   BarChart3,
   Smartphone,
-  Users
-} from 'lucide-react';
+  Users,
+} from "lucide-react";
 
 const features = [
   {
     icon: Brain,
-    title: 'AI-Powered Analysis',
-    description: 'Advanced AI analyzes your emails in real-time, extracting key insights, sentiment, and actionable items.',
-    color: 'text-blue-600',
-    bgColor: 'bg-blue-50'
+    title: "AI-Powered Analysis",
+    description:
+      "Advanced AI analyzes your emails in real-time, extracting key insights, sentiment, and actionable items.",
+    color: "text-blue-600",
+    bgColor: "bg-blue-50",
   },
   {
     icon: Target,
-    title: 'Smart Prioritization',
-    description: 'Automatically prioritize emails based on urgency, importance, and your communication patterns.',
-    color: 'text-green-600',
-    bgColor: 'bg-green-50'
+    title: "Smart Prioritization",
+    description:
+      "Automatically prioritize emails based on urgency, importance, and your communication patterns.",
+    color: "text-green-600",
+    bgColor: "bg-green-50",
   },
   {
     icon: Clock,
-    title: 'Time-Saving Automation',
-    description: 'Generate intelligent replies, schedule follow-ups, and automate routine email tasks.',
-    color: 'text-purple-600',
-    bgColor: 'bg-purple-50'
+    title: "Time-Saving Automation",
+    description:
+      "Generate intelligent replies, schedule follow-ups, and automate routine email tasks.",
+    color: "text-purple-600",
+    bgColor: "bg-purple-50",
   },
   {
     icon: Shield,
-    title: 'Enterprise Security',
-    description: 'Bank-level encryption, SOC 2 compliance, and zero-knowledge architecture for your data.',
-    color: 'text-red-600',
-    bgColor: 'bg-red-50'
+    title: "Enterprise Security",
+    description:
+      "Bank-level encryption, SOC 2 compliance, and zero-knowledge architecture for your data.",
+    color: "text-red-600",
+    bgColor: "bg-red-50",
   },
   {
     icon: Zap,
-    title: 'Lightning Fast',
-    description: 'Built for speed with real-time processing and instant email synchronization.',
-    color: 'text-yellow-600',
-    bgColor: 'bg-yellow-50'
+    title: "Lightning Fast",
+    description:
+      "Built for speed with real-time processing and instant email synchronization.",
+    color: "text-yellow-600",
+    bgColor: "bg-yellow-50",
   },
   {
     icon: Sparkles,
-    title: 'Elegant Design',
-    description: 'Beautiful, intuitive interface that adapts to your workflow and preferences.',
-    color: 'text-pink-600',
-    bgColor: 'bg-pink-50'
-  }
+    title: "Elegant Design",
+    description:
+      "Beautiful, intuitive interface that adapts to your workflow and preferences.",
+    color: "text-pink-600",
+    bgColor: "bg-pink-50",
+  },
 ];
 
 const stats = [
-  { number: '95%', label: 'Time Saved' },
-  { number: '10x', label: 'Faster Processing' },
-  { number: '99.9%', label: 'Uptime' },
-  { number: '50k+', label: 'Emails Analyzed' }
+  { number: "95%", label: "Time Saved" },
+  { number: "10x", label: "Faster Processing" },
+  { number: "99.9%", label: "Uptime" },
+  { number: "50k+", label: "Emails Analyzed" },
 ];
 
 export function Features() {
@@ -80,11 +86,18 @@ export function Features() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <Typography variant="h2" className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+          <Typography
+            variant="h2"
+            className="text-4xl md:text-5xl font-bold text-gray-900 mb-6"
+          >
             Supercharge Your Email Workflow
           </Typography>
-          <Typography variant="body" className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Experience the future of email management with AI-powered features designed for modern professionals.
+          <Typography
+            variant="body"
+            className="text-xl text-gray-600 max-w-3xl mx-auto"
+          >
+            Experience the future of email management with AI-powered features
+            designed for modern professionals.
           </Typography>
         </motion.div>
 
@@ -99,10 +112,15 @@ export function Features() {
               viewport={{ once: true }}
             >
               <Card className="p-8 h-full hover:shadow-lg transition-shadow duration-300">
-                <div className={`w-12 h-12 ${feature.bgColor} rounded-lg flex items-center justify-center mb-6`}>
+                <div
+                  className={`w-12 h-12 ${feature.bgColor} rounded-lg flex items-center justify-center mb-6`}
+                >
                   <feature.icon className={`w-6 h-6 ${feature.color}`} />
                 </div>
-                <Typography variant="h3" className="text-xl font-semibold text-gray-900 mb-4">
+                <Typography
+                  variant="h3"
+                  className="text-xl font-semibold text-gray-900 mb-4"
+                >
                   {feature.title}
                 </Typography>
                 <Typography variant="body" className="text-gray-600">
@@ -122,14 +140,18 @@ export function Features() {
           className="bg-gray-50 rounded-2xl p-8 md:p-12"
         >
           <div className="text-center mb-12">
-            <Typography variant="h3" className="text-3xl font-bold text-gray-900 mb-4">
+            <Typography
+              variant="h3"
+              className="text-3xl font-bold text-gray-900 mb-4"
+            >
               Trusted by Professionals Worldwide
             </Typography>
             <Typography variant="body" className="text-gray-600">
-              Join thousands of executives, managers, and professionals who trust Napoleon with their communication.
+              Join thousands of executives, managers, and professionals who
+              trust Napoleon with their communication.
             </Typography>
           </div>
-          
+
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
               <motion.div
@@ -140,10 +162,16 @@ export function Features() {
                 viewport={{ once: true }}
                 className="text-center"
               >
-                <Typography variant="h2" className="text-4xl font-bold text-primary-600 mb-2">
+                <Typography
+                  variant="h2"
+                  className="text-4xl font-bold text-primary-600 mb-2"
+                >
                   {stat.number}
                 </Typography>
-                <Typography variant="body" className="text-gray-600 font-medium">
+                <Typography
+                  variant="body"
+                  className="text-gray-600 font-medium"
+                >
                   {stat.label}
                 </Typography>
               </motion.div>
@@ -159,7 +187,10 @@ export function Features() {
           viewport={{ once: true }}
           className="mt-20 text-center"
         >
-          <Typography variant="h3" className="text-3xl font-bold text-gray-900 mb-8">
+          <Typography
+            variant="h3"
+            className="text-3xl font-bold text-gray-900 mb-8"
+          >
             Seamless Integration
           </Typography>
           <div className="flex flex-wrap justify-center items-center gap-8 text-gray-400">
@@ -188,4 +219,4 @@ export function Features() {
       </div>
     </section>
   );
-} 
+}

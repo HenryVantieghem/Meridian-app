@@ -1,12 +1,21 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useRef } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Typography } from '@/components/ui/typography';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Zap, Crown, Search, Send, Sparkles, Clock, ArrowRight, Loader2 } from 'lucide-react';
+import { useState, useEffect, useRef } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Typography } from "@/components/ui/typography";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import {
+  Zap,
+  Crown,
+  Search,
+  Send,
+  Sparkles,
+  Clock,
+  ArrowRight,
+  Loader2,
+} from "lucide-react";
 
 interface CommandBarWiringProps {
   isOpen: boolean;
@@ -16,7 +25,7 @@ interface CommandBarWiringProps {
 
 interface QueryResult {
   id: string;
-  type: 'summary' | 'action' | 'insight' | 'draft';
+  type: "summary" | "action" | "insight" | "draft";
   title: string;
   content: string;
   confidence: number;
@@ -30,46 +39,50 @@ interface QuickAction {
   icon: React.ReactNode;
   description: string;
   command: string;
-  category: 'briefing' | 'drafting' | 'analysis' | 'scheduling';
+  category: "briefing" | "drafting" | "analysis" | "scheduling";
 }
 
 const quickActions: QuickAction[] = [
   {
-    id: 'daily-brief',
-    label: 'Daily Strategic Brief',
+    id: "daily-brief",
+    label: "Daily Strategic Brief",
     icon: <Crown className="w-4 h-4" />,
-    description: 'Get your executive summary for today',
-    command: 'generate daily brief',
-    category: 'briefing'
+    description: "Get your executive summary for today",
+    command: "generate daily brief",
+    category: "briefing",
   },
   {
-    id: 'vip-status',
-    label: 'VIP Status Update',
+    id: "vip-status",
+    label: "VIP Status Update",
     icon: <Sparkles className="w-4 h-4" />,
-    description: 'Check on critical relationships',
-    command: 'show vip status',
-    category: 'analysis'
+    description: "Check on critical relationships",
+    command: "show vip status",
+    category: "analysis",
   },
   {
-    id: 'draft-reply',
-    label: 'Draft Strategic Reply',
+    id: "draft-reply",
+    label: "Draft Strategic Reply",
     icon: <Zap className="w-4 h-4" />,
-    description: 'AI-powered response generation',
-    command: 'draft reply to latest email',
-    category: 'drafting'
+    description: "AI-powered response generation",
+    command: "draft reply to latest email",
+    category: "drafting",
   },
   {
-    id: 'schedule-optimize',
-    label: 'Optimize Schedule',
+    id: "schedule-optimize",
+    label: "Optimize Schedule",
     icon: <Clock className="w-4 h-4" />,
-    description: 'Intelligent calendar management',
-    command: 'optimize my schedule',
-    category: 'scheduling'
-  }
+    description: "Intelligent calendar management",
+    command: "optimize my schedule",
+    category: "scheduling",
+  },
 ];
 
-export default function CommandBarWiring({ isOpen, onClose, onCommand }: CommandBarWiringProps) {
-  const [query, setQuery] = useState('');
+export default function CommandBarWiring({
+  isOpen,
+  onClose,
+  onCommand,
+}: CommandBarWiringProps) {
+  const [query, setQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [results, setResults] = useState<QueryResult[]>([]);
   const [selectedAction, setSelectedAction] = useState<string | null>(null);
@@ -86,34 +99,34 @@ export default function CommandBarWiring({ isOpen, onClose, onCommand }: Command
     if (!query.trim()) return;
 
     setIsLoading(true);
-    
+
     try {
-      const response = await fetch('/api/ai/query', {
-        method: 'POST',
+      const response = await fetch("/api/ai/query", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ query }),
       });
 
-      if (!response.ok) throw new Error('Query failed');
+      if (!response.ok) throw new Error("Query failed");
 
       const data = await response.json();
       setResults(data.results || []);
       onCommand(query);
     } catch (error) {
-      console.error('Command execution failed:', error);
+      console.error("Command execution failed:", error);
       // Mock response for demo
       setResults([
         {
-          id: '1',
-          type: 'summary',
-          title: 'Strategic Analysis',
+          id: "1",
+          type: "summary",
+          title: "Strategic Analysis",
           content: `Based on your query "${query}", here's what I found: You have 3 critical emails requiring immediate attention, 2 VIP communications pending response, and 1 strategic opportunity identified.`,
           confidence: 85,
           timestamp: new Date(),
-          metadata: { priority: 'high' }
-        }
+          metadata: { priority: "high" },
+        },
       ]);
     } finally {
       setIsLoading(false);
@@ -123,7 +136,7 @@ export default function CommandBarWiring({ isOpen, onClose, onCommand }: Command
   const handleQuickAction = async (action: QuickAction) => {
     setSelectedAction(action.id);
     setQuery(action.command);
-    
+
     // Auto-execute the command
     setTimeout(() => {
       handleSubmit({ preventDefault: () => {} } as React.FormEvent);
@@ -132,7 +145,7 @@ export default function CommandBarWiring({ isOpen, onClose, onCommand }: Command
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Escape') {
+    if (e.key === "Escape") {
       onClose();
     }
   };
@@ -150,7 +163,10 @@ export default function CommandBarWiring({ isOpen, onClose, onCommand }: Command
                 <Crown className="w-6 h-6 text-white" />
               </div>
               <div>
-                <Typography variant="h6" className="font-playfair font-bold text-black">
+                <Typography
+                  variant="h6"
+                  className="font-playfair font-bold text-black"
+                >
                   Napoleon Command Center
                 </Typography>
                 <Typography variant="body2" className="text-gray-600">
@@ -190,7 +206,10 @@ export default function CommandBarWiring({ isOpen, onClose, onCommand }: Command
           {/* Quick Actions */}
           {!query && !results.length && (
             <div className="p-6">
-              <Typography variant="h6" className="font-semibold text-black mb-4">
+              <Typography
+                variant="h6"
+                className="font-semibold text-black mb-4"
+              >
                 Quick Actions
               </Typography>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -199,7 +218,9 @@ export default function CommandBarWiring({ isOpen, onClose, onCommand }: Command
                     key={action.id}
                     variant="outline"
                     className={`p-4 h-auto text-left justify-start hover:bg-brand-burgundy/5 hover:border-brand-burgundy/30 transition-all ${
-                      selectedAction === action.id ? 'bg-brand-burgundy/5 border-brand-burgundy/30' : ''
+                      selectedAction === action.id
+                        ? "bg-brand-burgundy/5 border-brand-burgundy/30"
+                        : ""
                     }`}
                     onClick={() => handleQuickAction(action)}
                     disabled={selectedAction === action.id}
@@ -213,8 +234,12 @@ export default function CommandBarWiring({ isOpen, onClose, onCommand }: Command
                         )}
                       </div>
                       <div className="flex-1">
-                        <div className="font-medium text-black">{action.label}</div>
-                        <div className="text-sm text-gray-600 mt-1">{action.description}</div>
+                        <div className="font-medium text-black">
+                          {action.label}
+                        </div>
+                        <div className="text-sm text-gray-600 mt-1">
+                          {action.description}
+                        </div>
                       </div>
                       <ArrowRight className="w-4 h-4 text-gray-400 mt-1" />
                     </div>
@@ -227,19 +252,28 @@ export default function CommandBarWiring({ isOpen, onClose, onCommand }: Command
           {/* Results */}
           {results.length > 0 && (
             <div className="p-6 max-h-96 overflow-y-auto">
-              <Typography variant="h6" className="font-semibold text-black mb-4">
+              <Typography
+                variant="h6"
+                className="font-semibold text-black mb-4"
+              >
                 Results
               </Typography>
               <div className="space-y-4">
                 {results.map((result) => (
-                  <Card key={result.id} className="border-gray-200 hover:border-brand-burgundy/30 transition-colors">
+                  <Card
+                    key={result.id}
+                    className="border-gray-200 hover:border-brand-burgundy/30 transition-colors"
+                  >
                     <CardContent className="p-4">
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex items-center gap-2">
                           <Badge className="bg-brand-burgundy/10 text-brand-burgundy border-brand-burgundy/20">
                             {result.type}
                           </Badge>
-                          <Typography variant="h6" className="font-semibold text-black">
+                          <Typography
+                            variant="h6"
+                            className="font-semibold text-black"
+                          >
                             {result.title}
                           </Typography>
                         </div>
@@ -250,23 +284,30 @@ export default function CommandBarWiring({ isOpen, onClose, onCommand }: Command
                           </div>
                           <div className="flex items-center gap-1">
                             <Clock className="w-3 h-3" />
-                            {result.timestamp.toLocaleTimeString([], { 
-                              hour: '2-digit', 
-                              minute: '2-digit' 
+                            {result.timestamp.toLocaleTimeString([], {
+                              hour: "2-digit",
+                              minute: "2-digit",
                             })}
                           </div>
                         </div>
                       </div>
-                      <Typography variant="body1" className="text-gray-700 leading-relaxed">
+                      <Typography
+                        variant="body1"
+                        className="text-gray-700 leading-relaxed"
+                      >
                         {result.content}
                       </Typography>
                       {result.metadata?.priority && (
                         <div className="mt-3 pt-3 border-t border-gray-200">
-                          <Badge className={`${
-                            result.metadata.priority === 'high' ? 'bg-red-100 text-red-800' :
-                            result.metadata.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-                            'bg-green-100 text-green-800'
-                          }`}>
+                          <Badge
+                            className={`${
+                              result.metadata.priority === "high"
+                                ? "bg-red-100 text-red-800"
+                                : result.metadata.priority === "medium"
+                                  ? "bg-yellow-100 text-yellow-800"
+                                  : "bg-green-100 text-green-800"
+                            }`}
+                          >
                             {result.metadata.priority} priority
                           </Badge>
                         </div>

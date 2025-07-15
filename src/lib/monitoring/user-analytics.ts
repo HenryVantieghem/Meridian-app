@@ -1,22 +1,22 @@
-import { NextRequest } from 'next/server';
+import { NextRequest } from "next/server";
 
 // User event types
 export enum UserEventType {
-  PAGE_VIEW = 'page_view',
-  BUTTON_CLICK = 'button_click',
-  FORM_SUBMIT = 'form_submit',
-  EMAIL_OPEN = 'email_open',
-  EMAIL_REPLY = 'email_reply',
-  EMAIL_DELEGATE = 'email_delegate',
-  AI_GENERATE = 'ai_generate',
-  AI_EDIT = 'ai_edit',
-  PAYMENT_START = 'payment_start',
-  PAYMENT_COMPLETE = 'payment_complete',
-  ONBOARDING_STEP = 'onboarding_step',
-  FEATURE_USE = 'feature_use',
-  ERROR_OCCURRED = 'error_occurred',
-  SESSION_START = 'session_start',
-  SESSION_END = 'session_end'
+  PAGE_VIEW = "page_view",
+  BUTTON_CLICK = "button_click",
+  FORM_SUBMIT = "form_submit",
+  EMAIL_OPEN = "email_open",
+  EMAIL_REPLY = "email_reply",
+  EMAIL_DELEGATE = "email_delegate",
+  AI_GENERATE = "ai_generate",
+  AI_EDIT = "ai_edit",
+  PAYMENT_START = "payment_start",
+  PAYMENT_COMPLETE = "payment_complete",
+  ONBOARDING_STEP = "onboarding_step",
+  FEATURE_USE = "feature_use",
+  ERROR_OCCURRED = "error_occurred",
+  SESSION_START = "session_start",
+  SESSION_END = "session_end",
 }
 
 // User properties interface
@@ -64,7 +64,8 @@ export interface UserEvent {
 export class UserAnalyticsService {
   private events: UserEvent[] = [];
   private users: Map<string, UserProperties> = new Map();
-  private sessions: Map<string, { startTime: Date; endTime?: Date }> = new Map();
+  private sessions: Map<string, { startTime: Date; endTime?: Date }> =
+    new Map();
 
   /**
    * Track user event
@@ -74,7 +75,7 @@ export class UserAnalyticsService {
     sessionId: string,
     type: UserEventType,
     properties: Record<string, unknown> = {},
-    req?: NextRequest
+    req?: NextRequest,
   ): void {
     const event: UserEvent = {
       id: this.generateEventId(),
@@ -82,14 +83,22 @@ export class UserAnalyticsService {
       sessionId,
       type,
       timestamp: new Date(),
-      url: req?.url || (typeof window !== 'undefined' ? window.location.href : ''),
+      url:
+        req?.url || (typeof window !== "undefined" ? window.location.href : ""),
       properties,
       context: {
-        userAgent: req?.headers.get('user-agent') || (typeof window !== 'undefined' ? navigator.userAgent : ''),
-        ip: req?.headers.get('x-forwarded-for') || 'unknown',
-        referrer: req?.headers.get('referer') || (typeof window !== 'undefined' ? document.referrer : ''),
-        utmParams: this.extractUTMParams(req?.url || (typeof window !== 'undefined' ? window.location.href : ''))
-      }
+        userAgent:
+          req?.headers.get("user-agent") ||
+          (typeof window !== "undefined" ? navigator.userAgent : ""),
+        ip: req?.headers.get("x-forwarded-for") || "unknown",
+        referrer:
+          req?.headers.get("referer") ||
+          (typeof window !== "undefined" ? document.referrer : ""),
+        utmParams: this.extractUTMParams(
+          req?.url ||
+            (typeof window !== "undefined" ? window.location.href : ""),
+        ),
+      },
     };
 
     this.events.push(event);
@@ -104,13 +113,21 @@ export class UserAnalyticsService {
     sessionId: string,
     page: string,
     title?: string,
-    req?: NextRequest
+    req?: NextRequest,
   ): void {
-    this.trackEvent(userId, sessionId, UserEventType.PAGE_VIEW, {
-      page,
-      title,
-      referrer: req?.headers.get('referer') || (typeof window !== 'undefined' ? document.referrer : '')
-    }, req);
+    this.trackEvent(
+      userId,
+      sessionId,
+      UserEventType.PAGE_VIEW,
+      {
+        page,
+        title,
+        referrer:
+          req?.headers.get("referer") ||
+          (typeof window !== "undefined" ? document.referrer : ""),
+      },
+      req,
+    );
   }
 
   /**
@@ -121,12 +138,13 @@ export class UserAnalyticsService {
     sessionId: string,
     buttonId: string,
     buttonText?: string,
-    page?: string
+    page?: string,
   ): void {
     this.trackEvent(userId, sessionId, UserEventType.BUTTON_CLICK, {
       buttonId,
       buttonText,
-      page: page || (typeof window !== 'undefined' ? window.location.pathname : '')
+      page:
+        page || (typeof window !== "undefined" ? window.location.pathname : ""),
     });
   }
 
@@ -138,12 +156,12 @@ export class UserAnalyticsService {
     sessionId: string,
     formId: string,
     formData?: Record<string, unknown>,
-    success?: boolean
+    success?: boolean,
   ): void {
     this.trackEvent(userId, sessionId, UserEventType.FORM_SUBMIT, {
       formId,
       success,
-      fieldCount: formData ? Object.keys(formData).length : 0
+      fieldCount: formData ? Object.keys(formData).length : 0,
     });
   }
 
@@ -154,19 +172,22 @@ export class UserAnalyticsService {
     userId: string,
     sessionId: string,
     emailId: string,
-    action: 'open' | 'reply' | 'delegate' | 'archive',
+    action: "open" | "reply" | "delegate" | "archive",
     emailSubject?: string,
-    senderEmail?: string
+    senderEmail?: string,
   ): void {
-    const eventType = action === 'open' ? UserEventType.EMAIL_OPEN :
-                     action === 'reply' ? UserEventType.EMAIL_REPLY :
-                     UserEventType.EMAIL_DELEGATE;
+    const eventType =
+      action === "open"
+        ? UserEventType.EMAIL_OPEN
+        : action === "reply"
+          ? UserEventType.EMAIL_REPLY
+          : UserEventType.EMAIL_DELEGATE;
 
     this.trackEvent(userId, sessionId, eventType, {
       emailId,
       emailSubject,
       senderEmail,
-      action
+      action,
     });
   }
 
@@ -176,18 +197,19 @@ export class UserAnalyticsService {
   trackAIInteraction(
     userId: string,
     sessionId: string,
-    action: 'generate' | 'edit',
+    action: "generate" | "edit",
     context: string,
     tokensUsed?: number,
-    confidence?: number
+    confidence?: number,
   ): void {
-    const eventType = action === 'generate' ? UserEventType.AI_GENERATE : UserEventType.AI_EDIT;
+    const eventType =
+      action === "generate" ? UserEventType.AI_GENERATE : UserEventType.AI_EDIT;
 
     this.trackEvent(userId, sessionId, eventType, {
       context,
       tokensUsed,
       confidence,
-      action
+      action,
     });
   }
 
@@ -197,18 +219,21 @@ export class UserAnalyticsService {
   trackPaymentEvent(
     userId: string,
     sessionId: string,
-    action: 'start' | 'complete' | 'cancel' | 'error',
+    action: "start" | "complete" | "cancel" | "error",
     amount?: number,
     currency?: string,
-    plan?: string
+    plan?: string,
   ): void {
-    const eventType = action === 'start' ? UserEventType.PAYMENT_START : UserEventType.PAYMENT_COMPLETE;
+    const eventType =
+      action === "start"
+        ? UserEventType.PAYMENT_START
+        : UserEventType.PAYMENT_COMPLETE;
 
     this.trackEvent(userId, sessionId, eventType, {
       action,
       amount,
       currency,
-      plan
+      plan,
     });
   }
 
@@ -221,13 +246,13 @@ export class UserAnalyticsService {
     step: number,
     stepName: string,
     completed: boolean,
-    timeSpent?: number
+    timeSpent?: number,
   ): void {
     this.trackEvent(userId, sessionId, UserEventType.ONBOARDING_STEP, {
       step,
       stepName,
       completed,
-      timeSpent
+      timeSpent,
     });
   }
 
@@ -238,11 +263,11 @@ export class UserAnalyticsService {
     userId: string,
     sessionId: string,
     feature: string,
-    usageCount: number = 1
+    usageCount: number = 1,
   ): void {
     this.trackEvent(userId, sessionId, UserEventType.FEATURE_USE, {
       feature,
-      usageCount
+      usageCount,
     });
   }
 
@@ -252,30 +277,33 @@ export class UserAnalyticsService {
   trackSessionStart(
     userId: string,
     sessionId: string,
-    req?: NextRequest
+    req?: NextRequest,
   ): void {
     this.sessions.set(sessionId, { startTime: new Date() });
-    
-    this.trackEvent(userId, sessionId, UserEventType.SESSION_START, {
-      sessionDuration: 0
-    }, req);
+
+    this.trackEvent(
+      userId,
+      sessionId,
+      UserEventType.SESSION_START,
+      {
+        sessionDuration: 0,
+      },
+      req,
+    );
   }
 
   /**
    * Track session end
    */
-  trackSessionEnd(
-    userId: string,
-    sessionId: string,
-    duration?: number
-  ): void {
+  trackSessionEnd(userId: string, sessionId: string, duration?: number): void {
     const session = this.sessions.get(sessionId);
     if (session) {
       session.endTime = new Date();
-      const sessionDuration = duration || (session.endTime.getTime() - session.startTime.getTime());
-      
+      const sessionDuration =
+        duration || session.endTime.getTime() - session.startTime.getTime();
+
       this.trackEvent(userId, sessionId, UserEventType.SESSION_END, {
-        sessionDuration
+        sessionDuration,
       });
     }
   }
@@ -286,12 +314,16 @@ export class UserAnalyticsService {
   setUserProperties(userId: string, properties: Partial<UserProperties>): void {
     const existing = this.users.get(userId) || {
       userId,
-      email: '',
+      email: "",
       signupDate: new Date(),
-      lastActive: new Date()
+      lastActive: new Date(),
     };
 
-    this.users.set(userId, { ...existing, ...properties, lastActive: new Date() });
+    this.users.set(userId, {
+      ...existing,
+      ...properties,
+      lastActive: new Date(),
+    });
   }
 
   /**
@@ -314,14 +346,20 @@ export class UserAnalyticsService {
   private extractUTMParams(url: string): Record<string, string> {
     const urlObj = new URL(url);
     const utmParams: Record<string, string> = {};
-    
-    ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(param => {
+
+    [
+      "utm_source",
+      "utm_medium",
+      "utm_campaign",
+      "utm_term",
+      "utm_content",
+    ].forEach((param) => {
       const value = urlObj.searchParams.get(param);
       if (value) {
         utmParams[param] = value;
       }
     });
-    
+
     return utmParams;
   }
 
@@ -333,28 +371,31 @@ export class UserAnalyticsService {
       // Send to external analytics service (e.g., Mixpanel, Amplitude, etc.)
       if (process.env.ANALYTICS_ENDPOINT) {
         await fetch(process.env.ANALYTICS_ENDPOINT, {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${process.env.ANALYTICS_API_KEY}`
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${process.env.ANALYTICS_API_KEY}`,
           },
-          body: JSON.stringify(event)
+          body: JSON.stringify(event),
         });
       }
 
       // Log locally in development
-      if (process.env.NODE_ENV === 'development') {
-        console.log('User event:', event);
+      if (process.env.NODE_ENV === "development") {
+        console.log("User event:", event);
       }
     } catch (error) {
-      console.error('Failed to send user event:', error);
+      console.error("Failed to send user event:", error);
     }
   }
 
   /**
    * Get user engagement metrics
    */
-  getUserEngagement(userId: string, days: number = 30): {
+  getUserEngagement(
+    userId: string,
+    days: number = 30,
+  ): {
     totalEvents: number;
     uniqueDays: number;
     averageEventsPerDay: number;
@@ -363,24 +404,29 @@ export class UserAnalyticsService {
     averageSessionDuration: number;
   } {
     const cutoff = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
-    const userEvents = this.events.filter(e => 
-      e.userId === userId && e.timestamp > cutoff
+    const userEvents = this.events.filter(
+      (e) => e.userId === userId && e.timestamp > cutoff,
     );
 
     const totalEvents = userEvents.length;
-    const uniqueDays = new Set(userEvents.map(e => 
-      e.timestamp.toDateString()
-    )).size;
+    const uniqueDays = new Set(
+      userEvents.map((e) => e.timestamp.toDateString()),
+    ).size;
     const averageEventsPerDay = totalEvents / days;
 
     // Most used features
     const featureCounts = userEvents
-      .filter(e => e.type === UserEventType.FEATURE_USE)
-      .reduce((acc, event) => {
-        const feature = event.properties.feature as string;
-        acc[feature] = (acc[feature] || 0) + (event.properties.usageCount as number || 1);
-        return acc;
-      }, {} as Record<string, number>);
+      .filter((e) => e.type === UserEventType.FEATURE_USE)
+      .reduce(
+        (acc, event) => {
+          const feature = event.properties.feature as string;
+          acc[feature] =
+            (acc[feature] || 0) +
+            ((event.properties.usageCount as number) || 1);
+          return acc;
+        },
+        {} as Record<string, number>,
+      );
 
     const mostUsedFeatures = Object.entries(featureCounts)
       .map(([feature, count]) => ({ feature, count }))
@@ -388,10 +434,9 @@ export class UserAnalyticsService {
       .slice(0, 5);
 
     // Session metrics
-    const userSessions = Array.from(this.sessions.entries())
-      .filter(([sessionId]) => 
-        userEvents.some(e => e.sessionId === sessionId)
-      );
+    const userSessions = Array.from(this.sessions.entries()).filter(
+      ([sessionId]) => userEvents.some((e) => e.sessionId === sessionId),
+    );
 
     const sessionCount = userSessions.length;
     const sessionDurations = userSessions
@@ -401,11 +446,13 @@ export class UserAnalyticsService {
         }
         return 0;
       })
-      .filter(duration => duration > 0);
+      .filter((duration) => duration > 0);
 
-    const averageSessionDuration = sessionDurations.length > 0 
-      ? sessionDurations.reduce((sum, duration) => sum + duration, 0) / sessionDurations.length
-      : 0;
+    const averageSessionDuration =
+      sessionDurations.length > 0
+        ? sessionDurations.reduce((sum, duration) => sum + duration, 0) /
+          sessionDurations.length
+        : 0;
 
     return {
       totalEvents,
@@ -413,40 +460,46 @@ export class UserAnalyticsService {
       averageEventsPerDay,
       mostUsedFeatures,
       sessionCount,
-      averageSessionDuration
+      averageSessionDuration,
     };
   }
 
   /**
    * Get conversion funnel
    */
-  getConversionFunnel(funnelSteps: string[], days: number = 30): {
+  getConversionFunnel(
+    funnelSteps: string[],
+    days: number = 30,
+  ): {
     step: string;
     count: number;
     conversionRate: number;
   }[] {
     const cutoff = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
-    const events = this.events.filter(e => e.timestamp > cutoff);
+    const events = this.events.filter((e) => e.timestamp > cutoff);
 
     const funnel = funnelSteps.map((step, index) => {
-      const stepEvents = events.filter(e => 
-        e.type === UserEventType.PAGE_VIEW && 
-        e.properties.page === step
+      const stepEvents = events.filter(
+        (e) => e.type === UserEventType.PAGE_VIEW && e.properties.page === step,
       );
-      
+
       const count = stepEvents.length;
-      const previousCount = index > 0 ? 
-        events.filter(e => 
-          e.type === UserEventType.PAGE_VIEW && 
-          e.properties.page === funnelSteps[index - 1]
-        ).length : count;
-      
-      const conversionRate = previousCount > 0 ? (count / previousCount) * 100 : 0;
+      const previousCount =
+        index > 0
+          ? events.filter(
+              (e) =>
+                e.type === UserEventType.PAGE_VIEW &&
+                e.properties.page === funnelSteps[index - 1],
+            ).length
+          : count;
+
+      const conversionRate =
+        previousCount > 0 ? (count / previousCount) * 100 : 0;
 
       return {
         step,
         count,
-        conversionRate
+        conversionRate,
       };
     });
 
@@ -463,26 +516,27 @@ export class UserAnalyticsService {
     retentionRate: number;
   }[] {
     const cutoff = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
-    const signupEvents = this.events.filter(e => 
-      e.type === UserEventType.SESSION_START && 
-      e.timestamp > cutoff
+    const signupEvents = this.events.filter(
+      (e) => e.type === UserEventType.SESSION_START && e.timestamp > cutoff,
     );
 
-    const cohorts = signupEvents.reduce((acc, event) => {
-      const week = this.getWeekOfYear(event.timestamp);
-      if (!acc[week]) {
-        acc[week] = new Set();
-      }
-      acc[week].add(event.userId);
-      return acc;
-    }, {} as Record<string, Set<string>>);
+    const cohorts = signupEvents.reduce(
+      (acc, event) => {
+        const week = this.getWeekOfYear(event.timestamp);
+        if (!acc[week]) {
+          acc[week] = new Set();
+        }
+        acc[week].add(event.userId);
+        return acc;
+      },
+      {} as Record<string, Set<string>>,
+    );
 
     return Object.entries(cohorts).map(([cohort, users]) => {
       const totalUsers = users.size;
-      const retainedUsers = Array.from(users).filter(userId => {
-        const userEvents = this.events.filter(e => 
-          e.userId === userId && 
-          e.timestamp > cutoff
+      const retainedUsers = Array.from(users).filter((userId) => {
+        const userEvents = this.events.filter(
+          (e) => e.userId === userId && e.timestamp > cutoff,
         );
         return userEvents.length > 1; // More than just signup
       }).length;
@@ -491,7 +545,7 @@ export class UserAnalyticsService {
         cohort,
         totalUsers,
         retainedUsers,
-        retentionRate: (retainedUsers / totalUsers) * 100
+        retentionRate: (retainedUsers / totalUsers) * 100,
       };
     });
   }
@@ -501,9 +555,11 @@ export class UserAnalyticsService {
    */
   private getWeekOfYear(date: Date): string {
     const startOfYear = new Date(date.getFullYear(), 0, 1);
-    const days = Math.floor((date.getTime() - startOfYear.getTime()) / (24 * 60 * 60 * 1000));
+    const days = Math.floor(
+      (date.getTime() - startOfYear.getTime()) / (24 * 60 * 60 * 1000),
+    );
     const weekNumber = Math.ceil((days + startOfYear.getDay() + 1) / 7);
-    return `${date.getFullYear()}-W${weekNumber.toString().padStart(2, '0')}`;
+    return `${date.getFullYear()}-W${weekNumber.toString().padStart(2, "0")}`;
   }
 
   /**
@@ -511,25 +567,31 @@ export class UserAnalyticsService {
    */
   clearOldEvents(maxAge: number = 90 * 24 * 60 * 60 * 1000): void {
     const cutoff = new Date(Date.now() - maxAge);
-    this.events = this.events.filter(event => event.timestamp > cutoff);
+    this.events = this.events.filter((event) => event.timestamp > cutoff);
   }
 }
 
 // Analytics middleware for API routes
 export function analyticsMiddleware(
   req: NextRequest,
-  handler: (req: NextRequest) => Promise<Response>
+  handler: (req: NextRequest) => Promise<Response>,
 ): Promise<Response> {
   const analytics = new UserAnalyticsService();
-  const userId = req.headers.get('x-user-id');
-  const sessionId = req.headers.get('x-session-id');
+  const userId = req.headers.get("x-user-id");
+  const sessionId = req.headers.get("x-session-id");
 
   if (userId && sessionId) {
-    analytics.trackPageView(userId, sessionId, req.nextUrl.pathname, undefined, req);
+    analytics.trackPageView(
+      userId,
+      sessionId,
+      req.nextUrl.pathname,
+      undefined,
+      req,
+    );
   }
 
   return handler(req);
 }
 
 // Export singleton
-export const userAnalytics = new UserAnalyticsService(); 
+export const userAnalytics = new UserAnalyticsService();

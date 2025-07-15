@@ -1,26 +1,37 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Typography } from '@/components/ui/typography';
-import { Badge } from '@/components/ui/badge';
-import { Card } from '@/components/ui/card';
-import { Email, SlackMessage } from '@/types';
-import { X, Mail, MessageSquare, Clock, User, Tag, Paperclip, Brain, Sparkles, Loader2 } from 'lucide-react';
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Typography } from "@/components/ui/typography";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
+import { Email, SlackMessage } from "@/types";
+import {
+  X,
+  Mail,
+  MessageSquare,
+  Clock,
+  User,
+  Tag,
+  Paperclip,
+  Brain,
+  Sparkles,
+  Loader2,
+} from "lucide-react";
 
 interface AIAnalysis {
   id: string;
   contentId: string;
-  contentType: 'email' | 'slack';
-  sentiment: 'positive' | 'negative' | 'neutral';
-  priority: 'low' | 'medium' | 'high' | 'urgent';
+  contentType: "email" | "slack";
+  sentiment: "positive" | "negative" | "neutral";
+  priority: "low" | "medium" | "high" | "urgent";
   confidence: number;
   summary: string;
   keyPoints: string[];
   suggestedActions: string[];
   replySuggestion?: string;
-  tone: 'formal' | 'casual' | 'friendly' | 'professional';
-  urgency: 'low' | 'medium' | 'high';
+  tone: "formal" | "casual" | "friendly" | "professional";
+  urgency: "low" | "medium" | "high";
   estimatedResponseTime: number;
   tags: string[];
   createdAt: Date;
@@ -28,7 +39,7 @@ interface AIAnalysis {
 
 interface ContextPanelProps {
   item: Email | SlackMessage | null;
-  type: 'emails' | 'messages';
+  type: "emails" | "messages";
   onClose: () => void;
 }
 
@@ -38,15 +49,13 @@ export function ContextPanel({ item, type, onClose }: ContextPanelProps) {
   const [analysisError, setAnalysisError] = useState<string | null>(null);
 
   const formatDate = (date: Date | string) => {
-    const d = typeof date === 'string' ? new Date(date) : date;
+    const d = typeof date === "string" ? new Date(date) : date;
     return d.toLocaleString();
   };
 
   const isEmail = (item: Email | SlackMessage): item is Email => {
-    return 'from' in item;
+    return "from" in item;
   };
-
-
 
   const handleAnalyze = async () => {
     if (!item) return;
@@ -55,35 +64,37 @@ export function ContextPanel({ item, type, onClose }: ContextPanelProps) {
     setAnalysisError(null);
 
     try {
-      const content = isEmail(item) 
+      const content = isEmail(item)
         ? `${item.subject}\n\n${item.body}`
         : item.content;
 
-      const response = await fetch('/api/ai/analyze', {
-        method: 'POST',
+      const response = await fetch("/api/ai/analyze", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           content,
-          contentType: isEmail(item) ? 'email' : 'slack',
+          contentType: isEmail(item) ? "email" : "slack",
           context: {
-            senderInfo: isEmail(item) 
-              ? { name: item.from.name || 'Unknown', email: item.from.email }
-              : { name: item.sender.name }
-          }
+            senderInfo: isEmail(item)
+              ? { name: item.from.name || "Unknown", email: item.from.email }
+              : { name: item.sender.name },
+          },
         }),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to analyze content');
+        throw new Error(errorData.error || "Failed to analyze content");
       }
 
       const data = await response.json();
       setAnalysis(data.analysis);
     } catch (error) {
-      setAnalysisError(error instanceof Error ? error.message : 'Analysis failed');
+      setAnalysisError(
+        error instanceof Error ? error.message : "Analysis failed",
+      );
     } finally {
       setIsAnalyzing(false);
     }
@@ -91,20 +102,29 @@ export function ContextPanel({ item, type, onClose }: ContextPanelProps) {
 
   const getSentimentColor = (sentiment: string) => {
     switch (sentiment) {
-      case 'positive': return 'text-green-600 bg-green-50';
-      case 'negative': return 'text-red-600 bg-red-50';
-      case 'neutral': return 'text-[#4A4A4A] bg-[#F8F6F0]';
-      default: return 'text-[#4A4A4A] bg-[#F8F6F0]';
+      case "positive":
+        return "text-green-600 bg-green-50";
+      case "negative":
+        return "text-red-600 bg-red-50";
+      case "neutral":
+        return "text-[#4A4A4A] bg-[#F8F6F0]";
+      default:
+        return "text-[#4A4A4A] bg-[#F8F6F0]";
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'urgent': return 'text-[#801B2B] bg-[rgba(128,27,43,0.1)]';
-      case 'high': return 'text-orange-600 bg-orange-50';
-      case 'medium': return 'text-yellow-600 bg-yellow-50';
-      case 'low': return 'text-green-600 bg-green-50';
-      default: return 'text-[#4A4A4A] bg-[#F8F6F0]';
+      case "urgent":
+        return "text-[#801B2B] bg-[rgba(128,27,43,0.1)]";
+      case "high":
+        return "text-orange-600 bg-orange-50";
+      case "medium":
+        return "text-yellow-600 bg-yellow-50";
+      case "low":
+        return "text-green-600 bg-green-50";
+      default:
+        return "text-[#4A4A4A] bg-[#F8F6F0]";
     }
   };
 
@@ -113,7 +133,7 @@ export function ContextPanel({ item, type, onClose }: ContextPanelProps) {
       <div className="flex flex-col items-center justify-center h-full p-8">
         <div className="text-center">
           <div className="w-16 h-16 bg-[#F8F6F0] rounded-full flex items-center justify-center mb-6">
-            {type === 'emails' ? (
+            {type === "emails" ? (
               <Mail className="h-8 w-8 text-[#4A4A4A]" />
             ) : (
               <MessageSquare className="h-8 w-8 text-[#4A4A4A]" />
@@ -123,7 +143,8 @@ export function ContextPanel({ item, type, onClose }: ContextPanelProps) {
             Select Strategic Communication
           </h3>
           <p className="text-body-cartier text-[#4A4A4A]">
-            Choose an email or message to view executive details and AI analysis.
+            Choose an email or message to view executive details and AI
+            analysis.
           </p>
         </div>
       </div>
@@ -142,10 +163,17 @@ export function ContextPanel({ item, type, onClose }: ContextPanelProps) {
               <MessageSquare className="h-6 w-6 text-[#801B2B]" />
             )}
             <h3 className="text-subhead-cartier text-black font-serif">
-              {isEmail(item) ? 'Strategic Communication Details' : 'Executive Message Details'}
+              {isEmail(item)
+                ? "Strategic Communication Details"
+                : "Executive Message Details"}
             </h3>
           </div>
-          <Button variant="ghost" size="sm" onClick={onClose} className="text-[#4A4A4A] hover:text-[#801B2B]">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onClose}
+            className="text-[#4A4A4A] hover:text-[#801B2B]"
+          >
             <X className="h-5 w-5" />
           </Button>
         </div>
@@ -157,22 +185,21 @@ export function ContextPanel({ item, type, onClose }: ContextPanelProps) {
           {/* Basic Info */}
           <Card variant="cartier">
             <h4 className="text-subhead-cartier text-black font-serif mb-4">
-              {isEmail(item) ? item.subject : 'Message'}
+              {isEmail(item) ? item.subject : "Message"}
             </h4>
-            
+
             <div className="space-y-4">
               {/* Sender/From */}
               <div className="flex items-center space-x-3">
                 <User className="h-5 w-5 text-[#4A4A4A]" />
                 <div>
                   <p className="text-body-cartier font-medium text-black">
-                    {isEmail(item) 
-                      ? `${item.from.name || ''} ${item.from.email}`
-                      : `${item.sender.name} (@${item.sender.id})`
-                    }
+                    {isEmail(item)
+                      ? `${item.from.name || ""} ${item.from.email}`
+                      : `${item.sender.name} (@${item.sender.id})`}
                   </p>
                   <p className="text-small text-[#4A4A4A]">
-                    {isEmail(item) ? 'From' : 'Sent by'}
+                    {isEmail(item) ? "From" : "Sent by"}
                   </p>
                 </div>
               </div>
@@ -182,10 +209,12 @@ export function ContextPanel({ item, type, onClose }: ContextPanelProps) {
                 <Clock className="h-5 w-5 text-[#4A4A4A]" />
                 <div>
                   <p className="text-body-cartier font-medium text-black">
-                    {formatDate(isEmail(item) ? item.receivedAt : item.timestamp)}
+                    {formatDate(
+                      isEmail(item) ? item.receivedAt : item.timestamp,
+                    )}
                   </p>
                   <p className="text-small text-[#4A4A4A]">
-                    {isEmail(item) ? 'Received' : 'Sent'}
+                    {isEmail(item) ? "Received" : "Sent"}
                   </p>
                 </div>
               </div>
@@ -196,11 +225,9 @@ export function ContextPanel({ item, type, onClose }: ContextPanelProps) {
                   <Tag className="h-5 w-5 text-[#4A4A4A]" />
                   <div>
                     <p className="text-body-cartier font-medium text-black">
-                      To: {item.to.map(addr => addr.email).join(', ')}
+                      To: {item.to.map((addr) => addr.email).join(", ")}
                     </p>
-                    <p className="text-small text-[#4A4A4A]">
-                      Recipients
-                    </p>
+                    <p className="text-small text-[#4A4A4A]">Recipients</p>
                   </div>
                 </div>
               ) : (
@@ -210,9 +237,7 @@ export function ContextPanel({ item, type, onClose }: ContextPanelProps) {
                     <p className="text-body-cartier font-medium text-black">
                       #{item.channelName}
                     </p>
-                    <p className="text-small text-[#4A4A4A]">
-                      Channel
-                    </p>
+                    <p className="text-small text-[#4A4A4A]">Channel</p>
                   </div>
                 </div>
               )}
@@ -224,9 +249,7 @@ export function ContextPanel({ item, type, onClose }: ContextPanelProps) {
                   <p className="text-body-cartier font-medium capitalize text-black">
                     {item.priority} priority
                   </p>
-                  <p className="text-small text-[#4A4A4A]">
-                    Priority Level
-                  </p>
+                  <p className="text-small text-[#4A4A4A]">Priority Level</p>
                 </div>
               </div>
 
@@ -236,11 +259,10 @@ export function ContextPanel({ item, type, onClose }: ContextPanelProps) {
                   <Paperclip className="h-5 w-5 text-[#4A4A4A]" />
                   <div>
                     <p className="text-body-cartier font-medium text-black">
-                      {item.attachments.length} attachment{item.attachments.length !== 1 ? 's' : ''}
+                      {item.attachments.length} attachment
+                      {item.attachments.length !== 1 ? "s" : ""}
                     </p>
-                    <p className="text-small text-[#4A4A4A]">
-                      Files
-                    </p>
+                    <p className="text-small text-[#4A4A4A]">Files</p>
                   </div>
                 </div>
               )}
@@ -253,7 +275,10 @@ export function ContextPanel({ item, type, onClose }: ContextPanelProps) {
               Content
             </Typography>
             <div className="prose prose-sm max-w-none">
-              <Typography variant="body" className="text-gray-700 whitespace-pre-wrap">
+              <Typography
+                variant="body"
+                className="text-gray-700 whitespace-pre-wrap"
+              >
                 {isEmail(item) ? item.body : item.content}
               </Typography>
             </div>
@@ -269,19 +294,15 @@ export function ContextPanel({ item, type, onClose }: ContextPanelProps) {
                 <Typography variant="body" className="text-gray-600">
                   Read
                 </Typography>
-                <Badge>
-                  {item.read ? 'Yes' : 'No'}
-                </Badge>
+                <Badge>{item.read ? "Yes" : "No"}</Badge>
               </div>
-              
+
               {isEmail(item) && (
                 <div className="flex items-center justify-between">
                   <Typography variant="body" className="text-gray-600">
                     Archived
                   </Typography>
-                  <Badge>
-                    {item.archived ? 'Yes' : 'No'}
-                  </Badge>
+                  <Badge>{item.archived ? "Yes" : "No"}</Badge>
                 </div>
               )}
 
@@ -290,9 +311,7 @@ export function ContextPanel({ item, type, onClose }: ContextPanelProps) {
                   <Typography variant="body" className="text-gray-600">
                     Starred
                   </Typography>
-                  <Badge>
-                    {item.starred ? 'Yes' : 'No'}
-                  </Badge>
+                  <Badge>{item.starred ? "Yes" : "No"}</Badge>
                 </div>
               )}
             </div>
@@ -307,7 +326,7 @@ export function ContextPanel({ item, type, onClose }: ContextPanelProps) {
                   AI Analysis
                 </Typography>
               </div>
-              
+
               <div className="space-y-4">
                 {/* Summary */}
                 <div>
@@ -354,23 +373,36 @@ export function ContextPanel({ item, type, onClose }: ContextPanelProps) {
                 {/* Analysis Metrics */}
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Typography variant="body" className="text-sm text-gray-600">
+                    <Typography
+                      variant="body"
+                      className="text-sm text-gray-600"
+                    >
                       Sentiment
                     </Typography>
-                    <Badge className={`mt-1 ${getSentimentColor(analysis.sentiment)}`}>
+                    <Badge
+                      className={`mt-1 ${getSentimentColor(analysis.sentiment)}`}
+                    >
                       {analysis.sentiment}
                     </Badge>
                   </div>
                   <div>
-                    <Typography variant="body" className="text-sm text-gray-600">
+                    <Typography
+                      variant="body"
+                      className="text-sm text-gray-600"
+                    >
                       Priority
                     </Typography>
-                    <Badge className={`mt-1 ${getPriorityColor(analysis.priority)}`}>
+                    <Badge
+                      className={`mt-1 ${getPriorityColor(analysis.priority)}`}
+                    >
                       {analysis.priority}
                     </Badge>
                   </div>
                   <div>
-                    <Typography variant="body" className="text-sm text-gray-600">
+                    <Typography
+                      variant="body"
+                      className="text-sm text-gray-600"
+                    >
                       Confidence
                     </Typography>
                     <Typography variant="body" className="font-medium">
@@ -378,7 +410,10 @@ export function ContextPanel({ item, type, onClose }: ContextPanelProps) {
                     </Typography>
                   </div>
                   <div>
-                    <Typography variant="body" className="text-sm text-gray-600">
+                    <Typography
+                      variant="body"
+                      className="text-sm text-gray-600"
+                    >
                       Response Time
                     </Typography>
                     <Typography variant="body" className="font-medium">
@@ -438,4 +473,4 @@ export function ContextPanel({ item, type, onClose }: ContextPanelProps) {
       </div>
     </div>
   );
-} 
+}

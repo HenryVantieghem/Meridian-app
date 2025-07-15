@@ -1,17 +1,17 @@
-import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import { useAuth } from '@clerk/nextjs';
-import { ProtectedRoute } from './ProtectedRoute';
+import { describe, it, expect, vi } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { useAuth } from "@clerk/nextjs";
+import { ProtectedRoute } from "./ProtectedRoute";
 
 // Mock Clerk
-vi.mock('@clerk/nextjs', () => ({
+vi.mock("@clerk/nextjs", () => ({
   useAuth: vi.fn(),
 }));
 
-describe('ProtectedRoute', () => {
-  it('should render children when user is authenticated', () => {
+describe("ProtectedRoute", () => {
+  it("should render children when user is authenticated", () => {
     (useAuth as jest.MockedFunction<typeof useAuth>).mockReturnValue({
-      userId: 'test-user-id',
+      userId: "test-user-id",
       isSignedIn: true,
       isLoaded: true,
     });
@@ -19,13 +19,13 @@ describe('ProtectedRoute', () => {
     render(
       <ProtectedRoute>
         <div>Protected Content</div>
-      </ProtectedRoute>
+      </ProtectedRoute>,
     );
 
-    expect(screen.getByText('Protected Content')).toBeInTheDocument();
+    expect(screen.getByText("Protected Content")).toBeInTheDocument();
   });
 
-  it('should show loading state when auth is not loaded', () => {
+  it("should show loading state when auth is not loaded", () => {
     (useAuth as jest.MockedFunction<typeof useAuth>).mockReturnValue({
       userId: null,
       isSignedIn: false,
@@ -35,14 +35,14 @@ describe('ProtectedRoute', () => {
     render(
       <ProtectedRoute>
         <div>Protected Content</div>
-      </ProtectedRoute>
+      </ProtectedRoute>,
     );
 
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
-    expect(screen.queryByText('Protected Content')).not.toBeInTheDocument();
+    expect(screen.getByText("Loading...")).toBeInTheDocument();
+    expect(screen.queryByText("Protected Content")).not.toBeInTheDocument();
   });
 
-  it('should redirect to sign-in when user is not authenticated', () => {
+  it("should redirect to sign-in when user is not authenticated", () => {
     (useAuth as jest.MockedFunction<typeof useAuth>).mockReturnValue({
       userId: null,
       isSignedIn: false,
@@ -50,7 +50,7 @@ describe('ProtectedRoute', () => {
     });
 
     const mockPush = vi.fn();
-    vi.mock('next/navigation', () => ({
+    vi.mock("next/navigation", () => ({
       useRouter: () => ({
         push: mockPush,
       }),
@@ -59,14 +59,14 @@ describe('ProtectedRoute', () => {
     render(
       <ProtectedRoute>
         <div>Protected Content</div>
-      </ProtectedRoute>
+      </ProtectedRoute>,
     );
 
-    expect(screen.queryByText('Protected Content')).not.toBeInTheDocument();
-    expect(mockPush).toHaveBeenCalledWith('/sign-in');
+    expect(screen.queryByText("Protected Content")).not.toBeInTheDocument();
+    expect(mockPush).toHaveBeenCalledWith("/sign-in");
   });
 
-  it('should show access denied message when user is not authenticated', () => {
+  it("should show access denied message when user is not authenticated", () => {
     (useAuth as jest.MockedFunction<typeof useAuth>).mockReturnValue({
       userId: null,
       isSignedIn: false,
@@ -76,10 +76,12 @@ describe('ProtectedRoute', () => {
     render(
       <ProtectedRoute>
         <div>Protected Content</div>
-      </ProtectedRoute>
+      </ProtectedRoute>,
     );
 
-    expect(screen.getByText('Access Denied')).toBeInTheDocument();
-    expect(screen.getByText('Please sign in to access this page.')).toBeInTheDocument();
+    expect(screen.getByText("Access Denied")).toBeInTheDocument();
+    expect(
+      screen.getByText("Please sign in to access this page."),
+    ).toBeInTheDocument();
   });
-}); 
+});

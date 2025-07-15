@@ -1,17 +1,14 @@
-import { NextResponse } from 'next/server';
-import { stripe } from '@/lib/stripe/config';
-import { auth } from '@clerk/nextjs/server';
+import { NextResponse } from "next/server";
+import { stripe } from "@/lib/stripe/config";
+import { auth } from "@clerk/nextjs/server";
 
 export async function POST() {
   try {
     // Get user from Clerk
     const { userId } = await auth();
-    
+
     if (!userId) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     // Get customer ID from user
@@ -21,10 +18,7 @@ export async function POST() {
     });
 
     if (!customer.data.length) {
-      return NextResponse.json(
-        { error: 'No customer found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "No customer found" }, { status: 404 });
     }
 
     const session = await stripe.billingPortal.sessions.create({
@@ -34,10 +28,10 @@ export async function POST() {
 
     return NextResponse.json({ url: session.url });
   } catch (error) {
-    console.error('Portal error:', error);
+    console.error("Portal error:", error);
     return NextResponse.json(
-      { error: 'Failed to create portal session' },
-      { status: 500 }
+      { error: "Failed to create portal session" },
+      { status: 500 },
     );
   }
-} 
+}

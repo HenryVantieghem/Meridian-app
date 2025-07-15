@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import * as Sentry from '@sentry/nextjs';
-import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
-import { AlertTriangle, Home, RotateCcw, Shield } from 'lucide-react';
+import * as Sentry from "@sentry/nextjs";
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { AlertTriangle, Home, RotateCcw, Shield } from "lucide-react";
 
 export default function GlobalError({
   error,
@@ -22,10 +22,10 @@ export default function GlobalError({
   const handleRetry = async () => {
     setIsRetrying(true);
     // Add haptic feedback if supported
-    if ('vibrate' in navigator) {
+    if ("vibrate" in navigator) {
       navigator.vibrate(50);
     }
-    
+
     setTimeout(() => {
       setIsRetrying(false);
       reset();
@@ -34,18 +34,25 @@ export default function GlobalError({
 
   const handleGoHome = () => {
     // Add haptic feedback if supported
-    if ('vibrate' in navigator) {
+    if ("vibrate" in navigator) {
       navigator.vibrate([50, 100, 50]);
     }
-    window.location.href = '/';
+    window.location.href = "/";
   };
 
   return (
     <html lang="en">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap"
+          rel="stylesheet"
+        />
         <style>{`
           body { 
             font-family: 'Inter', sans-serif; 
@@ -70,9 +77,12 @@ export default function GlobalError({
         <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
           {/* Background Pattern */}
           <div className="absolute inset-0 opacity-5">
-            <div className="absolute inset-0" style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%235D001E' fill-opacity='0.1'%3E%3Cpath d='M30 30c0-16.569 13.431-30 30-30v60c-16.569 0-30-13.431-30-30z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-            }} />
+            <div
+              className="absolute inset-0"
+              style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%235D001E' fill-opacity='0.1'%3E%3Cpath d='M30 30c0-16.569 13.431-30 30-30v60c-16.569 0-30-13.431-30-30z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+              }}
+            />
           </div>
 
           {/* Main Content */}
@@ -92,7 +102,7 @@ export default function GlobalError({
               <div className="mx-auto w-24 h-24 bg-gradient-to-br from-[#5D001E] to-[#D4AF37] rounded-full flex items-center justify-center shadow-lg mb-6">
                 <AlertTriangle className="w-12 h-12 text-white" />
               </div>
-              
+
               {/* Napoleon Crown Accent */}
               <motion.div
                 animate={{ rotate: [0, 5, -5, 0] }}
@@ -113,16 +123,17 @@ export default function GlobalError({
               >
                 Strategic Disruption Detected
               </motion.h1>
-              
+
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.6 }}
                 className="text-gray-600 text-lg mb-2"
               >
-                Even emperors face unexpected challenges. Our engineering corps has been notified and is mobilizing a swift resolution.
+                Even emperors face unexpected challenges. Our engineering corps
+                has been notified and is mobilizing a swift resolution.
               </motion.p>
-              
+
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -135,14 +146,16 @@ export default function GlobalError({
             </div>
 
             {/* Error Details (Development) */}
-            {process.env.NODE_ENV === 'development' && (
+            {process.env.NODE_ENV === "development" && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
+                animate={{ opacity: 1, height: "auto" }}
                 transition={{ delay: 1 }}
                 className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg"
               >
-                <h3 className="text-sm font-semibold text-red-800 mb-2">Development Details:</h3>
+                <h3 className="text-sm font-semibold text-red-800 mb-2">
+                  Development Details:
+                </h3>
                 <p className="text-xs text-red-700 font-mono break-all">
                   {error.message}
                 </p>
@@ -169,16 +182,22 @@ export default function GlobalError({
                 {isRetrying ? (
                   <motion.div
                     animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                    transition={{
+                      duration: 1,
+                      repeat: Infinity,
+                      ease: "linear",
+                    }}
                   >
                     <RotateCcw className="w-5 h-5" />
                   </motion.div>
                 ) : (
                   <RotateCcw className="w-5 h-5" />
                 )}
-                {isRetrying ? 'Executing Strategic Recovery...' : 'Retry Mission'}
+                {isRetrying
+                  ? "Executing Strategic Recovery..."
+                  : "Retry Mission"}
               </button>
-              
+
               <button
                 onClick={handleGoHome}
                 className="w-full flex items-center justify-center gap-3 py-4 px-6 border-2 border-[#5D001E] text-[#5D001E] hover:bg-[#5D001E] hover:text-white font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-brand-burgundy focus:ring-opacity-30"
@@ -209,22 +228,22 @@ export default function GlobalError({
             <motion.div
               key={i}
               initial={{ opacity: 0, scale: 0 }}
-              animate={{ 
+              animate={{
                 opacity: [0, 1, 0],
                 scale: [0, 1, 0],
                 y: [0, -100],
-                x: [0, Math.random() * 100 - 50]
+                x: [0, Math.random() * 100 - 50],
               }}
-              transition={{ 
+              transition={{
                 duration: 4,
                 delay: i * 0.5,
                 repeat: Infinity,
-                repeatDelay: 2
+                repeatDelay: 2,
               }}
               className="absolute w-2 h-2 bg-[#D4AF37] rounded-full"
               style={{
-                left: `${20 + (i * 10)}%`,
-                bottom: '20%',
+                left: `${20 + i * 10}%`,
+                bottom: "20%",
               }}
             />
           ))}
@@ -232,4 +251,4 @@ export default function GlobalError({
       </body>
     </html>
   );
-} 
+}

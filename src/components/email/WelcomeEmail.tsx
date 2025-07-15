@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 interface WelcomeEmailProps {
   userName: string;
@@ -19,28 +19,29 @@ export const WelcomeEmail: React.FC<WelcomeEmailProps> = ({
         <div className="logo">Napoleon</div>
         <div className="tagline">AI-Powered Productivity Platform</div>
       </div>
-      
+
       <div className="content">
         <h1 className="greeting">Welcome to Napoleon, {userName}! 👋</h1>
-        
+
         <p className="intro">
-          Thank you for joining Napoleon. We&apos;re excited to help you transform your communication
-          workflow with AI-powered insights and intelligent automation.
+          Thank you for joining Napoleon. We&apos;re excited to help you
+          transform your communication workflow with AI-powered insights and
+          intelligent automation.
         </p>
-        
-        <p className="features-intro">
-          With Napoleon, you&apos;ll experience:
-        </p>
-        
+
+        <p className="features-intro">With Napoleon, you&apos;ll experience:</p>
+
         <div className="features">
           <div className="feature">
             <div className="feature-icon">🤖</div>
             <div className="feature-content">
               <h3>AI-Powered Analysis</h3>
-              <p>Intelligent email prioritization and smart reply suggestions</p>
+              <p>
+                Intelligent email prioritization and smart reply suggestions
+              </p>
             </div>
           </div>
-          
+
           <div className="feature">
             <div className="feature-icon">⚡</div>
             <div className="feature-content">
@@ -48,7 +49,7 @@ export const WelcomeEmail: React.FC<WelcomeEmailProps> = ({
               <p>Process hundreds of emails in seconds with our advanced AI</p>
             </div>
           </div>
-          
+
           <div className="feature">
             <div className="feature-icon">🎯</div>
             <div className="feature-content">
@@ -57,35 +58,41 @@ export const WelcomeEmail: React.FC<WelcomeEmailProps> = ({
             </div>
           </div>
         </div>
-        
-        <div style={{ textAlign: 'center' }}>
+
+        <div style={{ textAlign: "center" }}>
           <a href={onboardingUrl} className="cta-button">
             Get Started Now
           </a>
         </div>
-        
+
         <p className="message">
-          Ready to get started? Complete your setup in just a few minutes and start 
-          experiencing the future of email management.
+          Ready to get started? Complete your setup in just a few minutes and
+          start experiencing the future of email management.
         </p>
       </div>
-      
+
       <div className="footer">
         <p className="footer-text">
-          Need help? We&apos;re here for you at{' '}
+          Need help? We&apos;re here for you at{" "}
           <a href={`mailto:${supportEmail}`} className="footer-link">
             {supportEmail}
           </a>
         </p>
-        
+
         <div className="footer-links">
-          <a href="/help" className="footer-link">Help Center</a>
-          <a href="/privacy" className="footer-link">Privacy Policy</a>
-          <a href="/terms" className="footer-link">Terms of Service</a>
+          <a href="/help" className="footer-link">
+            Help Center
+          </a>
+          <a href="/privacy" className="footer-link">
+            Privacy Policy
+          </a>
+          <a href="/terms" className="footer-link">
+            Terms of Service
+          </a>
         </div>
-        
+
         <p className="unsubscribe">
-          You received this email because you signed up for Napoleon. 
+          You received this email because you signed up for Napoleon.
           <a href="/unsubscribe"> Unsubscribe</a>
         </p>
       </div>
@@ -280,4 +287,4 @@ export const welcomeEmailStyles = `
   }
 `;
 
-export default WelcomeEmail; 
+export default WelcomeEmail;

@@ -1,4 +1,4 @@
-import { google } from 'googleapis';
+import { google } from "googleapis";
 
 export interface GmailEmail {
   id: string;
@@ -17,8 +17,8 @@ export interface GmailEmail {
   isStarred: boolean;
   labels: string[];
   attachments: GmailAttachment[];
-  priority: 'high' | 'medium' | 'low';
-  category: 'primary' | 'social' | 'promotions' | 'updates' | 'forums';
+  priority: "high" | "medium" | "low";
+  category: "primary" | "social" | "promotions" | "updates" | "forums";
 }
 
 export interface GmailAttachment {
@@ -39,7 +39,7 @@ export interface GmailProfile {
 export interface GmailLabel {
   id: string;
   name: string;
-  type: 'system' | 'user';
+  type: "system" | "user";
   messagesTotal: number;
   threadsTotal: number;
 }
@@ -52,7 +52,7 @@ export class GmailClient {
     this.oauth2Client = new google.auth.OAuth2(
       process.env.GOOGLE_CLIENT_ID,
       process.env.GOOGLE_CLIENT_SECRET,
-      process.env.GOOGLE_REDIRECT_URI
+      process.env.GOOGLE_REDIRECT_URI,
     );
 
     this.oauth2Client.setCredentials({
@@ -60,7 +60,7 @@ export class GmailClient {
       refresh_token: refreshToken,
     });
 
-    this.gmail = google.gmail({ version: 'v1', auth: this.oauth2Client });
+    this.gmail = google.gmail({ version: "v1", auth: this.oauth2Client });
   }
 
   /**
@@ -69,13 +69,13 @@ export class GmailClient {
   async getProfile(): Promise<GmailProfile> {
     try {
       const response = await this.gmail.users.getProfile({
-        userId: 'me',
+        userId: "me",
       });
 
       return {
         emailAddress: response.data.emailAddress!,
-        messagesTotal: parseInt(response.data.messagesTotal || '0'),
-        threadsTotal: parseInt(response.data.threadsTotal || '0'),
+        messagesTotal: parseInt(response.data.messagesTotal || "0"),
+        threadsTotal: parseInt(response.data.threadsTotal || "0"),
         historyId: response.data.historyId!,
       };
     } catch (error) {
@@ -89,19 +89,27 @@ export class GmailClient {
   async getLabels(): Promise<GmailLabel[]> {
     try {
       const response = await this.gmail.users.labels.list({
-        userId: 'me',
+        userId: "me",
       });
 
-      return response.data.labels?.map((label: unknown) => {
-        const l = label as { id: string; name: string; type: string; messagesTotal?: string; threadsTotal?: string };
-        return {
-          id: l.id!,
-          name: l.name!,
-          type: l.type!,
-          messagesTotal: parseInt(l.messagesTotal || '0'),
-          threadsTotal: parseInt(l.threadsTotal || '0'),
-        };
-      }) || [];
+      return (
+        response.data.labels?.map((label: unknown) => {
+          const l = label as {
+            id: string;
+            name: string;
+            type: string;
+            messagesTotal?: string;
+            threadsTotal?: string;
+          };
+          return {
+            id: l.id!,
+            name: l.name!,
+            type: l.type!,
+            messagesTotal: parseInt(l.messagesTotal || "0"),
+            threadsTotal: parseInt(l.threadsTotal || "0"),
+          };
+        }) || []
+      );
     } catch (error) {
       throw new Error(`Failed to get Gmail labels: ${error}`);
     }
@@ -110,22 +118,24 @@ export class GmailClient {
   /**
    * Get messages with optional filtering
    */
-  async getMessages(options: {
-    maxResults?: number;
-    q?: string;
-    labelIds?: string[];
-    includeSpamTrash?: boolean;
-  } = {}): Promise<GmailEmail[]> {
+  async getMessages(
+    options: {
+      maxResults?: number;
+      q?: string;
+      labelIds?: string[];
+      includeSpamTrash?: boolean;
+    } = {},
+  ): Promise<GmailEmail[]> {
     try {
       const {
         maxResults = 50,
-        q = '',
+        q = "",
         labelIds = [],
         includeSpamTrash = false,
       } = options;
 
       const response = await this.gmail.users.messages.list({
-        userId: 'me',
+        userId: "me",
         maxResults,
         q,
         labelIds,
@@ -134,7 +144,7 @@ export class GmailClient {
 
       const messages = response.data.messages || [];
       const detailedMessages = await Promise.all(
-        messages.map((message: { id: string }) => this.getMessage(message.id))
+        messages.map((message: { id: string }) => this.getMessage(message.id)),
       );
 
       return detailedMessages.filter(Boolean) as GmailEmail[];
@@ -149,9 +159,9 @@ export class GmailClient {
   async getMessage(messageId: string): Promise<GmailEmail | null> {
     try {
       const response = await this.gmail.users.messages.get({
-        userId: 'me',
+        userId: "me",
         id: messageId,
-        format: 'full',
+        format: "full",
       });
 
       return this.parseMessage(response.data);
@@ -167,15 +177,17 @@ export class GmailClient {
   async markAsRead(messageId: string, read: boolean = true): Promise<void> {
     try {
       await this.gmail.users.messages.modify({
-        userId: 'me',
+        userId: "me",
         id: messageId,
         requestBody: {
-          removeLabelIds: read ? ['UNREAD'] : [],
-          addLabelIds: read ? [] : ['UNREAD'],
+          removeLabelIds: read ? ["UNREAD"] : [],
+          addLabelIds: read ? [] : ["UNREAD"],
         },
       });
     } catch (error) {
-      throw new Error(`Failed to mark message as ${read ? 'read' : 'unread'}: ${error}`);
+      throw new Error(
+        `Failed to mark message as ${read ? "read" : "unread"}: ${error}`,
+      );
     }
   }
 
@@ -185,15 +197,17 @@ export class GmailClient {
   async toggleStar(messageId: string, starred: boolean = true): Promise<void> {
     try {
       await this.gmail.users.messages.modify({
-        userId: 'me',
+        userId: "me",
         id: messageId,
         requestBody: {
-          removeLabelIds: starred ? [] : ['STARRED'],
-          addLabelIds: starred ? ['STARRED'] : [],
+          removeLabelIds: starred ? [] : ["STARRED"],
+          addLabelIds: starred ? ["STARRED"] : [],
         },
       });
     } catch (error) {
-      throw new Error(`Failed to ${starred ? 'star' : 'unstar'} message: ${error}`);
+      throw new Error(
+        `Failed to ${starred ? "star" : "unstar"} message: ${error}`,
+      );
     }
   }
 
@@ -203,7 +217,7 @@ export class GmailClient {
   async trashMessage(messageId: string): Promise<void> {
     try {
       await this.gmail.users.messages.trash({
-        userId: 'me',
+        userId: "me",
         id: messageId,
       });
     } catch (error) {
@@ -226,7 +240,7 @@ export class GmailClient {
     try {
       const message = this.createMessage(email);
       const response = await this.gmail.users.messages.send({
-        userId: 'me',
+        userId: "me",
         requestBody: {
           raw: message,
         },
@@ -244,9 +258,14 @@ export class GmailClient {
   async getHistory(startHistoryId: string): Promise<unknown[]> {
     try {
       const response = await this.gmail.users.history.list({
-        userId: 'me',
+        userId: "me",
         startHistoryId,
-        historyTypes: ['messageAdded', 'messageDeleted', 'labelAdded', 'labelRemoved'],
+        historyTypes: [
+          "messageAdded",
+          "messageDeleted",
+          "labelAdded",
+          "labelRemoved",
+        ],
       });
 
       return response.data.history || [];
@@ -261,8 +280,10 @@ export class GmailClient {
   private parseMessage(messageData: unknown): GmailEmail {
     const data = messageData as { [key: string]: unknown };
     const headers = (data.payload as { headers?: unknown[] })?.headers || [];
-    const getHeader = (name: string) => 
-      (headers as Array<{ name: string; value: string }>).find((h) => h.name.toLowerCase() === name.toLowerCase())?.value || '';
+    const getHeader = (name: string) =>
+      (headers as Array<{ name: string; value: string }>).find(
+        (h) => h.name.toLowerCase() === name.toLowerCase(),
+      )?.value || "";
 
     const body = this.extractBody(data.payload);
     const attachments = this.extractAttachments(data.payload);
@@ -270,18 +291,18 @@ export class GmailClient {
     return {
       id: data.id!,
       threadId: data.threadId!,
-      from: this.extractEmail(getHeader('from')),
-      fromName: this.extractName(getHeader('from')),
-      to: this.extractEmails(getHeader('to')),
-      cc: this.extractEmails(getHeader('cc')),
-      bcc: this.extractEmails(getHeader('bcc')),
-      subject: getHeader('subject'),
-      snippet: data.snippet || '',
-      body: body.text || '',
-      bodyHtml: body.html || '',
-      date: new Date(getHeader('date')),
-      isRead: !data.labelIds?.includes('UNREAD'),
-      isStarred: data.labelIds?.includes('STARRED') || false,
+      from: this.extractEmail(getHeader("from")),
+      fromName: this.extractName(getHeader("from")),
+      to: this.extractEmails(getHeader("to")),
+      cc: this.extractEmails(getHeader("cc")),
+      bcc: this.extractEmails(getHeader("bcc")),
+      subject: getHeader("subject"),
+      snippet: data.snippet || "",
+      body: body.text || "",
+      bodyHtml: body.html || "",
+      date: new Date(getHeader("date")),
+      isRead: !data.labelIds?.includes("UNREAD"),
+      isStarred: data.labelIds?.includes("STARRED") || false,
       labels: data.labelIds || [],
       attachments,
       priority: this.determinePriority(data),
@@ -293,14 +314,14 @@ export class GmailClient {
    * Extract email body (text and HTML)
    */
   private extractBody(payload: unknown): { text: string; html: string } {
-    let text = '';
-    let html = '';
+    let text = "";
+    let html = "";
 
     const extractPart = (part: Record<string, unknown>) => {
-      if (part.mimeType === 'text/plain') {
-        text = Buffer.from(part.body.data as string, 'base64').toString();
-      } else if (part.mimeType === 'text/html') {
-        html = Buffer.from(part.body.data as string, 'base64').toString();
+      if (part.mimeType === "text/plain") {
+        text = Buffer.from(part.body.data as string, "base64").toString();
+      } else if (part.mimeType === "text/html") {
+        html = Buffer.from(part.body.data as string, "base64").toString();
       }
 
       if (part.parts) {
@@ -350,7 +371,7 @@ export class GmailClient {
    */
   private extractName(header: string): string {
     const match = header.match(/^(.+?)\s*</);
-    return match ? match[1].replace(/"/g, '') : '';
+    return match ? match[1].replace(/"/g, "") : "";
   }
 
   /**
@@ -358,23 +379,25 @@ export class GmailClient {
    */
   private extractEmails(header: string): string[] {
     if (!header) return [];
-    return header.split(',').map(email => this.extractEmail(email.trim()));
+    return header.split(",").map((email) => this.extractEmail(email.trim()));
   }
 
   /**
    * Determine message priority
    */
-  private determinePriority(_messageData: unknown): 'high' | 'medium' | 'low' {
+  private determinePriority(_messageData: unknown): "high" | "medium" | "low" {
     // Placeholder: implement real priority logic
-    return 'medium';
+    return "medium";
   }
 
   /**
    * Determine message category
    */
-  private determineCategory(_messageData: unknown): 'primary' | 'social' | 'promotions' | 'updates' | 'forums' {
+  private determineCategory(
+    _messageData: unknown,
+  ): "primary" | "social" | "promotions" | "updates" | "forums" {
     // Placeholder: implement real category logic
-    return 'primary';
+    return "primary";
   }
 
   /**
@@ -390,28 +413,34 @@ export class GmailClient {
     attachments?: GmailAttachment[];
   }): string {
     const lines = [
-      `To: ${email.to.join(', ')}`,
-      email.cc ? `Cc: ${email.cc.join(', ')}` : '',
-      email.bcc ? `Bcc: ${email.bcc.join(', ')}` : '',
+      `To: ${email.to.join(", ")}`,
+      email.cc ? `Cc: ${email.cc.join(", ")}` : "",
+      email.bcc ? `Bcc: ${email.bcc.join(", ")}` : "",
       `Subject: ${email.subject}`,
-      'MIME-Version: 1.0',
-      'Content-Type: text/html; charset=utf-8',
-      '',
+      "MIME-Version: 1.0",
+      "Content-Type: text/html; charset=utf-8",
+      "",
       email.bodyHtml || email.body,
     ].filter(Boolean);
 
-    return Buffer.from(lines.join('\r\n')).toString('base64')
-      .replace(/\+/g, '-')
-      .replace(/\//g, '_')
-      .replace(/=+$/, '');
+    return Buffer.from(lines.join("\r\n"))
+      .toString("base64")
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=+$/, "");
   }
 
   /**
    * Refresh access token
    */
-  async refreshToken(): Promise<{ access_token: string; refresh_token?: string }> {
+  async refreshToken(): Promise<{
+    access_token: string;
+    refresh_token?: string;
+  }> {
     try {
-      const { credentials } = await (this.oauth2Client as google.auth.OAuth2).refreshAccessToken();
+      const { credentials } = await (
+        this.oauth2Client as google.auth.OAuth2
+      ).refreshAccessToken();
       return {
         access_token: credentials.access_token!,
         refresh_token: credentials.refresh_token ?? undefined,
@@ -429,17 +458,17 @@ export function createGmailAuthUrl(): string {
   const oauth2Client = new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,
     process.env.GOOGLE_CLIENT_SECRET,
-    process.env.GOOGLE_REDIRECT_URI
+    process.env.GOOGLE_REDIRECT_URI,
   );
 
   return oauth2Client.generateAuthUrl({
-    access_type: 'offline',
+    access_type: "offline",
     scope: [
-      'https://www.googleapis.com/auth/gmail.readonly',
-      'https://www.googleapis.com/auth/gmail.modify',
-      'https://www.googleapis.com/auth/gmail.send',
+      "https://www.googleapis.com/auth/gmail.readonly",
+      "https://www.googleapis.com/auth/gmail.modify",
+      "https://www.googleapis.com/auth/gmail.send",
     ],
-    prompt: 'consent',
+    prompt: "consent",
   });
 }
 
@@ -453,7 +482,7 @@ export async function exchangeCodeForTokens(code: string): Promise<{
   const oauth2Client = new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,
     process.env.GOOGLE_CLIENT_SECRET,
-    process.env.GOOGLE_REDIRECT_URI
+    process.env.GOOGLE_REDIRECT_URI,
   );
 
   const { tokens } = await oauth2Client.getToken(code);
@@ -461,4 +490,4 @@ export async function exchangeCodeForTokens(code: string): Promise<{
     access_token: tokens.access_token!,
     refresh_token: tokens.refresh_token ?? undefined,
   };
-} 
+}

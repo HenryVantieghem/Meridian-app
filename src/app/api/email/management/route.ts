@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { z } from 'zod';
-import { auth } from '@clerk/nextjs/server';
-import { emailManagementService } from '@/lib/email/management';
-import { handleBounce } from '@/lib/email/management';
+import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
+import { auth } from "@clerk/nextjs/server";
+import { emailManagementService } from "@/lib/email/management";
+import { handleBounce } from "@/lib/email/management";
 
 // Email list schema
 const emailListSchema = z.object({
@@ -22,7 +22,7 @@ const unsubscribeSchema = z.object({
 // Bounce schema
 const bounceSchema = z.object({
   email: z.string().email(),
-  type: z.enum(['hard', 'soft', 'blocked']),
+  type: z.enum(["hard", "soft", "blocked"]),
   reason: z.string(),
   messageId: z.string().optional(),
 });
@@ -47,21 +47,18 @@ export async function POST(request: NextRequest) {
     // Authenticate user
     const { userId } = await auth();
     if (!userId) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const body = await request.json();
     const { action, ...data } = body;
 
     switch (action) {
-      case 'create_list': {
+      case "create_list": {
         const listData = emailListSchema.parse(data);
         const newList = await emailManagementService.createEmailList(
           listData.name,
-          listData.description
+          listData.description,
         );
 
         return NextResponse.json({
@@ -70,85 +67,84 @@ export async function POST(request: NextRequest) {
         });
       }
 
-      case 'add_subscriber': {
+      case "add_subscriber": {
         const { email, listId } = data;
         if (!email || !listId) {
           return NextResponse.json(
-            { error: 'Email and listId are required' },
-            { status: 400 }
+            { error: "Email and listId are required" },
+            { status: 400 },
           );
         }
 
         await emailManagementService.addSubscriberToList(listId, email);
         return NextResponse.json({
           success: true,
-          message: 'Subscriber added successfully',
+          message: "Subscriber added successfully",
         });
       }
 
-      case 'remove_subscriber': {
+      case "remove_subscriber": {
         const { email: removeEmail, listId: removeListId } = data;
         if (!removeEmail || !removeListId) {
           return NextResponse.json(
-            { error: 'Email and listId are required' },
-            { status: 400 }
+            { error: "Email and listId are required" },
+            { status: 400 },
           );
         }
 
-        await emailManagementService.removeSubscriberFromList(removeListId, removeEmail);
+        await emailManagementService.removeSubscriberFromList(
+          removeListId,
+          removeEmail,
+        );
         return NextResponse.json({
           success: true,
-          message: 'Subscriber removed successfully',
+          message: "Subscriber removed successfully",
         });
       }
 
-      case 'unsubscribe': {
+      case "unsubscribe": {
         const unsubscribeData = unsubscribeSchema.parse(data);
         await emailManagementService.handleUnsubscribe(
           unsubscribeData.email,
-          unsubscribeData.reason
+          unsubscribeData.reason,
         );
 
         return NextResponse.json({
           success: true,
-          message: 'Unsubscribed successfully',
+          message: "Unsubscribed successfully",
         });
       }
 
-      case 'handle_bounce': {
+      case "handle_bounce": {
         const bounceData = bounceSchema.parse(data);
         await handleBounce(
           bounceData.email,
           bounceData.reason,
-          bounceData.type as 'hard' | 'soft'
+          bounceData.type as "hard" | "soft",
         );
 
         return NextResponse.json({
           success: true,
-          message: 'Bounce handled successfully',
+          message: "Bounce handled successfully",
         });
       }
 
       default:
-        return NextResponse.json(
-          { error: 'Invalid action' },
-          { status: 400 }
-        );
+        return NextResponse.json({ error: "Invalid action" }, { status: 400 });
     }
-
   } catch (error) {
-    console.error('Email management error:', error);
-    
+    console.error("Email management error:", error);
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid request data', details: error.errors },
-        { status: 400 }
+        { error: "Invalid request data", details: error.errors },
+        { status: 400 },
       );
     }
 
     return NextResponse.json(
-      { error: 'Failed to process management request' },
-      { status: 500 }
+      { error: "Failed to process management request" },
+      { status: 500 },
     );
   }
 }
@@ -158,17 +154,14 @@ export async function GET(request: NextRequest) {
     // Authenticate user
     const { userId } = await auth();
     if (!userId) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const { searchParams } = new URL(request.url);
-    const action = searchParams.get('action');
+    const action = searchParams.get("action");
 
     switch (action) {
-      case 'lists': {
+      case "lists": {
         const lists = await emailManagementService.getEmailLists();
         return NextResponse.json({
           success: true,
@@ -176,7 +169,7 @@ export async function GET(request: NextRequest) {
         });
       }
 
-      case 'unsubscribe_reasons': {
+      case "unsubscribe_reasons": {
         const reasons = await emailManagementService.getUnsubscribeReasons();
         return NextResponse.json({
           success: true,
@@ -184,7 +177,7 @@ export async function GET(request: NextRequest) {
         });
       }
 
-      case 'bounce_records': {
+      case "bounce_records": {
         const bounces = await emailManagementService.getBounceRecords();
         return NextResponse.json({
           success: true,
@@ -193,18 +186,14 @@ export async function GET(request: NextRequest) {
       }
 
       default:
-        return NextResponse.json(
-          { error: 'Invalid action' },
-          { status: 400 }
-        );
+        return NextResponse.json({ error: "Invalid action" }, { status: 400 });
     }
-
   } catch (error) {
-    console.error('Email management GET error:', error);
+    console.error("Email management GET error:", error);
 
     return NextResponse.json(
-      { error: 'Failed to retrieve management data' },
-      { status: 500 }
+      { error: "Failed to retrieve management data" },
+      { status: 500 },
     );
   }
-} 
+}

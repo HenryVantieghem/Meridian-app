@@ -1,8 +1,8 @@
-import { describe, it, expect } from 'vitest';
-import { supabase } from './supabase';
+import { describe, it, expect } from "vitest";
+import { supabase } from "./supabase";
 
-describe('supabase client', () => {
-  it('should be defined', () => {
+describe("supabase client", () => {
+  it("should be defined", () => {
     expect(supabase).toBeDefined();
   });
-}); 
+});

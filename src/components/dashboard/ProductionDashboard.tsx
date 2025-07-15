@@ -1,24 +1,24 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
+import { useState, useEffect } from "react";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 
 interface HealthMetrics {
-  status: 'healthy' | 'warning' | 'critical';
+  status: "healthy" | "warning" | "critical";
   timestamp: string;
   uptime: number;
   responseTime: number;
   services: {
     database: {
-      status: 'healthy' | 'warning' | 'critical';
+      status: "healthy" | "warning" | "critical";
       responseTime: number;
       error?: string;
     };
     external: {
       [key: string]: {
-        status: 'healthy' | 'warning' | 'critical';
+        status: "healthy" | "warning" | "critical";
         responseTime: number;
         error?: string;
       };
@@ -46,21 +46,23 @@ export function ProductionDashboard() {
   useEffect(() => {
     const fetchHealthData = async () => {
       try {
-        const response = await fetch('/api/health');
+        const response = await fetch("/api/health");
         if (!response.ok) {
           throw new Error(`Health check failed: ${response.status}`);
         }
         const data = await response.json();
         setHealthData(data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch health data');
+        setError(
+          err instanceof Error ? err.message : "Failed to fetch health data",
+        );
       } finally {
         setLoading(false);
       }
     };
 
     fetchHealthData();
-    
+
     // Refresh every 30 seconds
     const interval = setInterval(fetchHealthData, 30000);
     return () => clearInterval(interval);
@@ -93,22 +95,24 @@ export function ProductionDashboard() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'healthy':
-        return 'bg-green-100 text-green-800 border-green-200';
-      case 'warning':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'critical':
-        return 'bg-red-100 text-red-800 border-red-200';
+      case "healthy":
+        return "bg-green-100 text-green-800 border-green-200";
+      case "warning":
+        return "bg-yellow-100 text-yellow-800 border-yellow-200";
+      case "critical":
+        return "bg-red-100 text-red-800 border-red-200";
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
+        return "bg-gray-100 text-gray-800 border-gray-200";
     }
   };
 
   const formatUptime = (uptime: number) => {
     const days = Math.floor(uptime / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((uptime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const hours = Math.floor(
+      (uptime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+    );
     const minutes = Math.floor((uptime % (1000 * 60 * 60)) / (1000 * 60));
-    
+
     if (days > 0) {
       return `${days}d ${hours}h ${minutes}m`;
     } else if (hours > 0) {
@@ -123,7 +127,8 @@ export function ProductionDashboard() {
     return `${mb.toFixed(1)} MB`;
   };
 
-  const memoryUsagePercent = (healthData.services.memory.used / healthData.services.memory.total) * 100;
+  const memoryUsagePercent =
+    (healthData.services.memory.used / healthData.services.memory.total) * 100;
 
   return (
     <div className="space-y-6">
@@ -140,11 +145,15 @@ export function ProductionDashboard() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div>
                 <p className="text-sm text-gray-600">Uptime</p>
-                <p className="text-lg font-semibold">{formatUptime(healthData.uptime)}</p>
+                <p className="text-lg font-semibold">
+                  {formatUptime(healthData.uptime)}
+                </p>
               </div>
               <div>
                 <p className="text-sm text-gray-600">Response Time</p>
-                <p className="text-lg font-semibold">{healthData.responseTime}ms</p>
+                <p className="text-lg font-semibold">
+                  {healthData.responseTime}ms
+                </p>
               </div>
               <div>
                 <p className="text-sm text-gray-600">Version</p>
@@ -152,10 +161,12 @@ export function ProductionDashboard() {
               </div>
               <div>
                 <p className="text-sm text-gray-600">Environment</p>
-                <p className="text-lg font-semibold capitalize">{healthData.environment}</p>
+                <p className="text-lg font-semibold capitalize">
+                  {healthData.environment}
+                </p>
               </div>
             </div>
-            
+
             <div>
               <p className="text-sm text-gray-600 mb-2">Memory Usage</p>
               <Progress value={memoryUsagePercent} className="h-2" />
@@ -175,15 +186,21 @@ export function ProductionDashboard() {
           <div className="p-6">
             <div className="flex items-center justify-between mb-3">
               <h4 className="text-sm font-medium">Database</h4>
-              <Badge className={getStatusColor(healthData.services.database.status)}>
+              <Badge
+                className={getStatusColor(healthData.services.database.status)}
+              >
                 {healthData.services.database.status}
               </Badge>
             </div>
             <div>
               <p className="text-xs text-gray-600">Response Time</p>
-              <p className="text-sm font-medium">{healthData.services.database.responseTime}ms</p>
+              <p className="text-sm font-medium">
+                {healthData.services.database.responseTime}ms
+              </p>
               {healthData.services.database.error && (
-                <p className="text-xs text-red-600 mt-1">{healthData.services.database.error}</p>
+                <p className="text-xs text-red-600 mt-1">
+                  {healthData.services.database.error}
+                </p>
               )}
             </div>
           </div>
@@ -215,9 +232,12 @@ export function ProductionDashboard() {
       {healthData.errors > 0 && (
         <Card className="border-yellow-200 bg-yellow-50">
           <div className="p-6">
-            <h3 className="text-yellow-800 font-semibold mb-2">Recent Errors</h3>
+            <h3 className="text-yellow-800 font-semibold mb-2">
+              Recent Errors
+            </h3>
             <p className="text-yellow-700">
-              {healthData.errors} error{healthData.errors !== 1 ? 's' : ''} in the last hour
+              {healthData.errors} error{healthData.errors !== 1 ? "s" : ""} in
+              the last hour
             </p>
           </div>
         </Card>
@@ -229,4 +249,4 @@ export function ProductionDashboard() {
       </div>
     </div>
   );
-} 
+}

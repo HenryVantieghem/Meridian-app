@@ -6,9 +6,21 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
 import { ConfidenceMeter } from "@/components/ai/ConfidenceMeter";
-import { ReplyGenerator, GeneratedReply, ReplyTone } from "@/lib/ai/reply-generator";
+import {
+  ReplyGenerator,
+  GeneratedReply,
+  ReplyTone,
+} from "@/lib/ai/reply-generator";
 import { EmailMessage } from "@/lib/email/fetcher";
-import { Loader2, Undo2, Redo2, Send, Save, Trash2, Sparkles } from "lucide-react";
+import {
+  Loader2,
+  Undo2,
+  Redo2,
+  Send,
+  Save,
+  Trash2,
+  Sparkles,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ReplyComposerProps {
@@ -140,8 +152,18 @@ export const ReplyComposer: React.FC<ReplyComposerProps> = ({
         <span className="font-semibold text-gray-900 text-lg flex items-center gap-2">
           <Sparkles className="w-5 h-5 text-[#D4AF37]" /> AI Reply Composer
         </span>
-        <Button variant="outline" size="sm" onClick={fetchReplies} disabled={loading}>
-          {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />} Regenerate
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={fetchReplies}
+          disabled={loading}
+        >
+          {loading ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            <Sparkles className="w-4 h-4" />
+          )}{" "}
+          Regenerate
         </Button>
       </div>
       <div className="mb-4">
@@ -149,7 +171,7 @@ export const ReplyComposer: React.FC<ReplyComposerProps> = ({
           value={confidence}
           onChange={setConfidence}
           showTone
-          onToneChange={t => setTone(t as ReplyTone)}
+          onToneChange={(t) => setTone(t as ReplyTone)}
           disabled={loading}
         />
       </div>
@@ -159,7 +181,10 @@ export const ReplyComposer: React.FC<ReplyComposerProps> = ({
             key={i}
             variant={i === selected ? "default" : "outline"}
             size="sm"
-            className={cn("transition-all", i === selected ? "border-[#D4AF37] text-black" : "")}
+            className={cn(
+              "transition-all",
+              i === selected ? "border-[#D4AF37] text-black" : "",
+            )}
             onClick={() => handleSelectReply(i)}
             disabled={loading}
           >
@@ -179,19 +204,39 @@ export const ReplyComposer: React.FC<ReplyComposerProps> = ({
         />
       </div>
       <div className="flex items-center gap-2 mb-2">
-        <Button variant="ghost" size="icon" onClick={handleUndo} disabled={undoStack.length === 0 || loading} aria-label="Undo">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={handleUndo}
+          disabled={undoStack.length === 0 || loading}
+          aria-label="Undo"
+        >
           <Undo2 className="w-5 h-5" />
         </Button>
-        <Button variant="ghost" size="icon" onClick={handleRedo} disabled={redoStack.length === 0 || loading} aria-label="Redo">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={handleRedo}
+          disabled={redoStack.length === 0 || loading}
+          aria-label="Redo"
+        >
           <Redo2 className="w-5 h-5" />
         </Button>
       </div>
       <div className="flex gap-3 mt-2">
-        <Button onClick={handleSend} disabled={loading || !editorValue.trim()} className="bg-[#D4AF37] text-black hover:bg-[#FFD700]">
+        <Button
+          onClick={handleSend}
+          disabled={loading || !editorValue.trim()}
+          className="bg-[#D4AF37] text-black hover:bg-[#FFD700]"
+        >
           <Send className="w-4 h-4 mr-1" /> Send
         </Button>
         {onSaveDraft && (
-          <Button onClick={handleSave} disabled={loading || !editorValue.trim()} variant="outline">
+          <Button
+            onClick={handleSave}
+            disabled={loading || !editorValue.trim()}
+            variant="outline"
+          >
             <Save className="w-4 h-4 mr-1" /> Save Draft
           </Button>
         )}
@@ -212,9 +257,13 @@ export const ReplyComposer: React.FC<ReplyComposerProps> = ({
         )}
       </AnimatePresence>
       {error && <div className="mt-3 text-red-600 text-sm">{error}</div>}
-      {feedback && <div className="mt-3 text-[#D4AF37] text-sm font-medium flex items-center gap-2"><Sparkles className="w-4 h-4" /> {feedback}</div>}
+      {feedback && (
+        <div className="mt-3 text-[#D4AF37] text-sm font-medium flex items-center gap-2">
+          <Sparkles className="w-4 h-4" /> {feedback}
+        </div>
+      )}
     </Card>
   );
 };
 
-export default ReplyComposer; 
+export default ReplyComposer;

@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import { Card } from '@/components/ui/card';
-import { Typography } from '@/components/ui/typography';
-import { Badge } from '@/components/ui/badge';
-import { Activity, Clock, AlertTriangle } from 'lucide-react';
+import React, { useEffect, useState } from "react";
+import { Card } from "@/components/ui/card";
+import { Typography } from "@/components/ui/typography";
+import { Badge } from "@/components/ui/badge";
+import { Activity, Clock, AlertTriangle } from "lucide-react";
 
 interface PerformanceMetrics {
   fcp?: number; // First Contentful Paint
@@ -19,46 +19,59 @@ interface PerformanceMonitorProps {
   className?: string;
 }
 
-export function PerformanceMonitor({ showDetails = false, className }: PerformanceMonitorProps) {
+export function PerformanceMonitor({
+  showDetails = false,
+  className,
+}: PerformanceMonitorProps) {
   const [metrics, setMetrics] = useState<PerformanceMetrics | null>(null);
   const [isMonitoring, setIsMonitoring] = useState(false);
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === "undefined") return;
 
     const measurePerformance = () => {
       setIsMonitoring(true);
 
       // Measure Time to First Byte
-      const navigationEntry = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
-      const ttfb = navigationEntry?.responseStart - navigationEntry?.requestStart || 0;
+      const navigationEntry = performance.getEntriesByType(
+        "navigation",
+      )[0] as PerformanceNavigationTiming;
+      const ttfb =
+        navigationEntry?.responseStart - navigationEntry?.requestStart || 0;
 
       // Measure Core Web Vitals
       const observer = new PerformanceObserver((list) => {
         const entries = list.getEntries();
-        
+
         entries.forEach((entry) => {
-          if (entry.entryType === 'largest-contentful-paint') {
-            setMetrics(prev => ({ ...prev, lcp: entry.startTime }));
+          if (entry.entryType === "largest-contentful-paint") {
+            setMetrics((prev) => ({ ...prev, lcp: entry.startTime }));
           }
-          if (entry.entryType === 'first-input') {
+          if (entry.entryType === "first-input") {
             const event = entry as PerformanceEventTiming;
-            setMetrics(prev => ({ ...prev, fid: event.processingStart - event.startTime }));
+            setMetrics((prev) => ({
+              ...prev,
+              fid: event.processingStart - event.startTime,
+            }));
           }
-          if (entry.entryType === 'layout-shift') {
+          if (entry.entryType === "layout-shift") {
             const cls = (entry as unknown as { value: number }).value;
-            setMetrics(prev => ({ ...prev, cls }));
+            setMetrics((prev) => ({ ...prev, cls }));
           }
         });
       });
 
-      observer.observe({ entryTypes: ['largest-contentful-paint', 'first-input', 'layout-shift'] });
+      observer.observe({
+        entryTypes: ["largest-contentful-paint", "first-input", "layout-shift"],
+      });
 
       // Measure First Contentful Paint
-      const paintEntries = performance.getEntriesByType('paint');
-      const fcpEntry = paintEntries.find(entry => entry.name === 'first-contentful-paint');
+      const paintEntries = performance.getEntriesByType("paint");
+      const fcpEntry = paintEntries.find(
+        (entry) => entry.name === "first-contentful-paint",
+      );
       if (fcpEntry) {
-        setMetrics(prev => ({ ...prev, fcp: fcpEntry.startTime, ttfb }));
+        setMetrics((prev) => ({ ...prev, fcp: fcpEntry.startTime, ttfb }));
       }
 
       // Cleanup observer after 10 seconds
@@ -69,17 +82,24 @@ export function PerformanceMonitor({ showDetails = false, className }: Performan
     };
 
     // Start monitoring after page load
-    if (document.readyState === 'complete') {
+    if (document.readyState === "complete") {
       measurePerformance();
     } else {
-      window.addEventListener('load', measurePerformance);
-      return () => window.removeEventListener('load', measurePerformance);
+      window.addEventListener("load", measurePerformance);
+      return () => window.removeEventListener("load", measurePerformance);
     }
   }, []);
 
-  const getScore = (metric: keyof PerformanceMetrics, value: number | undefined): { score: number; color: string; label: string } => {
+  const getScore = (
+    metric: keyof PerformanceMetrics,
+    value: number | undefined,
+  ): { score: number; color: string; label: string } => {
     if (value === undefined) {
-      return { score: 0, color: 'bg-gray-100 text-gray-800', label: 'Not Available' };
+      return {
+        score: 0,
+        color: "bg-gray-100 text-gray-800",
+        label: "Not Available",
+      };
     }
     const thresholds = {
       fcp: { good: 1800, poor: 3000 },
@@ -96,24 +116,27 @@ export function PerformanceMonitor({ showDetails = false, className }: Performan
 
     if (value <= threshold.good) {
       score = 100;
-      color = 'bg-green-100 text-green-800';
-      label = 'Good';
+      color = "bg-green-100 text-green-800";
+      label = "Good";
     } else if (value <= threshold.poor) {
       score = 50;
-      color = 'bg-yellow-100 text-yellow-800';
-      label = 'Needs Improvement';
+      color = "bg-yellow-100 text-yellow-800";
+      label = "Needs Improvement";
     } else {
       score = 0;
-      color = 'bg-red-100 text-red-800';
-      label = 'Poor';
+      color = "bg-red-100 text-red-800";
+      label = "Poor";
     }
 
     return { score, color, label };
   };
 
-  const formatMetric = (value: number | undefined, unit: string = 'ms'): string => {
+  const formatMetric = (
+    value: number | undefined,
+    unit: string = "ms",
+  ): string => {
     if (value === undefined) {
-      return 'N/A';
+      return "N/A";
     }
     if (value < 1000) {
       return `${Math.round(value)}${unit}`;
@@ -150,25 +173,25 @@ export function PerformanceMonitor({ showDetails = false, className }: Performan
               title="LCP"
               value={formatMetric(metrics.lcp)}
               description="Largest Contentful Paint"
-              score={getScore('lcp', metrics.lcp)}
+              score={getScore("lcp", metrics.lcp)}
             />
             <MetricCard
               title="FID"
               value={formatMetric(metrics.fid)}
               description="First Input Delay"
-              score={getScore('fid', metrics.fid)}
+              score={getScore("fid", metrics.fid)}
             />
             <MetricCard
               title="CLS"
-              value={metrics.cls ? metrics.cls.toFixed(3) : 'N/A'}
+              value={metrics.cls ? metrics.cls.toFixed(3) : "N/A"}
               description="Cumulative Layout Shift"
-              score={getScore('cls', metrics.cls)}
+              score={getScore("cls", metrics.cls)}
             />
             <MetricCard
               title="FCP"
               value={formatMetric(metrics.fcp)}
               description="First Contentful Paint"
-              score={getScore('fcp', metrics.fcp)}
+              score={getScore("fcp", metrics.fcp)}
             />
           </div>
 
@@ -179,8 +202,12 @@ export function PerformanceMonitor({ showDetails = false, className }: Performan
               </Typography>
               <div className="grid grid-cols-1 gap-2">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">Time to First Byte</span>
-                  <span className="text-sm font-medium">{formatMetric(metrics.ttfb)}</span>
+                  <span className="text-sm text-gray-600">
+                    Time to First Byte
+                  </span>
+                  <span className="text-sm font-medium">
+                    {formatMetric(metrics.ttfb)}
+                  </span>
                 </div>
               </div>
             </div>
@@ -205,9 +232,7 @@ function MetricCard({ title, value, description, score }: MetricCardProps) {
         <Typography variant="h4" className="text-sm font-semibold">
           {title}
         </Typography>
-        <Badge className={score.color}>
-          {score.label}
-        </Badge>
+        <Badge className={score.color}>{score.label}</Badge>
       </div>
       <Typography variant="h3" className="text-lg font-bold text-gray-900">
         {value}
@@ -225,37 +250,46 @@ interface PerformanceWarningProps {
   className?: string;
 }
 
-export function PerformanceWarning({ threshold = 3000, className }: PerformanceWarningProps) {
+export function PerformanceWarning({
+  threshold = 3000,
+  className,
+}: PerformanceWarningProps) {
   const [isSlow, setIsSlow] = useState(false);
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === "undefined") return;
 
     const checkPerformance = () => {
-      const navigationEntry = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
-      const loadTime = navigationEntry?.loadEventEnd - navigationEntry?.loadEventStart || 0;
+      const navigationEntry = performance.getEntriesByType(
+        "navigation",
+      )[0] as PerformanceNavigationTiming;
+      const loadTime =
+        navigationEntry?.loadEventEnd - navigationEntry?.loadEventStart || 0;
 
       if (loadTime > threshold) {
         setIsSlow(true);
       }
     };
 
-    if (document.readyState === 'complete') {
+    if (document.readyState === "complete") {
       checkPerformance();
     } else {
-      window.addEventListener('load', checkPerformance);
-      return () => window.removeEventListener('load', checkPerformance);
+      window.addEventListener("load", checkPerformance);
+      return () => window.removeEventListener("load", checkPerformance);
     }
   }, [threshold]);
 
   if (!isSlow) return null;
 
   return (
-    <div className={`bg-yellow-50 border border-yellow-200 rounded-lg p-3 ${className}`}>
+    <div
+      className={`bg-yellow-50 border border-yellow-200 rounded-lg p-3 ${className}`}
+    >
       <div className="flex items-center space-x-2">
         <AlertTriangle className="h-4 w-4 text-yellow-600" />
         <Typography variant="body" className="text-sm text-yellow-800">
-          This page is loading slower than expected. Consider optimizing images or reducing bundle size.
+          This page is loading slower than expected. Consider optimizing images
+          or reducing bundle size.
         </Typography>
       </div>
     </div>
@@ -266,28 +300,28 @@ export function PerformanceWarning({ threshold = 3000, className }: PerformanceW
 export function PerformanceSuggestions() {
   const suggestions = [
     {
-      title: 'Optimize Images',
-      description: 'Use WebP format and implement lazy loading',
-      impact: 'High',
-      effort: 'Medium',
+      title: "Optimize Images",
+      description: "Use WebP format and implement lazy loading",
+      impact: "High",
+      effort: "Medium",
     },
     {
-      title: 'Code Splitting',
-      description: 'Split your bundle into smaller chunks',
-      impact: 'High',
-      effort: 'Low',
+      title: "Code Splitting",
+      description: "Split your bundle into smaller chunks",
+      impact: "High",
+      effort: "Low",
     },
     {
-      title: 'Caching',
-      description: 'Implement proper caching strategies',
-      impact: 'Medium',
-      effort: 'Medium',
+      title: "Caching",
+      description: "Implement proper caching strategies",
+      impact: "Medium",
+      effort: "Medium",
     },
     {
-      title: 'CDN',
-      description: 'Use a CDN for static assets',
-      impact: 'Medium',
-      effort: 'Low',
+      title: "CDN",
+      description: "Use a CDN for static assets",
+      impact: "Medium",
+      effort: "Low",
     },
   ];
 
@@ -298,7 +332,10 @@ export function PerformanceSuggestions() {
       </Typography>
       <div className="space-y-3">
         {suggestions.map((suggestion, index) => (
-          <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+          <div
+            key={index}
+            className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+          >
             <div>
               <Typography variant="h4" className="text-sm font-medium">
                 {suggestion.title}
@@ -320,4 +357,4 @@ export function PerformanceSuggestions() {
       </div>
     </Card>
   );
-} 
+}

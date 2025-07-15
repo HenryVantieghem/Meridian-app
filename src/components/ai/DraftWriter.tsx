@@ -1,14 +1,32 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Typography } from '@/components/ui/typography';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Zap, Crown, Save, Send, RefreshCw, Sparkles, FileText, Clock, User, Target, Loader2 } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Typography } from "@/components/ui/typography";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Zap,
+  Crown,
+  Save,
+  Send,
+  RefreshCw,
+  Sparkles,
+  FileText,
+  Clock,
+  User,
+  Target,
+  Loader2,
+} from "lucide-react";
 
 interface DraftWriterProps {
   selectedItem?: any;
@@ -24,7 +42,7 @@ interface DraftData {
   tone: string;
   context: string;
   recipient: string;
-  priority: 'high' | 'medium' | 'low';
+  priority: "high" | "medium" | "low";
   timestamp: Date;
   confidence: number;
   metadata: {
@@ -35,31 +53,84 @@ interface DraftData {
 }
 
 const toneOptions = [
-  { value: 'executive', label: 'Executive', description: 'Professional, decisive, strategic' },
-  { value: 'diplomatic', label: 'Diplomatic', description: 'Tactful, respectful, collaborative' },
-  { value: 'direct', label: 'Direct', description: 'Clear, concise, no-nonsense' },
-  { value: 'warm', label: 'Warm', description: 'Friendly, personable, approachable' },
-  { value: 'formal', label: 'Formal', description: 'Traditional, ceremonial, structured' },
-  { value: 'urgent', label: 'Urgent', description: 'Time-sensitive, action-oriented' }
+  {
+    value: "executive",
+    label: "Executive",
+    description: "Professional, decisive, strategic",
+  },
+  {
+    value: "diplomatic",
+    label: "Diplomatic",
+    description: "Tactful, respectful, collaborative",
+  },
+  {
+    value: "direct",
+    label: "Direct",
+    description: "Clear, concise, no-nonsense",
+  },
+  {
+    value: "warm",
+    label: "Warm",
+    description: "Friendly, personable, approachable",
+  },
+  {
+    value: "formal",
+    label: "Formal",
+    description: "Traditional, ceremonial, structured",
+  },
+  {
+    value: "urgent",
+    label: "Urgent",
+    description: "Time-sensitive, action-oriented",
+  },
 ];
 
 const contextOptions = [
-  { value: 'reply', label: 'Reply', description: 'Responding to received message' },
-  { value: 'follow-up', label: 'Follow-up', description: 'Following up on previous communication' },
-  { value: 'new', label: 'New Message', description: 'Starting new conversation' },
-  { value: 'announcement', label: 'Announcement', description: 'Company or team announcement' },
-  { value: 'meeting', label: 'Meeting', description: 'Meeting-related communication' },
-  { value: 'decision', label: 'Decision', description: 'Communicating decisions or directives' }
+  {
+    value: "reply",
+    label: "Reply",
+    description: "Responding to received message",
+  },
+  {
+    value: "follow-up",
+    label: "Follow-up",
+    description: "Following up on previous communication",
+  },
+  {
+    value: "new",
+    label: "New Message",
+    description: "Starting new conversation",
+  },
+  {
+    value: "announcement",
+    label: "Announcement",
+    description: "Company or team announcement",
+  },
+  {
+    value: "meeting",
+    label: "Meeting",
+    description: "Meeting-related communication",
+  },
+  {
+    value: "decision",
+    label: "Decision",
+    description: "Communicating decisions or directives",
+  },
 ];
 
-export default function DraftWriter({ selectedItem, onSave, onSend, className = '' }: DraftWriterProps) {
+export default function DraftWriter({
+  selectedItem,
+  onSave,
+  onSend,
+  className = "",
+}: DraftWriterProps) {
   const [draft, setDraft] = useState<Partial<DraftData>>({
-    subject: '',
-    content: '',
-    tone: 'executive',
-    context: 'reply',
-    recipient: '',
-    priority: 'medium'
+    subject: "",
+    content: "",
+    tone: "executive",
+    context: "reply",
+    recipient: "",
+    priority: "medium",
   });
   const [isGenerating, setIsGenerating] = useState(false);
   const [isRegenerating, setIsRegenerating] = useState(false);
@@ -69,11 +140,11 @@ export default function DraftWriter({ selectedItem, onSave, onSend, className = 
 
   useEffect(() => {
     if (selectedItem) {
-      setDraft(prev => ({
+      setDraft((prev) => ({
         ...prev,
-        recipient: selectedItem.from || selectedItem.user || '',
-        subject: selectedItem.subject ? `Re: ${selectedItem.subject}` : '',
-        context: 'reply'
+        recipient: selectedItem.from || selectedItem.user || "",
+        subject: selectedItem.subject ? `Re: ${selectedItem.subject}` : "",
+        context: "reply",
       }));
     }
   }, [selectedItem]);
@@ -85,10 +156,10 @@ export default function DraftWriter({ selectedItem, onSave, onSend, className = 
     setConfidence(0);
 
     try {
-      const response = await fetch('/api/ai/draft', {
-        method: 'POST',
+      const response = await fetch("/api/ai/draft", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           recipient: draft.recipient,
@@ -96,32 +167,31 @@ export default function DraftWriter({ selectedItem, onSave, onSend, className = 
           tone: draft.tone,
           context: draft.context,
           priority: draft.priority,
-          original_message: selectedItem?.body || selectedItem?.text || '',
-          additional_context: draft.content // Any manual input
+          original_message: selectedItem?.body || selectedItem?.text || "",
+          additional_context: draft.content, // Any manual input
         }),
       });
 
-      if (!response.ok) throw new Error('Draft generation failed');
+      if (!response.ok) throw new Error("Draft generation failed");
 
       const data = await response.json();
-      
-      setDraft(prev => ({
+
+      setDraft((prev) => ({
         ...prev,
         content: data.content,
-        subject: data.subject || prev.subject
+        subject: data.subject || prev.subject,
       }));
-      
+
       setConfidence(data.confidence || 85);
       setVariations(data.variations || []);
       setSelectedVariation(0);
-
     } catch (error) {
-      console.error('Draft generation failed:', error);
+      console.error("Draft generation failed:", error);
       // Mock response for demo
       const mockContent = generateMockDraft();
-      setDraft(prev => ({
+      setDraft((prev) => ({
         ...prev,
-        content: mockContent
+        content: mockContent,
       }));
       setConfidence(87);
       setVariations([mockContent, generateMockDraft(), generateMockDraft()]);
@@ -137,9 +207,12 @@ export default function DraftWriter({ selectedItem, onSave, onSend, className = 
   };
 
   const generateMockDraft = () => {
-    const toneStyle = toneOptions.find(t => t.value === draft.tone)?.description || 'professional';
-    const contextType = contextOptions.find(c => c.value === draft.context)?.label || 'message';
-    
+    const toneStyle =
+      toneOptions.find((t) => t.value === draft.tone)?.description ||
+      "professional";
+    const contextType =
+      contextOptions.find((c) => c.value === draft.context)?.label || "message";
+
     return `Thank you for your ${contextType.toLowerCase()}. I appreciate you bringing this to my attention.
 
 Based on our strategic priorities, I recommend we proceed with the following approach:
@@ -158,42 +231,42 @@ Best regards`;
   const handleSave = () => {
     const completeDraft: DraftData = {
       id: Date.now().toString(),
-      subject: draft.subject || '',
-      content: draft.content || '',
-      tone: draft.tone || 'executive',
-      context: draft.context || 'reply',
-      recipient: draft.recipient || '',
-      priority: draft.priority || 'medium',
+      subject: draft.subject || "",
+      content: draft.content || "",
+      tone: draft.tone || "executive",
+      context: draft.context || "reply",
+      recipient: draft.recipient || "",
+      priority: draft.priority || "medium",
       timestamp: new Date(),
       confidence,
       metadata: {
         original_message: selectedItem?.body || selectedItem?.text,
         generated_variations: variations,
-        tone_analysis: { tone: draft.tone, confidence }
-      }
+        tone_analysis: { tone: draft.tone, confidence },
+      },
     };
-    
+
     onSave(completeDraft);
   };
 
   const handleSend = () => {
     const completeDraft: DraftData = {
       id: Date.now().toString(),
-      subject: draft.subject || '',
-      content: draft.content || '',
-      tone: draft.tone || 'executive',
-      context: draft.context || 'reply',
-      recipient: draft.recipient || '',
-      priority: draft.priority || 'medium',
+      subject: draft.subject || "",
+      content: draft.content || "",
+      tone: draft.tone || "executive",
+      context: draft.context || "reply",
+      recipient: draft.recipient || "",
+      priority: draft.priority || "medium",
       timestamp: new Date(),
       confidence,
       metadata: {
         original_message: selectedItem?.body || selectedItem?.text,
         generated_variations: variations,
-        tone_analysis: { tone: draft.tone, confidence }
-      }
+        tone_analysis: { tone: draft.tone, confidence },
+      },
     };
-    
+
     onSend(completeDraft);
   };
 
@@ -208,7 +281,10 @@ Best regards`;
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <Typography variant="h6" className="font-playfair font-bold text-black">
+                <Typography
+                  variant="h6"
+                  className="font-playfair font-bold text-black"
+                >
                   AI Draft Writer
                 </Typography>
                 {confidence > 0 && (
@@ -235,7 +311,9 @@ Best regards`;
           </label>
           <Input
             value={draft.recipient}
-            onChange={(e) => setDraft(prev => ({ ...prev, recipient: e.target.value }))}
+            onChange={(e) =>
+              setDraft((prev) => ({ ...prev, recipient: e.target.value }))
+            }
             placeholder="recipient@company.com"
             className="w-full"
           />
@@ -246,16 +324,23 @@ Best regards`;
             <Crown className="w-4 h-4 inline mr-1" />
             Tone
           </label>
-          <Select value={draft.tone} onValueChange={(value) => setDraft(prev => ({ ...prev, tone: value }))}>
+          <Select
+            value={draft.tone}
+            onValueChange={(value) =>
+              setDraft((prev) => ({ ...prev, tone: value }))
+            }
+          >
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {toneOptions.map(option => (
+              {toneOptions.map((option) => (
                 <SelectItem key={option.value} value={option.value}>
                   <div>
                     <div className="font-medium">{option.label}</div>
-                    <div className="text-xs text-gray-500">{option.description}</div>
+                    <div className="text-xs text-gray-500">
+                      {option.description}
+                    </div>
                   </div>
                 </SelectItem>
               ))}
@@ -268,16 +353,23 @@ Best regards`;
             <Target className="w-4 h-4 inline mr-1" />
             Context
           </label>
-          <Select value={draft.context} onValueChange={(value) => setDraft(prev => ({ ...prev, context: value }))}>
+          <Select
+            value={draft.context}
+            onValueChange={(value) =>
+              setDraft((prev) => ({ ...prev, context: value }))
+            }
+          >
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {contextOptions.map(option => (
+              {contextOptions.map((option) => (
                 <SelectItem key={option.value} value={option.value}>
                   <div>
                     <div className="font-medium">{option.label}</div>
-                    <div className="text-xs text-gray-500">{option.description}</div>
+                    <div className="text-xs text-gray-500">
+                      {option.description}
+                    </div>
                   </div>
                 </SelectItem>
               ))}
@@ -294,7 +386,9 @@ Best regards`;
         </label>
         <Input
           value={draft.subject}
-          onChange={(e) => setDraft(prev => ({ ...prev, subject: e.target.value }))}
+          onChange={(e) =>
+            setDraft((prev) => ({ ...prev, subject: e.target.value }))
+          }
           placeholder="Enter subject line..."
           className="w-full"
         />
@@ -319,7 +413,7 @@ Best regards`;
             </>
           )}
         </Button>
-        
+
         {draft.content && (
           <Button
             onClick={regenerateDraft}
@@ -357,7 +451,10 @@ Best regards`;
                   size="sm"
                   onClick={() => {
                     setSelectedVariation(index);
-                    setDraft(prev => ({ ...prev, content: variations[index] }));
+                    setDraft((prev) => ({
+                      ...prev,
+                      content: variations[index],
+                    }));
                   }}
                 >
                   Variation {index + 1}
@@ -384,7 +481,9 @@ Best regards`;
         <CardContent>
           <Textarea
             value={draft.content}
-            onChange={(e) => setDraft(prev => ({ ...prev, content: e.target.value }))}
+            onChange={(e) =>
+              setDraft((prev) => ({ ...prev, content: e.target.value }))
+            }
             placeholder="Your AI-generated draft will appear here, or start typing to compose manually..."
             className="min-h-[300px] resize-none"
           />
@@ -397,7 +496,7 @@ Best regards`;
           <Sparkles className="w-4 h-4" />
           <span>AI-powered strategic communication</span>
         </div>
-        
+
         <div className="flex gap-2">
           <Button
             onClick={handleSave}
@@ -408,7 +507,7 @@ Best regards`;
             <Save className="w-4 h-4" />
             Save Draft
           </Button>
-          
+
           <Button
             onClick={handleSend}
             disabled={!draft.content || !draft.recipient}

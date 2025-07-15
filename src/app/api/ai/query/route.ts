@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
-import { OpenAI } from 'openai';
+import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs/server";
+import { OpenAI } from "openai";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -9,15 +9,15 @@ const openai = new OpenAI({
 export async function POST(request: NextRequest) {
   try {
     const { userId } = auth();
-    
+
     if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const { query } = await request.json();
 
     if (!query) {
-      return NextResponse.json({ error: 'Query is required' }, { status: 400 });
+      return NextResponse.json({ error: "Query is required" }, { status: 400 });
     }
 
     // System prompt for Napoleon AI
@@ -36,20 +36,22 @@ Current context: Executive dashboard with email and Slack integration, VIP conta
 
     // Generate AI response
     const completion = await openai.chat.completions.create({
-      model: 'gpt-4',
+      model: "gpt-4",
       messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: query }
+        { role: "system", content: systemPrompt },
+        { role: "user", content: query },
       ],
       max_tokens: 500,
       temperature: 0.7,
     });
 
-    const aiResponse = completion.choices[0]?.message?.content || 'I apologize, but I was unable to process your request at this time.';
+    const aiResponse =
+      completion.choices[0]?.message?.content ||
+      "I apologize, but I was unable to process your request at this time.";
 
     // Determine response type based on query
     const responseType = determineResponseType(query);
-    
+
     // Create structured response
     const result = {
       id: Date.now().toString(),
@@ -61,106 +63,139 @@ Current context: Executive dashboard with email and Slack integration, VIP conta
       metadata: {
         priority: determinePriority(query),
         category: determineCategory(query),
-        tokens_used: completion.usage?.total_tokens || 0
-      }
+        tokens_used: completion.usage?.total_tokens || 0,
+      },
     };
 
     return NextResponse.json({
       success: true,
       results: [result],
       query,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
-
   } catch (error) {
-    console.error('AI Query Error:', error);
+    console.error("AI Query Error:", error);
     return NextResponse.json(
-      { error: 'Failed to process AI query' },
-      { status: 500 }
+      { error: "Failed to process AI query" },
+      { status: 500 },
     );
   }
 }
 
-function determineResponseType(query: string): 'summary' | 'action' | 'insight' | 'draft' {
+function determineResponseType(
+  query: string,
+): "summary" | "action" | "insight" | "draft" {
   const lowerQuery = query.toLowerCase();
-  
-  if (lowerQuery.includes('draft') || lowerQuery.includes('write') || lowerQuery.includes('compose')) {
-    return 'draft';
+
+  if (
+    lowerQuery.includes("draft") ||
+    lowerQuery.includes("write") ||
+    lowerQuery.includes("compose")
+  ) {
+    return "draft";
   }
-  
-  if (lowerQuery.includes('brief') || lowerQuery.includes('summary') || lowerQuery.includes('overview')) {
-    return 'summary';
+
+  if (
+    lowerQuery.includes("brief") ||
+    lowerQuery.includes("summary") ||
+    lowerQuery.includes("overview")
+  ) {
+    return "summary";
   }
-  
-  if (lowerQuery.includes('analyze') || lowerQuery.includes('insight') || lowerQuery.includes('trend')) {
-    return 'insight';
+
+  if (
+    lowerQuery.includes("analyze") ||
+    lowerQuery.includes("insight") ||
+    lowerQuery.includes("trend")
+  ) {
+    return "insight";
   }
-  
-  return 'action';
+
+  return "action";
 }
 
 function generateTitle(query: string, type: string): string {
   const lowerQuery = query.toLowerCase();
-  
-  if (type === 'draft') {
-    return 'AI Draft Generation';
+
+  if (type === "draft") {
+    return "AI Draft Generation";
   }
-  
-  if (type === 'summary') {
-    return 'Executive Summary';
+
+  if (type === "summary") {
+    return "Executive Summary";
   }
-  
-  if (type === 'insight') {
-    return 'Strategic Insights';
+
+  if (type === "insight") {
+    return "Strategic Insights";
   }
-  
-  if (lowerQuery.includes('vip')) {
-    return 'VIP Analysis';
+
+  if (lowerQuery.includes("vip")) {
+    return "VIP Analysis";
   }
-  
-  if (lowerQuery.includes('schedule')) {
-    return 'Schedule Optimization';
+
+  if (lowerQuery.includes("schedule")) {
+    return "Schedule Optimization";
   }
-  
-  return 'Strategic Response';
+
+  return "Strategic Response";
 }
 
-function determinePriority(query: string): 'high' | 'medium' | 'low' {
+function determinePriority(query: string): "high" | "medium" | "low" {
   const lowerQuery = query.toLowerCase();
-  
-  if (lowerQuery.includes('urgent') || lowerQuery.includes('critical') || lowerQuery.includes('asap')) {
-    return 'high';
+
+  if (
+    lowerQuery.includes("urgent") ||
+    lowerQuery.includes("critical") ||
+    lowerQuery.includes("asap")
+  ) {
+    return "high";
   }
-  
-  if (lowerQuery.includes('important') || lowerQuery.includes('priority') || lowerQuery.includes('vip')) {
-    return 'high';
+
+  if (
+    lowerQuery.includes("important") ||
+    lowerQuery.includes("priority") ||
+    lowerQuery.includes("vip")
+  ) {
+    return "high";
   }
-  
-  if (lowerQuery.includes('routine') || lowerQuery.includes('fyi') || lowerQuery.includes('info')) {
-    return 'low';
+
+  if (
+    lowerQuery.includes("routine") ||
+    lowerQuery.includes("fyi") ||
+    lowerQuery.includes("info")
+  ) {
+    return "low";
   }
-  
-  return 'medium';
+
+  return "medium";
 }
 
 function determineCategory(query: string): string {
   const lowerQuery = query.toLowerCase();
-  
-  if (lowerQuery.includes('email') || lowerQuery.includes('message')) {
-    return 'communication';
+
+  if (lowerQuery.includes("email") || lowerQuery.includes("message")) {
+    return "communication";
   }
-  
-  if (lowerQuery.includes('schedule') || lowerQuery.includes('calendar') || lowerQuery.includes('meeting')) {
-    return 'scheduling';
+
+  if (
+    lowerQuery.includes("schedule") ||
+    lowerQuery.includes("calendar") ||
+    lowerQuery.includes("meeting")
+  ) {
+    return "scheduling";
   }
-  
-  if (lowerQuery.includes('vip') || lowerQuery.includes('relationship')) {
-    return 'relationship';
+
+  if (lowerQuery.includes("vip") || lowerQuery.includes("relationship")) {
+    return "relationship";
   }
-  
-  if (lowerQuery.includes('analysis') || lowerQuery.includes('insight') || lowerQuery.includes('data')) {
-    return 'analysis';
+
+  if (
+    lowerQuery.includes("analysis") ||
+    lowerQuery.includes("insight") ||
+    lowerQuery.includes("data")
+  ) {
+    return "analysis";
   }
-  
-  return 'general';
+
+  return "general";
 }

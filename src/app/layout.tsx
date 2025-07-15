@@ -3,31 +3,29 @@ import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import ClerkWrapper from "./client-layout";
 
-// Validate environment variables on app startup
-import "@/lib/invariantEnv";
-
 const inter = Inter({
-  subsets: ['latin'],
-  display: 'swap',
+  subsets: ["latin"],
+  display: "swap",
   preload: true,
-  fallback: ['system-ui', 'arial'],
+  fallback: ["system-ui", "arial"],
 });
 
 const playfair = Playfair_Display({
-  weight: ['400', '500', '600', '700'],
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-playfair',
+  weight: ["400", "500", "600", "700"],
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-playfair",
 });
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: {
     default: "Napoleon - AI-Powered Email Management",
     template: "%s | Napoleon",
   },
-  description: "Transform communication chaos into clarity through intelligent email management, AI-powered prioritization, and elegant UX design.",
+  description:
+    "Transform communication chaos into clarity through intelligent email management, AI-powered prioritization, and elegant UX design.",
   keywords: [
     "email management",
     "AI productivity",
@@ -36,15 +34,17 @@ export const metadata: Metadata = {
     "AI assistant",
     "productivity platform",
   ],
-      authors: [{ name: "Napoleon Team" }],
-    creator: "Napoleon",
-    publisher: "Napoleon",
+  authors: [{ name: "Napoleon Team" }],
+  creator: "Napoleon",
+  publisher: "Napoleon",
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"),
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
+  ),
   alternates: {
     canonical: "/",
   },
@@ -53,21 +53,23 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "/",
     title: "Napoleon - AI-Powered Email Management",
-    description: "Transform communication chaos into clarity through intelligent email management, AI-powered prioritization, and elegant UX design.",
+    description:
+      "Transform communication chaos into clarity through intelligent email management, AI-powered prioritization, and elegant UX design.",
     siteName: "Napoleon",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-                  alt: "Napoleon - AI-Powered Email Management",
+        alt: "Napoleon - AI-Powered Email Management",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Napoleon - AI-Powered Email Management",
-    description: "Transform communication chaos into clarity through intelligent email management, AI-powered prioritization, and elegant UX design.",
+    description:
+      "Transform communication chaos into clarity through intelligent email management, AI-powered prioritization, and elegant UX design.",
     images: ["/og-image.png"],
   },
   robots: {

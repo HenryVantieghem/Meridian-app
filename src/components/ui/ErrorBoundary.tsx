@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import React, { Component, ErrorInfo, ReactNode } from 'react';
-import { Button } from '@/components/ui/button';
-import { Typography } from '@/components/ui/typography';
-import { Card } from '@/components/ui/card';
-import { AlertTriangle, RefreshCw, Home, ArrowLeft } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import React, { Component, ErrorInfo, ReactNode } from "react";
+import { Button } from "@/components/ui/button";
+import { Typography } from "@/components/ui/typography";
+import { Card } from "@/components/ui/card";
+import { AlertTriangle, RefreshCw, Home, ArrowLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface Props {
   children: ReactNode;
@@ -31,10 +31,10 @@ export class ErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     this.setState({ error, errorInfo });
-    
+
     // Log error to monitoring service
-    console.error('ErrorBoundary caught an error:', error, errorInfo);
-    
+    console.error("ErrorBoundary caught an error:", error, errorInfo);
+
     // Call custom error handler if provided
     if (this.props.onError) {
       this.props.onError(error, errorInfo);
@@ -49,7 +49,12 @@ export class ErrorBoundary extends Component<Props, State> {
       }
 
       // Default error UI
-      return <ErrorFallback error={this.state.error} errorInfo={this.state.errorInfo} />;
+      return (
+        <ErrorFallback
+          error={this.state.error}
+          errorInfo={this.state.errorInfo}
+        />
+      );
     }
 
     return this.props.children;
@@ -69,7 +74,7 @@ function ErrorFallback({ error, errorInfo }: ErrorFallbackProps) {
   };
 
   const handleGoHome = () => {
-    router.push('/dashboard');
+    router.push("/dashboard");
   };
 
   const handleGoBack = () => {
@@ -83,13 +88,17 @@ function ErrorFallback({ error, errorInfo }: ErrorFallbackProps) {
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <AlertTriangle className="h-8 w-8 text-red-600" />
           </div>
-          
-          <Typography variant="h2" className="text-xl font-semibold text-gray-900 mb-2">
+
+          <Typography
+            variant="h2"
+            className="text-xl font-semibold text-gray-900 mb-2"
+          >
             Something went wrong
           </Typography>
-          
+
           <Typography variant="body" className="text-gray-600 mb-6">
-            We encountered an unexpected error. Our team has been notified and is working to fix it.
+            We encountered an unexpected error. Our team has been notified and
+            is working to fix it.
           </Typography>
 
           <div className="space-y-3">
@@ -97,14 +106,22 @@ function ErrorFallback({ error, errorInfo }: ErrorFallbackProps) {
               <RefreshCw className="h-4 w-4 mr-2" />
               Try Again
             </Button>
-            
+
             <div className="flex space-x-2">
-              <Button variant="outline" onClick={handleGoBack} className="flex-1">
+              <Button
+                variant="outline"
+                onClick={handleGoBack}
+                className="flex-1"
+              >
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Go Back
               </Button>
-              
-              <Button variant="outline" onClick={handleGoHome} className="flex-1">
+
+              <Button
+                variant="outline"
+                onClick={handleGoHome}
+                className="flex-1"
+              >
                 <Home className="h-4 w-4 mr-2" />
                 Dashboard
               </Button>
@@ -112,7 +129,7 @@ function ErrorFallback({ error, errorInfo }: ErrorFallbackProps) {
           </div>
 
           {/* Development error details */}
-          {process.env.NODE_ENV === 'development' && error && (
+          {process.env.NODE_ENV === "development" && error && (
             <details className="mt-6 text-left">
               <summary className="cursor-pointer text-sm text-gray-600 font-medium">
                 Error Details (Development)
@@ -130,7 +147,9 @@ function ErrorFallback({ error, errorInfo }: ErrorFallbackProps) {
                 {errorInfo && (
                   <div>
                     <strong>Component Stack:</strong>
-                    <pre className="whitespace-pre-wrap">{errorInfo.componentStack}</pre>
+                    <pre className="whitespace-pre-wrap">
+                      {errorInfo.componentStack}
+                    </pre>
                   </div>
                 )}
               </div>
@@ -145,11 +164,11 @@ function ErrorFallback({ error, errorInfo }: ErrorFallbackProps) {
 // Hook for functional components
 export function useErrorHandler() {
   const handleError = (error: Error, errorInfo?: ErrorInfo) => {
-    console.error('Error caught by useErrorHandler:', error, errorInfo);
-    
+    console.error("Error caught by useErrorHandler:", error, errorInfo);
+
     // Send to error tracking service
-    if (typeof window !== 'undefined' && window.gtag) {
-      window.gtag('event', 'exception', {
+    if (typeof window !== "undefined" && window.gtag) {
+      window.gtag("event", "exception", {
         description: error.message,
         fatal: true,
       });
@@ -163,7 +182,7 @@ export function useErrorHandler() {
 export function withErrorBoundary<P extends object>(
   Component: React.ComponentType<P>,
   fallback?: ReactNode,
-  onError?: (error: Error, errorInfo: ErrorInfo) => void
+  onError?: (error: Error, errorInfo: ErrorInfo) => void,
 ) {
   return function WithErrorBoundary(props: P) {
     return (
@@ -172,4 +191,4 @@ export function withErrorBoundary<P extends object>(
       </ErrorBoundary>
     );
   };
-} 
+}
